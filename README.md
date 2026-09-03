@@ -48,10 +48,10 @@ Busca convertirse en un **ecosistema digital alrededor de la música**.
 # ✨ Una primera mirada
 
 <p align="center">
-  <img src="app/screenshots/splashactivity.jpg" alt="PROVIWEB Splash" width="170">
-  <img src="app/screenshots/dos_splashactivity.jpg" alt="PROVIWEB Splash alternativa" width="170">
-  <img src="app/screenshots/loginartistactivity.jpg" alt="Login Artista PROVIWEB" width="170">
-  <img src="app/screenshots/loginmesenas.jpg" alt="Login Mecenas PROVIWEB" width="170">
+  <img src="screenshots/splashactivity.jpg" alt="PROVIWEB Splash" width="170">
+  <img src="screenshots/dos_splashactivity.jpg" alt="PROVIWEB Splash alternativa" width="170">
+  <img src="screenshots/loginartistactivity.jpg" alt="Login Artista PROVIWEB" width="170">
+  <img src="screenshots/loginmesenas.jpg" alt="Login Mecenas PROVIWEB" width="170">
 </p>
 
 <p align="center">
@@ -180,10 +180,10 @@ Control de acceso
 ## 🏠 Tu espacio musical
 
 <p align="center">
-  <img src="app/screenshots/uno_homeactivity.jpg" alt="Home PROVIWEB" width="190">
-  <img src="app/screenshots/dos_homeactivity.jpg" alt="Home PROVIWEB 2" width="190">
-  <img src="app/screenshots/tres_homeactivity.jpg" alt="Home PROVIWEB 3" width="190">
-  <img src="app/screenshots/cuatro_homeactivity.jpg" alt="Home PROVIWEB 4" width="190">
+  <img src="screenshots/uno_homeactivity.jpg" alt="Home PROVIWEB" width="190">
+  <img src="screenshots/dos_homeactivity.jpg" alt="Home PROVIWEB 2" width="190">
+  <img src="screenshots/tres_homeactivity.jpg" alt="Home PROVIWEB 3" width="190">
+  <img src="screenshots/cuatro_homeactivity.jpg" alt="Home PROVIWEB 4" width="190">
 </p>
 
 Un entorno diseñado para descubrir contenido, conectar con otros usuarios y acceder rápidamente a las principales funciones de la plataforma.
@@ -193,11 +193,11 @@ Un entorno diseñado para descubrir contenido, conectar con otros usuarios y acc
 ## 🎧 Herramientas para músicos
 
 <p align="center">
-  <img src="app/screenshots/metronomoactivity.jpg" alt="Metrónomo PROVIWEB" width="190">
-  <img src="app/screenshots/afinadoractivity.jpg" alt="Afinador PROVIWEB" width="190">
-  <img src="app/screenshots/practiceactivity.jpg" alt="Práctica PROVIWEB" width="190">
-  <img src="app/screenshots/archiveactivity.jpg" alt="Biblioteca PROVIWEB" width="190">
-  <img src="app/screenshots/dos_musicactivity.jpg" alt="Música PROVIWEB" width="190">
+  <img src="screenshots/metronomoactivity.jpg" alt="Metrónomo PROVIWEB" width="190">
+  <img src="screenshots/afinadoractivity.jpg" alt="Afinador PROVIWEB" width="190">
+  <img src="screenshots/practiceactivity.jpg" alt="Práctica PROVIWEB" width="190">
+  <img src="screenshots/archiveactivity.jpg" alt="Biblioteca PROVIWEB" width="190">
+  <img src="screenshots/dos_musicactivity.jpg" alt="Música PROVIWEB" width="190">
 </p>
 
 PROVIWEB integra herramientas esenciales para el músico dentro de una misma experiencia:
@@ -216,7 +216,7 @@ PROVIWEB integra herramientas esenciales para el músico dentro de una misma exp
 # 🤖 Inteligencia Artificial
 
 <p align="center">
-  <img src="app/screenshots/aiactivity.jpg" alt="Profesor IA PROVIWEB" width="220">
+  <img src="screenshots/aiactivity.jpg" alt="Profesor IA PROVIWEB" width="220">
 </p>
 
 ## Profesor IA
@@ -240,11 +240,11 @@ La plataforma integra tecnologías de inteligencia artificial de Google para cre
 # 💬 Conecta, publica y crea
 
 <p align="center">
-  <img src="app/screenshots/chatactivity.jpg" alt="Chat PROVIWEB" width="180">
-  <img src="app/screenshots/createpostactivity.jpg" alt="Crear publicación PROVIWEB" width="180">
-  <img src="app/screenshots/reelactivity.jpg" alt="Reels PROVIWEB" width="180">
-  <img src="app/screenshots/notifivationactivity.jpg" alt="Notificaciones PROVIWEB" width="180">
-  <img src="app/screenshots/trendingactivity.jpg" alt="Tendencias PROVIWEB" width="180">
+  <img src="screenshots/chatactivity.jpg" alt="Chat PROVIWEB" width="180">
+  <img src="screenshots/createpostactivity.jpg" alt="Crear publicación PROVIWEB" width="180">
+  <img src="screenshots/reelactivity.jpg" alt="Reels PROVIWEB" width="180">
+  <img src="screenshots/notifivationactivity.jpg" alt="Notificaciones PROVIWEB" width="180">
+  <img src="screenshots/trendingactivity.jpg" alt="Tendencias PROVIWEB" width="180">
 </p>
 
 PROVIWEB combina herramientas sociales y multimedia para que artistas y usuarios puedan:
@@ -264,9 +264,9 @@ PROVIWEB combina herramientas sociales y multimedia para que artistas y usuarios
 # 🎤 Convierte tu talento en oportunidades
 
 <p align="center">
-  <img src="app/screenshots/jobactivity.jpg" alt="Empleos musicales" width="190">
-  <img src="app/screenshots/mapservicesactivity.jpg" alt="Mapa de servicios musicales" width="190">
-  <img src="app/screenshots/marketplaceactivity.jpg" alt="Marketplace PROVIWEB" width="190">
+  <img src="screenshots/jobactivity.jpg" alt="Empleos musicales" width="190">
+  <img src="screenshots/mapservicesactivity.jpg" alt="Mapa de servicios musicales" width="190">
+  <img src="screenshots/marketplaceactivity.jpg" alt="Marketplace PROVIWEB" width="190">
 </p>
 
 PROVIWEB conecta el talento musical con oportunidades profesionales.
@@ -291,19 +291,19 @@ El ecosistema contempla:
 # 👤 Diferentes experiencias dentro del ecosistema
 
 <p align="center">
-  <img src="app/screenshots/uno_profileactivity.jpg" alt="Perfil PROVIWEB 1" width="170">
-  <img src="app/screenshots/dos_profileactivity.jpg" alt="Perfil PROVIWEB 2" width="170">
-  <img src="app/screenshots/tres_profileactivity.jpg" alt="Perfil PROVIWEB 3" width="170">
-  <img src="app/screenshots/cuatro_profileactivity.jpg" alt="Perfil PROVIWEB 4" width="170">
-  <img src="app/screenshots/cinco_profileactivity.jpg" alt="Perfil PROVIWEB 5" width="170">
+  <img src="screenshots/uno_profileactivity.jpg" alt="Perfil PROVIWEB 1" width="170">
+  <img src="screenshots/dos_profileactivity.jpg" alt="Perfil PROVIWEB 2" width="170">
+  <img src="screenshots/tres_profileactivity.jpg" alt="Perfil PROVIWEB 3" width="170">
+  <img src="screenshots/cuatro_profileactivity.jpg" alt="Perfil PROVIWEB 4" width="170">
+  <img src="screenshots/cinco_profileactivity.jpg" alt="Perfil PROVIWEB 5" width="170">
 </p>
 
 <p align="center">
-  <img src="app/screenshots/seis_profileactivity.jpg" alt="Perfil PROVIWEB 6" width="170">
-  <img src="app/screenshots/siete_profileactivity.jpg" alt="Perfil PROVIWEB 7" width="170">
-  <img src="app/screenshots/ocho_profileactivity.jpg" alt="Perfil PROVIWEB 8" width="170">
-  <img src="app/screenshots/menuactivity.jpg" alt="Menú PROVIWEB" width="170">
-  <img src="app/screenshots/walletactivity.jpg" alt="Wallet PROVIWEB" width="170">
+  <img src="screenshots/seis_profileactivity.jpg" alt="Perfil PROVIWEB 6" width="170">
+  <img src="screenshots/siete_profileactivity.jpg" alt="Perfil PROVIWEB 7" width="170">
+  <img src="screenshots/ocho_profileactivity.jpg" alt="Perfil PROVIWEB 8" width="170">
+  <img src="screenshots/menuactivity.jpg" alt="Menú PROVIWEB" width="170">
+  <img src="screenshots/walletactivity.jpg" alt="Wallet PROVIWEB" width="170">
 </p>
 
 PROVIWEB contempla diferentes experiencias de usuario según el rol y las necesidades dentro del ecosistema.
@@ -1205,28 +1205,28 @@ PROVIWEB utiliza principalmente **Firebase Realtime Database** con nodos estruct
 <details>
 <summary><strong>🎵 Música & práctica</strong></summary>
 
-`metronomoactivity.jpg` · `afinadoractivity.jpg` · `practiceactivity.jpg` · `archiveactivity.jpg` · `dos_musicactivity.jpg`
+`screenshots/metronomoactivity.jpg` · `screenshots/afinadoractivity.jpg` · `screenshots/practiceactivity.jpg` · `screenshots/archiveactivity.jpg` · `screenshots/dos_musicactivity.jpg`
 
 </details>
 
 <details>
 <summary><strong>👥 Comunidad & contenido</strong></summary>
 
-`uno_homeactivity.jpg` · `dos_homeactivity.jpg` · `tres_homeactivity.jpg` · `cuatro_homeactivity.jpg` · `createpostactivity.jpg` · `reelactivity.jpg` · `trendingactivity.jpg` · `chatactivity.jpg`
+`screenshots/uno_homeactivity.jpg` · `screenshots/dos_homeactivity.jpg` · `screenshots/tres_homeactivity.jpg` · `screenshots/cuatro_homeactivity.jpg` · `screenshots/createpostactivity.jpg` · `screenshots/reelactivity.jpg` · `screenshots/trendingactivity.jpg` · `screenshots/chatactivity.jpg`
 
 </details>
 
 <details>
 <summary><strong>💼 Servicios & oportunidades</strong></summary>
 
-`jobactivity.jpg` · `mapservicesactivity.jpg` · `marketplaceactivity.jpg`
+`screenshots/jobactivity.jpg` · `screenshots/mapservicesactivity.jpg` · `screenshots/marketplaceactivity.jpg`
 
 </details>
 
 <details>
 <summary><strong>👤 Perfiles</strong></summary>
 
-`uno_profileactivity.jpg` · `dos_profileactivity.jpg` · `tres_profileactivity.jpg` · `cuatro_profileactivity.jpg` · `cinco_profileactivity.jpg` · `seis_profileactivity.jpg` · `siete_profileactivity.jpg` · `ocho_profileactivity.jpg`
+`screenshots/uno_profileactivity.jpg` · `screenshots/dos_profileactivity.jpg` · `screenshots/tres_profileactivity.jpg` · `screenshots/cuatro_profileactivity.jpg` · `screenshots/cinco_profileactivity.jpg` · `screenshots/seis_profileactivity.jpg` · `screenshots/siete_profileactivity.jpg` · `screenshots/ocho_profileactivity.jpg`
 
 </details>
 
