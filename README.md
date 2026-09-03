@@ -41,6 +41,28 @@ PROVIWEB busca acompañar diferentes etapas de la experiencia musical:
 
 ---
 
+# 📌 Alcance de este repositorio
+
+**PROVIWEB-Public** es el espacio público de presentación y documentación del ecosistema PROVIWEB.
+
+Aquí se presentan:
+
+* 🎵 La visión del proyecto
+* 📱 La experiencia de usuario
+* 📸 Capturas de pantalla
+* 🚀 Funcionalidades
+* 🏗️ Arquitectura conceptual
+* 🧰 Tecnologías utilizadas
+* 🗺️ Evolución y roadmap
+* 🤝 Oportunidades de colaboración
+* 🔐 Información relacionada con seguridad
+
+> **El código fuente privado de producción de PROVIWEB no forma parte de este repositorio.**
+
+La publicación de este repositorio tampoco concede derechos para copiar, redistribuir, modificar, comercializar o presentar como propio el producto, la marca, los recursos o los componentes privados de PROVIWEB.
+
+---
+
 # 👀 Una primera mirada
 
 <p align="center">
@@ -428,6 +450,10 @@ La plataforma incorpora diferentes mecanismos de seguridad y protección:
                     └──────────────────────┘
 ```
 
+Para una explicación más detallada de la arquitectura conceptual, consulta:
+
+`docs/ARCHITECTURE.md`
+
 ---
 
 # 🧰 Stack tecnológico
@@ -457,15 +483,18 @@ La plataforma incorpora diferentes mecanismos de seguridad y protección:
 | bitcoinj / BIP39     | Componentes criptográficos  |
 | web3j                | Integraciones blockchain    |
 
+> Esta sección describe tecnologías y componentes utilizados dentro del ecosistema PROVIWEB. No implica que el código de producción correspondiente esté incluido en este repositorio público.
+
 ---
 
-# 📦 Estructura del proyecto
+# 📦 Estructura conceptual del proyecto
+
+La siguiente estructura representa la organización conceptual de diferentes módulos y áreas de PROVIWEB:
 
 ```text
 PROVIWEB/
 ├── app/
-│   ├── src/
-│   └── screenshots/
+│   └── src/
 │
 ├── adapter/
 ├── ads/
@@ -501,9 +530,11 @@ PROVIWEB/
 └── welcome/
 ```
 
+> Esta estructura se presenta con fines documentales y no representa necesariamente todos los archivos o componentes actualmente disponibles en el repositorio público.
+
 ---
 
-# 🔥 Modelo de datos
+# 🔥 Modelo conceptual de datos
 
 Entre las principales áreas de información utilizadas por PROVIWEB se encuentran:
 
@@ -518,6 +549,8 @@ audio_ownership
 Chat
 MusicalServiceRequests
 ```
+
+> Los nombres anteriores representan áreas conceptuales del ecosistema y no constituyen una publicación de datos reales de usuarios.
 
 ---
 
@@ -596,137 +629,52 @@ La colaboración puede provenir de:
 * 🌎 Traductores
 * 💡 Personas con ideas y propuestas para el ecosistema
 
-## 🌟 Áreas de colaboración
+Para realizar una propuesta, utiliza las plantillas disponibles en **Issues**.
 
-| Área             | Posibles aportes                                           |
-| ---------------- | ---------------------------------------------------------- |
-| 💻 Desarrollo    | Ideas, mejoras, correcciones y nuevas funcionalidades      |
-| 🎨 Diseño        | UI/UX, accesibilidad, iconografía y experiencia de usuario |
-| 🎵 Música        | Contenido educativo, ejercicios y recursos musicales       |
-| 🤖 IA            | Ideas y mejoras para herramientas inteligentes             |
-| 🧪 Testing       | Pruebas, detección y documentación de errores              |
-| 📚 Educación     | Material didáctico y metodologías                          |
-| 🌎 Traducción    | Localización y mejora de idiomas                           |
-| 📖 Documentación | Tutoriales, guías y documentación                          |
-| 💡 Ideas         | Propuestas de nuevas funcionalidades                       |
-| 🌐 Comunidad     | Iniciativas y propuestas para mejorar el ecosistema        |
+También puedes consultar:
+
+* `CONTRIBUTING.md`
+* `docs/COLLABORATION.md`
+* `CODE_OF_CONDUCT.md`
+* `SECURITY.md`
 
 ---
 
 # 📜 Reglas de colaboración
 
-Para mantener un entorno organizado, seguro y profesional, las colaboraciones deberán seguir estas reglas:
+Para mantener un entorno organizado, seguro y profesional, las colaboraciones deberán seguir las reglas establecidas en `CONTRIBUTING.md` y `CODE_OF_CONDUCT.md`.
 
-### 1. Código y contenido
+Las propuestas deben respetar:
 
-Las contribuciones deben respetar las leyes aplicables y los derechos de terceros.
-
-No deben incorporarse contenidos cuya utilización o distribución infrinja derechos de autor, licencias o propiedad intelectual.
-
-### 2. Información confidencial
-
-Nunca se deben publicar:
-
-* 🔑 Contraseñas
-* 🔐 Claves privadas
-* 🪙 Seeds o frases de recuperación
-* 🎟️ Tokens
-* 🔥 Credenciales de Firebase
-* 📄 Archivos sensibles
-* 🗝️ Keystores
-* 👤 Información privada de usuarios
-
-### 3. Calidad
-
-Las propuestas deben estar relacionadas con PROVIWEB y procurar aportar valor al proyecto, sus usuarios o su comunidad.
-
-### 4. Revisión
-
-Toda propuesta podrá ser revisada antes de incorporarse a PROVIWEB.
+* Propiedad intelectual.
+* Derechos de terceros.
+* Seguridad.
+* Privacidad.
+* Buenas prácticas de desarrollo.
+* Normas de convivencia.
+* Reglas del repositorio.
 
 Una propuesta, Issue o Pull Request **no garantiza su incorporación al producto**.
 
-### 5. Seguridad
+---
 
-Las vulnerabilidades de seguridad **no deben publicarse como Issues públicos**.
+# 🔐 Código fuente y propiedad intelectual
 
-Los problemas de seguridad deberán comunicarse mediante el canal privado establecido por PROVIWEB.
+El código fuente privado de producción y determinados componentes internos de PROVIWEB permanecen fuera de este repositorio.
 
-### 6. Identidad del proyecto
-
-No está permitido utilizar el repositorio público para distribuir versiones modificadas de PROVIWEB presentándolas como versiones oficiales.
-
-### 7. Marca y propiedad intelectual
-
-La colaboración con PROVIWEB no concede automáticamente derechos sobre:
+La publicación de PROVIWEB-Public no concede automáticamente derechos sobre:
 
 * Nombre PROVIWEB
 * Logotipo
 * Identidad visual
 * Marca
 * Contenido propietario
-* Componentes privados
+* Código fuente privado
+* Componentes internos
 * Propiedad intelectual del proyecto
+* Recursos privados
 
-### 8. Conducta
-
-Todas las personas que colaboren deben mantener un ambiente respetuoso, profesional y constructivo.
-
----
-
-# 🔐 Código fuente y repositorio público
-
-Este repositorio público tiene como objetivo mostrar:
-
-* La visión de PROVIWEB
-* Sus funcionalidades
-* La experiencia de usuario
-* Documentación
-* Arquitectura conceptual
-* Capturas de pantalla
-* Tecnologías utilizadas
-* Evolución del ecosistema
-* Oportunidades de colaboración
-
-El **código fuente privado de producción y determinados componentes internos de PROVIWEB permanecen fuera de este repositorio**.
-
-La publicación de este repositorio **no significa que el código, recursos, marcas o propiedad intelectual de PROVIWEB estén disponibles para copia, redistribución o explotación comercial**.
-
----
-
-# 🚀 Flujo de colaboración
-
-Las propuestas pueden seguir un proceso como el siguiente:
-
-```text
-💡 IDEA
-   │
-   ▼
-📝 PROPUESTA
-   │
-   ▼
-🔎 REVISIÓN
-   │
-   ▼
-📋 DEFINICIÓN
-   │
-   ▼
-💻 DESARROLLO
-   │
-   ▼
-🧪 PRUEBAS
-   │
-   ▼
-🔀 PULL REQUEST
-   │
-   ▼
-👀 REVISIÓN PROVIWEB
-   │
-   ▼
-✅ INTEGRACIÓN
-```
-
-La incorporación final queda sujeta a revisión y aprobación.
+La utilización de cualquier elemento protegido deberá contar con la autorización correspondiente cuando sea necesaria.
 
 ---
 
@@ -748,20 +696,7 @@ authentication tokens
 production secrets
 ```
 
-Las configuraciones sensibles deben mantenerse fuera del repositorio público.
-
----
-
-# 🏗️ Requisitos técnicos
-
-Para el entorno Android:
-
-* Android Studio Ladybug 2024.2.1 o superior
-* OpenJDK 17
-* compileSdk 34/35
-* targetSdk 34/35
-* minSdk 24
-* NDK 28.0.12433566
+Consulta `SECURITY.md` para conocer la política de seguridad del proyecto.
 
 ---
 
@@ -787,7 +722,7 @@ Entre las áreas de evolución se encuentran:
 
 # 💡 ¿Quieres colaborar?
 
-Las personas interesadas pueden comenzar revisando el proyecto, explorando sus funcionalidades y proponiendo ideas que puedan contribuir a su evolución.
+Las personas interesadas pueden comenzar explorando el proyecto, revisando su documentación y utilizando las plantillas de Issues para presentar propuestas.
 
 Las colaboraciones pueden estar relacionadas tanto con tecnología como con música, educación, diseño, IA, documentación, pruebas y comunidad.
 
