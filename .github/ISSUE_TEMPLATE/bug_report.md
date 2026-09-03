@@ -1,10 +1,10 @@
 ---
 
-name: 🐛 Reportar un error
-about: Reportar un problema o comportamiento inesperado en PROVIWEB
+name: "🐛 Reportar un error"
+about: "Reportar un problema o comportamiento inesperado en PROVIWEB"
 title: "[BUG] "
-labels: bug
-assignees: ''
+labels: "bug"
+assignees: ""
 -------------
 
 # 🐛 Reporte de error
