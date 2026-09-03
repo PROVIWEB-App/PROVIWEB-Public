@@ -1,75 +1,40 @@
----
-
-name: "🐛 Reportar un error"
+name: "Reportar un error"
 about: "Reportar un problema o comportamiento inesperado en PROVIWEB"
 title: "[BUG] "
 labels: "bug"
 assignees: ""
 -------------
 
-# 🐛 Reporte de error
+## Descripción del problema
 
-## 📋 Descripción
+Describe claramente el error encontrado.
 
-Describe claramente el problema encontrado.
+## Pasos para reproducirlo
 
-## 🔄 Pasos para reproducirlo
+1. Ir a...
+2. Seleccionar...
+3. Presionar...
+4. Ocurre el error.
 
-1.
-2.
-3.
-
-## ✅ Comportamiento esperado
+## Comportamiento esperado
 
 Describe qué debería haber ocurrido.
 
-## ❌ Comportamiento observado
+## Comportamiento actual
 
-Describe qué ocurrió realmente.
+Describe qué está ocurriendo actualmente.
 
-## 📱 Entorno
+## Información adicional
 
-**Dispositivo:**
+* Versión de PROVIWEB:
+* Dispositivo:
+* Versión de Android:
+* ¿Está relacionado con Firebase?: Sí / No
+* ¿Ocurre siempre?: Sí / No
 
-**Fabricante:**
+## Capturas o evidencia
 
-**Modelo:**
+Si es posible, agrega capturas de pantalla, videos o registros relevantes.
 
-**Versión de Android:**
+## Logs
 
-**Versión de PROVIWEB:**
-
-## 📸 Evidencia
-
-Si es posible, incluye:
-
-* Capturas de pantalla
-* Vídeos
-* Logs relevantes
-* Pasos adicionales
-
-## ℹ️ Información adicional
-
-Añade cualquier información que pueda ayudar a reproducir o comprender el problema.
-
----
-
-### 🔐 Importante
-
-**No incluyas información privada o sensible.**
-
-Nunca publiques:
-
-* Contraseñas
-* Tokens
-* Claves privadas
-* Credenciales
-* Datos personales
-* Información financiera
-* `google-services.json`
-* Keystores
-* Seeds o frases de recuperación
-
-Si el problema está relacionado con una vulnerabilidad de seguridad, **no lo publiques aquí**.
-
-Consulta `docs/SECURITY.md`.
