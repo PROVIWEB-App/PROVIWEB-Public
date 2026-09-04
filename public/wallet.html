@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billetera & Recompensas | PROVIWEB</title>
+    <link rel="icon" type="image/png" href="assets/logotransparente-1dd37ce8.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-card: rgba(18, 18, 26, 0.75);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --accent-purple: #a855f7;
+            --accent-gold: #fbbf24;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            --radius-lg: 18px;
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding-bottom: 60px; }
+
+        /* HEADER */
+        .header {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(10, 10, 15, 0.88); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-glass);
+            height: 64px; padding: 0 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-weight: 900; font-size: 17px; }
+        .header-logo img { height: 32px; }
+        .nav-btn {
+            background: var(--bg-glass); border: 1px solid var(--border-glass);
+            color: var(--text-primary); text-decoration: none; padding: 8px 14px;
+            border-radius: 12px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* CONTAINER */
+        .wallet-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+
+        /* HERO CARD */
+        .wallet-hero {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 24px;
+            padding: 32px 28px; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+            margin-bottom: 24px; position: relative; overflow: hidden;
+        }
+        .wallet-hero::after {
+            content: ''; position: absolute; top: -50%; right: -20%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%); pointer-events: none;
+        }
+
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .balance-card-box {
+            background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-glass);
+            border-radius: 18px; padding: 20px;
+        }
+        .balance-val { font-size: 32px; font-weight: 900; margin: 6px 0; }
+        .balance-val.qav { color: var(--accent-gold); }
+        .balance-val.diamond { color: var(--accent-blue); }
+
+        /* ACTION TABS */
+        .wallet-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px; overflow-x: auto; }
+        .wallet-tab-btn {
+            background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+            padding: 10px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .wallet-tab-btn.active {
+            background: var(--bg-glass); border-color: rgba(168, 85, 247, 0.4); color: #fff;
+        }
+
+        /* TAB CONTENT PANELS */
+        .tab-panel { display: none; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px; padding: 24px; }
+        .tab-panel.active { display: block; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 12.5px; font-weight: 800; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-input {
+            width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-glass);
+            border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none;
+        }
+        .form-input:focus { border-color: var(--accent-purple); }
+
+        .btn-submit-action {
+            background: var(--gradient-primary); color: #fff; border: none; padding: 14px 24px;
+            border-radius: 12px; font-weight: 900; font-size: 14px; cursor: pointer; width: 100%;
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35); transition: opacity 0.2s;
+        }
+        .btn-submit-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* TX ITEM */
+        .tx-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .tx-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        @media(max-width: 640px) {
+            .balance-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="home.html" class="header-logo">
+            <img src="./assets/logotransparente-1dd37ce8.png" alt="PROVIWEB">
+            <span>PROVIWEB <span style="color:var(--accent-purple); font-size:12px; font-weight:800; background:rgba(168,85,247,0.15); padding:2px 7px; border-radius:5px;">WALLET</span></span>
+        </a>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="home.html" class="nav-btn"><span>⬅</span> <span>Volver al Feed</span></a>
+            <a href="myprofile.html" class="nav-btn"><span>👤</span> <span>Mi Perfil</span></a>
+        </div>
+    </header>
+
+    <div class="wallet-container">
+        <!-- HERO BALANCE -->
+        <div class="wallet-hero">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                    <span style="font-size:11px; font-weight:900; color:var(--accent-purple); letter-spacing:0.8px;">BILLETERA COMUNITARIA PROVIWEB</span>
+                    <h1 style="font-size:24px; font-weight:900; margin-top:2px;">Centro de Saldo & Recompensas</h1>
+                </div>
+                <div style="background:rgba(34,197,94,0.15); color:var(--accent-green); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:900; border:1px solid rgba(34,197,94,0.3);">
+                    🟢 Cuenta Activa
+                </div>
+            </div>
+
+            <div class="balance-grid">
+                <div class="balance-card-box">
+                    <div style="font-size:12px; font-weight:800; color:var(--text-secondary);">🪙 Tokens QAV Disponibles</div>
+                    <div class="balance-val qav" id="displayQavBalance">0 QAV</div>
+                    <p style="font-size:11.5px; color:var(--text-muted);">Tokens para propinas, colaboraciones, contratación y servicios musicales.</p>
+                </div>
+                <div class="balance-card-box">
+                    <div style="font-size:12px; font-weight:800; color:var(--text-secondary);">💎 Diamantes Acumulados</div>
+                    <div class="balance-val diamond" id="displayDiamondBalance">0.00 💎</div>
+                    <p style="font-size:11.5px; color:var(--text-muted);">+0.10 Diamantes acumulados automáticamente cada 3 minutos por actividad.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="wallet-tabs">
+            <button type="button" class="wallet-tab-btn active" data-tab="send">🪙 Transferir Saldo (Enviar QAV)</button>
+            <button type="button" class="wallet-tab-btn" data-tab="swap">🔄 Canjear Diamantes a QAV</button>
+            <button type="button" class="wallet-tab-btn" data-tab="withdraw">💳 Solicitar Retiro (Cobro)</button>
+            <button type="button" class="wallet-tab-btn" data-tab="history">📜 Historial de Movimientos</button>
+        </div>
+
+        <!-- PANEL 1: TRANSFERIR SALDO -->
+        <div class="tab-panel active" id="panel-send">
+            <h3 style="font-size:17px; font-weight:900; margin-bottom:6px;">Enviar Tokens QAV a otro Músico o Creador</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Transfiere recompensas o apoya proyectos musicales al instante sin comisiones.</p>
+
+            <form id="formSendBalance">
+                <div class="form-group">
+                    <label class="form-label">ID o @username del Destinatario</label>
+                    <input type="text" id="sendRecipientInput" class="form-input" placeholder="Ej: @nicolas o UID de usuario" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cantidad de Tokens QAV</label>
+                    <input type="number" id="sendAmountInput" class="form-input" min="1" placeholder="Ej: 10" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Concepto / Mensaje (Opcional)</label>
+                    <input type="text" id="sendConceptInput" class="form-input" placeholder="Ej: Por tu excelente interpretación musical">
+                </div>
+                <button type="submit" id="btnSendSubmit" class="btn-submit-action">Transferir Tokens QAV ➜</button>
+            </form>
+        </div>
+
+        <!-- PANEL 2: CANJEAR DIAMANTES A QAV -->
+        <div class="tab-panel" id="panel-swap">
+            <h3 style="font-size:17px; font-weight:900; margin-bottom:6px;">Canjear Diamantes Acumulados a Tokens QAV</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Tasa de conversión oficial del ecosistema: 1 Diamante = 1 Token QAV.</p>
+
+            <form id="formSwapDiamonds">
+                <div class="form-group">
+                    <label class="form-label">Diamantes a Convertir</label>
+                    <input type="number" step="0.1" id="swapAmountInput" class="form-input" min="0.1" placeholder="Ej: 5.00" required>
+                </div>
+                <button type="submit" id="btnSwapSubmit" class="btn-submit-action" style="background:var(--gradient-gold); color:#000;">
+                    Canjear a Tokens QAV ➜
+                </button>
+            </form>
+        </div>
+
+        <!-- PANEL 3: SOLICITAR RETIRO -->
+        <div class="tab-panel" id="panel-withdraw">
+            <h3 style="font-size:17px; font-weight:900; margin-bottom:6px;">Solicitud de Retiro de Fondos</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Retira tus ganancias generadas por contratos, conciertos y propinas de la comunidad.</p>
+
+            <form id="formWithdraw">
+                <div class="form-group">
+                    <label class="form-label">Método de Cobro</label>
+                    <select id="withdrawMethodSelect" class="form-input" style="background:#14141e;">
+                        <option value="nequi">Nequi (Colombia)</option>
+                        <option value="daviplata">Daviplata (Colombia)</option>
+                        <option value="bancolombia">Transferencia Bancolombia</option>
+                        <option value="paypal">PayPal Internacional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Número de Cuenta / Teléfono / Correo PayPal</label>
+                    <input type="text" id="withdrawAccountInput" class="form-input" placeholder="Ej: 3001234567 o correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto a Retirar (QAV)</label>
+                    <input type="number" id="withdrawAmountInput" class="form-input" min="10" placeholder="Mínimo 10 QAV" required>
+                </div>
+                <button type="submit" id="btnWithdrawSubmit" class="btn-submit-action">Enviar Solicitud de Retiro ➜</button>
+            </form>
+        </div>
+
+        <!-- PANEL 4: HISTORIAL DE MOVIMIENTOS -->
+        <div class="tab-panel" id="panel-history">
+            <h3 style="font-size:17px; font-weight:900; margin-bottom:6px;">Historial de Transacciones & Retiros</h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px;">Registro de todos tus envíos, recepciones de balance y retiros.</p>
+            <div id="transactionsList">
+                <div style="text-align:center; padding:24px; color:var(--text-muted);">Cargando movimientos...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULAR DATA ENGINE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, push, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:53a6f1d2df8940822eef6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUID = localStorage.getItem('id') || null;
+        let userQav = 0;
+        let userDiamonds = 0;
+
+        // TABS SWITCHER
+        document.querySelectorAll('.wallet-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.wallet-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.getAttribute('data-tab');
+                document.getElementById('panel-' + target)?.classList.add('active');
+            });
+        });
+
+        function setupWalletRealtime(uid) {
+            if (!uid) return;
+
+            // Balance listener
+            const balRef = ref(db, 'Balance/' + uid);
+            onValue(balRef, snap => {
+                if (snap.exists()) {
+                    const data = snap.val() || {};
+                    const b = data.balance || 0;
+                    const d = data.diamond || data.diamonds || 0;
+                    userQav = typeof b === 'number' ? b : parseFloat(b) || 0;
+                    userDiamonds = typeof d === 'number' ? d : parseFloat(d) || 0;
+                } else {
+                    userQav = 0;
+                    userDiamonds = 0;
+                }
+                const qEl = document.getElementById('displayQavBalance');
+                if (qEl) qEl.textContent = `${userQav} QAV`;
+                const dEl = document.getElementById('displayDiamondBalance');
+                if (dEl) dEl.textContent = `${userDiamonds.toFixed(2)} 💎`;
+            });
+
+            // Historial de movimientos
+            loadTransactionsHistory(uid);
+        }
+
+        async function loadTransactionsHistory(uid) {
+            const listEl = document.getElementById('transactionsList');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            const txs = [];
+
+            // Balance Enviado
+            try {
+                const sRef = ref(db, 'BalanceEnviado/' + uid);
+                const snap = await get(sRef);
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        const v = c.val();
+                        txs.push({ type: 'send', amount: v.amount, to: v.to, timestamp: v.timestamp || 0, concept: v.concept || 'Envío de balance' });
+                    });
+                }
+            } catch (e) {}
+
+            // Retiros
+            try {
+                const wRef = ref(db, 'Withdraw/' + uid);
+                const snap = await get(wRef);
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        const v = c.val();
+                        txs.push({ type: 'withdraw', amount: v.amount || v.pago, method: v.metodo || v.method, status: v.status || 'Pendiente', timestamp: v.timestamp || 0 });
+                    });
+                }
+            } catch (e) {}
+
+            if (txs.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center; padding:28px; color:var(--text-secondary);">No hay transacciones registradas aún.</div>`;
+                return;
+            }
+
+            txs.sort((a, b) => b.timestamp - a.timestamp);
+
+            txs.forEach(t => {
+                const row = document.createElement('div');
+                row.className = 'tx-item';
+                const dateStr = t.timestamp ? new Date(t.timestamp).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Reciente';
+
+                if (t.type === 'send') {
+                    row.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="tx-icon">↗️</div>
+                            <div>
+                                <div style="font-size:13.5px; font-weight:800; color:#fff;">Envío a ${t.to}</div>
+                                <div style="font-size:11px; color:var(--text-muted);">${t.concept} · ${dateStr}</div>
+                            </div>
+                        </div>
+                        <div style="font-size:14px; font-weight:900; color:#ef4444;">-${t.amount} QAV</div>
+                    `;
+                } else if (t.type === 'withdraw') {
+                    row.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="tx-icon">💳</div>
+                            <div>
+                                <div style="font-size:13.5px; font-weight:800; color:#fff;">Solicitud de Retiro (${t.method || 'Bancario'})</div>
+                                <div style="font-size:11px; color:var(--text-muted);">Estado: ${t.status} · ${dateStr}</div>
+                            </div>
+                        </div>
+                        <div style="font-size:14px; font-weight:900; color:var(--accent-gold);">-${t.amount} QAV</div>
+                    `;
+                }
+                listEl.appendChild(row);
+            });
+        }
+
+        // ACCIÓN 1: TRANSFERIR SALDO
+        const formSend = document.getElementById('formSendBalance');
+        if (formSend) {
+            formSend.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const recipient = document.getElementById('sendRecipientInput')?.value.trim();
+                const amount = parseFloat(document.getElementById('sendAmountInput')?.value);
+                const concept = document.getElementById('sendConceptInput')?.value.trim() || 'Transferencia de Tokens QAV';
+
+                if (!recipient || isNaN(amount) || amount <= 0) {
+                    alert('Por favor ingresa un destinatario y un monto válido.');
+                    return;
+                }
+                if (amount > userQav) {
+                    alert(`Saldo insuficiente. Tienes ${userQav} QAV disponibles.`);
+                    return;
+                }
+
+                try {
+                    document.getElementById('btnSendSubmit').disabled = true;
+                    // Descontar
+                    const newBal = userQav - amount;
+                    await update(ref(db, 'Balance/' + currentUID), { balance: newBal });
+
+                    // Registrar
+                    await push(ref(db, 'BalanceEnviado/' + currentUID), {
+                        to: recipient,
+                        amount: amount,
+                        concept: concept,
+                        timestamp: Date.now()
+                    });
+
+                    alert(`✨ ¡Has transferido exitosamente ${amount} QAV a ${recipient}!`);
+                    formSend.reset();
+                    loadTransactionsHistory(currentUID);
+                } catch (err) {
+                    console.error(err);
+                    alert('Error al realizar la transferencia.');
+                } finally {
+                    document.getElementById('btnSendSubmit').disabled = false;
+                }
+            });
+        }
+
+        // ACCIÓN 2: CANJEAR DIAMANTES
+        const formSwap = document.getElementById('formSwapDiamonds');
+        if (formSwap) {
+            formSwap.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const amount = parseFloat(document.getElementById('swapAmountInput')?.value);
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Ingresa una cantidad válida de diamantes.');
+                    return;
+                }
+                if (amount > userDiamonds) {
+                    alert(`Diamantes insuficientes. Tienes ${userDiamonds.toFixed(2)} 💎 disponibles.`);
+                    return;
+                }
+
+                try {
+                    document.getElementById('btnSwapSubmit').disabled = true;
+                    const newDiamonds = parseFloat((userDiamonds - amount).toFixed(2));
+                    const newQav = userQav + amount;
+
+                    await update(ref(db, 'Balance/' + currentUID), {
+                        diamond: newDiamonds.toString(),
+                        balance: newQav
+                    });
+
+                    alert(`🎉 ¡Canje exitoso! Convertiste ${amount} 💎 en ${amount} Tokens QAV.`);
+                    formSwap.reset();
+                } catch (err) {
+                    console.error(err);
+                    alert('Error al realizar el canje.');
+                } finally {
+                    document.getElementById('btnSwapSubmit').disabled = false;
+                }
+            });
+        }
+
+        // ACCIÓN 3: SOLICITAR RETIRO
+        const formWithdraw = document.getElementById('formWithdraw');
+        if (formWithdraw) {
+            formWithdraw.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const method = document.getElementById('withdrawMethodSelect')?.value;
+                const account = document.getElementById('withdrawAccountInput')?.value.trim();
+                const amount = parseFloat(document.getElementById('withdrawAmountInput')?.value);
+
+                if (!account || isNaN(amount) || amount < 10) {
+                    alert('El monto mínimo de retiro es de 10 QAV.');
+                    return;
+                }
+                if (amount > userQav) {
+                    alert(`Saldo insuficiente. Tienes ${userQav} QAV disponibles.`);
+                    return;
+                }
+
+                try {
+                    document.getElementById('btnWithdrawSubmit').disabled = true;
+                    const newBal = userQav - amount;
+                    await update(ref(db, 'Balance/' + currentUID), { balance: newBal });
+
+                    await push(ref(db, 'Withdraw/' + currentUID), {
+                        amount: amount,
+                        metodo: method,
+                        cuenta: account,
+                        status: 'Pendiente de Aprobación',
+                        timestamp: Date.now()
+                    });
+
+                    alert('✨ Solicitud de retiro enviada con éxito. Nuestro equipo procesará tu pago en un plazo máximo de 24 horas.');
+                    formWithdraw.reset();
+                    loadTransactionsHistory(currentUID);
+                } catch (err) {
+                    console.error(err);
+                    alert('Error al solicitar retiro.');
+                } finally {
+                    document.getElementById('btnWithdrawSubmit').disabled = false;
+                }
+            });
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUID = user.uid;
+                localStorage.setItem('id', user.uid);
+                setupWalletRealtime(user.uid);
+            } else if (currentUID) {
+                setupWalletRealtime(currentUID);
+            } else {
+                window.location.href = 'index.html?needAuth=1';
+            }
+        });
+    </script>
+</body>
+</html>

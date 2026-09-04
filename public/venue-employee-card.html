@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carnet de Empleado - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f0f13;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-purple: #a855f7;
+            --accent-blue: #007BFF;
+            --accent-green: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        /* Aurora Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 123, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-purple);
+        }
+
+        /* Card Container */
+        .card-container {
+            perspective: 1000px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.586; /* ID card ratio */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+        }
+
+        .card-back {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            transform: rotateY(180deg);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Card Pattern */
+        .card-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px);
+        }
+
+        /* Card Header */
+        .card-header {
+            position: relative;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .venue-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-type-badge {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Card Body */
+        .card-body {
+            position: relative;
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .employee-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .employee-info {
+            flex: 1;
+            color: white;
+        }
+
+        .employee-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .employee-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .employee-id {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-family: monospace;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-validity {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .card-chip {
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(135deg, #d4af37, #f4d03f);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-chip::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Card Back Content */
+        .card-back-content {
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+        }
+
+        .qr-instructions {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .scan-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 20px;
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Card Actions */
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: var(--accent-purple);
+        }
+
+        /* Attendance Actions */
+        .attendance-actions {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .attendance-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .attendance-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-entry {
+            flex: 1;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .btn-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-exit {
+            flex: 1;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+        }
+
+        .btn-exit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Last Attendance */
+        .last-attendance {
+            text-align: center;
+            padding: 16px;
+            background: rgba(168, 85, 247, 0.05);
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .last-attendance-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .last-attendance-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        /* Info Section */
+        .info-section {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .info-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        /* Loading State */
+        .loading-container {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(168, 85, 247, 0.1);
+            border-top-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-container {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Flip hint */
+        .flip-hint {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .card-body {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .employee-photo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .employee-name {
+                font-size: 1.1rem;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+
+            .attendance-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="venue-employees.html" class="back-link">
+            <span>←</span> Volver
+        </a>
+
+        <div id="loadingState" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p style="color: var(--text-secondary);">Cargando carnet...</p>
+        </div>
+
+        <div id="errorState" class="error-container" style="display: none;">
+            <div class="error-icon">❌</div>
+            <h3 class="error-title">Error al cargar el carnet</h3>
+            <p class="error-message" id="errorMessage">No se pudo cargar la información del empleado</p>
+            <a href="venue-employees.html" class="btn btn-primary">Volver a Empleados</a>
+        </div>
+
+        <div id="cardState" style="display: none;">
+            <div class="card-container" onclick="flipCard()">
+                <div class="card" id="employeeCard">
+                    <!-- Front -->
+                    <div class="card-face card-front">
+                        <div class="card-pattern"></div>
+                        
+                        <div class="card-header">
+                            <div class="venue-logo" id="venueLogo">🎵</div>
+                            <div class="card-type-badge" id="cardTypeBadge">EMPLEADO</div>
+                        </div>
+
+                        <div class="card-body">
+                            <img src="assets/avatar.png" alt="" class="employee-photo" id="employeePhoto">
+                            <div class="employee-info">
+                                <div class="employee-name" id="employeeName">Cargando...</div>
+                                <div class="employee-role" id="employeeRole">...</div>
+                                <div class="employee-id" id="employeeId">ID: ---</div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="card-validity">PROVIWEB</div>
+                            <div class="card-chip"></div>
+                        </div>
+                    </div>
+
+                    <!-- Back -->
+                    <div class="card-face card-back">
+                        <div class="card-back-content">
+                            <!-- Venue Badge -->
+                            <div class="venue-badge" id="venueBadge" style="
+                                background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 123, 255, 0.2));
+                                border: 1px solid rgba(168, 85, 247, 0.5);
+                                border-radius: 12px;
+                                padding: 10px 20px;
+                                margin-bottom: 16px;
+                                text-align: center;
+                                max-width: 90%;
+                            ">
+                                <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Empleado de</div>
+                                <div id="venueNameBadge" style="font-weight: 700; font-size: 1rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Cargando...</div>
+                            </div>
+                            
+                            <div class="qr-container">
+                                <img src="" alt="QR Code" class="qr-code" id="qrCode">
+                            </div>
+                            <div class="qr-instructions">
+                                <strong>Escanea para verificar</strong>
+                                <p style="margin-top: 8px; font-size: 0.8rem;">Este código contiene la información del empleado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="flip-hint">👆 Toca la tarjeta para ver el código QR</p>
+
+            <div class="card-actions">
+                <button class="btn btn-secondary" onclick="downloadCard()">
+                    <span>💾</span> Descargar
+                </button>
+                <button class="btn btn-primary" onclick="printCard()">
+                    <span>🖨️</span> Imprimir
+                </button>
+            </div>
+
+            <div class="last-attendance" id="lastAttendanceSection" style="display: none;">
+                <div class="last-attendance-label">Último registro</div>
+                <div class="last-attendance-time" id="lastAttendanceTime">-</div>
+            </div>
+
+            <div class="attendance-actions">
+                <div class="attendance-title">⏱️ Registrar Asistencia</div>
+                <div class="attendance-buttons">
+                    <button class="btn btn-entry" onclick="registerAttendance('entry')">
+                        <span>🟢</span> Entrada
+                    </button>
+                    <button class="btn btn-exit" onclick="registerAttendance('exit')">
+                        <span>🟠</span> Salida
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-title">Información</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Establecimiento</span>
+                        <span class="info-value" id="venueName">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de ingreso</span>
+                        <span class="info-value" id="joinDate">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Estado</span>
+                        <span class="info-value" id="employeeStatus">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tipo de carnet</span>
+                        <span class="info-value" id="cardType">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(150%);
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 16px 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    ">
+        <span id="toastIcon">✅</span>
+        <span id="toastMessage">Operación exitosa</span>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, get, set, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let venueId = null;
+        let employeeId = null;
+        let employeeData = null;
+        let venueData = null;
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        venueId = urlParams.get('venueId');
+        employeeId = urlParams.get('employeeId');
+
+        if (!venueId || !employeeId) {
+            showError('Parámetros incompletos. Falta venueId o employeeId.');
+        }
+
+        // Check auth
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadData();
+            } else {
+                // Allow public viewing but disable attendance registration
+                await loadData();
+            }
+        });
+
+        async function loadData() {
+            try {
+                // Load venue data
+                const venueRef = ref(db, `LiveMusicVenues/${venueId}`);
+                const venueSnap = await get(venueRef);
+                
+                if (!venueSnap.exists()) {
+                    showError('Establecimiento no encontrado');
+                    return;
+                }
+                
+                venueData = venueSnap.val();
+                
+                // Load employee data
+                const employeeRef = ref(db, `VenueEmployees/${venueId}/${employeeId}`);
+                const employeeSnap = await get(employeeRef);
+                
+                if (!employeeSnap.exists()) {
+                    showError('Empleado no encontrado');
+                    return;
+                }
+                
+                employeeData = employeeSnap.val();
+                
+                // Load card data if exists
+                let cardData = null;
+                if (employeeData.cardType === 'custom') {
+                    const cardRef = ref(db, `VenueEmployeeCards/${venueId}/${employeeId}`);
+                    const cardSnap = await get(cardRef);
+                    if (cardSnap.exists()) {
+                        cardData = cardSnap.val();
+                    }
+                }
+                
+                // Load last attendance
+                const attendanceRef = ref(db, `VenueAttendance/${venueId}`);
+                const attendanceSnap = await get(attendanceRef);
+                let lastAttendance = null;
+                
+                if (attendanceSnap.exists()) {
+                    const records = [];
+                    attendanceSnap.forEach((child) => {
+                        const record = child.val();
+                        if (record.employeeId === employeeId) {
+                            records.push(record);
+                        }
+                    });
+                    
+                    if (records.length > 0) {
+                        records.sort((a, b) => b.timestamp - a.timestamp);
+                        lastAttendance = records[0];
+                    }
+                }
+                
+                renderCard(venueData, employeeData, cardData, lastAttendance);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Error al cargar los datos');
+            }
+        }
+
+        function renderCard(venue, employee, card, lastAttendance) {
+            // Hide loading, show card
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('cardState').style.display = 'block';
+            
+            // Venue info
+            document.getElementById('venueLogo').textContent = venue.logo || getVenueEmoji(venue.venueType);
+            document.getElementById('venueName').textContent = venue.name || 'Establecimiento';
+            
+            // Venue badge on back
+            document.getElementById('venueNameBadge').textContent = venue.name || 'Establecimiento';
+            
+            // Employee info
+            document.getElementById('employeePhoto').src = employee.photo || 'assets/avatar.png';
+            document.getElementById('employeeName').textContent = employee.fullName || 'Empleado';
+            document.getElementById('employeeRole').textContent = getRoleLabel(employee.role);
+            document.getElementById('employeeId').textContent = `ID: ${employeeId.slice(-8).toUpperCase()}`;
+            
+            // Card type badge
+            const cardTypeLabels = {
+                fundar: 'FUNDAR',
+                custom: 'EMPLEADO',
+                none: 'SIN CARNET'
+            };
+            document.getElementById('cardTypeBadge').textContent = cardTypeLabels[employee.cardType] || 'EMPLEADO';
+            
+            // QR Code
+            const qrData = JSON.stringify({
+                venueId,
+                employeeId,
+                name: employee.fullName,
+                role: employee.role,
+                type: 'venue_employee'
+            });
+            
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+            document.getElementById('qrCode').src = qrUrl;
+            
+            // Info section
+            document.getElementById('joinDate').textContent = formatDate(employee.createdAt);
+            document.getElementById('employeeStatus').textContent = employee.status === 'active' ? '✅ Activo' : '⏸️ Inactivo';
+            document.getElementById('cardType').textContent = getCardTypeLabel(employee.cardType);
+            
+            // Last attendance
+            if (lastAttendance) {
+                document.getElementById('lastAttendanceSection').style.display = 'block';
+                document.getElementById('lastAttendanceTime').textContent = 
+                    `${lastAttendance.type === 'entry' ? '🟢 Entrada' : '🟠 Salida'} - ${formatDateTime(lastAttendance.timestamp)}`;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Global functions
+        window.flipCard = () => {
+            document.getElementById('employeeCard').classList.toggle('flipped');
+        };
+
+        window.downloadCard = () => {
+            showToast('💾', 'Descargando carnet...');
+            // Implementation would use html2canvas or similar
+        };
+
+        window.printCard = () => {
+            window.print();
+        };
+
+        window.registerAttendance = async (type) => {
+            if (!currentUser) {
+                showToast('❌', 'Debes iniciar sesión para registrar asistencia');
+                return;
+            }
+            
+            try {
+                const attendanceRef = ref(db, `VenueAttendance/${venueId}`);
+                const newRecordRef = push(attendanceRef);
+                
+                await set(newRecordRef, {
+                    employeeId,
+                    employeeName: employeeData.fullName,
+                    employeePhoto: employeeData.photo || null,
+                    type,
+                    timestamp: Date.now(),
+                    scannedBy: currentUser.uid,
+                    venueId
+                });
+                
+                showToast(type === 'entry' ? '🟢' : '🟠', 
+                    `${type === 'entry' ? 'Entrada' : 'Salida'} registrada correctamente`);
+                
+                // Update last attendance display
+                document.getElementById('lastAttendanceSection').style.display = 'block';
+                document.getElementById('lastAttendanceTime').textContent = 
+                    `${type === 'entry' ? '🟢 Entrada' : '🟠 Salida'} - ${formatDateTime(Date.now())}`;
+                
+            } catch (error) {
+                console.error('Error registering attendance:', error);
+                showToast('❌', 'Error al registrar asistencia');
+            }
+        };
+
+        function showToast(icon, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastIcon').textContent = icon;
+            document.getElementById('toastMessage').textContent = message;
+            
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(150%)';
+            }, 3000);
+        }
+
+        // Helper functions
+        function getVenueEmoji(type) {
+            const emojis = {
+                bar: '🍺',
+                restaurant: '🍽️',
+                theater: '🎭',
+                jazz_club: '🎷',
+                cultural_center: '🏛️',
+                taberna: '🍻',
+                live_music: '🎸'
+            };
+            return emojis[type] || '🎵';
+        }
+
+        function getRoleLabel(role) {
+            const labels = {
+                musician: '🎵 Músico',
+                waiter: '🍽️ Mesero/a',
+                bartender: '🍸 Bartender',
+                chef: '👨‍🍳 Chef',
+                security: '🛡️ Seguridad',
+                cashier: '💰 Cajero/a',
+                manager: '👔 Gerente',
+                cleaning: '🧹 Limpieza',
+                other: '🔧 Otro'
+            };
+            return labels[role] || role;
+        }
+
+        function getCardTypeLabel(type) {
+            const labels = {
+                fundar: '🎫 Carnet FUNDAR',
+                custom: '🎨 Personalizado',
+                none: '🚫 Sin carnet'
+            };
+            return labels[type] || type;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleDateString('es-CO', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function formatDateTime(timestamp) {
+            if (!timestamp) return '-';
+            return new Date(timestamp).toLocaleString('es-CO', {
+                day: '2-digit',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>

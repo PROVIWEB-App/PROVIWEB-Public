@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Descubre establecimientos de música en vivo">
+    <title>Explorar Establecimientos - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/venues-theme.css">
+    <style>
+        /* Hero Section */
+        .explore-hero {
+            margin-top: 60px;
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        .explore-hero__title {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .explore-hero__subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .explore-hero__cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 0 24px 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        /* Featured Venues */
+        .featured-section {
+            padding: 40px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .featured-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-purple) transparent;
+        }
+
+        .featured-carousel::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .featured-carousel::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .featured-carousel::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 10px;
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 40px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .sort-select {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Venues Grid */
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .venues-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Venue Card */
+        .venue-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            scroll-snap-align: start;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(168,85,247,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+            border-color: rgba(168,85,247,0.4);
+        }
+
+        .venue-card__image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .venue-card__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .venue-card:hover .venue-card__image img {
+            transform: scale(1.05);
+        }
+
+        .venue-card__badges {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .venue-card__content {
+            padding: 20px;
+        }
+
+        .venue-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .venue-card__name {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .venue-card__rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .venue-card__type {
+            color: var(--accent-purple);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .venue-card__location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .venue-card__meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .venue-card__genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .genre-tag {
+            background: rgba(168,85,247,0.15);
+            color: var(--accent-purple);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(168,85,247,0.2);
+        }
+
+        .venue-card__actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .venue-card__actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 2px dashed rgba(168,85,247,0.3);
+        }
+
+        .empty-state__icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state__title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .empty-state__text {
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto 24px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 40px;
+        }
+
+        .pagination__btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pagination__btn:hover:not(:disabled) {
+            background: rgba(168,85,247,0.2);
+            border-color: var(--accent-purple);
+        }
+
+        .pagination__btn--active {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        .pagination__btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 1400px;
+            text-align: center;
+            border: 1px solid var(--border-glass);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .cta-banner > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-banner__title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-banner__text {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .explore-hero__title {
+                font-size: 36px;
+            }
+            
+            .explore-hero__subtitle {
+                font-size: 16px;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .venues-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="venues-header">
+        <a href="#" class="brand" id="venueBrand">PROVIWEB</a>
+        <nav class="venues-nav">
+            <a href="venue-register.html">🏢 Registrar mi establecimiento</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="explore-hero">
+        <h1 class="explore-hero__title">Descubre Establecimientos</h1>
+        <p class="explore-hero__subtitle">
+            Conecta con bares, restaurantes, tabernas de mariachi, peñas y foros culturales. 
+            Encuentra tu próximo escenario o descubre dónde escuchar música en vivo.
+        </p>
+        <div class="explore-hero__cta">
+            <a href="#search" class="btn btn--primary">🔍 Buscar establecimientos</a>
+            <a href="venue-register.html" class="btn btn--secondary">🏢 Registrar mi lugar</a>
+        </div>
+    </section>
+
+    <!-- Search -->
+    <section id="search" class="search-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por nombre, ciudad o género musical...">
+                <button id="btnSearch" class="btn btn--primary">Buscar</button>
+            </div>
+            <div class="filters-grid">
+                <select id="filterType" class="filter-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="bar">🍺 Bar</option>
+                    <option value="restaurant">🍽️ Restaurante</option>
+                    <option value="taberna_mariachi">🎺 Taberna de Mariachi</option>
+                    <option value="peña">🎵 Peña</option>
+                    <option value="foro_cultural">🎭 Foro Cultural</option>
+                    <option value="sala_conciertos">🎸 Sala de Conciertos</option>
+                </select>
+                <select id="filterCity" class="filter-select">
+                    <option value="">Todas las ciudades</option>
+                </select>
+                <select id="filterGenre" class="filter-select">
+                    <option value="">Todos los géneros</option>
+                    <option value="rock">🎸 Rock</option>
+                    <option value="jazz">🎷 Jazz</option>
+                    <option value="salsa">💃 Salsa</option>
+                    <option value="mariachi">🎺 Mariachi</option>
+                    <option value="vallenato">🪗 Vallenato</option>
+                    <option value="electronica">🎧 Electrónica</option>
+                </select>
+                <select id="filterSort" class="filter-select">
+                    <option value="featured">⭐ Destacados</option>
+                    <option value="rating">⭐ Mejor valorados</option>
+                    <option value="newest">🕐 Más recientes</option>
+                    <option value="name">🔤 Nombre</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Venues -->
+    <section class="featured-section">
+        <div class="section-header">
+            <h2 class="section-title">⭐ Establecimientos Destacados</h2>
+        </div>
+        <div id="featuredCarousel" class="featured-carousel">
+            <!-- Featured venues loaded dynamically -->
+            <div class="venue-card skeleton" style="min-width: 380px; height: 380px;"></div>
+            <div class="venue-card skeleton" style="min-width: 380px; height: 380px;"></div>
+            <div class="venue-card skeleton" style="min-width: 380px; height: 380px;"></div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="results-section">
+        <div class="results-header">
+            <span id="resultsCount" class="results-count">Cargando establecimientos...</span>
+            <select id="resultsSort" class="sort-select">
+                <option value="featured">Ordenar por destacados</option>
+                <option value="rating">Mejor valorados</option>
+                <option value="followers">Más populares</option>
+                <option value="newest">Más recientes</option>
+            </select>
+        </div>
+
+        <div id="venuesGrid" class="venues-grid">
+            <!-- Loading skeletons -->
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+            <div class="venue-card skeleton" style="height: 420px;"></div>
+        </div>
+
+        <!-- Empty State Mejorado -->
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-state__wrapper" style="background:linear-gradient(135deg, rgba(168,85,247,0.08), rgba(0,123,255,0.08)); border:2px dashed rgba(168,85,247,0.4); border-radius:24px; padding:50px 30px; max-width:500px; margin:0 auto;">
+                <div id="emptyStateIcon" class="empty-state__icon" style="font-size:64px; margin-bottom:20px; animation:bounce 2s infinite;">🎺</div>
+                <h3 id="emptyStateTitle" class="empty-state__title" style="font-size:1.5rem; font-weight:700; color:var(--text-primary); margin-bottom:12px;">
+                    ¡Sé el primero en PROVIWEB!
+                </h3>
+                <p id="emptyStateText" class="empty-state__text" style="color:var(--text-secondary); line-height:1.6; margin-bottom:20px;">
+                    Aún no hay establecimientos registrados que coincidan con tu búsqueda. 
+                    ¿Tienes un bar, restaurante o espacio cultural?
+                </p>
+                <div id="emptyStateBenefits" style="background:rgba(0,0,0,0.2); border-radius:12px; padding:16px; margin-bottom:24px; text-align:left;">
+                    <div style="display:flex; align-items:center; gap:10px; padding:6px 0; color:var(--text-secondary); font-size:0.9rem;">
+                        <span style="color:#22c55e; font-weight:bold;">✓</span>
+                        <span>Conecta con músicos verificados</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:6px 0; color:var(--text-secondary); font-size:0.9rem;">
+                        <span style="color:#22c55e; font-weight:bold;">✓</span>
+                        <span>Gestiona tu agenda de eventos</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:6px 0; color:var(--text-secondary); font-size:0.9rem;">
+                        <span style="color:#22c55e; font-weight:bold;">✓</span>
+                        <span>Publica convocatorias laborales</span>
+                    </div>
+                </div>
+                <a id="emptyStateCta" href="venue-register.html" class="btn btn--primary" style="display:inline-flex; align-items:center; gap:8px; padding:14px 28px; font-size:1rem; font-weight:600; background:linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); box-shadow:0 4px 20px rgba(168,85,247,0.4); transition:all 0.3s ease;"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 30px rgba(168,85,247,0.5)';" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(168,85,247,0.4)';">
+                    <span>🏠</span>
+                    <span>Registrar mi establecimiento</span>
+                </a>
+                <button id="emptyStateRetry" type="button" class="btn btn--secondary hidden" style="margin-left:12px;">
+                    Reintentar carga
+                </button>
+                <p id="emptyStateNote" style="font-size:0.8rem; color:var(--text-muted); margin-top:16px; font-style:italic;">
+                    Empieza gratis con 5 eventos y 3 convocatorias
+                </p>
+            </div>
+            <style>
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+            </style>
+        </div>
+
+        <div id="pagination" class="pagination hidden">
+            <button class="pagination__btn" id="btnPrev" disabled>← Anterior</button>
+            <span id="pageIndicator"></span>
+            <button class="pagination__btn" id="btnNext">Siguiente →</button>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+        <h2 class="cta-banner__title text-gradient">¿Tienes un establecimiento con música en vivo?</h2>
+        <p class="cta-banner__text">
+            Únete a PROVIWEB y conecta con miles de músicos. Gestiona tu agenda, publica convocatorias y haz crecer tu negocio.
+        </p>
+        <a href="venue-register.html" class="btn btn--primary btn--large">
+            🚀 Registrar mi establecimiento gratis
+        </a>
+    </section>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { searchVenues, getFeaturedVenues } from './js/venues/venue-api.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 12;
+        let allVenues = [];
+        let filteredVenues = [];
+        let isInitializing = false;
+
+        function hasActiveFilters() {
+            return Boolean(
+                document.getElementById('searchInput').value.trim() ||
+                document.getElementById('filterType').value ||
+                document.getElementById('filterCity').value ||
+                document.getElementById('filterGenre').value
+            );
+        }
+
+        function setLoadingState() {
+            document.getElementById('resultsCount').textContent = 'Cargando establecimientos...';
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('pagination').classList.add('hidden');
+        }
+
+        function configureEmptyState(mode = 'no_data') {
+            const iconEl = document.getElementById('emptyStateIcon');
+            const titleEl = document.getElementById('emptyStateTitle');
+            const textEl = document.getElementById('emptyStateText');
+            const benefitsEl = document.getElementById('emptyStateBenefits');
+            const ctaEl = document.getElementById('emptyStateCta');
+            const noteEl = document.getElementById('emptyStateNote');
+            const retryEl = document.getElementById('emptyStateRetry');
+            const resultsCountEl = document.getElementById('resultsCount');
+
+            const states = {
+                no_data: {
+                    icon: '🎺',
+                    title: '¡Sé el primero en PROVIWEB!',
+                    text: 'Aún no hay establecimientos registrados en este momento. ¿Tienes un bar, restaurante o espacio cultural?',
+                    showBenefits: true,
+                    showCta: true,
+                    showNote: true,
+                    showRetry: false,
+                    resultsText: '0 establecimientos'
+                },
+                no_results: {
+                    icon: '🔎',
+                    title: 'No encontramos coincidencias',
+                    text: 'No hay resultados para esos filtros. Prueba con otra ciudad, tipo de venue o género musical.',
+                    showBenefits: false,
+                    showCta: true,
+                    showNote: false,
+                    showRetry: false,
+                    resultsText: '0 establecimientos'
+                },
+                error: {
+                    icon: '⚠️',
+                    title: 'No pudimos cargar los establecimientos',
+                    text: 'Hubo un problema de conexión o del servicio. Puedes volver a intentar en unos segundos.',
+                    showBenefits: false,
+                    showCta: false,
+                    showNote: false,
+                    showRetry: true,
+                    resultsText: 'Error al cargar establecimientos'
+                }
+            };
+
+            const state = states[mode] || states.no_data;
+
+            iconEl.textContent = state.icon;
+            titleEl.textContent = state.title;
+            textEl.textContent = state.text;
+            benefitsEl.classList.toggle('hidden', !state.showBenefits);
+            ctaEl.classList.toggle('hidden', !state.showCta);
+            noteEl.classList.toggle('hidden', !state.showNote);
+            retryEl.classList.toggle('hidden', !state.showRetry);
+            resultsCountEl.textContent = state.resultsText;
+        }
+
+        async function init() {
+            if (isInitializing) return;
+            isInitializing = true;
+            setLoadingState();
+
+            try {
+                const [featuredResult, venuesResult] = await Promise.allSettled([
+                    getFeaturedVenues(6),
+                    searchVenues({ status: 'active' }, 100)
+                ]);
+
+                if (featuredResult.status === 'fulfilled') {
+                    renderFeatured(featuredResult.value);
+                } else {
+                    console.error('Error loading featured venues:', featuredResult.reason);
+                    renderFeatured([]);
+                }
+
+                if (venuesResult.status !== 'fulfilled') {
+                    throw venuesResult.reason || new Error('No se pudieron cargar establecimientos');
+                }
+
+                allVenues = Array.isArray(venuesResult.value) ? venuesResult.value : [];
+                filteredVenues = [...allVenues];
+                populateCityFilter();
+                renderVenues();
+            } catch (error) {
+                console.error('Error loading venues:', error);
+                allVenues = [];
+                filteredVenues = [];
+                showEmptyState('error');
+            } finally {
+                isInitializing = false;
+            }
+        }
+
+        function renderFeatured(venues) {
+            const container = document.getElementById('featuredCarousel');
+            
+            if (!venues?.length) {
+                container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px;">No hay establecimientos destacados aún.</p>';
+                return;
+            }
+
+            container.innerHTML = venues.map(v => createVenueCard(v, true)).join('');
+        }
+
+        function renderVenues() {
+            const container = document.getElementById('venuesGrid');
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+
+            if (filteredVenues.length > 0 && start >= filteredVenues.length) {
+                currentPage = 1;
+                return renderVenues();
+            }
+
+            const pageVenues = filteredVenues.slice(start, start + ITEMS_PER_PAGE);
+
+            document.getElementById('resultsCount').textContent = 
+                `${filteredVenues.length} establecimiento${filteredVenues.length !== 1 ? 's' : ''}`;
+
+            if (!pageVenues.length) {
+                showEmptyState(hasActiveFilters() ? 'no_results' : 'no_data');
+                return;
+            }
+
+            document.getElementById('emptyState').classList.add('hidden');
+            container.innerHTML = pageVenues.map(v => createVenueCard(v)).join('');
+            
+            updatePagination();
+        }
+
+        function createVenueCard(venue, featured = false) {
+            const stats = venue.stats || {};
+            const location = venue.location || {};
+            const plan = venue.plan || {};
+
+            let badges = '';
+            if (plan.type === 'atlas') {
+                badges += `<span class="badge badge--atlas">👑 Atlas</span>`;
+            } else if (plan.type === 'pro') {
+                badges += `<span class="badge badge--pro">⭐ PRO</span>`;
+            }
+            if (venue.isVerified) {
+                badges += `<span class="badge badge--verified">✓ Verificado</span>`;
+            }
+
+            const genres = venue.musicGenres?.slice(0, 3) || [];
+
+            return `
+                <article class="venue-card ${featured ? 'animate-fadeInUp' : ''}" 
+                         onclick="window.location.href='venue-profile.html?id=${venue.venueId}'">
+                    <div class="venue-card__image">
+                        <img src="${venue.coverImage || venue.profileImage || 'assets/venue-default.png'}" 
+                             alt="${venue.name}" loading="lazy">
+                        <div class="venue-card__badges">${badges}</div>
+                    </div>
+                    <div class="venue-card__content">
+                        <div class="venue-card__header">
+                            <h3 class="venue-card__name">${venue.name}</h3>
+                            ${stats.averageRating ? `
+                                <div class="venue-card__rating">
+                                    <span>★</span>
+                                    <span>${stats.averageRating.toFixed(1)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <p class="venue-card__type">${getVenueTypeLabel(venue.venueType)}</p>
+                        <p class="venue-card__location">
+                            <span>📍</span>
+                            ${location.city || 'Ubicación no disponible'}
+                        </p>
+                        <div class="venue-card__meta">
+                            ${stats.followerCount ? `<span>👥 ${formatNumber(stats.followerCount)} seguidores</span>` : ''}
+                            ${stats.totalEvents ? `<span>📅 ${stats.totalEvents} eventos</span>` : ''}
+                        </div>
+                        ${genres.length ? `
+                            <div class="venue-card__genres">
+                                ${genres.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="venue-card__actions" onclick="event.stopPropagation()">
+                            <a href="venue-profile.html?id=${venue.venueId}" class="btn btn--secondary btn--small">Ver perfil</a>
+                            <button class="btn btn--primary btn--small" onclick="event.stopPropagation(); applyToVenue('${venue.venueId}', '${venue.name}')">
+                                Postularme
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('filterType').value;
+            const city = document.getElementById('filterCity').value;
+            const genre = document.getElementById('filterGenre').value;
+            const sort = document.getElementById('filterSort').value;
+
+            filteredVenues = allVenues.filter(v => {
+                if (query) {
+                    const match = (v.name + ' ' + (v.description || '') + ' ' + (v.location?.city || '')).toLowerCase();
+                    if (!match.includes(query)) return false;
+                }
+                if (type && v.venueType !== type) return false;
+                if (city && v.location?.city !== city) return false;
+                if (genre && !v.musicGenres?.includes(genre)) return false;
+                return true;
+            });
+
+            // Sort
+            switch(sort) {
+                case 'rating':
+                    filteredVenues.sort((a, b) => (b.stats?.averageRating || 0) - (a.stats?.averageRating || 0));
+                    break;
+                case 'newest':
+                    filteredVenues.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    break;
+                case 'name':
+                    filteredVenues.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+                    break;
+                case 'featured':
+                default:
+                    // Atlas first, then PRO, then by rating
+                    filteredVenues.sort((a, b) => {
+                        const planOrder = { 'atlas': 3, 'pro': 2, 'free': 1 };
+                        const planDiff = (planOrder[b.plan?.type] || 0) - (planOrder[a.plan?.type] || 0);
+                        if (planDiff !== 0) return planDiff;
+                        return (b.stats?.averageRating || 0) - (a.stats?.averageRating || 0);
+                    });
+            }
+
+            currentPage = 1;
+            renderVenues();
+        }
+
+        function populateCityFilter() {
+            const cities = [...new Set(allVenues.map(v => v.location?.city).filter(Boolean))].sort();
+            const select = document.getElementById('filterCity');
+            select.innerHTML = '<option value="">Todas las ciudades</option>';
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                select.appendChild(option);
+            });
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredVenues.length / ITEMS_PER_PAGE);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.classList.add('hidden');
+                return;
+            }
+
+            pagination.classList.remove('hidden');
+            document.getElementById('btnPrev').disabled = currentPage === 1;
+            document.getElementById('btnNext').disabled = currentPage === totalPages;
+            document.getElementById('pageIndicator').innerHTML = 
+                `<span style="color: var(--text-secondary);">Página ${currentPage} de ${totalPages}</span>`;
+        }
+
+        function showEmptyState(mode = 'no_data') {
+            document.getElementById('venuesGrid').innerHTML = '';
+            configureEmptyState(mode);
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('pagination').classList.add('hidden');
+        }
+
+        function getVenueTypeLabel(type) {
+            const labels = {
+                'bar': 'Bar', 'restaurant': 'Restaurante', 'taberna_mariachi': 'Taberna de Mariachi',
+                'peña': 'Peña', 'foro_cultural': 'Foro Cultural', 'espacio_artistico': 'Espacio Artístico',
+                'discoteca': 'Discoteca', 'sala_conciertos': 'Sala de Conciertos'
+            };
+            return labels[type] || type || 'Establecimiento';
+        }
+
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        window.applyToVenue = function(venueId, venueName) {
+            const user = auth.currentUser;
+            if (!user) {
+                window.location.href = 'index.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            window.location.href = `venue-profile.html?id=${venueId}&apply=true`;
+        };
+
+        // Event listeners
+        document.getElementById('btnSearch').addEventListener('click', applyFilters);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+        ['filterType', 'filterCity', 'filterGenre', 'filterSort'].forEach(id => {
+            document.getElementById(id).addEventListener('change', applyFilters);
+        });
+        document.getElementById('btnPrev').addEventListener('click', () => {
+            if (currentPage > 1) { currentPage--; renderVenues(); }
+        });
+        document.getElementById('btnNext').addEventListener('click', () => {
+            if (currentPage < Math.ceil(filteredVenues.length / ITEMS_PER_PAGE)) { currentPage++; renderVenues(); }
+        });
+        document.getElementById('emptyStateRetry').addEventListener('click', () => {
+            init();
+        });
+
+        init();
+
+        // Manejar click en el logo
+        document.getElementById('venueBrand').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const userId = localStorage.getItem('id');
+            const hasAuth = Object.keys(localStorage).some(key => key.startsWith('firebase:authUser:'));
+            
+            if (userId || hasAuth) {
+                window.location.href = 'home.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+
+<!-- MOBILE BOTTOM NAVIGATION -->
+<nav class="mobile-bottom-nav" aria-label="Navegación Móvil">
+    <a href="home.html" class="mobile-nav-tab " id="mobileNavHome" title="Inicio">
+        <span class="tab-icon">🏠</span>
+        <span>Inicio</span>
+    </a>
+    <a href="reels.html" class="mobile-nav-tab " id="mobileNavReels" title="Reels">
+        <span class="tab-icon">🎬</span>
+        <span>Reels</span>
+    </a>
+    <a href="createpost.html" class="mobile-nav-tab tab-create-btn" id="mobileNavCreate" title="Publicar">
+        <div class="tab-create-circle">➕</div>
+    </a>
+    <a href="opportunities.html" class="mobile-nav-tab " id="mobileNavOpp" title="Oportunidades">
+        <span class="tab-icon">💼</span>
+        <span>Empleos</span>
+    </a>
+    <a href="createchat.html" class="mobile-nav-tab " id="mobileNavChat" title="Mensajes">
+        <span class="tab-icon">💬</span>
+        <span>Chats</span>
+    </a>
+    <a href="myprofile.html" class="mobile-nav-tab " id="mobileNavProfile" title="Perfil">
+        <span class="tab-icon">👤</span>
+        <span>Perfil</span>
+    </a>
+</nav>
+
+</body>
+</html>

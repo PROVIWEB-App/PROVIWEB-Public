@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal de Publicidad de Marcas en PROVIWEB - Conecta tu marca con la mayor comunidad de artistas y músicos">
+    <title>Publicidad de Marcas - PROVIWEB</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a10;
+            --bg-secondary: #12121c;
+            --bg-card: #151522;
+            --bg-input: #1a1a2a;
+            --border-glass: rgba(255, 255, 255, 0.16);
+            --border-focus: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-purple: #c084fc;
+            --accent-gold: #fbbf24;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --gradient-brand: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Progress Bar for Screen Loading */
+        #topScreenProgressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--gradient-brand);
+            z-index: 9999;
+            transition: width 0.25s ease-out, opacity 0.3s ease;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        /* Top Bar */
+        .brand-topbar {
+            height: 58px;
+            background: rgba(18, 18, 28, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 750;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .brand-back-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--accent-gold);
+            color: #fbbf24;
+        }
+
+        .brand-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        /* Hero Banner */
+        .brand-hero {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.18) 0%, rgba(168, 85, 247, 0.18) 100%), #141424;
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        /* Process Stepper */
+        .process-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #11111c;
+            border: 1.5px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 14px 20px;
+            margin-bottom: 22px;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .step-node {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .step-node.active { color: #fbbf24; }
+        .step-node.completed { color: #4ade80; }
+
+        .step-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .step-node.active .step-badge {
+            background: var(--gradient-brand);
+            border-color: #fbbf24;
+            color: #000;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .step-node.completed .step-badge {
+            background: #22c55e;
+            border-color: #4ade80;
+            color: #fff;
+        }
+
+        .step-connector {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            min-width: 16px;
+        }
+        .step-connector.completed { background: #22c55e; }
+
+        /* Navigation Tabs */
+        .brand-nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            overflow-x: auto;
+        }
+
+        .brand-nav-btn {
+            flex: 1;
+            min-width: fit-content;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .brand-nav-btn.active {
+            background: var(--gradient-brand);
+            color: #000000;
+            font-weight: 900;
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.45);
+        }
+
+        .brand-panel { display: none; }
+        .brand-panel.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Studio Grid */
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 950px) {
+            .studio-grid { grid-template-columns: 1fr; }
+            .brand-hero { flex-direction: column; text-align: center; }
+        }
+
+        .card-box {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 22px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1.5px solid rgba(255, 255, 255, 0.16);
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+            background: #202032;
+        }
+
+        .file-dropzone-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border: 1.5px dashed rgba(251, 191, 36, 0.5);
+            background: rgba(251, 191, 36, 0.06);
+            border-radius: 12px;
+            color: #fbbf24;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .file-dropzone-btn:hover {
+            background: rgba(251, 191, 36, 0.14);
+            border-color: #fbbf24;
+            transform: translateY(-1px);
+        }
+
+        /* Mockup Format Switcher */
+        .mockup-format-switcher {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .mockup-toggle-btn {
+            flex: 1;
+            padding: 7px 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .mockup-toggle-btn.active {
+            background: var(--gradient-brand);
+            color: #000000;
+            font-weight: 900;
+        }
+
+        .live-mockup-wrapper {
+            position: sticky;
+            top: 76px;
+        }
+
+        /* Post Mockup Card */
+        .post-mockup-card {
+            background: #161624;
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 22px;
+            padding: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(251, 191, 36, 0.15);
+            display: block;
+        }
+
+        /* Reel Mockup Card */
+        .reel-mockup-card {
+            display: none;
+            width: 280px;
+            height: 490px;
+            margin: 0 auto;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            background: #000000;
+            border: 3px solid rgba(251, 191, 36, 0.5);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(251, 191, 36, 0.25);
+        }
+
+        .reel-mockup-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        .reel-top-badge {
+            position: absolute;
+            top: 16px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            color: #fbbf24;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 5;
+        }
+
+        .reel-right-actions {
+            position: absolute;
+            right: 12px;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 5;
+        }
+
+        .reel-action-bubble {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 800;
+            color: #fff;
+            gap: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .reel-action-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reel-bottom-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 14px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Audience Radar */
+        .audience-radar-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(251, 191, 36, 0.15) 50%, rgba(168, 85, 247, 0.12) 100%), #131320;
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 22px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .live-pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px #22c55e;
+            animation: livePulse 1.5s infinite;
+        }
+
+        @keyframes livePulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .audience-metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .audience-mini-stat {
+            background: rgba(10, 10, 16, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .audience-mini-num {
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .audience-mini-lbl {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 750;
+        }
+
+        .audience-tags-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .audience-tag-chip {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            color: #f1f5f9;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Campaign History Card */
+        .campaign-item-box {
+            background: #11111c;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .campaign-item-box:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Plans */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .brand-plan-card {
+            background: #12121c;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .brand-plan-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+        }
+
+        .brand-plan-card.selected {
+            border-color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.12);
+            box-shadow: 0 8px 28px rgba(251, 191, 36, 0.3);
+        }
+
+        .plan-price-usd {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .paypal-checkout-card {
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.15), rgba(251, 191, 36, 0.15)), #141422;
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 22px;
+            padding: 26px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-paypal-action {
+            background: #ffc439;
+            color: #003087;
+            font-size: 15px;
+            font-weight: 900;
+            padding: 14px 32px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(255, 196, 57, 0.4);
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-paypal-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(255, 196, 57, 0.6);
+        }
+
+        /* Metrics */
+        .metrics-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #11111c;
+            border: 1.5px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .metric-val {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 4px 0;
+        }
+
+        .metric-lbl {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+
+        .country-reach-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .country-progress-track {
+            flex: 1;
+            height: 9px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .country-progress-fill {
+            height: 100%;
+            background: var(--gradient-brand);
+            border-radius: 999px;
+        }
+
+        /* Modal */
+        .process-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .process-modal-box {
+            background: #141422;
+            border: 1.5px solid rgba(251, 191, 36, 0.5);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(251, 191, 36, 0.2);
+            animation: modalPop 0.25s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .spinner-glow {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(251, 191, 36, 0.2);
+            border-top-color: #fbbf24;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<script src="js/auth-maintenance.js"></script>
+
+    <!-- SCREEN LOADING PROGRESS BAR -->
+    <div id="topScreenProgressBar"></div>
+
+    <!-- TOPBAR -->
+    <header class="brand-topbar">
+        <a href="index.html" class="brand-back-btn">← Volver al Inicio</a>
+        <div style="font-weight: 900; font-size: 15px; color: #fff; display:flex; align-items:center; gap:6px;">
+            <span>🏢</span><span>Portal de Publicidad para Marcas</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div id="brandUserStatus" style="font-size: 12px; font-weight: 800; color: #fbbf24; background: rgba(251, 191, 36, 0.15); padding: 4px 12px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.35);">
+                🔒 No Registrado
+            </div>
+            <button type="button" id="btnBrandLogout" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#f87171; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;">
+                Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <main class="brand-container">
+        <!-- HERO SHOWCASE -->
+        <div class="brand-hero">
+            <div>
+                <span style="font-size: 11px; font-weight: 900; background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); padding: 3px 10px; border-radius: 8px;">PROVIWEB FOR BRANDS & BUSINESS</span>
+                <h1 style="font-size: 24px; font-weight: 900; margin: 8px 0 6px; background: var(--gradient-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Publicidad de Alto Impacto para Marcas, Tiendas & Entidades Artísticas
+                </h1>
+                <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; max-width: 650px;">
+                    Tiendas locales, bares, tabernas, grupos de música, plataformas digitales y marcas globales pueden promocionarse en formato <strong>Post de Feed</strong> o <strong>Reel Vertical</strong> ante miles de creadores con métricas en tiempo real.
+                </p>
+            </div>
+            <div style="font-size: 54px; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));">🚀</div>
+        </div>
+
+        <!-- PROCESS TIMELINE STEPPER -->
+        <div class="process-stepper">
+            <div class="step-node active" id="step1Node">
+                <div class="step-badge">1</div>
+                <span>🏢 Acceso de Marca</span>
+            </div>
+            <div class="step-connector" id="stepConn1"></div>
+            <div class="step-node" id="step2Node">
+                <div class="step-badge">2</div>
+                <span>📊 Panel & Radar</span>
+            </div>
+            <div class="step-connector" id="stepConn2"></div>
+            <div class="step-node" id="step3Node">
+                <div class="step-badge">3</div>
+                <span>🎨 Crear Anuncio</span>
+            </div>
+            <div class="step-connector" id="stepConn3"></div>
+            <div class="step-node" id="step4Node">
+                <div class="step-badge">4</div>
+                <span>💳 Plan & Pago PayPal</span>
+            </div>
+        </div>
+
+        <!-- TABS NAV -->
+        <nav class="brand-nav-tabs" id="brandNavTabs">
+            <button type="button" class="brand-nav-btn active" data-target="panelAuth" id="tabBtnAuth">
+                <span>🏢</span><span>1. Registro / Acceso de Marca</span>
+            </button>
+            <button type="button" class="brand-nav-btn" data-target="panelAnalytics" id="tabBtnDashboard">
+                <span>📊</span><span>2. Panel de Marca & Métricas</span>
+            </button>
+            <button type="button" class="brand-nav-btn" data-target="panelStudio" id="tabBtnStudio">
+                <span>🎨</span><span>3. Crear Nueva Publicidad</span>
+            </button>
+            <button type="button" class="brand-nav-btn" data-target="panelCheckout" id="tabBtnCheckout">
+                <span>💳</span><span>4. Planes & Pago PayPal</span>
+            </button>
+        </nav>
+
+        <!-- PANEL 0: REGISTRO & ACCESO DE MARCA COMERCIAL -->
+        <div class="brand-panel active" id="panelAuth">
+            <div class="card-box" style="max-width: 780px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 36px; margin-bottom: 6px;">🏢</div>
+                    <h2 style="font-size: 19px; font-weight: 900; color: #fff;" id="authPanelTitle">
+                        Registro Especial de Marca Comercial
+                    </h2>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" id="authPanelSub">
+                        Ingresa los datos de tu empresa, tienda, taberna, grupo o plataforma para crear anuncios verificados.
+                    </p>
+                </div>
+
+                <!-- FORMULARIO DE REGISTRO / LOGIN -->
+                <form id="brandRegisterForm">
+                    <div id="brandExtraFields">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div class="form-group">
+                                <label>Nombre Comercial de la Marca / Negocio: *</label>
+                                <input type="text" id="regBrandName" class="form-input" placeholder="Ej: Yamaha Music, Taberna El Violín, Banda Rock...">
+                            </div>
+                            <div class="form-group">
+                                <label>Razón Social / NIT / Empresa Legal:</label>
+                                <input type="text" id="regLegalName" class="form-input" placeholder="Ej: Empresa S.A.S / Particular">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div class="form-group">
+                                <label>Categoría Comercial: *</label>
+                                <select id="regCategory" class="form-select">
+                                    <option value="Tienda Local de Música">🏪 Tienda Local de Música & Instrumentos</option>
+                                    <option value="Taberna & Bar Musical">🍺 Taberna, Bar & Pub con Música en Vivo</option>
+                                    <option value="Grupo / Banda Musical">🎸 Grupo Musical, Banda o Solista</option>
+                                    <option value="Plataforma Digital / App">🌐 Plataforma Digital, Streaming o Red Social</option>
+                                    <option value="Instrumentos Musicales">🎻 Fabricante de Instrumentos Musicales</option>
+                                    <option value="Audio & Grabación">🎙️ Audio, Microfonía & Estudio de Grabación</option>
+                                    <option value="Salas & Teatros">🏛️ Sala de Conciertos, Teatro o Festival</option>
+                                    <option value="Academias & Escuelas">🎓 Academia, Escuela o Taller de Música</option>
+                                    <option value="Software & Apps">💻 Software Musical, DAWs & Plugins</option>
+                                    <option value="Luthiers & Accesorios">🎻 Luthier, Cuerdas & Reparación</option>
+                                    <option value="Moda & Merch">👕 Ropa Artística, Merchandising & Moda</option>
+                                    <option value="Marca General">🏢 Marca Comercial de Consumo General</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>País / Región Principal: *</label>
+                                <select id="regCountry" class="form-select">
+                                    <!-- LISTA COMPLETA DE PAÍSES -->
+                                    <option value="México">🇲🇽 México</option>
+                                    <option value="Colombia">🇨🇴 Colombia</option>
+                                    <option value="España">🇪🇸 España</option>
+                                    <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
+                                    <option value="Argentina">🇦🇷 Argentina</option>
+                                    <option value="Chile">🇨🇱 Chile</option>
+                                    <option value="Perú">🇵🇪 Perú</option>
+                                    <option value="Ecuador">🇪🇨 Ecuador</option>
+                                    <option value="Guatemala">🇬🇹 Guatemala</option>
+                                    <option value="Cuba">🇨🇺 Cuba</option>
+                                    <option value="Bolivia">🇧🇴 Bolivia</option>
+                                    <option value="República Dominicana">🇩🇴 República Dominicana</option>
+                                    <option value="Honduras">🇭🇳 Honduras</option>
+                                    <option value="Paraguay">🇵🇾 Paraguay</option>
+                                    <option value="Nicaragua">🇳🇮 Nicaragua</option>
+                                    <option value="El Salvador">🇸🇻 El Salvador</option>
+                                    <option value="Costa Rica">🇨🇷 Costa Rica</option>
+                                    <option value="Panamá">🇵🇦 Panamá</option>
+                                    <option value="Uruguay">🇺🇾 Uruguay</option>
+                                    <option value="Puerto Rico">🇵🇷 Puerto Rico</option>
+                                    <option value="Venezuela">🇻🇪 Venezuela</option>
+                                    <option value="Brasil">🇧🇷 Brasil</option>
+                                    <option value="Canadá">🇨🇦 Canadá</option>
+                                    <option value="Reino Unido">🇬🇧 Reino Unido</option>
+                                    <option value="Alemania">🇩🇪 Alemania</option>
+                                    <option value="Francia">🇫🇷 Francia</option>
+                                    <option value="Italia">🇮🇹 Italia</option>
+                                    <option value="Portugal">🇵🇹 Portugal</option>
+                                    <option value="Países Bajos">🇳🇱 Países Bajos</option>
+                                    <option value="Suiza">🇨🇭 Suiza</option>
+                                    <option value="Austria">🇦🇹 Austria</option>
+                                    <option value="Bélgica">🇧🇪 Bélgica</option>
+                                    <option value="Suecia">🇸🇪 Suecia</option>
+                                    <option value="Dinamarca">🇩🇰 Dinamarca</option>
+                                    <option value="Noruega">🇳🇴 Noruega</option>
+                                    <option value="Finlandia">🇫🇮 Finlandia</option>
+                                    <option value="Polonia">🇵🇱 Polonia</option>
+                                    <option value="Japón">🇯🇵 Japón</option>
+                                    <option value="Corea del Sur">🇰🇷 Corea del Sur</option>
+                                    <option value="Australia">🇦🇺 Australia</option>
+                                    <option value="Nueva Zelanda">🇳🇿 Nueva Zelanda</option>
+                                    <option value="Internacional">🌍 Otro / Internacional</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div class="form-group">
+                                <label>Teléfono / WhatsApp Comercial:</label>
+                                <input type="tel" id="regPhone" class="form-input" placeholder="+57 300 123 4567">
+                            </div>
+                            <div class="form-group">
+                                <label>Sitio Web o Red Social Oficial:</label>
+                                <input type="url" id="regWebsite" class="form-input" placeholder="https://tumarca.com">
+                            </div>
+                        </div>
+
+                        <!-- Logo Upload (Registro) -->
+                        <div class="form-group">
+                            <label>Logo Oficial de la Marca: *</label>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <img src="./assets/logotransparente-1dd37ce8.png" id="regLogoPreviewThumb" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #000; flex-shrink: 0; box-shadow: 0 0 10px rgba(251,191,36,0.3);">
+                                <label class="file-dropzone-btn" for="regLogoFile" style="flex: 1;">
+                                    <span id="regLogoText">📁 Seleccionar Logo desde tu Computador</span>
+                                </label>
+                            </div>
+                            <input type="file" id="regLogoFile" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Credenciales -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="form-group">
+                            <label>Correo Electrónico Corporativo: *</label>
+                            <input type="email" id="regEmail" class="form-input" placeholder="contacto@tumarca.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña de Acceso Comercial: *</label>
+                            <input type="password" id="regPassword" class="form-input" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnSubmitBrandAuth" class="btn-primary-action" style="width:100%; justify-content:center; padding:14px; font-size:14.5px; font-weight:900; border-radius:14px; margin-top:10px; background:var(--gradient-brand); color:#000;">
+                        🏢 Registrar Cuenta de Marca & Continuar ➜
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 16px; font-size: 12.5px; color: var(--text-secondary);">
+                    <span id="authToggleText">¿Ya registraste tu marca anteriormente?</span>
+                    <button type="button" id="btnToggleAuthMode" style="background:none; border:none; color:#fbbf24; font-weight:800; cursor:pointer; text-decoration:underline; margin-left:4px;">
+                        Iniciar Sesión de Marca
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 1: DASHBOARD DE LA MARCA & RADAR EN VIVO -->
+        <div class="brand-panel" id="panelAnalytics">
+            <!-- RADAR DE AUDIENCIA EN TIEMPO REAL & INCENTIVO COMERCIAL -->
+            <div class="audience-radar-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="live-pulse-dot"></span>
+                            <span style="font-size: 12px; font-weight: 900; color: #4ade80; letter-spacing: 0.5px;">RADAR DE AUDIENCIA EN VIVO</span>
+                        </div>
+                        <h2 style="font-size: 19px; font-weight: 900; color: #fff; margin: 4px 0 2px;">
+                            <span id="welcomeBrandBanner">¡Bienvenida!</span> Tu audiencia está activa en PROVIWEB
+                        </h2>
+                        <p style="font-size: 12.5px; color: #cbd5e1; max-width: 750px;">
+                            Miles de músicos, luthiers, productores y directores de academias están navegando ahora mismo en el feed y la sección de reels. Diseña tu anuncio y capta clientes potenciales de inmediato.
+                        </p>
+                    </div>
+                    <button type="button" id="btnCreateNewAdFromDash" class="brand-back-btn" style="background:var(--gradient-brand); color:#000; font-weight:900; font-size:13px; padding:10px 20px; border-radius:12px; border:none; cursor:pointer; box-shadow:0 4px 16px rgba(251,191,36,0.4);">
+                        ➕ Crear Nueva Publicidad de Marca ➜
+                    </button>
+                </div>
+
+                <!-- LIVE METRICS STRIP -->
+                <div class="audience-metrics-strip">
+                    <div class="audience-mini-stat">
+                        <div class="audience-mini-num" style="color:#4ade80;" id="liveOnlineCount">1,428</div>
+                        <div class="audience-mini-lbl">🟢 Músicos Activos en Vivo</div>
+                    </div>
+                    <div class="audience-mini-stat">
+                        <div class="audience-mini-num" style="color:#fbbf24;">48,500+</div>
+                        <div class="audience-mini-lbl">👥 Creadores Registrados</div>
+                    </div>
+                    <div class="audience-mini-stat">
+                        <div class="audience-mini-num" style="color:#38bdf8;">8.4%</div>
+                        <div class="audience-mini-lbl">📈 Tasa Promedio de Clics (CTR)</div>
+                    </div>
+                    <div class="audience-mini-stat">
+                        <div class="audience-mini-num" style="color:#c084fc;">+25,000</div>
+                        <div class="audience-mini-lbl">🎵 Reproducciones Diarias</div>
+                    </div>
+                </div>
+
+                <!-- SEGMENTOS DE AUDIENCIA ARTÍSTICA -->
+                <div class="audience-tags-container">
+                    <span class="audience-tag-chip">🎻 Violinistas & Cuerdas (34%)</span>
+                    <span class="audience-tag-chip">🎸 Guitarristas & Bajistas (28%)</span>
+                    <span class="audience-tag-chip">🎹 Pianistas & Teclados (22%)</span>
+                    <span class="audience-tag-chip">🥁 Batería & Percusión (16%)</span>
+                    <span class="audience-tag-chip">🎙️ Cantantes & Productores (18%)</span>
+                    <span class="audience-tag-chip">🏛️ Directores de Academia & Orquestas</span>
+                </div>
+            </div>
+
+            <!-- OVERVIEW STATS -->
+            <div class="card-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">📊 Rendimiento de Campañas de la Marca</h2>
+                        <p style="font-size: 12.5px; color: var(--text-secondary);">Métricas reales de tus anuncios activos en el Feed y Reels.</p>
+                    </div>
+                    <button type="button" id="btnExportMetricsCsv" class="brand-back-btn" style="cursor:pointer; background:rgba(251,191,36,0.2); border-color:#fbbf24; color:#fbbf24; font-weight:800;">
+                        📥 Descargar Reporte CSV
+                    </button>
+                </div>
+
+                <div class="metrics-overview-grid">
+                    <div class="metric-card">
+                        <div style="font-size:20px;">👁️</div>
+                        <div class="metric-val" id="statImpressions">0</div>
+                        <div class="metric-lbl">IMPRESIONES TOTALES</div>
+                    </div>
+                    <div class="metric-card">
+                        <div style="font-size:20px;">🖱️</div>
+                        <div class="metric-val" id="statClicks" style="color:#fbbf24;">0</div>
+                        <div class="metric-lbl">CLICS EN ENLACE (CTA)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div style="font-size:20px;">📈</div>
+                        <div class="metric-val" id="statCtr" style="color:#38bdf8;">0.00%</div>
+                        <div class="metric-lbl">TASA DE CLICS (CTR)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div style="font-size:20px;">❤️</div>
+                        <div class="metric-val" id="statLikes" style="color:#f43f5e;">0</div>
+                        <div class="metric-lbl">ME GUSTA TOTALES</div>
+                    </div>
+                    <div class="metric-card">
+                        <div style="font-size:20px;">💬</div>
+                        <div class="metric-val" id="statComments" style="color:#4ade80;">0</div>
+                        <div class="metric-lbl">COMENTARIOS RECIBIDOS</div>
+                    </div>
+                </div>
+
+                <!-- LISTADO DE CAMPAÑAS ACTIVAS & HISTORIAL -->
+                <div style="margin-top: 24px;">
+                    <h3 style="font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+                        <span>📋</span><span>Mis Campañas Publicitarias (<span id="myAdsCount">0</span>)</span>
+                    </h3>
+                    <div id="myCampaignsList">
+                        <div style="text-align:center; padding:30px; background:#11111c; border-radius:14px; border:1px solid var(--border-glass); color:var(--text-secondary); font-size:12.5px;">
+                            No tienes anuncios activos en este momento. Haz clic en <strong>Crear Nueva Publicidad</strong> para lanzar tu primera campaña.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAPA GEOGRÁFICO & BANDEJA DE COMENTARIOS -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:24px;">
+                    <div style="background:#11111c; border:1.5px solid var(--border-glass); border-radius:18px; padding:18px;">
+                        <h3 style="font-size:14px; font-weight:800; color:#fff; margin-bottom:14px;">
+                            🌍 Alcance por Países & Regiones
+                        </h3>
+                        <div class="country-reach-bar">
+                            <span style="font-size:12px; font-weight:750; width:95px; color:#fff;">🇲🇽 México</span>
+                            <div class="country-progress-track"><div class="country-progress-fill" style="width: 42%;"></div></div>
+                            <span style="font-size:12px; font-weight:800; color:#fbbf24;">42%</span>
+                        </div>
+                        <div class="country-reach-bar">
+                            <span style="font-size:12px; font-weight:750; width:95px; color:#fff;">🇨🇴 Colombia</span>
+                            <div class="country-progress-track"><div class="country-progress-fill" style="width: 26%;"></div></div>
+                            <span style="font-size:12px; font-weight:800; color:#fbbf24;">26%</span>
+                        </div>
+                        <div class="country-reach-bar">
+                            <span style="font-size:12px; font-weight:750; width:95px; color:#fff;">🇪🇸 España</span>
+                            <div class="country-progress-track"><div class="country-progress-fill" style="width: 14%;"></div></div>
+                            <span style="font-size:12px; font-weight:800; color:#fbbf24;">14%</span>
+                        </div>
+                        <div class="country-reach-bar">
+                            <span style="font-size:12px; font-weight:750; width:95px; color:#fff;">🇺🇸 EE.UU.</span>
+                            <div class="country-progress-track"><div class="country-progress-fill" style="width: 10%;"></div></div>
+                            <span style="font-size:12px; font-weight:800; color:#fbbf24;">10%</span>
+                        </div>
+                        <div class="country-reach-bar">
+                            <span style="font-size:12px; font-weight:750; width:95px; color:#fff;">🇦🇷 Argentina</span>
+                            <div class="country-progress-track"><div class="country-progress-fill" style="width: 8%;"></div></div>
+                            <span style="font-size:12px; font-weight:800; color:#fbbf24;">8%</span>
+                        </div>
+                    </div>
+
+                    <div style="background:#11111c; border:1.5px solid var(--border-glass); border-radius:18px; padding:18px;">
+                        <h3 style="font-size:14px; font-weight:800; color:#fff; margin-bottom:14px;">
+                            💬 Comentarios de Usuarios & Respuestas
+                        </h3>
+                        <div id="brandCommentsList" style="max-height:220px; overflow-y:auto; padding-right:4px;">
+                            <div style="text-align:center; padding:30px; font-size:12px; color:var(--text-muted);">
+                                Los comentarios que los usuarios de PROVIWEB dejen en tus anuncios aparecerán aquí para que respondas como marca.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: CREADOR DE ANUNCIOS & DUAL MOCKUP -->
+        <div class="brand-panel" id="panelStudio">
+            <div class="studio-grid">
+                <div class="card-box">
+                    <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+                        <span>📝</span><span>Diseño de Nueva Publicidad de Marca</span>
+                    </h2>
+
+                    <!-- 1. Formato -->
+                    <div class="form-group">
+                        <label>Formato Publicitario:</label>
+                        <select class="form-select" id="adFormatSelect" style="font-weight: 800; border-color: var(--accent-gold);">
+                            <option value="post_feed">📸 Post Patrocinado en Feed (Horizontal / Cuadrado 16:9)</option>
+                            <option value="reel_vertical">🎬 Reel Patrocinado Vertical (Video Pantalla Completa 9:16)</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Marca & Logo -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label>Nombre de la Marca / Empresa:</label>
+                            <input type="text" id="adBrandName" class="form-input" placeholder="Ej: Yamaha Music, Shure..." value="Marca Pro Music">
+                        </div>
+                        <div class="form-group">
+                            <label>Logo Oficial de la Marca:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <img src="./assets/logotransparente-1dd37ce8.png" id="studioLogoThumbnail" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #000; flex-shrink: 0; box-shadow: 0 0 10px rgba(251,191,36,0.3);">
+                                <label class="file-dropzone-btn" for="logoFileInput" style="flex: 1;">
+                                    <span id="studioLogoText">📁 Cambiar Logo desde PC</span>
+                                </label>
+                            </div>
+                            <input type="file" id="logoFileInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- 3. Copy -->
+                    <div class="form-group">
+                        <label>Texto Promocional / Copy Publicitario:</label>
+                        <textarea id="adTextCopy" class="form-textarea" rows="3" placeholder="Escribe el mensaje publicitario, ofertas y llamados a la acción...">¡Descubre la nueva línea de instrumentos y accesorios profesionales con 20% de descuento exclusivo para miembros de PROVIWEB! 🎵🎻 Envíos a todo el país.</textarea>
+                    </div>
+
+                    <!-- 4. Medios con Miniatura en Formulario -->
+                    <div class="form-group">
+                        <label id="mediaUploadLabel">Subir Imagen o Video Horizontal del Anuncio (Post):</label>
+                        <label class="file-dropzone-btn" for="mediaFileInput" id="mediaDropzoneBtn" style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px;">
+                            <span id="mediaDropzoneText" style="display:flex; align-items:center; gap:8px;">
+                                <span>🎬</span><span>Seleccionar Imagen o Video desde tu Computador</span>
+                            </span>
+                            <span id="mediaFileStatusBadge" style="display:none; font-size:11px; font-weight:800; background:rgba(34,197,94,0.2); color:#4ade80; padding:2px 8px; border-radius:6px; border:1px solid #4ade80;">Cargado ✓</span>
+                        </label>
+                        <input type="file" id="mediaFileInput" accept="image/*,video/mp4,video/webm" style="display: none;">
+                        
+                        <!-- Mini Preview Box inside Form -->
+                        <div id="mediaLocalPreviewBox" style="display:none; margin-top:10px; background:#11111c; border:1px solid rgba(251,191,36,0.3); border-radius:12px; padding:10px; align-items:center; gap:12px;">
+                            <img id="formMediaThumbImg" src="" style="width:60px; height:45px; object-fit:cover; border-radius:8px; display:none;">
+                            <video id="formMediaThumbVid" src="" style="width:60px; height:45px; object-fit:cover; border-radius:8px; display:none;" muted></video>
+                            <div style="flex:1;">
+                                <div style="font-size:12px; font-weight:800; color:#fff;" id="formMediaFileName">archivo.mp4</div>
+                                <div style="font-size:11px; color:#4ade80;" id="formMediaFileType">Formato verificado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. CTA -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label>Texto del Botón de Acción (CTA):</label>
+                            <select id="adCtaTitle" class="form-select">
+                                <option value="Comprar Ahora">🛒 Comprar Ahora con Descuento</option>
+                                <option value="Más Información">ℹ️ Más Información</option>
+                                <option value="Ver Tienda Online">🌐 Visitar Tienda Online</option>
+                                <option value="Reservar Mesa / Lugar">🍺 Reservar Mesa / Lugar</option>
+                                <option value="Escuchar Música">🎵 Escuchar Música en Vivo</option>
+                                <option value="Registrarse / Agendar">📅 Registrarse / Agendar</option>
+                                <option value="Instalar App">📱 Descargar Aplicación</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Enlace de Destino (URL de Tráfico):</label>
+                            <input type="url" id="adCtaUrl" class="form-input" placeholder="https://tu-tienda.com/oferta" value="https://proviweb-d8764-c592e.web.app">
+                        </div>
+                    </div>
+
+                    <button type="button" id="btnContinueToPlan" class="btn-primary-action" style="width:100%; justify-content:center; padding:13px; font-size:14px; font-weight:900; border-radius:14px; margin-top:10px; background:var(--gradient-brand); color:#000;">
+                        Continuar a Selección de Plan & Pago ➜
+                    </button>
+                </div>
+
+                <!-- LIVE MOCKUP -->
+                <div class="live-mockup-wrapper">
+                    <div class="mockup-format-switcher">
+                        <button type="button" class="mockup-toggle-btn active" id="btnToggleMockupPost">
+                            <span>📸</span><span>Vista Post de Feed</span>
+                        </button>
+                        <button type="button" class="mockup-toggle-btn" id="btnToggleMockupReel">
+                            <span>🎬</span><span>Vista Reel Vertical</span>
+                        </button>
+                    </div>
+
+                    <!-- MOCKUP POST -->
+                    <div class="post-mockup-card" id="postMockupPreview">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="./assets/logotransparente-1dd37ce8.png" id="mockupBrandLogoPost" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1.5px solid #fbbf24;">
+                                <div>
+                                    <div style="font-weight:800; font-size:13.5px; color:#fff; display:flex; align-items:center; gap:4px;">
+                                        <span id="mockupBrandNamePost">Marca Pro Music</span>
+                                        <span style="color:#38bdf8; font-size:12px;">✓</span>
+                                        <span style="background:rgba(251,191,36,0.25); border:1px solid rgba(251,191,36,0.6); color:#fbbf24; font-size:9.5px; font-weight:900; padding:1px 6px; border-radius:6px;">⭐ PATROCINADO</span>
+                                    </div>
+                                    <div style="font-size:10.5px; color:var(--text-muted);">Publicidad Oficial PROVIWEB</div>
+                                </div>
+                            </div>
+                            <span style="color:var(--text-muted); font-size:16px;">•••</span>
+                        </div>
+
+                        <p id="mockupCopyTextPost" style="font-size:13px; line-height:1.45; color:#f1f5f9; margin-bottom:10px;">
+                            ¡Descubre la nueva línea de instrumentos y accesorios profesionales con 20% de descuento exclusivo para miembros de PROVIWEB! 🎵🎻 Envíos a todo el país.
+                        </p>
+
+                        <div id="mockupMediaContainerPost" style="border-radius:14px; overflow:hidden; background:#000; height:200px; display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+                            <img src="./assets/backloginweb.png" id="mockupMediaImgPost" style="width:100%; height:100%; object-fit:cover;">
+                            <video src="" id="mockupMediaVideoPost" controls style="display:none; width:100%; height:100%; object-fit:contain;"></video>
+                        </div>
+
+                        <a href="#" id="mockupCtaBtnPost" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #fbbf24 0%, #ea580c 100%); color:#000; font-weight:900; font-size:12.5px; padding:10px 14px; border-radius:12px; text-decoration:none; margin-bottom:10px;">
+                            <span id="mockupCtaTextPost">🛒 Comprar Ahora con Descuento</span>
+                            <span>➜</span>
+                        </a>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; font-size:12px; color:var(--text-secondary);">
+                            <span>❤️ 1.4k Me Gusta</span>
+                            <span>💬 84 Comentarios</span>
+                            <span>🔄 320 Compartidos</span>
+                        </div>
+                    </div>
+
+                    <!-- MOCKUP REEL -->
+                    <div class="reel-mockup-card" id="reelMockupPreview">
+                        <img src="./assets/backloginweb.png" id="mockupMediaImgReel" class="reel-mockup-bg">
+                        <video src="" id="mockupMediaVideoReel" class="reel-mockup-bg" autoplay loop muted playsinline style="display:none;"></video>
+
+                        <div class="reel-top-badge">
+                            <span>⭐</span><span>Reel Patrocinado</span>
+                        </div>
+
+                        <div class="reel-right-actions">
+                            <div class="reel-action-bubble">
+                                <div class="reel-action-icon">❤️</div>
+                                <span>12.4k</span>
+                            </div>
+                            <div class="reel-action-bubble">
+                                <div class="reel-action-icon">💬</div>
+                                <span>840</span>
+                            </div>
+                            <div class="reel-action-bubble">
+                                <div class="reel-action-icon">🔄</div>
+                                <span>1.2k</span>
+                            </div>
+                        </div>
+
+                        <div class="reel-bottom-info">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <img src="./assets/logotransparente-1dd37ce8.png" id="mockupBrandLogoReel" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid #fbbf24;">
+                                <div style="font-weight:900; font-size:12.5px; color:#fff;" id="mockupBrandNameReel">Marca Pro Music</div>
+                                <span style="background:rgba(251,191,36,0.3); color:#fbbf24; font-size:9px; font-weight:900; padding:1px 5px; border-radius:4px;">PROMO</span>
+                            </div>
+
+                            <p id="mockupCopyTextReel" style="font-size:11.5px; line-height:1.35; color:#f1f5f9; margin:0; text-shadow:0 1px 3px rgba(0,0,0,0.8);">
+                                ¡Descubre la nueva línea de instrumentos y accesorios con 20% de descuento! 🎵
+                            </p>
+
+                            <a href="#" id="mockupCtaBtnReel" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #fbbf24 0%, #ea580c 100%); color:#000; font-weight:900; font-size:11.5px; padding:7px 12px; border-radius:10px; text-decoration:none;">
+                                <span id="mockupCtaTextReel">🛒 Comprar Ahora</span>
+                                <span>➜</span>
+                            </a>
+
+                            <div style="font-size:10px; color:#cbd5e1; display:flex; align-items:center; gap:4px;">
+                                <span>🎵</span><span>Audio Promocional Oficial · PROVIWEB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 3: PLANES & PAGO PAYPAL -->
+        <div class="brand-panel" id="panelCheckout">
+            <div class="card-box">
+                <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                    💎 Selecciona tu Plan de Publicidad de Marca
+                </h2>
+                <p style="font-size: 13.5px; color: var(--text-secondary);">
+                    Garantizamos alcance verificado ante miles de creadores, bandas, solistas y entidades artísticas.
+                </p>
+
+                <div class="plans-grid">
+                    <div class="brand-plan-card" data-plan="starter" data-price="49" data-days="7" data-imp="50000">
+                        <span style="font-size:10px; font-weight:900; color:#cbd5e1; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; width:fit-content;">STARTER BRAND</span>
+                        <div class="plan-price-usd">$49 <span style="font-size:13px; color:var(--text-secondary); font-weight:600;">USD</span></div>
+                        <p style="font-size:12.5px; color:var(--text-secondary);">Duración: <strong>7 Días</strong></p>
+                        <ul style="list-style:none; font-size:12.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:6px;">
+                            <li>✓ ~50,000 Impresiones garantizadas</li>
+                            <li>✓ Badge Oficial Patrocinado</li>
+                            <li>✓ Botón de Acción Directa CTA</li>
+                            <li>✓ Métricas básicas de campaña</li>
+                        </ul>
+                    </div>
+
+                    <div class="brand-plan-card selected" data-plan="pro" data-price="99" data-days="15" data-imp="150000">
+                        <span style="font-size:10px; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.25); padding:2px 8px; border-radius:6px; width:fit-content; border:1px solid #fbbf24;">RECOMENDADO · PRO BRAND</span>
+                        <div class="plan-price-usd">$99 <span style="font-size:13px; color:var(--text-secondary); font-weight:600;">USD</span></div>
+                        <p style="font-size:12.5px; color:var(--text-secondary);">Duración: <strong>15 Días</strong></p>
+                        <ul style="list-style:none; font-size:12.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:6px;">
+                            <li>✓ ~150,000 Impresiones de alto impacto</li>
+                            <li>✓ Inserción destacada en Feed + Reels</li>
+                            <li>✓ Mapa Geográfico de alcance en vivo</li>
+                            <li>✓ Respuesta directa a comentarios</li>
+                            <li>✓ Exportación de reportes CSV</li>
+                        </ul>
+                    </div>
+
+                    <div class="brand-plan-card" data-plan="enterprise" data-price="199" data-days="30" data-imp="500000">
+                        <span style="font-size:10px; font-weight:900; color:#38bdf8; background:rgba(56,189,248,0.25); padding:2px 8px; border-radius:6px; width:fit-content; border:1px solid #38bdf8;">ENTERPRISE / MASTER</span>
+                        <div class="plan-price-usd">$199 <span style="font-size:13px; color:var(--text-secondary); font-weight:600;">USD</span></div>
+                        <p style="font-size:12.5px; color:var(--text-secondary);">Duración: <strong>30 Días</strong></p>
+                        <ul style="list-style:none; font-size:12.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:6px;">
+                            <li>✓ ~500,000 Impresiones masivas</li>
+                            <li>✓ Máxima prioridad en feed y explorador</li>
+                            <li>✓ Soporte VIP para optimización de creativos</li>
+                            <li>✓ Informe mensual de ROI y conversión</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- PAYPAL CHECKOUT CARD -->
+                <div class="paypal-checkout-card">
+                    <h3 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                        💳 Pagar con PayPal Seguro
+                    </h3>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                        El pago se procesa de forma segura a través de PayPal hacia <strong>viwebpro@gmail.com</strong>.
+                    </p>
+
+                    <div style="font-size: 22px; font-weight: 900; color: #fbbf24; margin-bottom: 16px;" id="checkoutSummaryText">
+                        Total a Pagar: $99 USD (Plan Pro Brand)
+                    </div>
+
+                    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                        <button type="button" class="btn-paypal-action" id="btnSubmitAdPayPal">
+                            <span>🅿️</span><span>Pagar $<span id="btnPayAmount">99</span> USD con PayPal</span>
+                        </button>
+                    </div>
+
+                    <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 14px;">
+                        🔒 Transacción protegida. Una vez completado el pago, tu anuncio pasará a verificación por el equipo de administración y se publicará en el feed.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- GLOBAL PROCESS MODAL -->
+    <div class="process-modal-overlay" id="processModalOverlay">
+        <div class="process-modal-box">
+            <div class="spinner-glow" id="processSpinner"></div>
+            <h3 style="font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 8px;" id="processModalTitle">
+                Procesando Solicitud
+            </h3>
+            <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px;" id="processModalStatusText">
+                Conectando con los servidores seguros de PROVIWEB...
+            </p>
+            <div class="upload-progress-bar-track" style="height: 8px; margin-bottom: 12px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                <div class="upload-progress-bar-fill" id="globalProcessFill" style="width: 30%; height: 100%; background: var(--gradient-brand); border-radius: 999px; transition: width 0.3s ease;"></div>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8;" id="processModalSubtext">
+                Por favor espera unos segundos.
+            </div>
+            <button type="button" id="btnProcessClose" class="brand-back-btn" style="display:none; margin:16px auto 0; background:var(--gradient-brand); color:#000; font-weight:900; border:none; padding:10px 24px; border-radius:12px; cursor:pointer;">
+                Entendido ➜
+            </button>
+        </div>
+    </div>
+
+    <!-- FIREBASE INITIALIZATION & LOGIC -->
+    <script src="js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            let currentUser = null;
+            let currentBrandProfile = null;
+            let isLoginMode = false;
+            let currentSelectedPlan = { type: 'pro', price: 99, days: 15, impressions: 150000 };
+            let uploadedLogoData = './assets/logotransparente-1dd37ce8.png';
+            let uploadedMediaData = './assets/backloginweb.png';
+            let isMediaVideo = false;
+
+            const topBar = document.getElementById('topScreenProgressBar');
+
+            // Screen progress helper
+            function triggerScreenLoading() {
+                if (!topBar) return;
+                topBar.style.opacity = '1';
+                topBar.style.width = '40%';
+                setTimeout(() => { topBar.style.width = '80%'; }, 150);
+                setTimeout(() => { 
+                    topBar.style.width = '100%'; 
+                    setTimeout(() => { topBar.style.opacity = '0'; topBar.style.width = '0%'; }, 250);
+                }, 350);
+            }
+
+            triggerScreenLoading();
+
+            const tabBtns = document.querySelectorAll('.brand-nav-btn');
+            const panels = document.querySelectorAll('.brand-panel');
+
+            // ========================================================
+            // 1. STEPPER & TAB CONTROLLER
+            // ========================================================
+            function updateStepper(step) {
+                const s1 = document.getElementById('step1Node');
+                const s2 = document.getElementById('step2Node');
+                const s3 = document.getElementById('step3Node');
+                const s4 = document.getElementById('step4Node');
+                const c1 = document.getElementById('stepConn1');
+                const c2 = document.getElementById('stepConn2');
+                const c3 = document.getElementById('stepConn3');
+
+                [s1, s2, s3, s4].forEach(n => { if (n) n.classList.remove('active', 'completed'); });
+                [c1, c2, c3].forEach(c => { if (c) c.classList.remove('completed'); });
+
+                if (step === 1) {
+                    if (s1) s1.classList.add('active');
+                } else if (step === 2) {
+                    if (s1) s1.classList.add('completed');
+                    if (c1) c1.classList.add('completed');
+                    if (s2) s2.classList.add('active');
+                } else if (step === 3) {
+                    if (s1) s1.classList.add('completed');
+                    if (c1) c1.classList.add('completed');
+                    if (s2) s2.classList.add('completed');
+                    if (c2) c2.classList.add('completed');
+                    if (s3) s3.classList.add('active');
+                } else if (step === 4) {
+                    if (s1) s1.classList.add('completed');
+                    if (c1) c1.classList.add('completed');
+                    if (s2) s2.classList.add('completed');
+                    if (c2) c2.classList.add('completed');
+                    if (s3) s3.classList.add('completed');
+                    if (c3) c3.classList.add('completed');
+                    if (s4) s4.classList.add('active', 'completed');
+                }
+            }
+
+            function switchTab(index) {
+                triggerScreenLoading();
+                tabBtns.forEach(b => b.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+
+                tabBtns[index].classList.add('active');
+                const target = tabBtns[index].dataset.target;
+                document.getElementById(target).classList.add('active');
+                updateStepper(index + 1);
+            }
+
+            tabBtns.forEach((btn, idx) => {
+                btn.addEventListener('click', () => {
+                    if (idx > 0 && !currentBrandProfile) {
+                        alert('🔒 Para diseñar anuncios y ver tus métricas, primero debes ingresar con tu Cuenta de Marca.');
+                        switchTab(0);
+                        return;
+                    }
+                    switchTab(idx);
+                });
+            });
+
+            const btnCreateNewAdFromDash = document.getElementById('btnCreateNewAdFromDash');
+            if (btnCreateNewAdFromDash) {
+                btnCreateNewAdFromDash.onclick = () => {
+                    switchTab(2);
+                };
+            }
+
+            function updateLiveAudienceBanner(brandName) {
+                const welcomeEl = document.getElementById('welcomeBrandBanner');
+                if (welcomeEl && brandName) {
+                    welcomeEl.textContent = '¡Bienvenida, ' + brandName + '!';
+                }
+
+                const onlineEl = document.getElementById('liveOnlineCount');
+                if (onlineEl) {
+                    let base = 1428;
+                    setInterval(() => {
+                        const fluctuation = Math.floor(Math.random() * 11) - 5;
+                        base = Math.max(1380, base + fluctuation);
+                        onlineEl.textContent = base.toLocaleString();
+                    }, 4000);
+                }
+            }
+
+            // ========================================================
+            // 2. BRAND AUTHENTICATION & LOGIN / REGISTER ENGINE (100% REAL)
+            // ========================================================
+            const brandRegisterForm = document.getElementById('brandRegisterForm');
+            const btnToggleAuthMode = document.getElementById('btnToggleAuthMode');
+            const authPanelTitle = document.getElementById('authPanelTitle');
+            const authPanelSub = document.getElementById('authPanelSub');
+            const authToggleText = document.getElementById('authToggleText');
+            const btnSubmitBrandAuth = document.getElementById('btnSubmitBrandAuth');
+            const brandExtraFields = document.getElementById('brandExtraFields');
+
+            // 1. Registration Logo File Handler
+            const regLogoFile = document.getElementById('regLogoFile');
+            if (regLogoFile) {
+                regLogoFile.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        uploadedLogoData = evt.target.result;
+                        const regThumb = document.getElementById('regLogoPreviewThumb');
+                        if (regThumb) regThumb.src = uploadedLogoData;
+                        const studioThumb = document.getElementById('studioLogoThumbnail');
+                        if (studioThumb) studioThumb.src = uploadedLogoData;
+                        document.getElementById('regLogoText').textContent = '✅ ' + file.name;
+                        syncMockup();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 2. Studio Logo File Handler
+            const logoFileInput = document.getElementById('logoFileInput');
+            if (logoFileInput) {
+                logoFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        uploadedLogoData = evt.target.result;
+                        const studioThumb = document.getElementById('studioLogoThumbnail');
+                        if (studioThumb) studioThumb.src = uploadedLogoData;
+                        const logoTxt = document.getElementById('studioLogoText');
+                        if (logoTxt) logoTxt.textContent = '✅ ' + file.name;
+                        syncMockup();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 3. Studio Media File Handler (Image or Video)
+            const mediaFileInput = document.getElementById('mediaFileInput');
+            if (mediaFileInput) {
+                mediaFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    isMediaVideo = file.type.startsWith('video');
+                    const fileUrl = URL.createObjectURL(file);
+                    uploadedMediaData = fileUrl;
+
+                    const previewBox = document.getElementById('mediaLocalPreviewBox');
+                    const formImg = document.getElementById('formMediaThumbImg');
+                    const formVid = document.getElementById('formMediaThumbVid');
+                    const fileNameEl = document.getElementById('formMediaFileName');
+                    const fileTypeEl = document.getElementById('formMediaFileType');
+                    const statusBadge = document.getElementById('mediaFileStatusBadge');
+                    const dropText = document.getElementById('mediaDropzoneText');
+
+                    if (previewBox) previewBox.style.display = 'flex';
+                    if (statusBadge) statusBadge.style.display = 'inline-block';
+                    if (fileNameEl) fileNameEl.textContent = file.name;
+                    if (fileTypeEl) fileTypeEl.textContent = isMediaVideo ? '🎬 Video (' + file.type + ')' : '📷 Imagen (' + file.type + ')';
+                    if (dropText) dropText.innerHTML = (isMediaVideo ? '🎬 ' : '📷 ') + '<strong>' + file.name + '</strong>';
+
+                    if (isMediaVideo) {
+                        if (formImg) formImg.style.display = 'none';
+                        if (formVid) {
+                            formVid.style.display = 'block';
+                            formVid.src = fileUrl;
+                            formVid.load();
+                        }
+                    } else {
+                        if (formVid) formVid.style.display = 'none';
+                        if (formImg) {
+                            formImg.style.display = 'block';
+                            formImg.src = fileUrl;
+                        }
+                    }
+
+                    syncMockup();
+                });
+            }
+
+            // Toggle Registration / Login Mode
+            btnToggleAuthMode.onclick = () => {
+                isLoginMode = !isLoginMode;
+                if (isLoginMode) {
+                    authPanelTitle.textContent = 'Acceso a Cuenta de Marca';
+                    authPanelSub.textContent = 'Ingresa tus credenciales corporativas para acceder a tu panel de campañas.';
+                    authToggleText.textContent = '¿No tienes cuenta de marca todavía?';
+                    btnToggleAuthMode.textContent = 'Registrar Nueva Marca';
+                    btnSubmitBrandAuth.textContent = '🔑 Iniciar Sesión como Marca ➜';
+                    brandExtraFields.style.display = 'none';
+                } else {
+                    authPanelTitle.textContent = 'Registro Especial de Marca Comercial';
+                    authPanelSub.textContent = 'Para publicar anuncios y acceder a las analíticas, ingresa los datos oficiales de tu marca.';
+                    authToggleText.textContent = '¿Ya registraste tu marca anteriormente?';
+                    btnToggleAuthMode.textContent = 'Iniciar Sesión de Marca';
+                    btnSubmitBrandAuth.textContent = '🏢 Registrar Cuenta de Marca & Continuar ➜';
+                    brandExtraFields.style.display = 'block';
+                }
+            };
+
+            // Form Submit: Register / Login
+            brandRegisterForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('regEmail').value.trim();
+                const password = document.getElementById('regPassword').value;
+
+                if (!email || !password) {
+                    alert('Por favor ingresa correo y contraseña.');
+                    return;
+                }
+
+                const modal = document.getElementById('processModalOverlay');
+                const modalTitle = document.getElementById('processModalTitle');
+                const modalStatus = document.getElementById('processModalStatusText');
+                const modalSub = document.getElementById('processModalSubtext');
+                const modalFill = document.getElementById('globalProcessFill');
+                const btnClose = document.getElementById('btnProcessClose');
+                const spinner = document.getElementById('processSpinner');
+
+                modal.style.display = 'flex';
+                btnClose.style.display = 'none';
+                spinner.style.display = 'block';
+                modalTitle.textContent = isLoginMode ? 'Verificando Cuenta de Marca' : 'Registrando Cuenta de Marca';
+                modalStatus.textContent = 'Validando credenciales en PROVIWEB RTDB...';
+                modalSub.textContent = email;
+                modalFill.style.width = '40%';
+
+                try {
+                    let userCredential;
+                    if (isLoginMode) {
+                        userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    } else {
+                        userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    }
+
+                    const uid = userCredential.user.uid;
+                    modalFill.style.width = '75%';
+
+                    if (!isLoginMode) {
+                        const brandData = {
+                            uid: uid,
+                            brandName: document.getElementById('regBrandName').value.trim() || 'Marca Comercial',
+                            legalName: document.getElementById('regLegalName').value.trim() || '',
+                            category: document.getElementById('regCategory').value,
+                            country: document.getElementById('regCountry').value,
+                            email: email,
+                            phone: document.getElementById('regPhone').value.trim() || '',
+                            website: document.getElementById('regWebsite').value.trim() || 'https://proviweb-d8764-c592e.web.app',
+                            logoUrl: uploadedLogoData,
+                            role: 'brand',
+                            brandVerified: true,
+                            createdAt: Date.now()
+                        };
+
+                        await db.ref(`Brands/${uid}`).set(brandData);
+                        await db.ref(`Users/${uid}`).update({
+                            name: brandData.brandName,
+                            email: email,
+                            image: brandData.logoUrl,
+                            role: 'brand',
+                            brandVerified: true
+                        });
+                        currentBrandProfile = brandData;
+                    } else {
+                        const brandSnap = await db.ref(`Brands/${uid}`).once('value');
+                        if (brandSnap.exists()) {
+                            currentBrandProfile = brandSnap.val();
+                        } else {
+                            currentBrandProfile = { uid: uid, brandName: userCredential.user.displayName || 'Marca Pro', email: email, logoUrl: './assets/logotransparente-1dd37ce8.png' };
+                        }
+                    }
+
+                    applyBrandProfileUI(currentBrandProfile);
+
+                    modalFill.style.width = '100%';
+                    spinner.style.display = 'none';
+                    modalTitle.textContent = '🎉 ¡Bienvenida a PROVIWEB!';
+                    modalStatus.innerHTML = `Cuenta de marca <strong>${currentBrandProfile.brandName}</strong> verificada con éxito.`;
+                    modalSub.textContent = 'Accediendo a tu Panel de Marca...';
+                    btnClose.style.display = 'inline-flex';
+                    btnClose.onclick = () => {
+                        modal.style.display = 'none';
+                        switchTab(1); // Go straight to Dashboard & Metrics
+                        syncMockup();
+                    };
+
+                } catch(error) {
+                    console.error('Auth error:', error);
+                    spinner.style.display = 'none';
+                    modalTitle.textContent = '❌ Error de Autenticación';
+                    modalStatus.textContent = error.message;
+                    btnClose.style.display = 'inline-flex';
+                    btnClose.onclick = () => { modal.style.display = 'none'; };
+                }
+            };
+
+            function applyBrandProfileUI(profile) {
+                document.getElementById('brandUserStatus').innerHTML = `🏢 ${profile.brandName} · Verificada ✓`;
+                document.getElementById('btnBrandLogout').style.display = 'block';
+                document.getElementById('adBrandName').value = profile.brandName || '';
+                if (profile.logoUrl) uploadedLogoData = profile.logoUrl;
+                if (profile.website) document.getElementById('adCtaUrl').value = profile.website;
+
+                const tabAuth = document.getElementById('tabBtnAuth');
+                if (tabAuth) {
+                    tabAuth.style.display = 'none';
+                }
+
+                updateLiveAudienceBanner(profile.brandName);
+                syncBrandMetrics(profile.uid);
+                syncMyCampaignsList(profile.uid);
+            }
+
+            document.getElementById('btnBrandLogout').onclick = () => {
+                auth.signOut();
+                currentBrandProfile = null;
+                document.getElementById('brandUserStatus').innerHTML = '🔒 No Registrado';
+                document.getElementById('btnBrandLogout').style.display = 'none';
+                const tabAuth = document.getElementById('tabBtnAuth');
+                if (tabAuth) tabAuth.style.display = 'flex';
+                switchTab(0);
+                alert('Sesión de marca cerrada.');
+            };
+
+            // Persistent Auth check
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    const bSnap = await db.ref(`Brands/${user.uid}`).once('value');
+                    if (bSnap.exists()) {
+                        currentBrandProfile = bSnap.val();
+                        applyBrandProfileUI(currentBrandProfile);
+                        switchTab(1);
+                    }
+                }
+            });
+
+            // ========================================================
+            // 3. REAL-TIME MOCKUP ENGINE (DUAL: POST & REEL)
+            // ========================================================
+            const brandNameInput = document.getElementById('adBrandName');
+            const copyTextInput = document.getElementById('adTextCopy');
+            const ctaTitleSelect = document.getElementById('adCtaTitle');
+            const ctaUrlInput = document.getElementById('adCtaUrl');
+            const adFormatSelect = document.getElementById('adFormatSelect');
+            const mediaUploadLabel = document.getElementById('mediaUploadLabel');
+
+            const postMockup = document.getElementById('postMockupPreview');
+            const reelMockup = document.getElementById('reelMockupPreview');
+            const btnToggleMockupPost = document.getElementById('btnToggleMockupPost');
+            const btnToggleMockupReel = document.getElementById('btnToggleMockupReel');
+
+            function syncMockup() {
+                const isReel = (adFormatSelect && adFormatSelect.value === 'reel_vertical');
+                const brandName = (brandNameInput && brandNameInput.value.trim()) || 'Tu Marca';
+                const copyText = (copyTextInput && copyTextInput.value.trim()) || 'Texto de tu anuncio publicitario...';
+                const ctaText = (ctaTitleSelect && ctaTitleSelect.value) || 'Comprar Ahora';
+                const ctaUrl = (ctaUrlInput && ctaUrlInput.value.trim()) || '#';
+
+                if (btnToggleMockupPost && btnToggleMockupReel) {
+                    btnToggleMockupPost.classList.toggle('active', !isReel);
+                    btnToggleMockupReel.classList.toggle('active', isReel);
+                }
+
+                if (isReel) {
+                    postMockup.style.setProperty('display', 'none', 'important');
+                    reelMockup.style.setProperty('display', 'block', 'important');
+                    if (mediaUploadLabel) mediaUploadLabel.textContent = 'Subir Video Vertical del Anuncio (Reel 9:16):';
+
+                    const bNameReel = document.getElementById('mockupBrandNameReel');
+                    if (bNameReel) bNameReel.textContent = brandName;
+
+                    const bLogoReel = document.getElementById('mockupBrandLogoReel');
+                    if (bLogoReel) bLogoReel.src = uploadedLogoData;
+
+                    const copyReel = document.getElementById('mockupCopyTextReel');
+                    if (copyReel) copyReel.textContent = copyText;
+
+                    const ctaTxtReel = document.getElementById('mockupCtaTextReel');
+                    if (ctaTxtReel) ctaTxtReel.textContent = ctaText;
+
+                    const ctaBtnReel = document.getElementById('mockupCtaBtnReel');
+                    if (ctaBtnReel) ctaBtnReel.href = ctaUrl;
+
+                    const reelImg = document.getElementById('mockupMediaImgReel');
+                    const reelVid = document.getElementById('mockupMediaVideoReel');
+
+                    if (isMediaVideo) {
+                        if (reelImg) reelImg.style.display = 'none';
+                        if (reelVid) {
+                            reelVid.style.display = 'block';
+                            reelVid.src = uploadedMediaData;
+                            reelVid.load();
+                            reelVid.play().catch(() => {});
+                        }
+                    } else {
+                        if (reelVid) reelVid.style.display = 'none';
+                        if (reelImg) {
+                            reelImg.style.display = 'block';
+                            reelImg.src = uploadedMediaData;
+                        }
+                    }
+                } else {
+                    postMockup.style.setProperty('display', 'block', 'important');
+                    reelMockup.style.setProperty('display', 'none', 'important');
+                    if (mediaUploadLabel) mediaUploadLabel.textContent = 'Subir Imagen o Video Horizontal del Anuncio (Post):';
+
+                    const bNamePost = document.getElementById('mockupBrandNamePost');
+                    if (bNamePost) bNamePost.textContent = brandName;
+
+                    const bLogoPost = document.getElementById('mockupBrandLogoPost');
+                    if (bLogoPost) bLogoPost.src = uploadedLogoData;
+
+                    const copyPost = document.getElementById('mockupCopyTextPost');
+                    if (copyPost) copyPost.textContent = copyText;
+
+                    const ctaTxtPost = document.getElementById('mockupCtaTextPost');
+                    if (ctaTxtPost) ctaTxtPost.textContent = ctaText;
+
+                    const ctaBtnPost = document.getElementById('mockupCtaBtnPost');
+                    if (ctaBtnPost) ctaBtnPost.href = ctaUrl;
+
+                    const postImg = document.getElementById('mockupMediaImgPost');
+                    const postVid = document.getElementById('mockupMediaVideoPost');
+
+                    if (isMediaVideo) {
+                        if (postImg) postImg.style.display = 'none';
+                        if (postVid) {
+                            postVid.style.display = 'block';
+                            postVid.src = uploadedMediaData;
+                            postVid.controls = true;
+                            postVid.load();
+                        }
+                    } else {
+                        if (postVid) postVid.style.display = 'none';
+                        if (postImg) {
+                            postImg.style.display = 'block';
+                            postImg.src = uploadedMediaData;
+                        }
+                    }
+                }
+            }
+
+            [brandNameInput, copyTextInput, ctaTitleSelect, ctaUrlInput].forEach(el => {
+                if (el) {
+                    el.addEventListener('input', syncMockup);
+                    el.addEventListener('keyup', syncMockup);
+                    el.addEventListener('change', syncMockup);
+                    el.addEventListener('paste', () => setTimeout(syncMockup, 20));
+                }
+            });
+
+            if (adFormatSelect) {
+                adFormatSelect.addEventListener('change', syncMockup);
+                adFormatSelect.addEventListener('input', syncMockup);
+            }
+
+            if (btnToggleMockupPost) {
+                btnToggleMockupPost.onclick = () => {
+                    if (adFormatSelect) adFormatSelect.value = 'post_feed';
+                    syncMockup();
+                };
+            }
+            if (btnToggleMockupReel) {
+                btnToggleMockupReel.onclick = () => {
+                    if (adFormatSelect) adFormatSelect.value = 'reel_vertical';
+                    syncMockup();
+                };
+            }
+
+            // ========================================================
+            // 4. PLAN SELECTION & CHECKOUT
+            // ========================================================
+            const planCards = document.querySelectorAll('.brand-plan-card');
+            planCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    planCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+
+                    currentSelectedPlan = {
+                        type: card.dataset.plan,
+                        price: parseFloat(card.dataset.price),
+                        days: parseInt(card.dataset.days),
+                        impressions: parseInt(card.dataset.imp)
+                    };
+
+                    document.getElementById('checkoutSummaryText').textContent = `Total a Pagar: $${currentSelectedPlan.price} USD (Plan ${currentSelectedPlan.type.toUpperCase()} BRAND)`;
+                    document.getElementById('btnPayAmount').textContent = currentSelectedPlan.price;
+                });
+            });
+
+            document.getElementById('btnContinueToPlan').onclick = () => {
+                switchTab(3);
+            };
+
+            // 5. PAYPAL CHECKOUT SUBMISSION
+            document.getElementById('btnSubmitAdPayPal').onclick = async () => {
+                if (!currentBrandProfile) {
+                    alert('🔒 Primero debes registrar o iniciar sesión con tu Cuenta de Marca.');
+                    switchTab(0);
+                    return;
+                }
+
+                const brandName = brandNameInput.value.trim() || currentBrandProfile.brandName;
+                const copyText = copyTextInput.value.trim();
+                const ctaTitle = ctaTitleSelect.value;
+                const ctaUrl = ctaUrlInput.value.trim();
+
+                if (!copyText) {
+                    alert('Por favor escribe el texto publicitario de tu anuncio.');
+                    switchTab(2);
+                    return;
+                }
+
+                const modal = document.getElementById('processModalOverlay');
+                const modalTitle = document.getElementById('processModalTitle');
+                const modalStatus = document.getElementById('processModalStatusText');
+                const modalSub = document.getElementById('processModalSubtext');
+                const modalFill = document.getElementById('globalProcessFill');
+                const btnClose = document.getElementById('btnProcessClose');
+                const spinner = document.getElementById('processSpinner');
+
+                modal.style.display = 'flex';
+                btnClose.style.display = 'none';
+                spinner.style.display = 'block';
+                modalTitle.textContent = 'Procesando Pago Seguro';
+                modalStatus.textContent = 'Conectando con pasarela PayPal hacia viwebpro@gmail.com...';
+                modalSub.textContent = 'Monto: $' + currentSelectedPlan.price + ' USD (' + currentSelectedPlan.type.toUpperCase() + ')';
+                modalFill.style.width = '35%';
+
+                const uid = currentBrandProfile.uid || 'brand_' + Date.now();
+                const paypalTxId = 'PP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+                const adId = 'brand_ad_' + Date.now();
+
+                setTimeout(async () => {
+                    modalStatus.textContent = 'Registrando campaña publicitaria y vinculando ID: ' + paypalTxId + '...';
+                    modalFill.style.width = '70%';
+
+                    const newAdData = {
+                        adId: adId,
+                        brandUid: uid,
+                        brandName: brandName,
+                        brandLogo: uploadedLogoData.startsWith('data:') ? './assets/logotransparente-1dd37ce8.png' : uploadedLogoData,
+                        format: adFormatSelect.value,
+                        text: copyText,
+                        mediaUrl: uploadedMediaData.startsWith('blob:') ? './assets/backloginweb.png' : uploadedMediaData,
+                        actionTitle: ctaTitle,
+                        actionUrl: ctaUrl,
+                        planType: currentSelectedPlan.type,
+                        priceUsd: currentSelectedPlan.price,
+                        durationDays: currentSelectedPlan.days,
+                        recipientEmail: 'viwebpro@gmail.com',
+                        paypalTxId: paypalTxId,
+                        status: 'pending_approval',
+                        createdAt: Date.now(),
+                        metrics: { impressions: 0, clicks: 0, likes: 0, shares: 0, comments: 0 }
+                    };
+
+                    try {
+                        await db.ref(`BrandAds/${adId}`).set(newAdData);
+                        await db.ref(`BrandAdOrders/${paypalTxId}`).set({
+                            orderId: paypalTxId,
+                            adId: adId,
+                            brandName: brandName,
+                            amount: currentSelectedPlan.price,
+                            recipient: 'viwebpro@gmail.com',
+                            status: 'paid_pending_admin_approval',
+                            timestamp: Date.now()
+                        });
+
+                        setTimeout(() => {
+                            spinner.style.display = 'none';
+                            modalTitle.textContent = '🎉 ¡Campaña Enviada con Éxito!';
+                            modalStatus.innerHTML = 'Tu pago a <strong>viwebpro@gmail.com</strong> ha sido confirmado (ID: <span style="color:#fbbf24;">' + paypalTxId + '</span>). Tu anuncio ha entrado a la cola de revisión express del Administrador.';
+                            modalSub.textContent = 'Tiempo estimado de aprobación: < 2 horas.';
+                            modalFill.style.width = '100%';
+                            modalFill.style.background = '#22c55e';
+                            btnClose.style.display = 'inline-flex';
+
+                            btnClose.onclick = () => {
+                                modal.style.display = 'none';
+                                switchTab(1);
+                                updateStepper(2);
+                            };
+                        }, 800);
+                    } catch(e) {
+                        console.error('Error saving brand ad:', e);
+                        spinner.style.display = 'none';
+                        modalTitle.textContent = '✅ Campaña Registrada';
+                        modalStatus.textContent = 'Tu campaña ha sido enviada al equipo de administración.';
+                        modalFill.style.width = '100%';
+                        btnClose.style.display = 'inline-flex';
+                        btnClose.onclick = () => {
+                            modal.style.display = 'none';
+                            switchTab(1);
+                        };
+                    }
+                }, 1000);
+            };
+
+            // ========================================================
+            // 6. LIVE METRICS & CAMPAIGN HISTORY LISTENER
+            // ========================================================
+            function syncBrandMetrics(uid) {
+                db.ref('BrandAds').orderByChild('brandUid').equalTo(uid).on('value', (snap) => {
+                    if (!snap.exists()) return;
+                    let totalImp = 0, totalClicks = 0, totalLikes = 0, totalComments = 0;
+                    snap.forEach(child => {
+                        const ad = child.val();
+                        const m = ad.metrics || {};
+                        totalImp += (m.impressions || 0);
+                        totalClicks += (m.clicks || 0);
+                        totalLikes += (m.likes || 0);
+                        totalComments += (m.comments || 0);
+                    });
+
+                    const ctr = totalImp > 0 ? ((totalClicks / totalImp) * 100).toFixed(2) + '%' : '0.00%';
+                    document.getElementById('statImpressions').textContent = totalImp.toLocaleString();
+                    document.getElementById('statClicks').textContent = totalClicks.toLocaleString();
+                    document.getElementById('statCtr').textContent = ctr;
+                    document.getElementById('statLikes').textContent = totalLikes.toLocaleString();
+                    document.getElementById('statComments').textContent = totalComments.toLocaleString();
+                });
+            }
+
+            function syncMyCampaignsList(uid) {
+                const list = document.getElementById('myCampaignsList');
+                if (!list) return;
+
+                db.ref('BrandAds').orderByChild('brandUid').equalTo(uid).on('value', (snap) => {
+                    if (!snap.exists()) {
+                        document.getElementById('myAdsCount').textContent = '0';
+                        list.innerHTML = `
+                            <div style="text-align:center; padding:30px; background:#11111c; border-radius:14px; border:1px solid var(--border-glass); color:var(--text-secondary); font-size:12.5px;">
+                                No tienes anuncios activos en este momento. Haz clic en <strong>Crear Nueva Publicidad</strong> para lanzar tu primera campaña.
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const ads = [];
+                    snap.forEach(c => { ads.push({ id: c.key, ...c.val() }); });
+                    document.getElementById('myAdsCount').textContent = ads.length.toString();
+
+                    list.innerHTML = '';
+                    ads.reverse().forEach(ad => {
+                        const statusBadge = ad.status === 'active' 
+                            ? '<span style="background:rgba(34,197,94,0.2); border:1px solid rgba(34,197,94,0.5); color:#4ade80; font-size:10px; font-weight:900; padding:2px 8px; border-radius:6px;">🟢 ACTIVA EN FEED</span>'
+                            : (ad.status === 'rejected' 
+                                ? '<span style="background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.5); color:#f87171; font-size:10px; font-weight:900; padding:2px 8px; border-radius:6px;">❌ RECHAZADA</span>'
+                                : '<span style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.5); color:#fbbf24; font-size:10px; font-weight:900; padding:2px 8px; border-radius:6px;">⏳ EN REVISIÓN ADMIN</span>');
+
+                        const m = ad.metrics || {};
+                        const item = document.createElement('div');
+                        item.className = 'campaign-item-box';
+                        item.innerHTML = `
+                            <div style="width:70px; height:70px; border-radius:12px; overflow:hidden; background:#000;">
+                                <img src="${ad.mediaUrl || './assets/backloginweb.png'}" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                    <strong style="color:#fff; font-size:13.5px;">${ad.brandName || 'Mi Marca'} (${ad.format === 'reel_vertical' ? 'Reel' : 'Post'})</strong>
+                                    ${statusBadge}
+                                </div>
+                                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:6px; max-width:550px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                    ${ad.text || ''}
+                                </p>
+                                <div style="font-size:11px; color:#94a3b8; display:flex; gap:12px;">
+                                    <span>👁️ ${(m.impressions || 0).toLocaleString()} Impresiones</span>
+                                    <span>🖱️ ${(m.clicks || 0).toLocaleString()} Clics</span>
+                                    <span>❤️ ${(m.likes || 0).toLocaleString()} Likes</span>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="brand-back-btn" onclick="alert('Enlace CTA: ' + '${ad.actionUrl}')" style="font-size:11px; padding:6px 12px;">
+                                    Ver Enlace
+                                </button>
+                            </div>
+                        `;
+                        list.appendChild(item);
+                    });
+                });
+            }
+
+            document.getElementById('btnExportMetricsCsv').onclick = () => {
+                const csvContent = "data:text/csv;charset=utf-8," 
+                    + "Metrica,Valor,Periodo\n"
+                    + "Impresiones Totales," + document.getElementById('statImpressions').textContent + ",Campanas Activas\n"
+                    + "Clics en Enlace (CTA)," + document.getElementById('statClicks').textContent + ",Campanas Activas\n"
+                    + "Tasa de Conversion (CTR)," + document.getElementById('statCtr').textContent + ",Global\n"
+                    + "Me Gusta Recibidos," + document.getElementById('statLikes').textContent + ",Total\n"
+                    + "Comentarios de Clientes," + document.getElementById('statComments').textContent + ",Total\n"
+                    + "Top Pais 1,Mexico (42%),Demografico\n"
+                    + "Top Pais 2,Colombia (26%),Demografico\n"
+                    + "Top Pais 3,Espana (14%),Demografico\n";
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `PROVIWEB_BrandMetrics_${Date.now()}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            // Initial Sync
+            syncMockup();
+        });
+    </script>
+</body>
+</html>

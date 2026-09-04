@@ -1,0 +1,1369 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Asistente Musical IA">
+<title>PROVIWEB - Bot Musical</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #0f0f13;
+  --bg-card: rgba(28, 28, 36, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --accent-purple: #a855f7;
+  --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+  --radius-lg: 18px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 1px 0 var(--border-glass) inset;
+  border-bottom: 1px solid var(--border-glass);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-glass);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 18px;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.05);
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title-main {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-title-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  box-shadow: 0 0 8px #4caf50;
+  margin-left: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notif-badge {
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-primary);
+}
+
+.container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+@media (max-width: 960px) {
+  .container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 1px 0 var(--border-glass) inset;
+  padding: 20px 20px 18px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 1px 0 var(--border-glass) inset;
+  border-color: var(--accent-purple);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.card-title span {
+  font-size: 18px;
+}
+
+.badge-soft {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.2);
+  color: var(--accent-purple);
+}
+
+.bot-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.bot-visual {
+  flex: 1;
+  min-height: 260px;
+  border-radius: 20px;
+  background: radial-gradient(circle at 10% 0, rgba(168, 85, 247, 0.5) 0, rgba(0, 123, 255, 0.2) 40%, rgba(15, 15, 19, 1) 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bot-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.6), 0 0 60px rgba(0, 123, 255, 0.4);
+  transition: var(--transition);
+}
+
+.bot-circle:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 34px rgba(168, 85, 247, 0.8), 0 0 80px rgba(0, 123, 255, 0.6);
+}
+
+.bot-face {
+  font-size: 62px;
+}
+
+.bot-ring {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 1px dashed var(--border-glass);
+  animation: spin 18s linear infinite;
+}
+
+.bot-ring-2 {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  opacity: 0.4;
+}
+
+.bot-pulse {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0, transparent 60%);
+  opacity: 0;
+  animation: pulse 2.4s ease-out infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+
+.bot-instructions {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.bot-instructions span {
+  color: var(--accent-purple);
+}
+
+.bot-instructions-2 {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.status-bar {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.status-wave {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.status-wave::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 10px;
+  background: var(--accent-purple);
+  left: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  animation: wave 0.7s infinite ease-in-out alternate;
+}
+
+.status-wave::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 10px;
+  background: var(--accent-purple);
+  right: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  animation: wave 0.7s infinite ease-in-out alternate-reverse;
+}
+
+@keyframes wave {
+  from { transform: scaleY(0.4); opacity: 0.7; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+.status-right {
+  display: flex;
+  gap: 6px;
+}
+
+.chip {
+  padding: 4px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.chip strong {
+  color: var(--text-primary);
+}
+
+.history-card {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-glass);
+  font-size: 12px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.history-entry {
+  margin-bottom: 8px;
+}
+
+.history-entry span {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.history-entry-user span {
+  background: rgba(0, 123, 255, 0.2);
+  color: #60a5fa;
+}
+
+.history-entry-bot span {
+  background: rgba(168, 85, 247, 0.2);
+  color: var(--accent-purple);
+}
+
+.history-text {
+  color: var(--text-secondary);
+}
+
+.links-list {
+  list-style: none;
+  margin-top: 4px;
+}
+
+.links-list li a {
+  color: #60a5fa;
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.links-list li a:hover {
+  text-decoration: underline;
+}
+
+.suggestions-card {
+  margin-bottom: 12px;
+}
+
+.suggestions-toggle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-glass);
+}
+
+.suggestions-toggle span {
+  font-size: 18px;
+}
+
+.suggestions-toggle:hover {
+  background: rgba(255,255,255,0.07);
+}
+
+.suggestions-list {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass);
+  background: rgba(15, 15, 19, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 4px;
+  display: none;
+}
+
+.suggestions-list.show {
+  display: block;
+}
+
+.suggestion-item {
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.suggestion-item:hover {
+  background: rgba(168, 85, 247, 0.25);
+  color: var(--text-primary);
+}
+
+.links-card-list {
+  font-size: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.link-item {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border-glass);
+}
+
+.link-item:last-child {
+  border-bottom: none;
+}
+
+.link-host {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.link-url {
+  font-size: 11px;
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.link-url:hover {
+  text-decoration: underline;
+}
+
+.teachers-card-list {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+
+.teacher-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.teacher-item:last-child {
+  border-bottom: none;
+}
+
+.teacher-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-purple);
+}
+
+.teacher-info {
+  flex: 1;
+}
+
+.teacher-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.teacher-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.teacher-open-btn {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-purple);
+  background: transparent;
+  color: var(--accent-purple);
+  cursor: pointer;
+}
+
+.teacher-open-btn:hover {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.pill {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.2);
+  color: var(--accent-purple);
+}
+
+.small-muted {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--border-glass);
+  display: none;
+  z-index: 30;
+}
+
+.toast.show {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toast span {
+  font-size: 16px;
+}
+
+.badge-online {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0, 123, 255, 0.2);
+  color: #60a5fa;
+}
+
+.badge-offline {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.pill-sm {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.chip-soft-primary {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.2);
+  color: var(--accent-purple);
+}
+
+.chip-soft-secondary {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Scrollbars */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.4);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<div class="header">
+  <div class="header-left"><a href="aiprofessor.html" class="btn-primary-action" style="padding:4px 12px; font-size:12px; margin-right:8px; text-decoration:none;">Ir al Maestro IA ↗</a>
+    <button class="back-btn" id="backBtn">&#x2190;</button>
+    <div class="header-title">
+      <div class="header-title-main">
+        Bot Musical <span class="status-dot"></span>
+      </div>
+      <div class="header-title-sub">Doctor en Artes &amp; Música • IA</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="notif-badge">
+      🔔
+      <span id="notifCount">0</span>
+    </div>
+    <div class="pill-sm" id="userNameHeader">Invitado</div>
+  </div>
+</div>
+
+<div id="mainContent">
+<div class="container" id="botMain">
+  <!-- Columna izquierda: Bot principal -->
+  <div class="card bot-main" id="mainLayout">
+    <div class="card-header">
+      <div class="card-title">
+        <span>🎧</span>
+        <div>
+          <div>Conversa con el Bot</div>
+          <div style="font-size:11px;color:var(--text-secondary);">Haz tu pregunta en voz alta</div>
+        </div>
+      </div>
+      <div class="chip-soft-primary">Beta • Español</div>
+    </div>
+
+    <div class="bot-visual" id="botVisual">
+      <div class="bot-pulse" id="botPulse"></div>
+      <div class="bot-ring"></div>
+      <div class="bot-ring-2"></div>
+      <div class="bot-circle" id="botCircle">
+        <div class="bot-face" id="botEmoji">🤖</div>
+      </div>
+    </div>
+
+    <div class="bot-instructions">
+      Toca el círculo para <span>empezar a hablar</span>. Doble toque en cualquier parte para detener.
+    </div>
+    <div class="bot-instructions-2">
+      Consejo: pregunta sobre teoría, historia, instrumentos, repertorio o profesores.
+    </div>
+
+    <div class="status-bar">
+      <div class="status-left">
+        <div class="status-wave" id="voiceWave"></div>
+        <span id="statusText">Esperando tu voz...</span>
+      </div>
+      <div class="status-right">
+        <div class="chip"><strong>Modo:</strong> Conversación</div>
+      </div>
+    </div>
+
+    <div class="history-card" id="historyContainer">
+      <!-- Historial se rellena por JS -->
+    </div>
+  </div>
+
+  <!-- Columna derecha: sugerencias, links, profesores -->
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="card suggestions-card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>❓</span>
+          <div>¿Qué puedo preguntar?</div>
+        </div>
+        <span class="badge-soft">Tap para ver ejemplos</span>
+      </div>
+      <button class="suggestions-toggle" id="toggleSuggestions">
+        <span>💡</span> Ver sugerencias
+      </button>
+      <div class="suggestions-list" id="suggestionsList">
+        <!-- Llenado por JS -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🔗</span>
+          <div>Enlaces útiles del Bot</div>
+        </div>
+        <span class="chip-soft-secondary" id="linksCount">0 enlaces</span>
+      </div>
+      <div class="links-card-list" id="linksContainer">
+        <!-- Llenado por JS -->
+        <div class="small-muted">Cuando el bot recomiende recursos externos, aparecerán aquí.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>👨‍🏫</span>
+          <div>Profesores Recomendados</div>
+        </div>
+        <span class="chip-soft-primary" id="teachersBadge">Cargando...</span>
+      </div>
+      <div class="teachers-card-list" id="teachersContainer">
+        <div class="small-muted">Pídele al bot: "Profesores" para ver recomendaciones personalizadas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon">ℹ️</span>
+  <span id="toastText">Mensaje</span>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getStorage, ref as sRef, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+  authDomain: "proviweb-d8764.firebaseapp.com",
+  databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+  projectId: "proviweb-d8764",
+  storageBucket: "proviweb-d8764.appspot.com",
+  messagingSenderId: "475963980955",
+  appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+  measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+// DOM
+const backBtn = document.getElementById('backBtn');
+const botCircle = document.getElementById('botCircle');
+const botEmoji = document.getElementById('botEmoji');
+const botPulse = document.getElementById('botPulse');
+const statusText = document.getElementById('statusText');
+const historyContainer = document.getElementById('historyContainer');
+const suggestionsListEl = document.getElementById('suggestionsList');
+const toggleSuggestions = document.getElementById('toggleSuggestions');
+const linksContainer = document.getElementById('linksContainer');
+const linksCountEl = document.getElementById('linksCount');
+const teachersContainer = document.getElementById('teachersContainer');
+const teachersBadge = document.getElementById('teachersBadge');
+const notifCountEl = document.getElementById('notifCount');
+const userNameHeader = document.getElementById('userNameHeader');
+const toastEl = document.getElementById('toast');
+const toastText = document.getElementById('toastText');
+const toastIcon = document.getElementById('toastIcon');
+
+let conversationHistory = [];
+let linkItems = [];
+let currentUser = null;
+
+// Speech APIs
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const speechSynthesis = window.speechSynthesis || null;
+let recognizer = null;
+let isListening = false;
+let isBotSpeaking = false;
+let lastClickTime = 0;
+
+// --- Utils ---
+function showToast(message, icon = 'ℹ️', timeout = 2200) {
+  toastText.textContent = message;
+  toastIcon.textContent = icon;
+  toastEl.classList.add('show');
+  setTimeout(() => toastEl.classList.remove('show'), timeout);
+}
+
+function addToHistory(role, text) {
+  conversationHistory.push({ role, text, ts: Date.now() });
+  renderHistory();
+}
+
+function renderHistory() {
+  historyContainer.innerHTML = '';
+  if (conversationHistory.length === 0) {
+    const p = document.createElement('div');
+    p.className = 'small-muted';
+    p.textContent = 'Tu conversación aparecerá aquí. Di "¿Qué es PROVIWEB?" para comenzar.';
+    historyContainer.appendChild(p);
+    return;
+  }
+  conversationHistory.slice(-20).forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'history-entry ' + (entry.role === 'user' ? 'history-entry-user' : 'history-entry-bot');
+    div.innerHTML = `
+      <span>${entry.role === 'user' ? 'Tú' : 'Bot'}</span>
+      <div class="history-text">${entry.text}</div>
+    `;
+    historyContainer.appendChild(div);
+  });
+  historyContainer.scrollTop = historyContainer.scrollHeight;
+}
+
+function extractLinksFromText(text) {
+  const links = [];
+  const regex = /\b(?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]/ig;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    links.push(match[0]);
+  }
+  return links;
+}
+
+function extractHost(url) {
+  try {
+    return new URL(url).host.replace('www.', '');
+  } catch {
+    return url;
+  }
+}
+
+function updateLinks(links) {
+  links.forEach(link => {
+    linkItems.push({ url: link, host: extractHost(link) });
+  });
+  renderLinks();
+}
+
+function renderLinks() {
+  linksContainer.innerHTML = '';
+  if (linkItems.length === 0) {
+    const div = document.createElement('div');
+    div.className = 'small-muted';
+    div.textContent = 'Sin enlaces por ahora. Cuando el bot recomiende recursos, aparecerán aquí.';
+    linksContainer.appendChild(div);
+  } else {
+    const ul = document.createElement('ul');
+    ul.className = 'links-list';
+    linkItems.slice(-20).forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'link-item';
+      li.innerHTML = `
+        <div class="link-host">${item.host}</div>
+        <a href="${item.url}" target="_blank" class="link-url">${item.url}</a>
+      `;
+      ul.appendChild(li);
+    });
+    linksContainer.appendChild(ul);
+  }
+  linksCountEl.textContent = `${linkItems.length} enlace${linkItems.length === 1 ? '' : 's'}`;
+}
+
+// --- MusicBot (reglas + acciones) ---
+const musicBot = {
+  responses: {
+    'que es probiweb': 'PROVIWEB es una red social especializada en arte y música, diseñada para conectar a artistas, músicos, orquestas y profesionales del ámbito cultural. Puedes compartir tu trabajo, encontrar profesores, publicar posts y descubrir oportunidades.',
+    'probiweb': 'PROVIWEB es una red social para artistas y músicos. Aquí puedes estudiar, enseñar, trabajar y compartir tu arte con una comunidad global.'
+  },
+  actions: {},
+  initActions() {
+    // La 440
+    this.actions['la 440'] = () => playFirebaseAudio('audioApp/lacuatrocuarenta.mp3');
+    // La 442
+    this.actions['la 442'] = () => playFirebaseAudio('audioApp/lacuatrocuarentaydos.mp3');
+    // Crear post
+    this.actions['crear un post'] = () => {
+      showToast('Abriendo editor de publicaciones...', '📝');
+      window.location.href = 'createpost.html';
+    };
+    // Abrir archivo (archivo de posts)
+    this.actions['abre el archivo'] = () => {
+      showToast('Abriendo archivo de publicaciones...', '📂');
+      window.location.href = 'archive.html';
+    };
+    // Profesores recomendados
+    this.actions['profesores'] = () => {
+      showToast('Buscando profesores recomendados...', '👨‍🏫');
+      loadTeachers(true);
+    };
+  },
+  generateResponse(userQuery) {
+    if (!userQuery) return null;
+    const q = userQuery.toLowerCase();
+    // Respuestas directas
+    for (const key of Object.keys(this.responses)) {
+      if (q.includes(key)) {
+        return this.responses[key];
+      }
+    }
+    // Acciones
+    for (const key of Object.keys(this.actions)) {
+      if (q.includes(key)) {
+        this.actions[key]();
+        return `Ejecutando acción: ${key}`;
+      }
+    }
+    return null;
+  }
+};
+musicBot.initActions();
+
+// --- Audio desde Firebase (para 440 / 442 / doneia / questionsound, etc.) ---
+async function playFirebaseAudio(path) {
+  try {
+    const audioRef = sRef(storage, path);
+    const url = await getDownloadURL(audioRef);
+    const audio = new Audio(url);
+    audio.play().catch(() => {
+      showToast('No se pudo reproducir el audio.', '⚠️');
+    });
+  } catch (e) {
+    console.error('Error Firebase audio', e);
+    showToast('No se pudo cargar el audio desde Firebase.', '⚠️');
+  }
+}
+
+// --- Speech Recognition ---
+function setupSpeechRecognition() {
+  if (!SpeechRecognition) {
+    statusText.textContent = 'Reconocimiento de voz no disponible en este navegador.';
+    showToast('Tu navegador no soporta Web Speech API. Prueba en Chrome.', '⚠️', 4000);
+    return;
+  }
+  recognizer = new SpeechRecognition();
+  recognizer.lang = 'es-ES';
+  recognizer.continuous = false;
+  recognizer.interimResults = true;
+
+  recognizer.onstart = () => {
+    isListening = true;
+    statusText.textContent = 'Escuchando... habla ahora';
+    botEmoji.textContent = '🎤';
+    botPulse.style.opacity = '1';
+  };
+  recognizer.onend = () => {
+    isListening = false;
+    botEmoji.textContent = '🤖';
+    botPulse.style.opacity = isBotSpeaking ? '1' : '0';
+    if (!isBotSpeaking) {
+      statusText.textContent = 'Listo para escuchar otra pregunta.';
+    }
+  };
+  recognizer.onerror = (e) => {
+    console.error('Speech error', e);
+    showToast('No pude escucharte bien. Intenta de nuevo.', '⚠️');
+    isListening = false;
+    statusText.textContent = 'Error al escuchar. Toca el círculo para intentar de nuevo.';
+  };
+  recognizer.onresult = (event) => {
+    let finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript;
+      }
+    }
+    if (finalTranscript) {
+      handleUserQuery(finalTranscript.trim());
+    }
+  };
+}
+
+function startVoiceRecognition() {
+  if (!recognizer || isListening) return;
+  try {
+    recognizer.start();
+  } catch (e) {
+    console.error('Error start recognizer', e);
+  }
+}
+
+// --- Text to Speech ---
+function speak(text) {
+  if (!speechSynthesis) {
+    console.warn('SpeechSynthesis no disponible.');
+    return;
+  }
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'es-ES';
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  isBotSpeaking = true;
+  botEmoji.textContent = '🗣️';
+  botPulse.style.opacity = '1';
+  statusText.textContent = 'Respondiendo...';
+
+  utterance.onend = () => {
+    isBotSpeaking = false;
+    botEmoji.textContent = '🤖';
+    botPulse.style.opacity = '0';
+    statusText.textContent = '¿Otra pregunta? Toca el círculo para hablar.';
+    // Reproducir audio "doneia" de Firebase como en Android
+    playFirebaseAudio('audioApp/doneia.mp3');
+  };
+  utterance.onerror = () => {
+    isBotSpeaking = false;
+    botEmoji.textContent = '🤖';
+    botPulse.style.opacity = '0';
+    statusText.textContent = 'Hubo un error al hablar.';
+  };
+  speechSynthesis.speak(utterance);
+}
+
+// --- Lógica principal de consulta ---
+function handleUserQuery(userQuery) {
+  if (!userQuery) return;
+  addToHistory('user', userQuery);
+
+  // Acciones y respuestas definidas
+  let botResponse = musicBot.generateResponse(userQuery);
+  if (botResponse) {
+    addToHistory('bot', botResponse);
+    speak(botResponse);
+    const links = extractLinksFromText(botResponse);
+    if (links.length > 0) updateLinks(links);
+    return;
+  }
+
+  // Fallback a modelo generativo (Gemini) - requiere backend
+  useGenerativeModel(userQuery);
+}
+
+async function useGenerativeModel(userQuery) {
+  addToHistory('bot', 'Pensando en una buena respuesta para ti...');
+  statusText.textContent = 'Consultando modelo de IA...';
+
+  const API_KEY = 'AIzaSyDCzfYx5_6O86vqyVZk0W-ZpfsM_3-a7AE';
+  const MODEL = 'gemini-2.5-pro';
+
+  try {
+    // Construir prompt con historial
+    const systemInstruction =
+      'Eres un Doctor en Artes y Música. ' +
+      'Tu personalidad es amable, paciente y explicas con claridad. ' +
+      'Si el usuario es grosero, puedes responderle que no fue correcto, pero de forma ligera y con humor. ' +
+      'Responde SIEMPRE en español. Enfócate en teoría musical, historia, instrumentos, práctica, repertorio y profesores.';
+
+    const historyText = conversationHistory
+      .map(h => `${h.role === 'user' ? 'Usuario' : 'Bot'}: ${h.text}`)
+      .join('\\n');
+
+    const fullPrompt =
+      systemInstruction +
+      '\\n\\nHistorial de la conversación (si existe):\\n' +
+      (historyText || 'Sin historial previo.') +
+      '\\n\\nNueva pregunta del usuario: ' +
+      userQuery +
+      '\\n\\nResponde de forma clara, estructurada y breve cuando sea posible. Usa viñetas si ayuda a entender mejor.';
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: fullPrompt }]
+            }
+          ]
+        })
+      }
+    );
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Gemini error response:', errText);
+      throw new Error('Error HTTP de Gemini: ' + res.status);
+    }
+
+    const data = await res.json();
+    const candidates = data.candidates || [];
+    const parts = candidates[0]?.content?.parts || [];
+    const answer = parts.map(p => p.text || '').join('\\n').trim();
+
+    conversationHistory.pop(); // quitar mensaje "Pensando..."
+
+    if (!answer) {
+      const fallbackEmpty =
+        'Lo siento, no pude generar una respuesta útil en este momento. ' +
+        'Intenta reformular tu pregunta o hacerla un poco más específica.';
+      addToHistory('bot', fallbackEmpty);
+      speak(fallbackEmpty);
+      return;
+    }
+
+    addToHistory('bot', answer);
+    speak(answer);
+
+    const links = extractLinksFromText(answer);
+    if (links.length > 0) updateLinks(links);
+  } catch (e) {
+    console.error('Error generative model', e);
+    conversationHistory.pop();
+    const fallback =
+      'Lo siento, tuve un problema para conectar con el modelo de IA. ' +
+      'Intenta de nuevo en unos segundos o haz otra pregunta relacionada con música.';
+    addToHistory('bot', fallback);
+    speak(fallback);
+  }
+}
+
+// --- Sugerencias (lista de preguntas) ---
+const suggestedQuestions = [
+  '¿Qué es PROVIWEB?',
+  'Profesores',
+  'Crear un post',
+  'Abre el afinador',
+  'Recomiéndame un repertorio para mariachi',
+  '¿Mejores obras de música clásica?',
+  'Explícame el ritmo en la música',
+  '¿Qué es la escala mayor?',
+  'Diferencia entre violín y viola',
+  '¿Cuántos instrumentos tiene una orquesta sinfónica?'
+];
+
+function renderSuggestions() {
+  suggestionsListEl.innerHTML = '';
+  suggestedQuestions.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-item';
+    div.textContent = q;
+    div.onclick = () => {
+      suggestionsListEl.classList.remove('show');
+      handleUserQuery(q);
+    };
+    suggestionsListEl.appendChild(div);
+  });
+}
+
+toggleSuggestions.addEventListener('click', () => {
+  suggestionsListEl.classList.toggle('show');
+});
+
+// --- Profesores recomendados desde Firebase (verifiedprofesor == "yes") ---
+async function loadTeachers(showToastOnEmpty = false) {
+  teachersContainer.innerHTML = '<div class="small-muted">Cargando profesores...</div>';
+  teachersBadge.textContent = 'Cargando...';
+  try {
+    const usersRef = ref(db, 'Users');
+    const snap = await get(usersRef);
+    const list = [];
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const data = child.val();
+        if (data && data.name && data.verifiedprofesor === 'yes') {
+          list.push({ id: child.key, ...data });
+        }
+      });
+    }
+    if (list.length === 0) {
+      teachersContainer.innerHTML =
+        '<div class="small-muted">Aún no hay profesores verificados disponibles.</div>';
+      teachersBadge.textContent = '0 profesores';
+      if (showToastOnEmpty) {
+        showToast('Por ahora no hay profesores verificados disponibles.', 'ℹ️');
+      }
+      return;
+    }
+    // Mezclar lista
+    list.sort(() => Math.random() - 0.5);
+    renderTeachers(list.slice(0, 15));
+  } catch (e) {
+    console.error('Error loadTeachers', e);
+    teachersContainer.innerHTML =
+      '<div class="small-muted">Error al cargar profesores. Intenta más tarde.</div>';
+    teachersBadge.textContent = 'Error';
+  }
+}
+
+function renderTeachers(list) {
+  teachersContainer.innerHTML = '';
+  list.forEach(user => {
+    const div = document.createElement('div');
+    div.className = 'teacher-item';
+    const photo =
+      (user.photo && user.photo.trim()) ||
+      'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    const instrument = user.instrument || user.generoMusic || 'Profesor de música';
+    const loc = user.location || user.pais || '';
+    div.innerHTML = `
+      <img src="${photo}" class="teacher-photo" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media'">
+      <div class="teacher-info">
+        <div class="teacher-name">${user.name || 'Profesor'}</div>
+        <div class="teacher-meta">${instrument}${loc ? ' • ' + loc : ''}</div>
+        <div style="margin-top:2px;">
+          <span class="pill">Verificado Profesor</span>
+        </div>
+      </div>
+      <button class="teacher-open-btn" data-uid="${user.id}">Ver perfil</button>
+    `;
+    teachersContainer.appendChild(div);
+  });
+  teachersContainer.querySelectorAll('.teacher-open-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const uid = btn.getAttribute('data-uid');
+      if (!uid) return;
+      window.location.href = `userprofile.html?uid=${uid}`;
+    });
+  });
+  teachersBadge.textContent = `${list.length} profesor${list.length === 1 ? '' : 'es'}`;
+}
+
+// --- Notificaciones contador simple ---
+function setupNotificationsCounter() {
+  if (!currentUser) return;
+  const countRef = ref(db, `Users/${currentUser.uid}/Count`);
+  onValue(countRef, snap => {
+    const count = snap.exists() ? snap.size || snap.numChildren() : 0;
+    notifCountEl.textContent = count;
+  });
+}
+
+// --- Auth y estado de usuario ---
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    // Usuario no autenticado: redirigir a login
+    window.location.href = 'index.html';
+    return;
+  }
+  currentUser = user;
+  // Cargar info de perfil
+  const userRef = ref(db, `Users/${user.uid}`);
+  onValue(userRef, snap => {
+    if (!snap.exists()) return;
+    const data = snap.val();
+    userNameHeader.textContent = data.name || data.username || 'Usuario';
+  });
+
+  // Estado online
+  const statusRef = ref(db, `Users/${user.uid}/status`);
+  onValue(statusRef, snap => {
+    // No hacemos nada visual aquí, pero podrías actualizar un indicador
+  });
+
+  setupNotificationsCounter();
+  loadTeachers(false);
+});
+
+// --- Eventos UI ---
+backBtn.addEventListener('click', () => {
+  window.location.href = 'home.html';
+});
+
+botCircle.addEventListener('click', () => {
+  if (isBotSpeaking) {
+    if (speechSynthesis) speechSynthesis.cancel();
+    isBotSpeaking = false;
+    botEmoji.textContent = '🤖';
+    botPulse.style.opacity = '0';
+    statusText.textContent = 'Respuesta detenida. Toca de nuevo para preguntar.';
+    return;
+  }
+  if (!isListening) {
+    startVoiceRecognition();
+  }
+});
+
+document.getElementById('mainLayout').addEventListener('click', () => {
+  const now = Date.now();
+  if (now - lastClickTime < 400) {
+    // Doble tap
+    if (recognizer && isListening) {
+      recognizer.abort();
+    }
+    if (speechSynthesis) speechSynthesis.cancel();
+    isListening = false;
+    isBotSpeaking = false;
+    botEmoji.textContent = '🤖';
+    botPulse.style.opacity = '0';
+    statusText.textContent = 'Detenido. Toca el círculo para hablar otra vez.';
+  }
+  lastClickTime = now;
+});
+
+// Inicialización
+renderHistory();
+renderSuggestions();
+setupSpeechRecognition();
+
+// Mensaje inicial
+setTimeout(() => {
+  showToast('Di por ejemplo: "¿Qué es PROVIWEB?"', '🎶', 3500);
+}, 800);
+</script>
+</body>
+</html>

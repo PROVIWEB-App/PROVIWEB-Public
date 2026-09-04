@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Perfil de Establecimiento de Música en Vivo">
+    <title>Establecimiento - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/venues-theme.css">
+    <style>
+        /* Hero Section */
+        .venue-hero {
+            position: relative;
+            min-height: 450px;
+            margin-top: 60px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .venue-hero__cover {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+        }
+
+        .venue-hero__cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .venue-hero__overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(15,15,19,0.3) 0%, rgba(15,15,19,0.95) 100%);
+            z-index: 1;
+        }
+
+        .venue-hero__content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: flex;
+            gap: 32px;
+            align-items: flex-end;
+        }
+
+        .venue-hero__avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 4px solid rgba(168,85,247,0.5);
+            box-shadow: 0 0 40px rgba(168,85,247,0.4), 0 8px 32px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .venue-hero__avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .venue-hero__plan-badge {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .venue-hero__plan-badge--pro {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(168,85,247,0.5);
+        }
+
+        .venue-hero__plan-badge--atlas {
+            background: var(--gradient-gold);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.5);
+        }
+
+        .venue-hero__info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .venue-hero__name {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(34,197,94,0.9);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .venue-hero__meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .venue-hero__meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .venue-hero__rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .venue-hero__rating-count {
+            color: var(--text-secondary);
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .venue-hero__actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Main Layout */
+        .venue-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+        }
+
+        @media (max-width: 968px) {
+            .venue-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .venue-hero__content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .venue-hero__name {
+                font-size: 28px;
+                justify-content: center;
+            }
+            
+            .venue-hero__avatar {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        /* Cards */
+        .section-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+
+        .section-card:hover {
+            box-shadow: 0 8px 40px rgba(168,85,247,0.15), inset 0 1px 0 rgba(255,255,255,0.15);
+            border-color: rgba(168,85,247,0.3);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title .icon {
+            font-size: 24px;
+            -webkit-text-fill-color: initial;
+        }
+
+        /* About Section */
+        .about-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .genre-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .genre-tag {
+            background: rgba(168,85,247,0.15);
+            color: var(--accent-purple);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(168,85,247,0.2);
+            transition: var(--transition);
+        }
+
+        .genre-tag:hover {
+            background: rgba(168,85,247,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Events List */
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-glass);
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .event-item:hover {
+            background: rgba(168,85,247,0.1);
+            border-color: rgba(168,85,247,0.3);
+            transform: translateX(4px);
+        }
+
+        .event-item__date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            padding: 12px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .event-item__day {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .event-item__month {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .event-item__content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .event-item__title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .event-item__meta {
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .event-item__badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(6,182,212,0.2);
+            color: var(--accent-cyan);
+        }
+
+        /* Calls Section */
+        .call-item {
+            padding: 20px;
+            background: var(--bg-glass);
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            transition: var(--transition);
+        }
+
+        .call-item:hover {
+            border-color: rgba(168,85,247,0.3);
+        }
+
+        .call-item__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .call-item__title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .call-item__status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .call-item__status--open {
+            background: rgba(34,197,94,0.2);
+            color: #22c55e;
+        }
+
+        .call-item__status--closed {
+            background: rgba(239,68,68,0.2);
+            color: #ef4444;
+        }
+
+        .call-item__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-glass);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-purple);
+            box-shadow: 0 8px 24px rgba(168,85,247,0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Sidebar */
+        .venue-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+
+        .sidebar-section:hover {
+            border-color: rgba(168,85,247,0.3);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .info-item .icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .info-item strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .schedule-day {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 14px;
+        }
+
+        .schedule-day:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-day__name {
+            color: var(--text-secondary);
+        }
+
+        .schedule-day__time {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .schedule-day--live {
+            color: var(--accent-purple);
+        }
+
+        /* Reviews */
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .reviews-score {
+            text-align: center;
+        }
+
+        .reviews-score__number {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reviews-score__stars {
+            color: #fbbf24;
+            font-size: 20px;
+        }
+
+        .reviews-score__count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .review-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .review-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-purple);
+        }
+
+        .review-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .review-rating {
+            color: #fbbf24;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-container {
+            background: var(--bg-card);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state__icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Plan Banner */
+        .plan-banner {
+            background: var(--bg-glass);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-glass);
+            text-align: center;
+        }
+
+        .plan-banner__title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .plan-banner__name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .plan-banner__name--pro {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .plan-banner__name--atlas {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="venues-header">
+        <a href="#" class="brand" id="venueBrand">PROVIWEB</a>
+        <nav class="venues-nav">
+            <a href="venues-explore.html" class="secondary">🎵 Establecimientos</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="venue-hero">
+        <div class="venue-hero__cover">
+            <img id="coverImage" src="assets/venue-cover-default.jpg" alt="">
+        </div>
+        <div class="venue-hero__overlay"></div>
+        <div class="venue-hero__content">
+            <div class="venue-hero__avatar">
+                <img id="profileImage" src="assets/venue-default.png" alt="">
+                <span id="planBadge" class="venue-hero__plan-badge hidden"></span>
+            </div>
+            <div class="venue-hero__info">
+                <h1 class="venue-hero__name">
+                    <span id="venueName">Cargando...</span>
+                    <span id="verifiedBadge" class="verified-badge hidden">✓ Verificado</span>
+                </h1>
+                <div class="venue-hero__meta">
+                    <span id="venueType">🎵 Establecimiento</span>
+                    <span id="venueLocation">📍 Ubicación</span>
+                    <span id="venueCapacity" class="hidden">👥 Capacidad</span>
+                </div>
+                <div class="venue-hero__rating" id="ratingSection">
+                    <span>⭐</span>
+                    <span id="ratingValue">-</span>
+                    <span class="venue-hero__rating-count">(<span id="reviewCount">0</span> reseñas)</span>
+                </div>
+                <div class="venue-hero__actions">
+                    <button id="btnFollow" class="btn btn--secondary">+ Seguir</button>
+                    <button id="btnApply" class="btn btn--primary">🎤 Postularme para tocar</button>
+                    <button id="btnMessage" class="btn btn--outline">💬 Mensaje</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="venue-layout">
+        <div class="venue-main">
+            <!-- About -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="icon">ℹ️</span>
+                    Sobre el lugar
+                </h2>
+                <p id="aboutText" class="about-text">Cargando información...</p>
+                <div id="genreTags" class="genre-tags"></div>
+            </section>
+
+            <!-- Upcoming Events -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="icon">📅</span>
+                    Próximos eventos
+                </h2>
+                <div id="eventsList" class="events-list">
+                    <div class="skeleton" style="height: 100px;"></div>
+                    <div class="skeleton" style="height: 100px;"></div>
+                </div>
+                <div id="eventsEmpty" class="empty-state hidden">
+                    <div class="empty-state__icon">📅</div>
+                    <p>No hay eventos programados próximamente.</p>
+                </div>
+            </section>
+
+            <!-- Open Calls -->
+            <section class="section-card" id="callsSection">
+                <h2 class="section-title">
+                    <span class="icon">🎵</span>
+                    Convocatorias abiertas
+                </h2>
+                <div id="callsList" class="events-list">
+                    <div class="skeleton" style="height: 120px;"></div>
+                </div>
+                <div id="callsEmpty" class="empty-state hidden">
+                    <div class="empty-state__icon">🎵</div>
+                    <p>No hay convocatorias abiertas en este momento.</p>
+                </div>
+            </section>
+
+            <!-- Gallery -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="icon">📸</span>
+                    Galería
+                </h2>
+                <div id="galleryGrid" class="gallery-grid">
+                    <div class="skeleton" style="aspect-ratio: 1;"></div>
+                    <div class="skeleton" style="aspect-ratio: 1;"></div>
+                    <div class="skeleton" style="aspect-ratio: 1;"></div>
+                    <div class="skeleton" style="aspect-ratio: 1;"></div>
+                </div>
+                <div id="galleryEmpty" class="empty-state hidden">
+                    <div class="empty-state__icon">📸</div>
+                    <p>No hay fotos disponibles.</p>
+                </div>
+            </section>
+
+            <!-- Reviews -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="icon">⭐</span>
+                    Reseñas
+                </h2>
+                <div class="reviews-summary">
+                    <div class="reviews-score">
+                        <div id="avgRating" class="reviews-score__number">-</div>
+                        <div class="reviews-score__stars">★★★★★</div>
+                        <div class="reviews-score__count"><span id="totalReviews">0</span> reseñas</div>
+                    </div>
+                </div>
+                <div id="reviewsList">
+                    <div class="skeleton" style="height: 80px;"></div>
+                    <div class="skeleton" style="height: 80px;"></div>
+                </div>
+                <div id="reviewsEmpty" class="empty-state hidden">
+                    <div class="empty-state__icon">⭐</div>
+                    <p>Aún no hay reseñas. ¡Sé el primero en dejar una!</p>
+                    <button id="btnWriteReview" class="btn btn--primary mt-4">Escribir reseña</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="venue-sidebar">
+            <!-- Plan Banner -->
+            <div id="planBanner" class="plan-banner hidden">
+                <div class="plan-banner__title">Este establecimiento tiene plan</div>
+                <div id="planBannerName" class="plan-banner__name"></div>
+                <div id="planBenefits"></div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">📞 Contacto</h3>
+                <div id="contactInfo">
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">🕐 Horarios</h3>
+                <div id="scheduleList">
+                    <div class="skeleton" style="height: 30px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 30px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 30px; margin-bottom: 8px;"></div>
+                </div>
+            </div>
+
+            <!-- Space Info -->
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">🏢 Sobre el espacio</h3>
+                <div id="spaceInfo">
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="sidebar-section" id="socialSection">
+                <h3 class="sidebar-title">🔗 Redes sociales</h3>
+                <div id="socialLinks"></div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Apply Modal -->
+    <div id="applyModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>🎤 Postularme para tocar</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-content">
+                <p style="margin-bottom: 16px;">Envía tu propuesta a <strong id="modalVenueName"></strong></p>
+                <textarea id="applicationMessage" class="form-textarea" placeholder="Cuéntanos sobre ti, tu experiencia y el repertorio que podrías presentar..."></textarea>
+                <div style="margin-top: 16px;">
+                    <label class="form-label">Links de demos (opcional):</label>
+                    <input type="url" id="demoLink1" class="form-input mb-4" placeholder="YouTube, SoundCloud, Spotify...">
+                    <input type="url" id="demoLink2" class="form-input" placeholder="Otro link...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+                <button id="btnSubmitApplication" class="btn btn--primary">Enviar postulación</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getVenue, getVenueEvents, toggleFollowVenue, isFollowingVenue } from './js/venues/venue-api.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        let currentVenue = null;
+        let currentUser = null;
+        let isFollowing = false;
+
+        function getVenueIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function loadVenue() {
+            const venueId = getVenueIdFromUrl();
+            if (!venueId) {
+                showError('Establecimiento no encontrado');
+                return;
+            }
+
+            try {
+                const venue = await getVenue(venueId);
+                if (!venue) {
+                    showError('Establecimiento no encontrado');
+                    return;
+                }
+
+                currentVenue = venue;
+                renderVenue(venue);
+                loadEvents(venueId);
+                
+                if (currentUser) {
+                    checkFollowStatus();
+                }
+            } catch (error) {
+                console.error('Error loading venue:', error);
+                showError('Error al cargar el establecimiento');
+            }
+        }
+
+        function renderVenue(venue) {
+            document.getElementById('venueName').textContent = venue.name || 'Sin nombre';
+            document.getElementById('venueType').textContent = '🎵 ' + getVenueTypeLabel(venue.venueType);
+            
+            const location = venue.location || {};
+            document.getElementById('venueLocation').textContent = 
+                location.city ? `📍 ${location.city}${location.neighborhood ? ', ' + location.neighborhood : ''}` : '📍 Ubicación no disponible';
+
+            if (venue.profileImage) document.getElementById('profileImage').src = venue.profileImage;
+            if (venue.coverImage) document.getElementById('coverImage').src = venue.coverImage;
+
+            // Plan badge
+            if (venue.plan?.type && venue.plan.type !== 'free') {
+                const badge = document.getElementById('planBadge');
+                badge.classList.remove('hidden');
+                badge.classList.add(`venue-hero__plan-badge--${venue.plan.type}`);
+                badge.textContent = venue.plan.type === 'atlas' ? '👑 Atlas' : '⭐ PRO';
+                
+                // Sidebar plan banner
+                document.getElementById('planBanner').classList.remove('hidden');
+                const bannerName = document.getElementById('planBannerName');
+                bannerName.textContent = venue.plan.type === 'atlas' ? '👑 Atlas' : '⭐ PRO';
+                bannerName.classList.add(`plan-banner__name--${venue.plan.type}`);
+                
+                const benefits = venue.plan.type === 'atlas' 
+                    ? '✓ Posicionamiento prioritario<br>✓ Estadísticas avanzadas<br>✓ Múltiples administradores'
+                    : '✓ Perfil destacado<br>✓ Eventos ilimitados<br>✓ Estadísticas avanzadas';
+                document.getElementById('planBenefits').innerHTML = `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">${benefits}</div>`;
+            }
+
+            if (venue.isVerified) {
+                document.getElementById('verifiedBadge').classList.remove('hidden');
+            }
+
+            const stats = venue.stats || {};
+            if (stats.averageRating) {
+                document.getElementById('ratingValue').textContent = stats.averageRating.toFixed(1);
+                document.getElementById('reviewCount').textContent = stats.totalReviews || 0;
+                document.getElementById('avgRating').textContent = stats.averageRating.toFixed(1);
+                document.getElementById('totalReviews').textContent = stats.totalReviews || 0;
+            } else {
+                document.getElementById('ratingSection').style.display = 'none';
+            }
+
+            document.getElementById('aboutText').textContent = venue.description || 'No hay descripción disponible.';
+            
+            if (venue.musicGenres?.length) {
+                document.getElementById('genreTags').innerHTML = venue.musicGenres.map(g => 
+                    `<span class="genre-tag">${g}</span>`
+                ).join('');
+            }
+
+            if (venue.capacity) {
+                document.getElementById('venueCapacity').classList.remove('hidden');
+                document.getElementById('venueCapacity').textContent = `👥 Capacidad: ${venue.capacity} personas`;
+            }
+
+            renderContactInfo(venue.contact);
+            renderSchedule(venue.schedule);
+            renderSpaceInfo(venue);
+            renderSocialLinks(venue.contact);
+            renderGallery(venue.gallery);
+
+            document.getElementById('modalVenueName').textContent = venue.name;
+        }
+
+        function renderContactInfo(contact = {}) {
+            const container = document.getElementById('contactInfo');
+            let html = '';
+            if (contact.phone) html += `<div class="info-item"><span class="icon">📞</span><div><strong>Teléfono</strong>${contact.phone}</div></div>`;
+            if (contact.whatsapp) html += `<div class="info-item"><span class="icon">💬</span><div><strong>WhatsApp</strong>${contact.whatsapp}</div></div>`;
+            if (contact.email) html += `<div class="info-item"><span class="icon">✉️</span><div><strong>Email</strong>${contact.email}</div></div>`;
+            if (contact.website) html += `<div class="info-item"><span class="icon">🌐</span><div><strong>Web</strong><a href="${contact.website}" target="_blank" style="color: var(--accent-purple);">${contact.website}</a></div></div>`;
+            container.innerHTML = html || '<p style="color: var(--text-secondary);">Información no disponible.</p>';
+        }
+
+        function renderSchedule(schedule = {}) {
+            const container = document.getElementById('scheduleList');
+            const days = [
+                { key: 'monday', label: 'Lunes' }, { key: 'tuesday', label: 'Martes' },
+                { key: 'wednesday', label: 'Miércoles' }, { key: 'thursday', label: 'Jueves' },
+                { key: 'friday', label: 'Viernes' }, { key: 'saturday', label: 'Sábado' },
+                { key: 'sunday', label: 'Domingo' }
+            ];
+
+            let html = '';
+            days.forEach(day => {
+                const daySchedule = schedule[day.key];
+                if (daySchedule?.open) {
+                    const liveClass = daySchedule.hasLiveMusic ? 'schedule-day--live' : '';
+                    const liveIndicator = daySchedule.hasLiveMusic ? '🎵 ' : '';
+                    html += `<div class="schedule-day"><span class="schedule-day__name">${day.label}</span><span class="schedule-day__time ${liveClass}">${liveIndicator}${daySchedule.open} - ${daySchedule.close}</span></div>`;
+                }
+            });
+            container.innerHTML = html || '<p style="color: var(--text-secondary);">Horario no disponible.</p>';
+        }
+
+        function renderSpaceInfo(venue) {
+            const container = document.getElementById('spaceInfo');
+            let html = '';
+            if (venue.capacity) html += `<div class="info-item"><span class="icon">👥</span><div><strong>Capacidad</strong>${venue.capacity} personas</div></div>`;
+            if (venue.hasStage) html += `<div class="info-item"><span class="icon">🎭</span><div><strong>Escenario</strong>${venue.stageSize || 'Sí'}</div></div>`;
+            if (venue.hasSoundSystem) html += `<div class="info-item"><span class="icon">🔊</span><div><strong>Sonido</strong>Propio</div></div>`;
+            if (venue.hasLighting) html += `<div class="info-item"><span class="icon">💡</span><div><strong>Iluminación</strong>Sí</div></div>`;
+            container.innerHTML = html || '<p style="color: var(--text-secondary);">Información no disponible.</p>';
+        }
+
+        function renderSocialLinks(contact = {}) {
+            const container = document.getElementById('socialLinks');
+            let html = '';
+            if (contact.instagram) html += `<a href="https://instagram.com/${contact.instagram}" target="_blank" class="info-item" style="text-decoration: none;"><span class="icon">📷</span><div><strong>Instagram</strong>@${contact.instagram}</div></a>`;
+            if (contact.facebook) html += `<a href="https://facebook.com/${contact.facebook}" target="_blank" class="info-item" style="text-decoration: none;"><span class="icon">👍</span><div><strong>Facebook</strong>${contact.facebook}</div></a>`;
+            container.innerHTML = html || '<p style="color: var(--text-secondary);">No hay redes sociales.</p>';
+        }
+
+        function renderGallery(gallery = []) {
+            const container = document.getElementById('galleryGrid');
+            if (!gallery?.length) {
+                container.innerHTML = '';
+                document.getElementById('galleryEmpty').classList.remove('hidden');
+                return;
+            }
+            container.innerHTML = gallery.slice(0, 8).map(item => `
+                <div class="gallery-item" onclick="openGalleryModal('${item.url}')">
+                    <img src="${item.url}" alt="${item.caption || ''}" loading="lazy">
+                </div>
+            `).join('');
+        }
+
+        async function loadEvents(venueId) {
+            try {
+                const events = await getVenueEvents(venueId, { upcoming: true, onlyPublic: true });
+                renderEvents(events);
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        function renderEvents(events) {
+            const container = document.getElementById('eventsList');
+            if (!events?.length) {
+                container.innerHTML = '';
+                document.getElementById('eventsEmpty').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('eventsEmpty').classList.add('hidden');
+            container.innerHTML = events.slice(0, 5).map(event => {
+                const date = event.startDate ? new Date(event.startDate) : null;
+                return `
+                    <div class="event-item" onclick="window.location.href='eventos.html?id=${event.eventId}'">
+                        <div class="event-item__date">
+                            <span class="event-item__day">${date ? date.getDate() : '?'}</span>
+                            <span class="event-item__month">${date ? date.toLocaleDateString('es', { month: 'short' }) : 'TBD'}</span>
+                        </div>
+                        <div class="event-item__content">
+                            <h4 class="event-item__title">${event.title || 'Evento sin título'}</h4>
+                            <div class="event-item__meta">
+                                ${event.startTime ? `<span>🕐 ${event.startTime}</span>` : ''}
+                                ${event.artists?.length ? `<span>🎤 ${event.artists.length} artista(s)</span>` : ''}
+                                ${event.isOpenCall ? '<span class="event-item__badge">Convocatoria abierta</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function checkFollowStatus() {
+            if (!currentVenue || !currentUser) return;
+            try {
+                isFollowing = await isFollowingVenue(currentVenue.venueId);
+                updateFollowButton();
+            } catch (error) {
+                console.error('Error checking follow status:', error);
+            }
+        }
+
+        function updateFollowButton() {
+            const btn = document.getElementById('btnFollow');
+            btn.textContent = isFollowing ? '✓ Siguiendo' : '+ Seguir';
+            btn.className = isFollowing ? 'btn btn--outline' : 'btn btn--secondary';
+        }
+
+        function getVenueTypeLabel(type) {
+            const labels = {
+                'bar': 'Bar', 'restaurant': 'Restaurante', 'taberna_mariachi': 'Taberna de Mariachi',
+                'peña': 'Peña', 'foro_cultural': 'Foro Cultural', 'sala_conciertos': 'Sala de Conciertos'
+            };
+            return labels[type] || type || 'Establecimiento';
+        }
+
+        function showError(message) {
+            document.querySelector('.venue-main').innerHTML = `
+                <div class="section-card" style="text-align: center; padding: 60px;">
+                    <p style="font-size: 48px; margin-bottom: 16px;">😕</p>
+                    <h2 style="margin-bottom: 16px;">${message}</h2>
+                    <a href="venues-explore.html" class="btn btn--primary">Explorar establecimientos</a>
+                </div>
+            `;
+        }
+
+        window.openGalleryModal = function(url) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay show';
+            modal.innerHTML = `
+                <div style="position: relative; max-width: 90vw; max-height: 90vh;" onclick="event.stopPropagation()">
+                    <img src="${url}" style="max-width: 100%; max-height: 90vh; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+                    <button onclick="this.closest('.modal-overlay').remove()" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 32px; cursor: pointer;">×</button>
+                </div>
+            `;
+            modal.onclick = () => modal.remove();
+            document.body.appendChild(modal);
+        };
+
+        window.closeModal = function() {
+            document.getElementById('applyModal').classList.remove('show');
+        };
+
+        // Event listeners
+        document.getElementById('btnFollow').addEventListener('click', async () => {
+            if (!currentUser) {
+                window.location.href = 'index.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            try {
+                await toggleFollowVenue(currentVenue.venueId, !isFollowing);
+                isFollowing = !isFollowing;
+                updateFollowButton();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        document.getElementById('btnApply').addEventListener('click', () => {
+            if (!currentUser) {
+                window.location.href = 'index.html?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+            document.getElementById('applyModal').classList.add('show');
+        });
+
+        document.getElementById('btnSubmitApplication').addEventListener('click', () => {
+            const message = document.getElementById('applicationMessage').value;
+            if (!message.trim()) {
+                alert('Por favor escribe un mensaje para tu postulación.');
+                return;
+            }
+            alert('¡Postulación enviada! El establecimiento se pondrá en contacto contigo.');
+            closeModal();
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user && currentVenue) checkFollowStatus();
+        });
+
+        loadVenue();
+
+        // Manejar click en el logo
+        document.getElementById('venueBrand').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const userId = localStorage.getItem('id');
+            const hasAuth = Object.keys(localStorage).some(key => key.startsWith('firebase:authUser:'));
+            
+            if (userId || hasAuth) {
+                window.location.href = 'home.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

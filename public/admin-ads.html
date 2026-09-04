@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Panel de Administración y Aprobación de Publicidad de Marcas - PROVIWEB">
+    <title>Admin Publicidad de Marcas - PROVIWEB</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #09090e;
+            --bg-secondary: #111119;
+            --bg-card: #151522;
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent-purple: #a855f7;
+            --accent-gold: #fbbf24;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .admin-topbar {
+            height: 58px;
+            background: rgba(18, 18, 26, 0.96);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .admin-header-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 123, 255, 0.1)), #13131f;
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .ad-review-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 18px;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            transition: all 0.2s;
+        }
+
+        @media (max-width: 850px) {
+            .ad-review-card { grid-template-columns: 1fr; }
+        }
+
+        .ad-preview-box {
+            background: #111118;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            transition: all 0.2s;
+        }
+        .btn-approve:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4); }
+
+        .btn-reject {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-reject:hover { background: rgba(239, 68, 68, 0.3); }
+    </style>
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+        <a href="home.html" class="btn-icon-action" style="text-decoration:none; padding:6px 12px; font-size:12px; font-weight:700; border-radius:10px; background:rgba(255,255,255,0.06); color:#fff; border:1px solid var(--border-glass);">← Ir al Inicio</a>
+        <div style="font-weight: 900; font-size: 15px; color: #fff;">🛡️ Consola Admin · Aprobación de Publicidad</div>
+        <div style="font-size: 11px; font-weight: 800; color: #4ade80; background: rgba(34, 197, 94, 0.15); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.3);">
+            Acceso Superadmin
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- HEADER -->
+        <div class="admin-header-card">
+            <div>
+                <span style="font-size:10px; font-weight:900; background:rgba(168,85,247,0.2); color:#c084fc; padding:2px 8px; border-radius:6px;">ADMIN DASHBOARD</span>
+                <h1 style="font-size: 20px; font-weight: 900; color: #fff; margin: 6px 0 4px;">
+                    Solicitudes de Publicidad de Marca
+                </h1>
+                <p style="font-size: 12.5px; color: var(--text-secondary);">
+                    Revisa los anuncios enviados por empresas y los comprobantes de pago de PayPal hacia <strong>viwebpro@gmail.com</strong>.
+                </p>
+            </div>
+            <div style="font-size: 38px;">⚖️</div>
+        </div>
+
+        <!-- PENDING ADS QUEUE -->
+        <h2 style="font-size: 15px; font-weight: 800; color: #fbbf24; margin-bottom: 14px; display:flex; align-items:center; gap:8px;">
+            <span>⏳</span><span>Anuncios Pendientes de Aprobación (<span id="pendingCount">0</span>)</span>
+        </h2>
+
+        <div id="pendingAdsList">
+            <div style="color: var(--text-secondary); font-size: 13px; padding: 40px; text-align: center; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-glass);">
+                Cargando solicitudes de publicidad...
+            </div>
+        </div>
+    </main>
+
+    <!-- FIREBASE INITIALIZATION & LOGIC -->
+    <script src="js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            auth.onAuthStateChanged(async (user) => {
+                loadPendingAds();
+            });
+
+            function loadPendingAds() {
+                const list = document.getElementById('pendingAdsList');
+                db.ref('BrandAds').on('value', (snap) => {
+                    const ads = [];
+                    snap.forEach(child => {
+                        ads.push({ id: child.key, ...child.val() });
+                    });
+
+                    const pending = ads.filter(a => a.status === 'pending_approval' || !a.status);
+                    document.getElementById('pendingCount').textContent = pending.length;
+
+                    if (pending.length === 0) {
+                        list.innerHTML = `
+                            <div style="color: var(--text-secondary); font-size: 13px; padding: 50px 20px; text-align: center; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-glass);">
+                                <div style="font-size: 36px; margin-bottom: 8px;">✅</div>
+                                <div style="font-weight: 800; font-size: 15px; color: #fff;">No hay anuncios pendientes de aprobación</div>
+                                <p style="font-size: 12px; margin-top: 4px;">Todas las solicitudes han sido procesadas.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    list.innerHTML = '';
+                    pending.reverse().forEach(ad => {
+                        const card = document.createElement('div');
+                        card.className = 'ad-review-card';
+
+                        card.innerHTML = `
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <img src="${ad.brandLogo || './assets/logotransparente-1dd37ce8.png'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid #fbbf24;">
+                                        <div>
+                                            <div style="font-weight:800; font-size:14px; color:#fff;">${ad.brandName || 'Marca Comercial'}</div>
+                                            <div style="font-size:11px; color:var(--text-secondary);">Plan: ${(ad.planType || 'PRO').toUpperCase()} · $${ad.priceUsd || 99} USD</div>
+                                        </div>
+                                    </div>
+                                    <span style="font-size:11px; font-weight:800; color:#fbbf24; background:rgba(251,191,36,0.15); padding:3px 8px; border-radius:6px;">
+                                        PP TX: ${ad.paypalTxId || 'PP-VERIFIED'}
+                                    </span>
+                                </div>
+
+                                <p style="font-size:13px; line-height:1.45; color:#f1f5f9; margin-bottom:12px;">
+                                    ${ad.text || 'Sin texto'}
+                                </p>
+
+                                <div style="font-size:12px; color:var(--text-secondary); background:#111118; padding:10px; border-radius:10px; margin-bottom:14px;">
+                                    <div>🔗 Botón CTA: <strong>${ad.actionTitle || 'Comprar Ahora'}</strong></div>
+                                    <div>🌐 Enlace de destino: <a href="${ad.actionUrl}" target="_blank" style="color:var(--accent-purple);">${ad.actionUrl}</a></div>
+                                    <div>📧 Pago dirigido a: <strong>viwebpro@gmail.com</strong></div>
+                                </div>
+
+                                <div style="display:flex; gap:10px;">
+                                    <button type="button" class="btn-approve" onclick="approveAd('${ad.id}', '${ad.durationDays || 15}')">
+                                        ✅ Aprobar & Publicar en Feed
+                                    </button>
+                                    <button type="button" class="btn-reject" onclick="rejectAd('${ad.id}')">
+                                        ❌ Rechazar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- MOCKUP PREVIEW -->
+                            <div class="ad-preview-box">
+                                <div style="font-size:11px; font-weight:800; color:#fbbf24; margin-bottom:8px;">PREVIEW DE LA MARCA</div>
+                                <div style="height:150px; background:#000; border-radius:10px; overflow:hidden; margin-bottom:8px; display:flex; align-items:center; justify-content:center;">
+                                    <img src="${ad.mediaUrl || './assets/backloginweb.png'}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div style="font-size:12px; font-weight:800; background:linear-gradient(135deg, #fbbf24, #ea580c); color:#000; padding:8px; border-radius:8px; text-align:center;">
+                                    ${ad.actionTitle || 'Ver Tienda'} ➜
+                                </div>
+                            </div>
+                        `;
+
+                        list.appendChild(card);
+                    });
+                });
+            }
+
+            
+            window.approveAd = async function(adId, days) {
+                const durationMs = parseInt(days) * 24 * 60 * 60 * 1000;
+                const startTime = Date.now();
+                const expiryTime = startTime + durationMs;
+
+                try {
+                    // 1. Update BrandAds node
+                    await db.ref(`BrandAds/${adId}`).update({
+                        status: 'active',
+                        startTime: startTime,
+                        expiryTime: expiryTime,
+                        approvedAt: Date.now(),
+                        approvedBy: 'admin'
+                    });
+
+                    // 2. Fetch Ad data
+                    const adSnap = await db.ref(`BrandAds/${adId}`).once('value');
+                    const ad = adSnap.val();
+
+                    // 3. Write into Posts node so every user sees it in their home feed
+                    const postKey = 'brand_post_' + Date.now();
+                    const postData = {
+                        pId: postKey,
+                        adId: adId,
+                        id: ad.brandUid || 'brand_admin',
+                        uid: ad.brandUid || 'brand_admin',
+                        uName: ad.brandName || 'Marca Patrocinada',
+                        uDp: ad.brandLogo || './assets/logotransparente-1dd37ce8.png',
+                        pTitle: ad.brandName || 'Marca PROVIWEB',
+                        pDescr: ad.text || '',
+                        pImage: ad.mediaUrl || '',
+                        pVideo: (ad.format === 'reel_vertical' || (ad.mediaUrl && ad.mediaUrl.endsWith('.mp4'))) ? ad.mediaUrl : 'noVideo',
+                        type: ad.format === 'reel_vertical' ? 'reel' : 'ads',
+                        pTime: Date.now().toString(),
+                        pLikes: 0,
+                        pComments: 0,
+                        promoted: true,
+                        isBrandAd: true,
+                        promoData: {
+                            promoId: adId,
+                            brandName: ad.brandName,
+                            actionTitle: ad.actionTitle || 'Más Información',
+                            actionUrl: ad.actionUrl || '#',
+                            expiryTime: expiryTime
+                        }
+                    };
+
+                    await db.ref(`Posts/${postKey}`).set(postData);
+                    await db.ref(`AdsPost/${adId}`).set({
+                        adKey: adId,
+                        pId: postKey,
+                        id: ad.brandUid,
+                        text: ad.text,
+                        image: ad.mediaUrl || '',
+                        video: postData.pVideo,
+                        pTime: Date.now().toString(),
+                        expiry: expiryTime.toString(),
+                        type: 'ads'
+                    });
+
+                    // If Reel, also insert into Reels node
+                    if (ad.format === 'reel_vertical') {
+                        const reelKey = 'reel_' + Date.now();
+                        await db.ref(`Reels/${reelKey}`).set({
+                            reelId: reelKey,
+                            uid: ad.brandUid,
+                            author: ad.brandName,
+                            authorPhoto: ad.brandLogo,
+                            description: ad.text,
+                            videoUrl: ad.mediaUrl,
+                            likes: 0,
+                            views: 0,
+                            timestamp: Date.now(),
+                            isBrandAd: true,
+                            actionTitle: ad.actionTitle,
+                            actionUrl: ad.actionUrl
+                        });
+                    }
+
+                    alert('🎉 ¡Anuncio de marca aprobado y publicado exitosamente en el Feed de PROVIWEB!');
+                } catch(e) {
+                    console.error('Error approving ad:', e);
+                    alert('Error al aprobar el anuncio: ' + e.message);
+                }
+            };
+
+
+            window.rejectAd = async function(adId) {
+                const reason = prompt('Indica el motivo del rechazo para notificar a la marca:', 'Inconsistencia en el comprobante o creativo');
+                if (!reason) return;
+
+                try {
+                    await db.ref(`BrandAds/${adId}`).update({
+                        status: 'rejected',
+                        rejectReason: reason,
+                        rejectedAt: Date.now()
+                    });
+                    alert('Anuncio rechazado.');
+                } catch(e) {
+                    console.error('Error rejecting ad:', e);
+                }
+            };
+        });
+    </script>
+</body>
+</html>

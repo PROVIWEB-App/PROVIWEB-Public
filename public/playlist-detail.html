@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Detalle de playlist">
+    <title>Playlist - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+        body { background: var(--bg-primary); background-attachment: fixed; color: var(--text-primary); }
+        .header { width:100%; display:flex; justify-content:space-between; align-items:center; padding:14px 24px; background: var(--bg-card); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); position:fixed; top:0; left:0; z-index:1000; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .header .brand { font-size:22px; font-weight:800; background: linear-gradient(135deg, var(--accent-purple), var(--primary-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .pl-shell { max-width: 900px; margin: 90px auto 60px; padding: 0 24px; }
+        .pl-hero { display: flex; gap: 24px; align-items: center; background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 24px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid var(--border-glass); margin-bottom: 24px; }
+        .pl-cover { width: 180px; height: 180px; border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(0,123,255,0.3)); flex-shrink: 0; }
+        .pl-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .pl-name { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
+        .pl-description { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+        .pl-share-code { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+        .pl-actions { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+        .pl-actions button { padding: 10px 18px; border-radius: 14px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+        .btn-back { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+        .btn-play-all { background: var(--gradient-primary); color: #fff; }
+        .btn-share { background: rgba(168,85,247,0.2); color: var(--accent-purple); }
+        .songs-section { margin-bottom: 28px; }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .songs-list { display: flex; flex-direction: column; gap: 8px; background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 16px; padding: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); border: 1px solid var(--border-glass); }
+        .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); font-size: 14px; background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid var(--border-glass); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">PROVIWEB</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+            <a href="mymusic.html" style="color:var(--text-primary);text-decoration:none;font-weight:600;">Música</a>
+            <img src="assets/perfilblue.png" alt="Perfil" style="width:36px;height:36px;cursor:pointer;border-radius:10px;" onclick="window.location.href='myprofile.html'">
+        </div>
+    </div>
+
+    <div class="pl-shell">
+        <div class="pl-hero">
+            <div class="pl-cover" id="playlistCover">📀</div>
+            <div style="flex:1;min-width:0;">
+                <h1 class="pl-name" id="playlistName">Playlist</h1>
+                <div class="pl-description" id="playlistDescription" style="display:none;"></div>
+                <div class="pl-share-code" id="shareCodeText" style="display:none;"></div>
+                <div class="pl-actions">
+                    <button type="button" class="btn-back" id="btnBack">← Volver</button>
+                    <button type="button" class="btn-play-all" id="btnPlayAll">▶ Reproducir todo</button>
+                    <button type="button" class="btn-share" id="btnShare">Compartir</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="songs-section">
+            <h2 class="section-title">Canciones</h2>
+            <div id="recyclerSongs" class="songs-list"></div>
+            <div id="emptySongs" class="empty-state" style="display:none;">No hay canciones en esta playlist.</div>
+        </section>
+    </div>
+
+    <script src="js/music-player-manager.js"></script>
+    <script src="js/music-adapters.js"></script>
+    <script src="js/music-firebase.js"></script>
+    <script type="module">
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js");
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const params = new URLSearchParams(window.location.search);
+        let playlistId = params.get('id');
+        const shareCode = params.get('code');
+
+        const playlistNameEl = document.getElementById('playlistName');
+        const playlistCoverEl = document.getElementById('playlistCover');
+        const playlistDescriptionEl = document.getElementById('playlistDescription');
+        const shareCodeTextEl = document.getElementById('shareCodeText');
+        const recyclerSongs = document.getElementById('recyclerSongs');
+        const emptySongs = document.getElementById('emptySongs');
+
+        let playlistData = null;
+        let songList = [];
+
+        function renderPlaylistInfo(pl) {
+            if (!pl) return;
+            playlistData = pl;
+            playlistNameEl.textContent = pl.name || 'Playlist';
+            if (pl.description) {
+                playlistDescriptionEl.textContent = pl.description;
+                playlistDescriptionEl.style.display = 'block';
+            }
+            if (pl.shareCode) {
+                shareCodeTextEl.textContent = 'Código para compartir: ' + pl.shareCode;
+                shareCodeTextEl.style.display = 'block';
+            }
+            if (pl.coverUrl) {
+                playlistCoverEl.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = pl.coverUrl;
+                img.alt = '';
+                playlistCoverEl.appendChild(img);
+            } else {
+                playlistCoverEl.textContent = '📀';
+            }
+        }
+
+        function renderSongs(list) {
+            songList = list || [];
+            if (songList.length === 0) {
+                recyclerSongs.innerHTML = '';
+                emptySongs.style.display = 'block';
+            } else {
+                emptySongs.style.display = 'none';
+                if (window.MusicAdapters && window.MusicAdapters.renderSongList) {
+                    window.MusicAdapters.renderSongList(recyclerSongs, songList, {
+                        songPageBase: 'song.html',
+                        useSongIdOnly: false,
+                        openSongPage: true
+                    });
+                } else {
+                    recyclerSongs.innerHTML = songList.map(s => `<div>${s.title} - ${s.artist}</div>`).join('');
+                }
+            }
+        }
+
+        function loadByCodeThenDetail(code, onDone) {
+            const MusicFirebase = window.MusicFirebase;
+            if (!MusicFirebase || !MusicFirebase.loadPlaylistByShareCode) {
+                if (onDone) onDone(null, []);
+                return;
+            }
+            MusicFirebase.loadPlaylistByShareCode(db, ref, get, code, (plId) => {
+                if (plId) doLoadPlaylistDetail(plId, onDone);
+                else if (onDone) onDone(null, []);
+            });
+        }
+
+        function doLoadPlaylistDetail(plId, onDone) {
+            const MusicFirebase = window.MusicFirebase;
+            if (!MusicFirebase || !MusicFirebase.loadPlaylistDetail) {
+                if (onDone) onDone(null, []);
+                return;
+            }
+            MusicFirebase.loadPlaylistDetail(db, ref, get, plId, (pl) => {
+                if (pl) renderPlaylistInfo(pl);
+            }, (songs) => {
+                renderSongs(songs);
+                if (onDone) onDone(playlistData, songs);
+            });
+        }
+
+        document.getElementById('btnBack').addEventListener('click', () => history.back());
+
+        document.getElementById('btnPlayAll').addEventListener('click', () => {
+            if (songList.length === 0) return;
+            const manager = window.MusicPlayerManager && window.MusicPlayerManager.getInstance();
+            if (manager) manager.play(songList[0], songList);
+            window.location.href = `song.html?id=${encodeURIComponent(songList[0].id)}`;
+        });
+
+        document.getElementById('btnShare').addEventListener('click', () => {
+            if (playlistData && playlistData.shareCode) {
+                const text = 'Escucha mi playlist en PROVIWEB. Código: ' + playlistData.shareCode + ' - ' + window.location.origin + '/playlist-detail.html?code=' + playlistData.shareCode;
+                if (navigator.share) {
+                    navigator.share({ title: playlistData.name || 'Playlist', text }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(text).then(() => alert('Código copiado. Comparte el enlace.'));
+                }
+            } else {
+                alert('No hay código de compartir para esta playlist.');
+            }
+        });
+
+        if (shareCode && !playlistId) {
+            loadByCodeThenDetail(shareCode, () => {});
+        } else if (playlistId) {
+            doLoadPlaylistDetail(playlistId, () => {});
+        } else {
+            playlistNameEl.textContent = 'Playlist no encontrada';
+            document.getElementById('emptySongs').style.display = 'block';
+            document.getElementById('emptySongs').textContent = 'Indica el id de la playlist (id=...) o el código (code=...).';
+        }
+    </script>
+</body>
+</html>

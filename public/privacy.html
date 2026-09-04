@@ -1,0 +1,856 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Política de privacidad">
+    <title>Política de privacidad - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+    --bg-primary: #0f0f13;
+    --bg-secondary: #16161d;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6b6b7b;
+    --accent-purple: #a855f7;
+    --accent-blue: #007BFF;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --border-radius: 16px;
+    --border-radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+        
+        /* Aurora background animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+            animation: aurora 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes aurora {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(2%, 2%) rotate(2deg); }
+            50% { transform: translate(-1%, 3%) rotate(-1deg); }
+            75% { transform: translate(3%, -2%) rotate(1deg); }
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+        
+        /* Header */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 19, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .app-header-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .app-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .app-nav a:hover {
+            color: var(--text-primary);
+        }
+        
+        .app-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+        }
+        
+        .app-nav a:hover::after { width: 100%; }
+        
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent-purple);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 8px 0;
+        }
+        .skip-link:focus { top: 0; }
+        
+        /* Main container */
+        .legal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Glass card */
+        .legal-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--glass-shadow);
+        }
+        
+        /* Hero section */
+        .legal-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .legal-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .legal-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .legal-chip {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .legal-lead {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-subtitle {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            line-height: 1.7;
+        }
+        
+        /* Table of contents */
+        .legal-toc {
+            background: rgba(28, 28, 36, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 5;
+        }
+        
+        .legal-toc h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legal-toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .legal-toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+        
+        .legal-toc a:hover {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        
+        .legal-section-icon {
+            margin-right: 0.5rem;
+            color: var(--accent-purple);
+        }
+        
+        /* Content sections */
+        .legal-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            scroll-margin-top: 120px;
+        }
+        
+        .legal-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legal-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-card ul {
+            margin: 1rem 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .legal-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .legal-card strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .legal-card a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .legal-card a:hover {
+            color: var(--accent-pink);
+            text-decoration: underline;
+        }
+        
+        /* Highlight box */
+        .legal-highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.08) 100%);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .legal-highlight-box p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        
+        .legal-highlight-box strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* App notice */
+        .legal-app-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(52, 168, 83, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+            border: 1px solid rgba(52, 168, 83, 0.3);
+            border-radius: 12px;
+        }
+        
+        .legal-app-notice-icon { font-size: 1.5rem; }
+        
+        .legal-app-notice p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Back to top button */
+        .legal-back-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .legal-back-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .legal-back-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Footer */
+        .app-footer {
+            background: rgba(15, 15, 19, 0.9);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-header-bar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .app-nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .legal-container {
+                padding: 140px 1rem 2rem;
+            }
+            
+            .legal-card {
+                padding: 1.5rem;
+            }
+            
+            .legal-title {
+                font-size: 1.75rem;
+            }
+            
+            .legal-toc {
+                position: relative;
+                top: 0;
+            }
+            
+            .legal-toc ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+    
+    <header class="app-header">
+        <div class="app-header-bar">
+            <a href="index.html" class="app-brand">PROVIWEB</a>
+            <nav class="app-nav">
+                <a href="index.html">Iniciar sesión</a>
+                <a href="register.html">Registro</a>
+                <a href="index.html">Inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-container" id="mainContent">
+        <section class="legal-card">
+            <div class="legal-hero">
+                <h1 class="legal-title">Política de privacidad</h1>
+                <div class="legal-meta">
+                    <span class="legal-chip">Documento legal</span>
+                    <span class="legal-chip">Última actualización: 4 de febrero de 2026</span>
+                </div>
+                <p class="legal-lead">
+                    En <strong>PROVIWEB</strong>, entendemos que la privacidad y la protección de los datos personales
+                    son fundamentales para construir una comunidad digital confiable, profesional y segura.
+                </p>
+                <p class="legal-subtitle">
+                    Esta Política de Privacidad describe de manera detallada cómo recopilamos, usamos, almacenamos,
+                    protegemos y compartimos la información cuando utilizas nuestra plataforma, ya sea a través de la
+                    aplicación móvil, el sitio web o cualquier otro servicio asociado.
+                </p>
+                <p class="legal-subtitle">
+                    Al registrarte, acceder o utilizar PROVIWEB, aceptas expresamente las prácticas descritas en esta
+                    Política de Privacidad.
+                </p>
+            </div>
+
+            <nav class="legal-toc" aria-label="Contenido de la política de privacidad">
+                <h2>📋 Contenido</h2>
+                <ul>
+                    <li><a href="#quienes-somos"><span class="legal-section-icon">1.</span> Quiénes somos</a></li>
+                    <li><a href="#alcance"><span class="legal-section-icon">2.</span> Alcance (web y app)</a></li>
+                    <li><a href="#seguridad-bienestar"><span class="legal-section-icon">3.</span> Seguridad, integridad y bienestar</a></li>
+                    <li><a href="#informacion"><span class="legal-section-icon">4.</span> Información que recopilamos</a></li>
+                    <li><a href="#finalidades"><span class="legal-section-icon">5.</span> Finalidades y uso</a></li>
+                    <li><a href="#derechos"><span class="legal-section-icon">14.</span> Derechos (RGPD / LOPD)</a></li>
+                    <li><a href="#app-google-play"><span class="legal-section-icon">17.</span> App móvil y Google Play</a></li>
+                    <li><a href="#contacto"><span class="legal-section-icon">20.</span> Contacto y DPD</a></li>
+                </ul>
+            </nav>
+
+            <h2 id="quienes-somos">1. Quiénes somos</h2>
+            <p>
+                <strong>PROVIWEB</strong> es una plataforma digital especializada en el sector artístico y musical,
+                creada para facilitar la visibilidad, conexión profesional, formación y acceso a oportunidades
+                laborales para artistas de distintas disciplinas.
+            </p>
+            <p>Responsables del tratamiento de datos:</p>
+            <ul>
+                <li><strong>Israel Rodríguez</strong> – Fundador</li>
+                <li><strong>José Camargo</strong> – Cofundador</li>
+            </ul>
+            <p>
+                PROVIWEB actúa como responsable del tratamiento de los datos personales conforme a la legislación
+                aplicable.
+            </p>
+
+            <h2 id="alcance">2. Alcance de esta política (web y app)</h2>
+            <p>Esta Política de Privacidad aplica a:</p>
+            <ul>
+                <li>Usuarios registrados y no registrados</li>
+                <li>Artistas, músicos, gestores culturales y reclutadores</li>
+                <li>Uso de la <strong>aplicación móvil</strong> (Android, distribuida en Google Play) y del <strong>sitio web</strong></li>
+                <li>Interacciones, publicaciones, mensajes y comunicaciones dentro de la plataforma</li>
+            </ul>
+            <p>
+                No aplica a servicios externos que puedan integrarse o enlazarse desde PROVIWEB (redes sociales externas, reproductores de terceros, etc.).
+            </p>
+
+            <h2 id="seguridad-bienestar">3. Seguridad, integridad y bienestar en la comunidad</h2>
+            <p>
+                En PROVIWEB utilizamos la información necesaria para <strong>promover la seguridad, la integridad y el bienestar</strong> de nuestra comunidad de artistas y músicos.
+            </p>
+            <div class="legal-highlight-box">
+                <p><strong>Seguridad de la plataforma</strong></p>
+                <p>Detectamos y prevenimos fraudes, abusos, suplantación de identidad y uso indebido de la plataforma. Los datos de actividad y de cuenta se utilizan para proteger a todos los usuarios y a la integridad del servicio.</p>
+            </div>
+            <p><strong>Bienestar psicológico y social</strong></p>
+            <ul>
+                <li>No fomentamos ni permitimos contenido que atente contra la dignidad, la salud mental o la seguridad emocional de las personas.</li>
+                <li>Ofrecemos herramientas para reportar contenido inapropiado, acoso o conductas que afecten el bienestar de la comunidad.</li>
+                <li>Los reportes se tratan de forma confidencial y se utilizan únicamente para moderación y mejora del entorno.</li>
+            </ul>
+            <p>
+                La información utilizada con estos fines se limita a lo estrictamente necesario y se alinea con las leyes de protección de datos (RGPD, LOPD y normativa aplicable en tu país).
+            </p>
+
+            <h2 id="informacion">4. Información que recopilamos</h2>
+            <h3>3.1 Información proporcionada directamente por el usuario</h3>
+            <p>
+                Al crear una cuenta o utilizar PROVIWEB, podemos recopilar:
+            </p>
+            <ul>
+                <li>Nombre completo y/o nombre artístico</li>
+                <li>Dirección de correo electrónico</li>
+                <li>Fotografía de perfil</li>
+                <li>Biografía, trayectoria artística y habilidades</li>
+                <li>Ciudad y país</li>
+                <li>Contenido publicado (imágenes, videos, audios, textos, comentarios)</li>
+                <li>Información relacionada con convocatorias, vacantes u oportunidades publicadas</li>
+                <li>Mensajes enviados dentro de la plataforma</li>
+            </ul>
+
+            <h3>3.2 Información recopilada automáticamente</h3>
+            <p>
+                Cuando utilizas PROVIWEB, recopilamos información técnica y de uso, como:
+            </p>
+            <ul>
+                <li>Identificadores únicos de usuario</li>
+                <li>Dirección IP (tratada de forma anonimizada cuando sea posible)</li>
+                <li>Tipo de dispositivo, sistema operativo y versión</li>
+                <li>Fecha y hora de acceso</li>
+                <li>Interacciones con publicaciones y funcionalidades</li>
+                <li>Registros de actividad para seguridad y mejora del servicio</li>
+            </ul>
+
+            <h3>3.3 Información de terceros</h3>
+            <p>Podemos recibir información limitada de terceros cuando:</p>
+            <ul>
+                <li>Te registras usando servicios de autenticación externa</li>
+                <li>Utilizamos servicios de infraestructura, analítica o almacenamiento</li>
+            </ul>
+
+            <h2>4. Información sensible</h2>
+            <p>
+                PROVIWEB <strong>no solicita ni almacena información sensible</strong>, como:
+            </p>
+            <ul>
+                <li>Datos financieros o bancarios</li>
+                <li>Información médica o de salud</li>
+                <li>Datos biométricos</li>
+                <li>Información sobre orientación política, religiosa o sexual</li>
+            </ul>
+
+            <h2 id="finalidades">5. Finalidades del tratamiento de datos</h2>
+            <p>Utilizamos la información para:</p>
+            <ul>
+                <li>Crear, administrar y mantener cuentas de usuario</li>
+                <li>Permitir la interacción entre miembros de la comunidad</li>
+                <li>Mostrar perfiles y contenido artístico</li>
+                <li>Facilitar la publicación y acceso a oportunidades laborales</li>
+                <li>Garantizar la seguridad y prevención de fraudes</li>
+                <li>Mejorar funcionalidades y experiencia de usuario</li>
+                <li>Cumplir obligaciones legales y regulatorias</li>
+                <li>Comunicaciones relacionadas con el servicio</li>
+            </ul>
+
+            <h2>6. Base legal del tratamiento</h2>
+            <p>El tratamiento de datos se realiza con base en:</p>
+            <ul>
+                <li>El consentimiento otorgado por el usuario</li>
+                <li>La ejecución de los servicios ofrecidos por PROVIWEB</li>
+                <li>El cumplimiento de obligaciones legales</li>
+                <li>El interés legítimo en mantener una plataforma segura y funcional</li>
+            </ul>
+
+            <h2>7. Contenido generado por usuarios</h2>
+            <p>
+                El contenido que publiques en PROVIWEB puede ser visible para otros usuarios según la configuración de
+                tu perfil.
+            </p>
+            <p>
+                Al publicar contenido, otorgas a PROVIWEB una licencia no exclusiva para mostrarlo, almacenarlo y
+                distribuirlo dentro de la plataforma con fines operativos y promocionales del servicio.
+            </p>
+            <p>PROVIWEB no reclama propiedad sobre tu contenido.</p>
+
+            <h2>8. Comunicaciones y mensajería</h2>
+            <p>Las comunicaciones entre usuarios pueden ser almacenadas para:</p>
+            <ul>
+                <li>Garantizar el funcionamiento del servicio</li>
+                <li>Prevenir abusos o actividades ilegales</li>
+                <li>Cumplir requerimientos legales</li>
+            </ul>
+            <p>
+                PROVIWEB no monitorea activamente los mensajes privados salvo en casos necesarios.
+            </p>
+
+            <h2>9. Compartición de información</h2>
+            <p>PROVIWEB no vende ni alquila datos personales.</p>
+            <p>Podemos compartir información únicamente cuando:</p>
+            <ul>
+                <li>Sea necesario para el funcionamiento técnico del servicio</li>
+                <li>Exista una obligación legal</li>
+                <li>El usuario otorgue consentimiento explícito</li>
+                <li>Sea requerido para proteger derechos, seguridad o integridad de la plataforma</li>
+            </ul>
+
+            <h2>10. Proveedores y servicios externos</h2>
+            <p>PROVIWEB utiliza servicios de terceros para:</p>
+            <ul>
+                <li>Autenticación de usuarios</li>
+                <li>Almacenamiento de datos</li>
+                <li>Analítica y rendimiento</li>
+                <li>Publicidad (cuando aplique)</li>
+            </ul>
+            <p>
+                Estos proveedores están sujetos a obligaciones de confidencialidad y protección de datos.
+            </p>
+
+            <h2>11. Publicidad y monetización</h2>
+            <p>
+                PROVIWEB puede mostrar anuncios u ofrecer servicios promocionales.
+            </p>
+            <p>
+                La información utilizada para publicidad se maneja conforme a las políticas de los proveedores y las
+                opciones de consentimiento del usuario.
+            </p>
+
+            <h2>12. Cookies y tecnologías similares</h2>
+            <p>Utilizamos cookies y tecnologías similares para:</p>
+            <ul>
+                <li>Mantener sesiones activas</li>
+                <li>Analizar uso de la plataforma</li>
+                <li>Mejorar rendimiento y personalización</li>
+            </ul>
+            <p>
+                El usuario puede gestionar las cookies desde su navegador o dispositivo.
+            </p>
+
+            <h2>13. Conservación de la información</h2>
+            <p>Los datos se conservan mientras:</p>
+            <ul>
+                <li>La cuenta esté activa</li>
+                <li>Sea necesario para prestar el servicio</li>
+                <li>Exista una obligación legal</li>
+            </ul>
+            <p>
+                Al eliminar una cuenta, la información será eliminada o anonimizada salvo requerimientos legales.
+            </p>
+
+            <h2 id="derechos">14. Derechos de los usuarios (RGPD, LOPD y normativa aplicable)</h2>
+            <p>
+                De conformidad con el <strong>Reglamento (UE) 2016/679 (RGPD)</strong>, la <strong>Ley Orgánica 3/2018 (LOPD)</strong> española y la normativa de protección de datos aplicable en tu país (incluida Colombia y demás territorios donde se utilice el servicio), tienes derecho a:
+            </p>
+            <ul>
+                <li><strong>Acceso</strong>: conocer qué datos tratamos y obtener una copia</li>
+                <li><strong>Rectificación</strong>: corregir datos inexactos o incompletos</li>
+                <li><strong>Supresión ("derecho al olvido")</strong>: solicitar la eliminación de tus datos cuando la ley lo permita</li>
+                <li><strong>Limitación del tratamiento</strong>: en los supuestos legalmente previstos</li>
+                <li><strong>Portabilidad</strong>: recibir tus datos en formato estructurado y de uso común</li>
+                <li><strong>Oposición</strong>: oponerte a determinados tratamientos</li>
+                <li><strong>Retirar el consentimiento</strong>: en cualquier momento, sin que afecte a la licitud del tratamiento previo</li>
+            </ul>
+            <p>
+                Las solicitudes pueden realizarse a través de los canales oficiales de PROVIWEB (ver sección <a href="#contacto">Contacto</a>). Tienes también derecho a presentar una reclamación ante la autoridad de control de protección de datos de tu país.
+            </p>
+
+            <h2>15. Seguridad de la información</h2>
+            <p>
+                Aplicamos medidas técnicas y organizativas razonables para proteger los datos personales.
+            </p>
+            <p>
+                No obstante, ningún sistema es completamente seguro.
+            </p>
+
+            <h2>16. Usuarios menores de edad</h2>
+            <p>PROVIWEB no está dirigida a menores de edad.</p>
+            <p>
+                Si detectamos información de menores sin autorización legal, será eliminada.
+            </p>
+
+            <h2 id="app-google-play">17. Aplicación móvil y Google Play</h2>
+            <p>
+                La aplicación PROVIWEB para Android está disponible (o estará disponible) en <strong>Google Play</strong>. Cumplimos con los requisitos de transparencia y declaración de datos exigidos por Google para desarrolladores.
+            </p>
+            <p><strong>Declaración de datos (Data safety)</strong></p>
+            <ul>
+                <li>Declaramos en la ficha de la aplicación los tipos de datos que la app recopila o comparte (identificadores, datos de cuenta, contenido que creas, etc.).</li>
+                <li>Si la app utiliza SDKs o bibliotecas de terceros que recopilan o comparten datos, ello se refleja en nuestra declaración y en esta política.</li>
+                <li>No vendemos datos personales. Cualquier uso para publicidad o analítica se realiza conforme a esta política y a las opciones de consentimiento del usuario.</li>
+            </ul>
+            <p><strong>Datos recopilados por la app</strong></p>
+            <p>
+                La aplicación móvil puede recopilar los mismos tipos de información descritos en la sección "Información que recopilamos" (datos de cuenta, contenido que publicas, identificadores de dispositivo para seguridad y funcionamiento, datos de uso). Los permisos del dispositivo (almacenamiento, cámara, micrófono, cuando apliquen) se solicitan solo cuando son necesarios para las funciones que el usuario elige utilizar (subir fotos, grabar audio, etc.).
+            </p>
+            <p>
+                Esta Política de Privacidad es el documento de referencia tanto para el sitio web como para la app en Google Play. El enlace a esta política se incluye en la ficha de la aplicación en Google Play.
+            </p>
+
+            <h2>Otras secciones (resumen)</h2>
+            <p>
+                <strong>Transferencias internacionales:</strong> La información puede ser almacenada en servidores en distintos países, con garantías adecuadas de protección (cláusulas tipo, decisiones de adecuación, etc.) según la normativa aplicable.
+            </p>
+            <p>
+                <strong>Enlaces externos:</strong> PROVIWEB no se responsabiliza por las políticas de privacidad de sitios o servicios de terceros enlazados desde la plataforma.
+            </p>
+            <p>
+                <strong>Cambios:</strong> Podemos actualizar esta Política en cualquier momento. Los cambios relevantes se notificarán en la plataforma (web y/o app). El uso continuado tras la publicación implica la aceptación de la nueva versión.
+            </p>
+
+            <h2 id="contacto">20. Contacto y Delegado de Protección de Datos</h2>
+            <p>
+                Para ejercer tus derechos, reportar incidencias o consultas sobre privacidad y protección de datos:
+            </p>
+            <ul>
+                <li>Utiliza los canales oficiales de PROVIWEB (formulario de contacto, correo indicado en la app o en el sitio web).</li>
+                <li>Para cuestiones específicas de protección de datos, puedes dirigirte al responsable del tratamiento o al Delegado de Protección de Datos (DPD), cuando esté designado, a través de los mismos canales oficiales.</li>
+            </ul>
+            <p>
+                Responsables del tratamiento: <strong>Israel Rodríguez</strong> (Fundador) y <strong>José Camargo</strong> (Cofundador). PROVIWEB actúa como responsable del tratamiento conforme a la legislación aplicable.
+            </p>
+
+            <p style="margin-top:2rem;">
+                <strong>PROVIWEB</strong><br>
+                Un ecosistema digital para artistas, construido con responsabilidad, transparencia y respeto por la
+                privacidad.
+            </p>
+        </section>
+    </main>
+    
+    <button type="button" class="legal-back-top" id="legalBackTop" aria-label="Volver arriba">↑</button>
+    
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">PROVIWEB</div>
+                <p class="footer-text">Un ecosistema digital para artistas, construido con responsabilidad, transparencia y respeto por la privacidad.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="privacy.html">Política de Privacidad</a>
+                <a href="terms.html">Términos y Condiciones</a>
+                <a href="estandares-csae.html">Seguridad infantil / Estándares CSAE</a>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <a href="index.html">Inicio</a>
+                <a href="index.html">Iniciar sesión</a>
+                <a href="register.html">Registro</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 PROVIWEB. Todos los derechos reservados.
+        </div>
+    </footer>
+    
+    <script>
+        (function() {
+            var btn = document.getElementById('legalBackTop');
+            if (!btn) return;
+            function toggle() {
+                btn.classList.toggle('visible', window.scrollY > 400);
+            }
+            window.addEventListener('scroll', toggle, { passive: true });
+            btn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        })();
+    </script>
+</body>
+</html>

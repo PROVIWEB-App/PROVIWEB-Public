@@ -1,0 +1,459 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+
+    "Users": {
+      ".indexOn": ["email", "username"],
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth.uid == $uid",
+        ".validate": "newData.hasChildren(['username','email']) && newData.child('username').isString() && newData.child('email').isString()"
+      }
+    },
+
+    "Carnetfundar": {
+      ".indexOn": ["codigoUnico", "nombreNormalizado", "venueId"],
+      "$carnetId": {
+        ".read": true,
+        ".write": "!data.exists() && newData.hasChildren(['key','createdAt','updatedAt','nombre','nombreNormalizado','cedula','ipsEps','nucleoFamiliar','telefono','direccion','tipoSangre','musico','agrupacion','numeroCarnet','codigoUnico','foto','paymentStatus','paymentProvider','paymentReference','paymentAmountCop']) && newData.child('key').isString() && newData.child('nombre').isString() && newData.child('nombreNormalizado').isString() && newData.child('codigoUnico').isString() && newData.child('foto').isString()"
+      }
+    },
+
+    "Admin": {
+      "$uid": {
+        ".read": "auth.uid == $uid || root.child('Admin').child(auth.uid).exists()",
+        ".write": "root.child('Admin').child(auth.uid).exists()"
+      }
+    },
+
+    "Ally": {
+      "$uid": {
+        ".read": "auth.uid == $uid || root.child('Ally').child(auth.uid).exists()",
+        ".write": "root.child('Admin').child(auth.uid).exists()"
+      }
+    },
+
+    "Posts": {
+      ".read": true,
+      ".indexOn": ["pTime", "userId", "timestamp"],
+      "$postId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() == auth.uid)",
+        "Views": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "Comments": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "Likes": {
+          ".read": true,
+          ".write": "auth != null"
+        }
+      }
+    },
+
+    "Reels": {
+      ".read": true,
+      ".indexOn": ["pTime", "timestamp", "userId"],
+      "$reelId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() == auth.uid)"
+      }
+    },
+
+    "Series": {
+      ".read": true,
+      ".indexOn": ["timestamp", "userId"],
+      "$seriesId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() == auth.uid)"
+      }
+    },
+
+    "Stories": {
+      ".read": "auth != null",
+      ".indexOn": ["timestamp", "userId"],
+      "$storyId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('userId').val() == auth.uid)",
+        "Views": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+
+    "Songs": {
+      ".read": true,
+      ".indexOn": ["artistId", "timestamp", "genre"],
+      "$songId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('artistId').val() == auth.uid)"
+      }
+    },
+
+    "Art": {
+      ".read": true,
+      ".indexOn": ["artistId", "timestamp"],
+      "$artId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('artistId').val() == auth.uid)"
+      }
+    },
+
+    "Marketplace": {
+      ".read": true,
+      ".indexOn": ["timestamp", "sellerId", "category"],
+      "$productId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('sellerId').val() == auth.uid)"
+      }
+    },
+
+    "Followers": {
+      "$uid": {
+        "$followerUid": {
+          ".read": "auth != null",
+          ".write": "auth.uid == $followerUid"
+        }
+      }
+    },
+
+    "Following": {
+      "$uid": {
+        "$followingUid": {
+          ".read": "auth != null",
+          ".write": "auth.uid == $uid"
+        }
+      }
+    },
+
+    "Chats": {
+      "$chatId": {
+        ".read": "auth != null && data.child('members').child(auth.uid).exists()",
+        ".write": "auth != null && data.child('members').child(auth.uid).exists()"
+      }
+    },
+
+    "Balance": {
+      "$uid": {
+        ".read": "auth.uid == $uid || root.child('Admin').child(auth.uid).exists()",
+        ".write": "root.child('Admin').child(auth.uid).exists() || root.child('Ally').child(auth.uid).exists()"
+      }
+    },
+
+    "BalanceRequests": {
+      "$requestId": {
+        ".read": "auth.uid == data.child('from').val() || auth.uid == data.child('to').val()",
+        ".write": "auth != null && newData.child('from').val() == auth.uid",
+        ".validate": "newData.hasChildren(['from','to','amount','timestamp']) && newData.child('amount').isNumber() && newData.child('amount').val() > 0"
+      }
+    },
+
+    "BalanceEnviado": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "root.child('Admin').child(auth.uid).exists() || root.child('Ally').child(auth.uid).exists()"
+      }
+    },
+
+    "Enviado": {
+      "$uid": {
+        ".read": "auth.uid == $uid",
+        ".write": "root.child('Admin').child(auth.uid).exists() || root.child('Ally').child(auth.uid).exists()"
+      }
+    },
+
+    "Transactions": {
+      "$uid": {
+        ".read": "auth.uid == $uid || root.child('Admin').child(auth.uid).exists()",
+        ".write": "root.child('Admin').child(auth.uid).exists() || root.child('Ally').child(auth.uid).exists()"
+      }
+    },
+
+    "Games": {
+      "Leaderboard": {
+        ".read": true,
+        ".indexOn": ["totalScore"],
+        "$uid": {
+          ".write": "auth.uid == $uid || root.child('Admin').child(auth.uid).exists()"
+        }
+      },
+      "Tournaments": {
+        "$tournamentId": {
+          "Seasons": {
+            "$seasonId": {
+              "Players": {
+                ".indexOn": ["totalScore"]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "ReportPost": {
+      ".read": "root.child('Admin').child(auth.uid).exists()",
+      ".write": "auth != null"
+    },
+
+    "ReportReel": {
+      ".read": "root.child('Admin').child(auth.uid).exists()",
+      ".write": "auth != null"
+    },
+
+    "ReportUser": {
+      ".read": "root.child('Admin').child(auth.uid).exists()",
+      ".write": "auth != null"
+    },
+
+    "Code": {
+      ".read": true,
+      ".write": "root.child('Admin').child(auth.uid).exists() || root.child('Ally').child(auth.uid).exists()"
+    },
+
+    "LoginCodes": { ".read": false, ".write": false 
+    },
+    "RateLimitSend": { ".read": false, ".write": false 
+    },
+    "RateLimitSendIP": { ".read": false, ".write": false 
+    },
+    "TwoFactorSecrets": { ".read": false, ".write": false 
+    },
+    "PendingPhone": { ".read": false, ".write": false 
+    },
+    "LoginCodesByUid": { ".read": false, ".write": false 
+    },
+    "RateLimitSmsUid": { ".read": false, ".write": false 
+    },
+    "RateLimitSmsIP": { ".read": false, ".write": false 
+    },
+
+    "Stats": {
+      ".read": true,
+      ".write": "root.child('Admin').child(auth.uid).exists()"
+    },
+
+    "Public": {
+      ".read": true,
+      ".write": "root.child('Admin').child(auth.uid).exists()"
+    },
+
+    "LiveMusicVenues": {
+      ".indexOn": ["slug", "venueType", "status", "plan/type", "location/city", "location/geohash", "stats/averageRating", "ownerUid"],
+      
+      "$venueId": {
+        ".read": true,
+        ".write": "auth != null && ( !data.exists() || data.child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        ".validate": "newData.hasChildren(['name', 'venueType', 'ownerUid']) && newData.child('name').isString() && newData.child('name').val().length >= 2 && newData.child('venueType').isString() && newData.child('ownerUid').isString()"
+      }
+    },
+
+    "VenueEvents": {
+      ".indexOn": ["startDate", "status", "isPublic", "isFeatured", "eventType"],
+      
+      "$venueId": {
+        ".read": true,
+        ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$eventId": {
+          ".read": true,
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "VenueCalls": {
+      ".indexOn": ["status", "applicationDeadline", "payment/type", "createdAt"],
+      
+      "$venueId": {
+        ".read": true,
+        ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$callId": {
+          ".read": true,
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          ".validate": "newData.hasChildren(['title', 'status']) && newData.child('title').isString() && newData.child('title').val().length >= 5"
+        }
+      }
+    },
+
+    "CallApplications": {
+      ".indexOn": ["artistId", "status", "createdAt"],
+      
+      "$callId": {
+        ".read": "auth != null",
+        
+        "$applicationId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child(data.child('venueId').val()).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() || data.child('artistId').val() == auth.uid )",
+          
+          ".write": "auth != null && ( !data.exists() || newData.child('artistId').val() == auth.uid || root.child('Admin').child(auth.uid).exists() || (data.exists() && root.child('LiveMusicVenues').child(data.child('venueId').val()).child('ownerUid').val() == auth.uid) || (!data.exists() && root.child('LiveMusicVenues').child(newData.child('venueId').val()).child('ownerUid').val() == auth.uid) )",
+          
+          ".validate": "newData.hasChildren(['artistId', 'status']) && newData.child('artistId').isString()"
+        }
+      }
+    },
+
+    "VenueReviews": {
+      ".indexOn": ["authorId", "createdAt", "isPublic", "ratings/overall"],
+      
+      "$venueId": {
+        ".read": true,
+        
+        "$reviewId": {
+          ".read": true,
+          ".write": "auth != null && ( !data.exists() || data.child('authorId').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".validate": "newData.hasChildren(['authorId', 'ratings', 'title']) && newData.child('authorId').isString() && newData.child('title').isString() && newData.child('title').val().length >= 3"
+        }
+      }
+    },
+
+    "ArtistReviewsByVenue": {
+      ".indexOn": ["venueId", "createdAt", "ratings/overall"],
+      
+      "$artistId": {
+        ".read": "auth != null",
+        
+        "$reviewId": {
+          ".read": "auth != null",
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child(newData.child('venueId').val()).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "VenueFollowers": {
+      "$venueId": {
+        ".read": true,
+        
+        "$userId": {
+          ".read": "auth != null",
+          ".write": "auth.uid == $userId"
+        }
+      }
+    },
+
+    "UserFollowedVenues": {
+      "$userId": {
+        ".read": "auth.uid == $userId",
+        
+        "$venueId": {
+          ".read": "auth.uid == $userId",
+          ".write": "auth.uid == $userId"
+        }
+      }
+    },
+
+    "VenueFavoriteArtists": {
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$artistId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "VenueNotifications": {
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$notificationId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "UserVenueRoles": {
+      ".indexOn": ["venueId", "userId"],
+      
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$userId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || $userId == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "VenueEmployees": {
+      ".indexOn": ["venueId", "employeeId", "status", "role"],
+      
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$employeeId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || data.child('userId').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".validate": "newData.hasChildren(['fullName', 'role', 'status']) && newData.child('fullName').isString() && newData.child('role').isString()"
+        }
+      }
+    },
+
+    "VenueEmployeeCards": {
+      ".indexOn": ["venueId", "employeeId", "cardNumber", "qrCode"],
+      
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$employeeId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || data.child('userId').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+        }
+      }
+    },
+
+    "VenueAttendance": {
+      ".indexOn": ["venueId", "employeeId", "timestamp", "type"],
+      
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        "$attendanceId": {
+          ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+          
+          ".write": "auth != null",
+          
+          ".validate": "newData.hasChildren(['employeeId', 'type', 'timestamp', 'scannedBy']) && newData.child('type').val() == 'entry' || newData.child('type').val() == 'exit'"
+        }
+      }
+    },
+
+    "VenueCardTemplates": {
+      "$venueId": {
+        ".read": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )",
+        
+        ".write": "auth != null && ( root.child('LiveMusicVenues').child($venueId).child('ownerUid').val() == auth.uid || root.child('Admin').child(auth.uid).exists() )"
+      }
+    },
+
+    "FundarEmploymentHistory": {
+      ".indexOn": ["carnetId", "startDate", "endDate", "venueId"],
+      "$recordId": {
+        ".read": true,
+        ".write": "auth != null && ( ( newData.child('carnetId').isString() && root.child('Carnetfundar').child(newData.child('carnetId').val()).exists() && ( !newData.child('carnetCode').exists() || root.child('Carnetfundar').child(newData.child('carnetId').val()).child('codigoUnico').val() == newData.child('carnetCode').val() ) ) || root.child('Admin').child(auth.uid).exists() )"
+      }
+    },
+
+    "FundarArtistCredentials": {
+      ".indexOn": ["carnetId", "verified", "credentialType"],
+      "$credentialId": {
+        ".read": true,
+        ".write": "auth != null && ( ( newData.child('carnetId').isString() && root.child('Carnetfundar').child(newData.child('carnetId').val()).exists() && ( !newData.child('carnetCode').exists() || root.child('Carnetfundar').child(newData.child('carnetId').val()).child('codigoUnico').val() == newData.child('carnetCode').val() ) ) || root.child('Admin').child(auth.uid).exists() )"
+      }
+    }
+  }
+}
+

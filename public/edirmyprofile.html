@@ -1,0 +1,738 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar Perfil - PROVIWEB</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link rel="stylesheet" href="style.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+        --bg-primary: #0f0f13;
+        --bg-secondary: #16161d;
+        --bg-card: rgba(28, 28, 36, 0.7);
+        --bg-glass: rgba(255, 255, 255, 0.05);
+        --border-glass: rgba(255, 255, 255, 0.1);
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0b0;
+        --text-muted: #6b6b7b;
+        --accent-purple: #a855f7;
+        --accent-blue: #007BFF;
+        --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-primary);
+        background-attachment: fixed;
+        color: var(--text-primary);
+        animation: fadeIn 0.5s ease-out;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Aurora Background */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 50%, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+        animation: aurora 20s ease-in-out infinite;
+    }
+
+    @keyframes aurora {
+        0%, 100% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+        33% {
+            opacity: 0.8;
+            transform: translate(2%, 2%) scale(1.02);
+        }
+        66% {
+            opacity: 0.9;
+            transform: translate(-1%, 1%) scale(0.98);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 70px;
+        background: var(--bg-card);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid var(--border-glass);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        z-index: 100;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .header:hover {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .header h1 {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .header button {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-glass);
+        color: var(--accent-blue);
+        font-size: 28px;
+        cursor: pointer;
+        padding: 8px 14px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .header button:hover {
+        background: rgba(0, 123, 255, 0.2);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    .profile-container {
+        max-width: 900px;
+        margin: 80px auto 50px;
+        padding: 0 15px;
+    }
+
+    .profile-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-glass);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        opacity: 0.6;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .cover {
+        width: 100%;
+        height: 220px;
+        position: relative;
+        background: var(--bg-secondary);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .cover:hover img {
+        transform: scale(1.05);
+    }
+
+    .cover button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--gradient-primary);
+        color: var(--text-primary);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
+    }
+
+    .cover button:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid var(--bg-card);
+        position: absolute;
+        bottom: -60px;
+        left: 30px;
+        background: var(--bg-secondary);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-photo:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-photo img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .edit-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+        background: var(--gradient-primary);
+        color: var(--text-primary);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
+    }
+
+    .edit-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-info {
+        padding: 80px 25px 25px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .profile-info label {
+        font-weight: 500;
+        color: var(--accent-blue);
+        margin-bottom: 3px;
+    }
+
+    .profile-info input,
+    .profile-info select,
+    .profile-info textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid var(--border-glass);
+        font-size: 16px;
+        transition: border 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+        background: var(--bg-glass);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .profile-info input::placeholder,
+    .profile-info textarea::placeholder {
+        color: var(--text-muted);
+    }
+
+    .profile-info input:focus,
+    .profile-info select:focus,
+    .profile-info textarea:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    }
+
+    .profile-info textarea {
+        resize: none;
+        min-height: 90px;
+    }
+
+    .profile-info select option {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    .ally-only {
+        display: none;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid var(--border-glass);
+        background: var(--bg-glass);
+        margin-top: 8px;
+    }
+
+    .ally-only h3 {
+        margin: 0 0 10px;
+        color: var(--accent-blue);
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .btn {
+        background: var(--gradient-primary);
+        color: var(--text-primary);
+        border: none;
+        padding: 12px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 10px;
+        align-self: flex-start;
+        transition: transform 0.2s, box-shadow 0.2s;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    }
+
+    #saveMessage {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--bg-card);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--border-glass);
+        padding: 25px 35px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        min-width: 250px;
+        color: var(--text-primary);
+    }
+
+    #saveMessage div {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    #progressBar {
+        width: 100%;
+        height: 12px;
+        background: var(--bg-glass);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-glass);
+    }
+
+    #progress {
+        height: 100%;
+        width: 0%;
+        background: var(--gradient-primary);
+        transition: width 0.3s ease;
+    }
+
+    @media(max-width: 600px) {
+        .profile-photo { left: calc(50% - 60px); bottom: -60px; }
+        .profile-info { padding: 80px 15px 25px 15px; }
+    }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<div class="header">
+    <h1 id="headerTitle">Editar Perfil</h1>
+    <button onclick="window.location.href='home.html'">&times;</button>
+</div>
+
+<div class="profile-container" id="mainContent">
+    <div class="profile-card">
+
+        <div class="cover" id="coverContainer">
+            <p id="firstTimeHint" style="display:none; margin:0; padding:12px 20px; background:rgba(0,123,255,0.15); color:#007BFF; font-weight:600; border-radius:12px; position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:2;">Sube tu foto de perfil y portada (luego irás al inicio)</p>
+            <img id="cover" src="assets/cover-placeholder.jpg" alt="Cover">
+            <button id="changeCoverBtn">Cambiar Cover</button>
+
+            <div class="profile-photo" id="profilePhoto">
+                <img src="assets/profile-assets/avatar.png" alt="Profile">
+                <button id="changePhotoBtn" class="edit-btn">✎</button>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <label for="nameInput">Nombre</label>
+            <input type="text" id="nameInput" placeholder="Nombre completo">
+
+            <label for="usernameInput">Username</label>
+            <input type="text" id="usernameInput" placeholder="@username">
+
+            <label for="bioInput">Biografía</label>
+            <textarea id="bioInput" placeholder="Escribe tu biografía"></textarea>
+
+            <label for="locationInput">Ubicación</label>
+            <input type="text" id="locationInput" placeholder="Ciudad / País">
+
+            <label for="instrumentInput" id="instrumentLabel">Instrumento</label>
+            <input type="text" id="instrumentInput" placeholder="Instrumento principal">
+
+            <label for="genreInput" id="genreLabel">Género</label>
+            <input type="text" id="genreInput" placeholder="Género musical">
+
+            <label for="linkInput">Link</label>
+            <input type="text" id="linkInput" placeholder="URL o redes">
+
+            <div class="ally-only" id="allySection">
+                <h3>Perfil de aliado PROVIWEB</h3>
+
+                <label for="allyEntityInput">Entidad aliada</label>
+                <input type="text" id="allyEntityInput" placeholder="Nombre de la entidad">
+
+                <label for="allyContactRoleInput">Cargo del contacto</label>
+                <input type="text" id="allyContactRoleInput" placeholder="Dirección / Coordinación / Marketing">
+
+                <label for="allyTypeInput">Tipo de aliado</label>
+                <select id="allyTypeInput">
+                    <option value="">Selecciona</option>
+                    <option value="marca">Marca comercial</option>
+                    <option value="fundacion">Fundación</option>
+                    <option value="institucion">Institución educativa</option>
+                    <option value="productora">Productora / agencia</option>
+                    <option value="publica">Entidad pública cultural</option>
+                    <option value="empresa">Empresa cultural privada</option>
+                </select>
+
+                <label for="allyFocusInput">Objetivo principal de alianza</label>
+                <select id="allyFocusInput">
+                    <option value="">Selecciona</option>
+                    <option value="branding">Branding y posicionamiento</option>
+                    <option value="empleabilidad">Empleabilidad y convocatorias</option>
+                    <option value="formacion">Formación y contenidos</option>
+                    <option value="co-marketing">Co-marketing y comunidad</option>
+                </select>
+
+                <label for="allyRoleInput">Rol asignado</label>
+                <input type="text" id="allyRoleInput" placeholder="ALLY_*" readonly>
+
+                <label for="allyBadgeInput">Distintivo</label>
+                <input type="text" id="allyBadgeInput" placeholder="Aliado ..." readonly>
+
+                <label for="allyProposalInput">Resumen de propuesta de alianza</label>
+                <textarea id="allyProposalInput" placeholder="Describe alcance, campañas o necesidades de la alianza"></textarea>
+            </div>
+
+            <button id="saveBtn" class="btn">Guardar Cambios</button>
+            <button id="skipBtn" class="btn" style="display:none; background:#6c757d; margin-left:8px;">Omitir por ahora</button>
+        </div>
+
+    </div>
+</div>
+
+<div id="saveMessage">
+    <div>Guardando Información...</div>
+    <div id="progressBar"><div id="progress"></div></div>
+</div>
+
+<script type="module">
+// Firebase imports y configuración (igual que antes)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+  authDomain: "proviweb-d8764.firebaseapp.com",
+  databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+  projectId: "proviweb-d8764",
+  storageBucket: "proviweb-d8764.appspot.com",
+  messagingSenderId: "475963980955",
+  appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+  measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+// Inputs y elementos
+const nameInput = document.getElementById('nameInput');
+const usernameInput = document.getElementById('usernameInput');
+const bioInput = document.getElementById('bioInput');
+const locationInput = document.getElementById('locationInput');
+const instrumentInput = document.getElementById('instrumentInput');
+const genreInput = document.getElementById('genreInput');
+const linkInput = document.getElementById('linkInput');
+const instrumentLabel = document.getElementById('instrumentLabel');
+const genreLabel = document.getElementById('genreLabel');
+const allySection = document.getElementById('allySection');
+const allyEntityInput = document.getElementById('allyEntityInput');
+const allyContactRoleInput = document.getElementById('allyContactRoleInput');
+const allyTypeInput = document.getElementById('allyTypeInput');
+const allyFocusInput = document.getElementById('allyFocusInput');
+const allyRoleInput = document.getElementById('allyRoleInput');
+const allyBadgeInput = document.getElementById('allyBadgeInput');
+const allyProposalInput = document.getElementById('allyProposalInput');
+
+const coverEl = document.getElementById('cover');
+const profilePhotoEl = document.querySelector('#profilePhoto img');
+
+const changePhotoBtn = document.getElementById('changePhotoBtn');
+const changeCoverBtn = document.getElementById('changeCoverBtn');
+const saveBtn = document.getElementById('saveBtn');
+const skipBtn = document.getElementById('skipBtn');
+
+const saveMessage = document.getElementById('saveMessage');
+const progress = document.getElementById('progress');
+
+let newPhotoFile = null;
+let newCoverFile = null;
+let isAllyProfile = new URLSearchParams(window.location.search).get('ally') === '1';
+
+const ALLY_ROLE_MAP = {
+    marca: { role: 'ALLY_BRAND', badge: 'Aliado Comercial' },
+    fundacion: { role: 'ALLY_FOUNDATION', badge: 'Aliado Social' },
+    institucion: { role: 'ALLY_EDUCATION', badge: 'Aliado Académico' },
+    productora: { role: 'ALLY_PRODUCTION', badge: 'Aliado Producción' },
+    publica: { role: 'ALLY_PUBLIC_ENTITY', badge: 'Aliado Institucional' },
+    empresa: { role: 'ALLY_CULTURAL_COMPANY', badge: 'Aliado Estratégico' }
+};
+
+if (allyTypeInput) {
+    allyTypeInput.addEventListener('change', () => {
+        const selected = ALLY_ROLE_MAP[allyTypeInput.value];
+        if (!selected) return;
+        allyRoleInput.value = selected.role;
+        allyBadgeInput.value = selected.badge;
+    });
+}
+
+const isFirstTime = new URLSearchParams(window.location.search).get('firstTime') === '1';
+if (isFirstTime) {
+    const headerTitle = document.getElementById('headerTitle');
+    const firstTimeHint = document.getElementById('firstTimeHint');
+    if (headerTitle) headerTitle.textContent = 'Completa tu perfil';
+    if (firstTimeHint) firstTimeHint.style.display = 'block';
+    if (saveBtn) saveBtn.textContent = 'Guardar e ir a Inicio';
+    if (skipBtn) skipBtn.style.display = 'inline-block';
+}
+if (skipBtn) {
+    skipBtn.addEventListener('click', () => { window.location.href = 'home.html'; });
+}
+
+// Cargar datos actuales
+onAuthStateChanged(auth, user=>{
+    if(!user){ window.location.href='index.html'; return; }
+    const uid = user.uid;
+    const userRef = ref(db,'Users/'+uid);
+    onValue(userRef,snapshot=>{
+        if(snapshot.exists()){
+            const data = snapshot.val();
+            isAllyProfile = data.accountType === 'ally' || data.organizaton === 'Aliado' || isAllyProfile;
+            nameInput.value = data.name || '';
+            usernameInput.value = data.username || '';
+            bioInput.value = data.bio || '';
+            locationInput.value = data.location || '';
+            instrumentInput.value = data.instrument || '';
+            genreInput.value = data.generoMusic || '';
+            linkInput.value = data.link || '';
+            if (isAllyProfile) {
+                if (allySection) allySection.style.display = 'block';
+                if (instrumentInput) instrumentInput.style.display = 'none';
+                if (genreInput) genreInput.style.display = 'none';
+                if (instrumentLabel) instrumentLabel.style.display = 'none';
+                if (genreLabel) genreLabel.style.display = 'none';
+                allyEntityInput.value = data.organizationName || '';
+                allyContactRoleInput.value = data.organizationRole || '';
+                allyTypeInput.value = data.allyType || '';
+                allyFocusInput.value = data.allyFocus || '';
+                allyRoleInput.value = data.allyRole || '';
+                allyBadgeInput.value = data.allyBadge || '';
+            }
+            if(data.photo) profilePhotoEl.src = data.photo;
+            if(data.cover) coverEl.src = data.cover;
+        }
+    });
+
+    const allyRef = ref(db, 'Allies/' + uid);
+    onValue(allyRef, (allySnap) => {
+        if (!allySnap.exists()) return;
+        const allyData = allySnap.val();
+        if (allyProposalInput) allyProposalInput.value = allyData.proposal || '';
+        if (allyEntityInput && !allyEntityInput.value) allyEntityInput.value = allyData.entityName || '';
+        if (allyContactRoleInput && !allyContactRoleInput.value) allyContactRoleInput.value = allyData.contactRole || '';
+        if (allyTypeInput && !allyTypeInput.value) allyTypeInput.value = allyData.allyType || '';
+        if (allyFocusInput && !allyFocusInput.value) allyFocusInput.value = allyData.allyFocus || '';
+        if (allyRoleInput && !allyRoleInput.value) allyRoleInput.value = allyData.allyRole || '';
+        if (allyBadgeInput && !allyBadgeInput.value) allyBadgeInput.value = allyData.allyBadge || '';
+    });
+});
+
+// Cambiar foto de perfil
+changePhotoBtn.addEventListener('click', ()=>{
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = e => {
+        newPhotoFile = e.target.files[0];
+        if(newPhotoFile) profilePhotoEl.src = URL.createObjectURL(newPhotoFile);
+    };
+    input.click();
+});
+
+// Cambiar cover
+changeCoverBtn.addEventListener('click', ()=>{
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = e => {
+        newCoverFile = e.target.files[0];
+        if(newCoverFile) coverEl.src = URL.createObjectURL(newCoverFile);
+    };
+    input.click();
+});
+
+// Animar progress bar
+function animateProgress(to, duration=1000){
+    return new Promise(res=>{
+        let start = parseFloat(progress.style.width) || 0;
+        const diff = to - start;
+        const startTime = performance.now();
+        function animate(time){
+            const elapsed = time - startTime;
+            const percent = Math.min(elapsed/duration,1);
+            progress.style.width = (start + diff*percent)+'%';
+            if(percent<1) requestAnimationFrame(animate);
+            else res();
+        }
+        requestAnimationFrame(animate);
+    });
+}
+
+// Guardar cambios
+saveBtn.addEventListener('click', async ()=>{
+    saveMessage.style.display='block';
+    progress.style.width='0%';
+
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const uid = user.uid;
+    const updates = {
+        name: nameInput.value,
+        username: usernameInput.value,
+        bio: bioInput.value,
+        location: locationInput.value,
+        instrument: instrumentInput.value,
+        generoMusic: genreInput.value,
+        link: linkInput.value
+    };
+
+    if (isAllyProfile) {
+        updates.accountType = 'ally';
+        updates.organizaton = 'Aliado';
+        updates.organizationName = allyEntityInput.value;
+        updates.organizationRole = allyContactRoleInput.value;
+        updates.allyType = allyTypeInput.value;
+        updates.allyFocus = allyFocusInput.value;
+        updates.allyRole = allyRoleInput.value;
+        updates.allyBadge = allyBadgeInput.value;
+    }
+
+    try {
+        if(newPhotoFile){
+            const photoRef = sRef(storage, `Users/${uid}/profile.jpg`);
+            await uploadBytes(photoRef, newPhotoFile);
+            updates.photo = await getDownloadURL(photoRef);
+        }
+        await animateProgress(40);
+
+        if(newCoverFile){
+            const coverRef = sRef(storage, `Users/${uid}/cover.jpg`);
+            await uploadBytes(coverRef, newCoverFile);
+            const coverURL = await getDownloadURL(coverRef);
+            updates.cover = coverURL;
+            await set(ref(db, 'Cover/' + uid), { type: 'image', uri: coverURL });
+        }
+        await animateProgress(70);
+
+        await update(ref(db,'Users/'+uid), updates);
+        if (isAllyProfile) {
+            await update(ref(db, 'Allies/' + uid), {
+                entityName: allyEntityInput.value,
+                contactRole: allyContactRoleInput.value,
+                allyType: allyTypeInput.value,
+                allyFocus: allyFocusInput.value,
+                allyRole: allyRoleInput.value,
+                allyBadge: allyBadgeInput.value,
+                proposal: allyProposalInput.value,
+                updatedAt: new Date().toISOString()
+            });
+        }
+        await animateProgress(100);
+
+        setTimeout(()=>{ window.location.href='home.html'; }, 500);
+    } catch(err){
+        console.error(err);
+        alert('Error al guardar los cambios.');
+        saveMessage.style.display='none';
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Profesor y Maestro de Música con Inteligencia Artificial">
+    <title>Profesor de Música IA - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(22, 22, 32, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --border-radius: 16px;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .prof-container {
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-glass);
+            border-right: 1px solid var(--border-glass);
+        }
+
+        /* Header */
+        .prof-header {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .prof-brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prof-avatar-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .prof-title {
+            font-size: 18px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .prof-status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin-right: 4px;
+        }
+
+        /* Tabs */
+        .prof-tabs-bar {
+            display: flex;
+            padding: 10px 20px 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-glass);
+            gap: 12px;
+        }
+
+        .prof-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 16px 12px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .prof-tab-btn.active {
+            color: #ffffff;
+        }
+
+        .prof-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Section Container */
+        .prof-content-section {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .prof-content-section.active {
+            display: flex;
+        }
+
+        /* Chat Area */
+        .chat-stream-box {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 10px 0 20px;
+            max-height: calc(100vh - 270px);
+        }
+
+        .chat-bubble {
+            max-width: 82%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+        }
+
+        .chat-bubble.teacher {
+            align-self: flex-start;
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #ffffff;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.student {
+            align-self: flex-end;
+            background: var(--gradient-primary);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .speech-btn-play {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chips-topic-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: none;
+        }
+
+        .chips-topic-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .topic-chip-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .topic-chip-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            color: #ffffff;
+            border-color: var(--accent-purple);
+        }
+
+        /* Input Controls */
+        .chat-input-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            margin-top: 10px;
+        }
+
+        .chat-text-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .icon-action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .icon-action-btn.active-mic {
+            background: #ef4444;
+            animation: pulseMic 1.2s infinite;
+            border-color: transparent;
+        }
+
+        @keyframes pulseMic {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 16px rgba(239, 68, 68, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 0 rgba(239, 68, 68, 0.5); }
+        }
+
+        /* Practice Studio Tab */
+        .practice-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .target-note-display {
+            font-size: 48px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 10px 0;
+            letter-spacing: -1px;
+        }
+
+        .pitch-meter-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            position: relative;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .pitch-meter-indicator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 14px;
+            background: #22c55e;
+            border-radius: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: left 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+        }
+
+        .feedback-pill {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+        }
+
+        .feedback-pill.in-tune {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .feedback-pill.sharp {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .feedback-pill.flat {
+            background: rgba(56, 189, 248, 0.2);
+            color: #7dd3fc;
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="prof-container">
+        <!-- Top Header -->
+        <header class="prof-header">
+            <div class="prof-brand-box">
+                <a href="home.html" style="text-decoration:none; color:var(--text-secondary); font-size:18px; margin-right:4px;">←</a>
+                <div class="prof-avatar-badge">🎻</div>
+                <div>
+                    <h1 class="prof-title">Profesor de Música IA</h1>
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        <span class="prof-status-dot"></span>Maestro en línea
+                    </div>
+                </div>
+            </div>
+            <a href="home.html" style="color:var(--text-secondary); text-decoration:none; font-size:13px; font-weight:600;">Inicio</a>
+        </header>
+
+        <!-- Tabs -->
+        <div class="prof-tabs-bar">
+            <button type="button" class="prof-tab-btn active" id="tabChatBtn">💬 Diálogo Pedagógico</button>
+            <button type="button" class="prof-tab-btn" id="tabPracticeBtn">🎯 Estudio y Evaluación</button>
+        </div>
+
+        <!-- TAB 1: CONVERSACIÓN CON EL MAESTRO -->
+        <section class="prof-content-section active" id="secChat">
+            <div class="chat-stream-box" id="chatStream">
+                <div class="chat-bubble teacher">
+                    <div><strong>Maestro PROVIWEB:</strong></div>
+                    <div style="margin-top: 4px;">¡Saludos, colega músico! Soy tu Maestro de Música con Inteligencia Artificial. Puedo guiarte en armonía, técnica instrumental (violín, guitarra, piano, voz), lectura de partituras, afinación, análisis de obras y consejos para dominar el escenario. ¿En qué trabajaremos hoy?</div>
+                    <button type="button" class="speech-btn-play" onclick="speakText(this.previousElementSibling.textContent)">🔊 Escuchar</button>
+                </div>
+            </div>
+
+            <!-- Chips de temas rápidos -->
+            <div class="chips-topic-row">
+                <button type="button" class="topic-chip-btn" data-prompt="¿Cómo mejorar el agarre del arco y el sonido en el violín?">🎻 Agarre de arco</button>
+                <button type="button" class="topic-chip-btn" data-prompt="Explícame la escala menor armónica y cómo usarla en improvisación">🎼 Escala menor armónica</button>
+                <button type="button" class="topic-chip-btn" data-prompt="Dame 3 ejercicios de calentamiento y respiración diafragmática para cantantes">🎤 Calentamiento vocal</button>
+                <button type="button" class="topic-chip-btn" data-prompt="¿Cómo construir acordes con séptima y tensiones 9na y 11na?">🎹 Acordes con 7ma</button>
+                <button type="button" class="topic-chip-btn" data-prompt="¿Qué técnicas recomiendas para controlar los nervios y el miedo escénico?">🧘 Miedo escénico</button>
+            </div>
+
+            <!-- Input Bar -->
+            <form id="chatForm" class="chat-input-bar">
+                <input type="text" id="chatInput" class="chat-text-input" placeholder="Pregunta sobre armonía, técnica, ejercicios..." autocomplete="off">
+                <button type="button" id="micBtn" class="icon-action-btn" title="Hablar por micrófono">🎙️</button>
+                <button type="submit" id="sendBtn" class="icon-action-btn" style="background:var(--gradient-primary); color:#fff;" title="Enviar">➜</button>
+            </form>
+        </section>
+
+        <!-- TAB 2: ESTUDIO DE PRÁCTICA Y AFINACIÓN EN VIVO -->
+        <section class="prof-content-section" id="secPractice">
+            <div class="practice-card">
+                <div style="font-size: 14px; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; margin-bottom: 6px;">Evaluación y Oído en Tiempo Real</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Selecciona un ejercicio y toca o canta en tu micrófono. El Maestro evaluará tu afinación nota a nota.</div>
+
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <select id="exerciseSelect" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); color:#fff; padding:10px 16px; border-radius:12px; font-weight:600; outline:none;">
+                        <option value="c_major">Escala de Do Mayor (C Major)</option>
+                        <option value="g_major">Escala de Sol Mayor (G Major)</option>
+                        <option value="d_minor_harm">Escala de Re Menor Armónica</option>
+                        <option value="a_pentatonic">Escala Pentatónica de La Menor</option>
+                        <option value="arpeggio_c">Arpegio de Do Mayor (C - E - G - C)</option>
+                        <option value="free_tune">Afinación Libre / Nota Individual</option>
+                    </select>
+
+                    <button type="button" id="startPracticeBtn" class="btn-primary-action" style="padding:10px 22px; border-radius:12px; font-weight:700; background:var(--gradient-primary); border:none; color:#fff; cursor:pointer;">▶ Comenzar Ejercicio</button>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-glass); border-radius:16px; padding:20px; margin-top:10px;">
+                    <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">Nota Objetivo</div>
+                    <div class="target-note-display" id="targetNoteDisplay">DO (C4)</div>
+                    <div style="font-size:14px; color:var(--accent-blue);" id="targetFreqDisplay">261.63 Hz</div>
+
+                    <!-- Medidor visual de afinación -->
+                    <div class="pitch-meter-bar">
+                        <div class="pitch-meter-indicator" id="pitchMeterNeedle"></div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); padding:0 4px; margin-bottom:14px;">
+                        <span>♭ -50 Cents (Bajo)</span>
+                        <span>0 (Afinado)</span>
+                        <span>♯ +50 Cents (Alto)</span>
+                    </div>
+
+                    <div id="liveFeedbackPill" class="feedback-pill">Esperando nota del micrófono...</div>
+                </div>
+
+                <!-- Resumen de Precisión -->
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:20px;">
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); padding:12px; border-radius:12px;">
+                        <div style="font-size:11px; color:var(--text-secondary);">Precisión</div>
+                        <div style="font-size:22px; font-weight:800; color:#4ade80;" id="scoreAccuracy">100%</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); padding:12px; border-radius:12px;">
+                        <div style="font-size:11px; color:var(--text-secondary);">Notas Correctas</div>
+                        <div style="font-size:22px; font-weight:800;" id="scoreNotes">0 / 8</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); padding:12px; border-radius:12px;">
+                        <div style="font-size:11px; color:var(--text-secondary);">Tiempo</div>
+                        <div style="font-size:22px; font-weight:800; color:#38bdf8;" id="scoreTime">0:00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav" aria-label="Navegación Móvil">
+        <a href="home.html" class="mobile-nav-tab" id="mobileNavHome"><span class="tab-icon">🏠</span><span>Inicio</span></a>
+        <a href="reels.html" class="mobile-nav-tab" id="mobileNavReels"><span class="tab-icon">🎬</span><span>Reels</span></a>
+        <a href="createpost.html" class="mobile-nav-tab tab-create-btn" id="mobileNavCreate"><div class="tab-create-circle">➕</div></a>
+        <a href="opportunities.html" class="mobile-nav-tab" id="mobileNavOpp"><span class="tab-icon">💼</span><span>Empleos</span></a>
+        <a href="createchat.html" class="mobile-nav-tab" id="mobileNavChat"><span class="tab-icon">💬</span><span>Chats</span></a>
+        <a href="myprofile.html" class="mobile-nav-tab" id="mobileNavProfile"><span class="tab-icon">👤</span><span>Perfil</span></a>
+    </nav>
+
+    <!-- SCRIPTS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+        });
+
+        // 1. TABS SWITCHER
+        const tabChatBtn = document.getElementById('tabChatBtn');
+        const tabPracticeBtn = document.getElementById('tabPracticeBtn');
+        const secChat = document.getElementById('secChat');
+        const secPractice = document.getElementById('secPractice');
+
+        tabChatBtn.addEventListener('click', () => {
+            tabChatBtn.classList.add('active');
+            tabPracticeBtn.classList.remove('active');
+            secChat.classList.add('active');
+            secPractice.classList.remove('active');
+        });
+
+        tabPracticeBtn.addEventListener('click', () => {
+            tabPracticeBtn.classList.add('active');
+            tabChatBtn.classList.remove('active');
+            secPractice.classList.add('active');
+            secChat.classList.remove('active');
+        });
+
+        // 2. CONVERSACIÓN PEDAGÓGICA CON EL MAESTRO IA
+        const chatStream = document.getElementById('chatStream');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const micBtn = document.getElementById('micBtn');
+
+        // Text-to-speech
+        window.speakText = function(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.0;
+            window.speechSynthesis.speak(utterance);
+        };
+
+        // Speech-to-text
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.lang = 'es-ES';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                chatInput.value = transcript;
+                micBtn.classList.remove('active-mic');
+                sendMessage(transcript);
+            };
+
+            recognition.onerror = () => {
+                micBtn.classList.remove('active-mic');
+            };
+
+            recognition.onend = () => {
+                micBtn.classList.remove('active-mic');
+            };
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (!recognition) {
+                alert('El reconocimiento de voz no está soportado en este navegador.');
+                return;
+            }
+            if (micBtn.classList.contains('active-mic')) {
+                recognition.stop();
+                micBtn.classList.remove('active-mic');
+            } else {
+                recognition.start();
+                micBtn.classList.add('active-mic');
+            }
+        });
+
+        // Knowledge Base & Prompt Processing
+        const MAESTRO_PROMPT = `Eres el Maestro de Música de PROVIWEB, un pedagogo musical de élite, empático, cálido y riguroso.
+Dominas violín, piano, guitarra, técnica vocal, armonía clásica y moderna, lectura a primera vista y preparación psicológica para conciertos.
+Responde en español de forma inspiradora, didáctica, con ejemplos claros y estructurados en viñetas si es necesario.`;
+
+        const GEMINI_API_KEY = "AIzaSyD7NtzZt707c3S9d-LoAjZOtgjm5gK9g4g";
+
+        async function fetchAIResponse(userPrompt) {
+            // Intento con Gemini API
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: 'user', parts: [{ text: `${MAESTRO_PROMPT}\n\nPregunta del alumno: ${userPrompt}` }] }
+                        ]
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text;
+                }
+            } catch(e) {
+                console.warn('Fallback a Maestro Core autónomo:', e);
+            }
+
+            // Fallback Autónomo de respuestas pedagógicas
+            return generateLocalPedagogicalResponse(userPrompt);
+        }
+
+        function generateLocalPedagogicalResponse(prompt) {
+            const p = prompt.toLowerCase();
+            if (p.includes('arco') || p.includes('violín') || p.includes('violin')) {
+                return "🎻 **Técnica del Arco:** Mantén los dedos de la mano derecha flexibles, especialmente el meñique curvado sobre la vara para equilibrar el peso. El pulgar debe permanecer relajado frente al dedo medio. Divide el arco imaginariamente en tres partes (talón, medio y punta) y busca una velocidad constante con el punto de contacto entre el puente y el diapasón.";
+            }
+            if (p.includes('respiración') || p.includes('canto') || p.includes('vocal') || p.includes('voz')) {
+                return "🎤 **Técnica Vocal y Apoyo:** La respiración debe ser costo-diafragmática: al inhalar, expande las costillas bajas sin elevar los hombros. Practica con el sonido 'S' sostenido durante 20 a 30 segundos para regular la presión de aire y mantener el paladar blando elevado como en un bostezo.";
+            }
+            if (p.includes('armónica') || p.includes('escala') || p.includes('armonica')) {
+                return "🎼 **Escalas y Modos:** La escala menor armónica eleva el VII grado para crear una sensible a medio tono de la tónica (ejemplo en La menor: La-Si-Do-Re-Mi-Fa-Sol#-La). Ese intervalo de 2da aumentada entre el VI y VII grado le da su característico color melancólico y místico.";
+            }
+            if (p.includes('miedo') || p.includes('nervios') || p.includes('escénico')) {
+                return "🧘 **Confianza Escénica:** Los nervios son adrenalina y energía concentrada. Antes de subir al escenario, realiza 4 respiraciones cuadradas (inhala en 4s, retén 4s, exhala 4s, retén 4s). Enfoca tu mente en el mensaje de la música y no en el juicio del público.";
+            }
+            return `🎼 Excelente pregunta sobre "${prompt}". En la práctica musical, la constancia diaria y el estudio lento con metrónomo son la clave para consolidar la memoria muscular y auditiva. Trabaja siempre con atención plena en la relajación física y la afinación precisa.`;
+        }
+
+        async function sendMessage(text) {
+            if (!text.trim()) return;
+
+            // Renderizar burbuja del alumno
+            const studentBubble = document.createElement('div');
+            studentBubble.className = 'chat-bubble student';
+            studentBubble.textContent = text;
+            chatStream.appendChild(studentBubble);
+            chatInput.value = '';
+            chatStream.scrollTop = chatStream.scrollHeight;
+
+            // Burbuja de carga del Maestro
+            const teacherBubble = document.createElement('div');
+            teacherBubble.className = 'chat-bubble teacher';
+            teacherBubble.innerHTML = '<em>El Maestro está reflexionando...</em>';
+            chatStream.appendChild(teacherBubble);
+            chatStream.scrollTop = chatStream.scrollHeight;
+
+            const aiReply = await fetchAIResponse(text);
+            teacherBubble.innerHTML = `
+                <div><strong>Maestro PROVIWEB:</strong></div>
+                <div style="margin-top: 4px;">${aiReply.replace(/\n/g, '<br>')}</div>
+                <button type="button" class="speech-btn-play">🔊 Escuchar</button>
+            `;
+
+            teacherBubble.querySelector('.speech-btn-play').addEventListener('click', () => {
+                speakText(aiReply.replace(/[*_#]/g, ''));
+            });
+
+            chatStream.scrollTop = chatStream.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendMessage(chatInput.value);
+        });
+
+        document.querySelectorAll('.topic-chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const prompt = btn.dataset.prompt;
+                sendMessage(prompt);
+            });
+        });
+
+        // 3. ESTUDIO DE EVALUACIÓN Y AFINACIÓN EN VIVO (Web Audio API)
+        const EXERCISES = {
+            c_major: [
+                { note: 'DO', eng: 'C4', freq: 261.63 },
+                { note: 'RE', eng: 'D4', freq: 293.66 },
+                { note: 'MI', eng: 'E4', freq: 329.63 },
+                { note: 'FA', eng: 'F4', freq: 349.23 },
+                { note: 'SOL', eng: 'G4', freq: 392.00 },
+                { note: 'LA', eng: 'A4', freq: 440.00 },
+                { note: 'SI', eng: 'B4', freq: 493.88 },
+                { note: 'DO', eng: 'C5', freq: 523.25 }
+            ],
+            g_major: [
+                { note: 'SOL', eng: 'G3', freq: 196.00 },
+                { note: 'LA', eng: 'A3', freq: 220.00 },
+                { note: 'SI', eng: 'B3', freq: 246.94 },
+                { note: 'DO', eng: 'C4', freq: 261.63 },
+                { note: 'RE', eng: 'D4', freq: 293.66 },
+                { note: 'MI', eng: 'E4', freq: 329.63 },
+                { note: 'FA#', eng: 'F#4', freq: 369.99 },
+                { note: 'SOL', eng: 'G4', freq: 392.00 }
+            ],
+            d_minor_harm: [
+                { note: 'RE', eng: 'D4', freq: 293.66 },
+                { note: 'MI', eng: 'E4', freq: 329.63 },
+                { note: 'FA', eng: 'F4', freq: 349.23 },
+                { note: 'SOL', eng: 'G4', freq: 392.00 },
+                { note: 'LA', eng: 'A4', freq: 440.00 },
+                { note: 'SI♭', eng: 'Bb4', freq: 466.16 },
+                { note: 'DO#', eng: 'C#5', freq: 554.37 },
+                { note: 'RE', eng: 'D5', freq: 587.33 }
+            ],
+            a_pentatonic: [
+                { note: 'LA', eng: 'A3', freq: 220.00 },
+                { note: 'DO', eng: 'C4', freq: 261.63 },
+                { note: 'RE', eng: 'D4', freq: 293.66 },
+                { note: 'MI', eng: 'E4', freq: 329.63 },
+                { note: 'SOL', eng: 'G4', freq: 392.00 },
+                { note: 'LA', eng: 'A4', freq: 440.00 }
+            ],
+            arpeggio_c: [
+                { note: 'DO', eng: 'C4', freq: 261.63 },
+                { note: 'MI', eng: 'E4', freq: 329.63 },
+                { note: 'SOL', eng: 'G4', freq: 392.00 },
+                { note: 'DO', eng: 'C5', freq: 523.25 }
+            ],
+            free_tune: [
+                { note: 'LA', eng: 'A4', freq: 440.00 }
+            ]
+        };
+
+        let currentSequence = EXERCISES.c_major;
+        let currentNoteIndex = 0;
+        let isPracticing = false;
+        let audioContext = null;
+        let analyser = null;
+        let micStream = null;
+        let correctNotesCount = 0;
+        let totalEvaluations = 0;
+        let startTime = 0;
+        let timerInterval = null;
+
+        const startPracticeBtn = document.getElementById('startPracticeBtn');
+        const exerciseSelect = document.getElementById('exerciseSelect');
+        const targetNoteDisplay = document.getElementById('targetNoteDisplay');
+        const targetFreqDisplay = document.getElementById('targetFreqDisplay');
+        const pitchMeterNeedle = document.getElementById('pitchMeterNeedle');
+        const liveFeedbackPill = document.getElementById('liveFeedbackPill');
+        const scoreAccuracy = document.getElementById('scoreAccuracy');
+        const scoreNotes = document.getElementById('scoreNotes');
+        const scoreTime = document.getElementById('scoreTime');
+
+        exerciseSelect.addEventListener('change', () => {
+            currentSequence = EXERCISES[exerciseSelect.value] || EXERCISES.c_major;
+            currentNoteIndex = 0;
+            updateTargetNoteUI();
+        });
+
+        function updateTargetNoteUI() {
+            const target = currentSequence[currentNoteIndex];
+            targetNoteDisplay.textContent = `${target.note} (${target.eng})`;
+            targetFreqDisplay.textContent = `${target.freq.toFixed(2)} Hz`;
+            scoreNotes.textContent = `${correctNotesCount} / ${currentSequence.length}`;
+        }
+
+        startPracticeBtn.addEventListener('click', async () => {
+            if (isPracticing) {
+                stopPractice();
+            } else {
+                await startPractice();
+            }
+        });
+
+        async function startPractice() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const source = audioContext.createMediaStreamSource(micStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                source.connect(analyser);
+
+                isPracticing = true;
+                currentNoteIndex = 0;
+                correctNotesCount = 0;
+                totalEvaluations = 0;
+                startTime = Date.now();
+                startPracticeBtn.textContent = '⏹ Detener Sesión';
+                startPracticeBtn.style.background = '#ef4444';
+
+                timerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const mins = Math.floor(elapsed / 60);
+                    const secs = elapsed % 60;
+                    scoreTime.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                }, 1000);
+
+                updateTargetNoteUI();
+                analyzeAudioLoop();
+            } catch(e) {
+                alert('No se pudo acceder al micrófono: ' + e.message);
+            }
+        }
+
+        function stopPractice() {
+            isPracticing = false;
+            if (micStream) micStream.getTracks().forEach(t => t.stop());
+            if (audioContext) audioContext.close();
+            if (timerInterval) clearInterval(timerInterval);
+
+            startPracticeBtn.textContent = '▶ Comenzar Ejercicio';
+            startPracticeBtn.style.background = 'var(--gradient-primary)';
+            liveFeedbackPill.className = 'feedback-pill';
+            liveFeedbackPill.textContent = 'Sesión finalizada con éxito';
+            pitchMeterNeedle.style.left = '50%';
+        }
+
+        const buffer = new Float32Array(2048);
+
+        function autoCorrelate(buf, sampleRate) {
+            let SIZE = buf.length;
+            let rms = 0;
+            for (let i = 0; i < SIZE; i++) {
+                rms += buf[i] * buf[i];
+            }
+            rms = Math.sqrt(rms / SIZE);
+            if (rms < 0.015) return -1; // Silencio
+
+            let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+            for (let i = 0; i < SIZE / 2; i++) {
+                if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+            }
+            for (let i = 1; i < SIZE / 2; i++) {
+                if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+            }
+
+            buf = buf.slice(r1, r2);
+            SIZE = buf.length;
+
+            let c = new Array(SIZE).fill(0);
+            for (let i = 0; i < SIZE; i++) {
+                for (let j = 0; j < SIZE - i; j++) {
+                    c[i] = c[i] + buf[j] * buf[j + i];
+                }
+            }
+
+            let d = 0;
+            while (c[d] > c[d + 1]) d++;
+            let maxval = -1, maxpos = -1;
+            for (let i = d; i < SIZE; i++) {
+                if (c[i] > maxval) {
+                    maxval = c[i];
+                    maxpos = i;
+                }
+            }
+            let T0 = maxpos;
+            return sampleRate / T0;
+        }
+
+        let consecutiveInTuneFrames = 0;
+
+        function analyzeAudioLoop() {
+            if (!isPracticing) return;
+
+            analyser.getFloatTimeDomainData(buffer);
+            const pitch = autoCorrelate(buffer, audioContext.sampleRate);
+
+            if (pitch !== -1) {
+                const target = currentSequence[currentNoteIndex];
+                const cents = Math.floor(1200 * Math.log2(pitch / target.freq));
+                totalEvaluations++;
+
+                // Mapear cents a porcentaje del medidor (-50 a +50 cents -> 0% a 100%)
+                const clampedCents = Math.max(-50, Math.min(50, cents));
+                const meterPct = ((clampedCents + 50) / 100) * 100;
+                pitchMeterNeedle.style.left = `${meterPct}%`;
+
+                if (Math.abs(cents) <= 15) {
+                    liveFeedbackPill.className = 'feedback-pill in-tune';
+                    liveFeedbackPill.textContent = `✓ ¡Afinada! (${pitch.toFixed(1)} Hz)`;
+                    consecutiveInTuneFrames++;
+
+                    if (consecutiveInTuneFrames >= 12) {
+                        correctNotesCount++;
+                        consecutiveInTuneFrames = 0;
+                        if (currentNoteIndex < currentSequence.length - 1) {
+                            currentNoteIndex++;
+                            updateTargetNoteUI();
+                        } else {
+                            // Completó el ejercicio
+                            stopPractice();
+                            alert('🎉 ¡Excelente trabajo! Has completado el ejercicio con gran afinación.');
+                        }
+                    }
+                } else if (cents < -15) {
+                    liveFeedbackPill.className = 'feedback-pill flat';
+                    liveFeedbackPill.textContent = `♭ Calante (Baja por ${Math.abs(cents)} cents)`;
+                    consecutiveInTuneFrames = 0;
+                } else {
+                    liveFeedbackPill.className = 'feedback-pill sharp';
+                    liveFeedbackPill.textContent = `♯ Sostenida (Alta por ${cents} cents)`;
+                    consecutiveInTuneFrames = 0;
+                }
+
+                const acc = Math.round((correctNotesCount / Math.max(1, currentNoteIndex + 1)) * 100);
+                scoreAccuracy.textContent = `${acc}%`;
+            } else {
+                liveFeedbackPill.className = 'feedback-pill';
+                liveFeedbackPill.textContent = 'Escuchando nota...';
+            }
+
+            requestAnimationFrame(analyzeAudioLoop);
+        }
+    </script>
+</body>
+</html>

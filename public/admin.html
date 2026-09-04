@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Consola Maestra de Administración - PROVIWEB">
+    <title>Consola de Administración - PROVIWEB</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a10;
+            --bg-secondary: #12121c;
+            --bg-card: #151522;
+            --bg-input: #1a1a2a;
+            --border-glass: rgba(255, 255, 255, 0.14);
+            --border-focus: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-purple: #c084fc;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --gradient-admin: linear-gradient(135deg, #fbbf24 0%, #a855f7 50%, #38bdf8 100%);
+            --gradient-card: linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%), #131320;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Progress Bar */
+        #topScreenProgressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--gradient-admin);
+            z-index: 9999;
+            transition: width 0.25s ease-out, opacity 0.3s ease;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        /* Top Bar */
+        .admin-topbar {
+            height: 60px;
+            background: rgba(18, 18, 28, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 750;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .admin-back-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--accent-gold);
+            color: #fbbf24;
+        }
+
+        .admin-container {
+            max-width: 1240px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        /* Hero */
+        .admin-hero {
+            background: var(--gradient-card);
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 14px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .kpi-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .kpi-icon { font-size: 20px; margin-bottom: 4px; }
+        .kpi-val { font-size: 22px; font-weight: 900; color: #ffffff; }
+        .kpi-lbl { font-size: 11px; font-weight: 750; color: var(--text-secondary); text-transform: uppercase; margin-top: 2px; }
+
+        /* Quick Controls Bar */
+        .controls-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 850px) {
+            .controls-bar { grid-template-columns: 1fr; }
+            .admin-hero { flex-direction: column; text-align: center; }
+        }
+
+        .control-box {
+            background: #11111c;
+            border: 1.5px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Tabs Nav */
+        .admin-nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            overflow-x: auto;
+        }
+
+        .admin-tab-btn {
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--gradient-admin);
+            color: #000000;
+            font-weight: 900;
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.45);
+        }
+
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Box */
+        .card-box {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 22px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        /* Moderation Item Card */
+        .mod-item-card {
+            background: #11111c;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .mod-item-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-action-sm {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-approve { background: #22c55e; color: #fff; }
+        .btn-reject { background: #ef4444; color: #fff; }
+        .btn-approve:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn-reject:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch-toggle input { opacity: 0; width: 0; height: 0; }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider-round { background-color: #22c55e; }
+        input:checked + .slider-round:before { transform: translateX(24px); }
+    </style>
+</head>
+<body>
+
+    <div id="topScreenProgressBar"></div>
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+        <a href="index.html" class="admin-back-btn">← Volver al Inicio</a>
+        <div style="font-weight: 900; font-size: 15px; color: #fff; display:flex; align-items:center; gap:6px;">
+            <span>🛡️</span><span>Consola Maestra de Administración PROVIWEB</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="admin-ads.html" class="admin-back-btn" style="background:rgba(251,191,36,0.15); border-color:var(--accent-gold); color:#fbbf24;">
+                🏢 Aprobación de Marcas
+            </a>
+            <div id="adminUserStatus" style="font-size: 12px; font-weight: 800; color: #4ade80; background: rgba(34, 197, 94, 0.15); padding: 4px 12px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.35);">
+                👑 Super Admin
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- HERO -->
+        <div class="admin-hero">
+            <div>
+                <span style="font-size: 11px; font-weight: 900; background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); padding: 3px 10px; border-radius: 8px;">ADMIN HEADQUARTERS · PROVIWEBAPP</span>
+                <h1 style="font-size: 24px; font-weight: 900; margin: 8px 0 6px; background: var(--gradient-admin); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Control Maestro, Verificaciones & Moderación Global
+                </h1>
+                <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; max-width: 680px;">
+                    Gestiona en tiempo real métricas del sistema, verificaciones de artistas y profesores, moderación de contenido, solicitudes QAV, holders del token y campañas de publicidad de marcas.
+                </p>
+            </div>
+            <div style="font-size: 54px; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));">🛡️</div>
+        </div>
+
+        <!-- KPI GRID (HOMÓLOGO A ANDROID ADMINACTIVITY) -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon">👥</div>
+                <div class="kpi-val" id="kpiUsers">0</div>
+                <div class="kpi-lbl">Usuarios</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🟢</div>
+                <div class="kpi-val" id="kpiOnline" style="color:#4ade80;">0</div>
+                <div class="kpi-lbl">En Línea</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">📝</div>
+                <div class="kpi-val" id="kpiPosts">0</div>
+                <div class="kpi-lbl">Posts</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🎬</div>
+                <div class="kpi-val" id="kpiReels" style="color:#c084fc;">0</div>
+                <div class="kpi-lbl">Reels</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🏛️</div>
+                <div class="kpi-val" id="kpiGroups">0</div>
+                <div class="kpi-lbl">Grupos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🏪</div>
+                <div class="kpi-val" id="kpiMarket" style="color:#fbbf24;">0</div>
+                <div class="kpi-lbl">Tienda</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🎉</div>
+                <div class="kpi-val" id="kpiParties">0</div>
+                <div class="kpi-lbl">Salas</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">💬</div>
+                <div class="kpi-val" id="kpiChats">0</div>
+                <div class="kpi-lbl">Chats</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🪙</div>
+                <div class="kpi-val" id="kpiQavs" style="color:#38bdf8;">0</div>
+                <div class="kpi-lbl">Pedidos QAV</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon">🏢</div>
+                <div class="kpi-val" id="kpiBrandAds" style="color:#f59e0b;">0</div>
+                <div class="kpi-lbl">Anuncios</div>
+            </div>
+        </div>
+
+        <!-- QUICK CONTROLS BAR (ADS MASTER SWITCH & TOKEN HOLDERS) -->
+        <div class="controls-bar">
+            <!-- Global Ads Switch & Job Broadcast -->
+            <div class="control-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="font-size:15px; font-weight:800; color:#fff;">📢 Interruptor Global de Publicidad</h3>
+                        <p style="font-size:12px; color:var(--text-secondary);">Activa o desactiva anuncios en todo el ecosistema (RTDB: Ads/type).</p>
+                    </div>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="globalAdsSwitch">
+                        <span class="slider-round"></span>
+                    </label>
+                </div>
+
+                <div style="border-top:1px solid var(--border-glass); padding-top:12px; margin-top:6px;">
+                    <label style="font-size:12px; font-weight:800; color:#fff; display:block; margin-bottom:6px;">📢 Difundir Anuncio Global / Oferta de Empleo a Todos los Usuarios:</label>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <input type="text" id="inputBroadcastText" class="form-input" placeholder="Mensaje del anuncio...">
+                        <input type="url" id="inputBroadcastLink" class="form-input" placeholder="https://enlace...">
+                    </div>
+                    <button type="button" id="btnSendGlobalBroadcast" class="admin-back-btn" style="width:100%; justify-content:center; background:var(--gradient-admin); color:#000; font-weight:900; border:none; padding:10px; cursor:pointer;">
+                        🚀 Enviar Difusión Global a Todos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Web3 QAV Token Holders Control -->
+            <div class="control-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="font-size:15px; font-weight:800; color:#fff;">🪙 Gestión de Holders de Token QAV</h3>
+                        <p style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">Contrato: 0xEc20Dd4bF3C4d618a74EA4E9a1dA1A7904929274</p>
+                    </div>
+                    <div style="font-size:18px; font-weight:900; color:#38bdf8;" id="totalHoldersDisplay">Holders: 0</div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;">
+                    <input type="text" id="inputHolderContract" class="form-input" value="0xEc20Dd4bF3C4d618a74EA4E9a1dA1A7904929274" placeholder="Contrato">
+                    <input type="number" id="inputHolderCount" class="form-input" placeholder="Cantidad Holders">
+                </div>
+                <button type="button" id="btnUpdateHolders" class="admin-back-btn" style="justify-content:center; background:rgba(56,189,248,0.2); border-color:#38bdf8; color:#38bdf8; font-weight:800; cursor:pointer;">
+                    💾 Actualizar Total de Holders en RTDB
+                </button>
+            </div>
+        </div>
+
+        <!-- TABS DE MODERACIÓN & GESTIÓN -->
+        <nav class="admin-nav-tabs" id="adminNavTabs">
+            <button type="button" class="admin-tab-btn active" data-target="panelVerif">
+                <span>🌟</span><span>Verificación de Artistas (<span id="countVerif">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelProfessors">
+                <span>🎓</span><span>Maestros & Profesores (<span id="countProf">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelBrandAds">
+                <span>🏢</span><span>Publicidad de Marcas (<span id="countBrandAds">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelMusicReview">
+                <span>🎵</span><span>Revisión Musical (<span id="countMusic">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelPayouts">
+                <span>💳</span><span>Pagos a Profesores (<span id="countPayouts">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelQavOrders">
+                <span>🪙</span><span>Pedidos QAV (<span id="countQavOrders">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelReports">
+                <span>🚨</span><span>Contenido Reportado (<span id="countReports">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelMinors">
+                <span>👶</span><span>Protección de Menores (<span id="countMinors">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelClosedTest">
+                <span>🧪</span><span>Beta Testers (<span id="countClosedTest">0</span>)</span>
+            </button>
+            <button type="button" class="admin-tab-btn" data-target="panelOAuth">
+                <span>🔑</span><span>Clientes OAuth & SSO (<span id="countOAuthClients">4</span>)</span>
+            </button>
+        </nav>
+
+        <!-- PANEL 1: VERIFICACIÓN DE ARTISTAS -->
+        <div class="admin-panel active" id="panelVerif">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🌟 Solicitudes de Verificación de Insignia Azul (Artistas & Músicos)
+                </h2>
+                <div id="verifList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">Cargando solicitudes de verificación...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: MAESTROS & PROFESORES -->
+        <div class="admin-panel" id="panelProfessors">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🎓 Solicitudes de Verificación de Profesores de Música & Pedagogos
+                </h2>
+                <div id="professorsList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">Cargando solicitudes de profesores...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 3: PUBLICIDAD DE MARCAS -->
+        <div class="admin-panel" id="panelBrandAds">
+            <div class="card-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h2 style="font-size: 16px; font-weight: 900; color: #fff;">
+                        🏢 Aprobación de Publicidad de Marcas & Comprobación PayPal
+                    </h2>
+                    <a href="admin-ads.html" class="admin-back-btn" style="font-size:11px; padding:5px 10px;">Consola Específica ➜</a>
+                </div>
+                <div id="brandAdsList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">Cargando campañas de marca...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 4: REVISIÓN MUSICAL -->
+        <div class="admin-panel" id="panelMusicReview">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🎵 Revisión de Obras Musicales, Partituras & Distribución
+                </h2>
+                <div id="musicReviewList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay obras pendientes de revisión.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 5: PAGOS A PROFESORES -->
+        <div class="admin-panel" id="panelPayouts">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    💳 Solicitudes de Retiro & Liquidación a Maestros
+                </h2>
+                <div id="payoutsList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay solicitudes de pago pendientes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 6: PEDIDOS QAV -->
+        <div class="admin-panel" id="panelQavOrders">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🪙 Pedidos de Tokens QAV de Usuarios
+                </h2>
+                <div id="qavOrdersList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay pedidos de QAV pendientes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 7: CONTENIDO REPORTADO -->
+        <div class="admin-panel" id="panelReports">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🚨 Moderación de Publicaciones, Reels, Productos y Usuarios Reportados
+                </h2>
+                <div id="reportsList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay reportes de usuarios pendientes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 8: MENORES -->
+        <div class="admin-panel" id="panelMinors">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    👶 Autorizaciones de Menores de Edad & Consentimiento Parental
+                </h2>
+                <div id="minorsList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay solicitudes de menores pendientes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 9: BETA TESTERS -->
+        <div class="admin-panel" id="panelClosedTest">
+            <div class="card-box">
+                <h2 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 14px;">
+                    🧪 Solicitudes de Acceso a Pruebas Cerradas (Closed Beta Testers)
+                </h2>
+                <div id="closedTestList">
+                    <div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay solicitudes de beta pendientes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 10: CLIENTES OAUTH & SSO SATELLITE APPS -->
+        <div class="admin-panel" id="panelOAuth">
+            <div class="card-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                    <div>
+                        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">
+                            🔑 Clientes OAuth 2.0 & Proyectos Satélite (SSO)
+                        </h2>
+                        <p style="font-size: 12.5px; color: var(--text-secondary);">
+                            Administra las aplicaciones que pueden solicitar inicio de sesión con PROVIWEB (ej: <strong>com.israviolink.pulso</strong>).
+                        </p>
+                    </div>
+                    <a href="docs-sso.html" class="admin-back-btn" style="background:rgba(251,191,36,0.15); border-color:var(--accent-gold); color:#fbbf24;">
+                        📖 Ver Guía de Integración ➜
+                    </a>
+                </div>
+
+                <!-- Formulario para Registrar Nuevo Cliente OAuth -->
+                <div style="background:#11111c; border:1px solid var(--border-glass); border-radius:16px; padding:16px; margin-bottom:20px;">
+                    <h3 style="font-size:14px; font-weight:800; color:#fbbf24; margin-bottom:10px;">➕ Registrar Nueva Aplicación / Proyecto</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+                        <input type="text" id="newOAuthName" class="form-input" placeholder="Nombre de la App (Ej: Pulso Metrónomo Pro)">
+                        <input type="text" id="newOAuthId" class="form-input" placeholder="Client ID / Package (Ej: com.israviolink.pulso)">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+                        <input type="text" id="newOAuthRedirect" class="form-input" placeholder="Redirect URI (Ej: israviolink-pulso://oauth/callback)">
+                        <input type="url" id="newOAuthLogo" class="form-input" placeholder="URL del Logo / Icono">
+                    </div>
+                    <button type="button" id="btnRegisterOAuthClient" class="admin-back-btn" style="width:100%; justify-content:center; background:var(--gradient-admin); color:#000; font-weight:900; border:none; padding:10px; cursor:pointer;">
+                        💾 Guardar y Habilitar Cliente OAuth en RTDB
+                    </button>
+                </div>
+
+                                <!-- Lista de Clientes Registrados -->
+                <h3 style="font-size:14px; font-weight:800; color:#fff; margin-bottom:12px;">📱 Aplicaciones Habilitadas en PROVIWEB Connect</h3>
+                <div id="oauthClientsList">
+                    <!-- Client 1: Admin Suite -->
+                    <div class="mod-item-card">
+                        <div style="width:50px; height:50px; border-radius:12px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid #fbbf24;">
+                            🛡️
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:14px; color:#fff; display:flex; align-items:center; gap:6px;">
+                                <span>PROVIWEB Admin Suite · Control Maestro</span>
+                                <span style="background:rgba(251,191,36,0.2); color:#fbbf24; font-size:10px; padding:1px 6px; border-radius:4px;">ADMIN OFICIAL</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-secondary); font-family:monospace; margin:2px 0;">com.israviolink.admin</div>
+                            <div style="font-size:11px; color:#94a3b8;">Redirect: <code>israviolink-admin://oauth/callback</code></div>
+                        </div>
+                        <div>
+                            <a href="oauth-authorize.html?client_id=com.israviolink.admin&redirect_uri=israviolink-admin://oauth/callback" target="_blank" class="admin-back-btn" style="font-size:11px; padding:6px 12px; background:rgba(251,191,36,0.2); border-color:#fbbf24; color:#fbbf24;">
+                                Probar Portal ➜
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Client 2: PROVIWEB App -->
+                    <div class="mod-item-card">
+                        <div style="width:50px; height:50px; border-radius:12px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid #a855f7;">
+                            🎻
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:14px; color:#fff; display:flex; align-items:center; gap:6px;">
+                                <span>PROVIWEB App Oficial · Android</span>
+                                <span style="background:rgba(34,197,94,0.2); color:#4ade80; font-size:10px; padding:1px 6px; border-radius:4px;">OFICIAL</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-secondary); font-family:monospace; margin:2px 0;">com.israviolink.app</div>
+                            <div style="font-size:11px; color:#94a3b8;">Redirect: <code>israviolink://oauth/callback</code></div>
+                        </div>
+                        <div>
+                            <a href="oauth-authorize.html?client_id=com.israviolink.app&redirect_uri=israviolink://oauth/callback" target="_blank" class="admin-back-btn" style="font-size:11px; padding:6px 12px;">
+                                Probar Portal ➜
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Client 3: Pulso -->
+                    <div class="mod-item-card">
+                        <div style="width:50px; height:50px; border-radius:12px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid #60a5fa;">
+                            🛰️
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:14px; color:#fff; display:flex; align-items:center; gap:6px;">
+                                <span>NUNTI · Comunidad y Gestión</span>
+                                <span style="background:rgba(34,197,94,0.2); color:#4ade80; font-size:10px; padding:1px 6px; border-radius:4px;">OFICIAL</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-secondary); font-family:monospace; margin:2px 0;">com.israviolink.nunti</div>
+                            <div style="font-size:11px; color:#94a3b8;">Redirect: <code>israviolink-nunti://oauth/callback</code></div>
+                        </div>
+                        <div>
+                            <a href="oauth-authorize.html?client_id=com.israviolink.nunti&redirect_uri=israviolink-nunti://oauth/callback" target="_blank" class="admin-back-btn" style="font-size:11px; padding:6px 12px; background:rgba(96,165,250,0.15); border-color:#60a5fa; color:#93c5fd;">
+                                Probar Portal ➜
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Client 4: Pulso -->
+                    <div class="mod-item-card">
+                        <div style="width:50px; height:50px; border-radius:12px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center; font-size:24px; border:1px solid #38bdf8;">
+                            🎵
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:14px; color:#fff; display:flex; align-items:center; gap:6px;">
+                                <span>Pulso · Metrónomo & Afinador Pro</span>
+                                <span style="background:rgba(34,197,94,0.2); color:#4ade80; font-size:10px; padding:1px 6px; border-radius:4px;">OFICIAL</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--text-secondary); font-family:monospace; margin:2px 0;">com.israviolink.pulso</div>
+                            <div style="font-size:11px; color:#94a3b8;">Redirect: <code>israviolink-pulso://oauth/callback</code></div>
+                        </div>
+                        <div>
+                            <a href="oauth-authorize.html?client_id=com.israviolink.pulso&redirect_uri=israviolink-pulso://oauth/callback" target="_blank" class="admin-back-btn" style="font-size:11px; padding:6px 12px;">
+                                Probar Portal ➜
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FIREBASE INITIALIZATION & LOGIC -->
+    <script src="js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            const topBar = document.getElementById('topScreenProgressBar');
+            function triggerScreenLoading() {
+                if (!topBar) return;
+                topBar.style.opacity = '1';
+                topBar.style.width = '40%';
+                setTimeout(() => { topBar.style.width = '80%'; }, 150);
+                setTimeout(() => { 
+                    topBar.style.width = '100%'; 
+                    setTimeout(() => { topBar.style.opacity = '0'; topBar.style.width = '0%'; }, 250);
+                }, 350);
+            }
+            triggerScreenLoading();
+
+            // Tabs
+            const tabBtns = document.querySelectorAll('.admin-tab-btn');
+            const panels = document.querySelectorAll('.admin-panel');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    triggerScreenLoading();
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.target).classList.add('active');
+                });
+            });
+
+            // ========================================================
+            // 1. REALTIME KPI COUNTERS (HOMÓLOGO A ANDROID ADMINACTIVITY)
+            // ========================================================
+            db.ref().on('value', (snap) => {
+                if (!snap.exists()) return;
+                document.getElementById('kpiUsers').textContent = snap.child('Users').numChildren() || 0;
+                document.getElementById('kpiPosts').textContent = snap.child('Posts').numChildren() || 0;
+                document.getElementById('kpiGroups').textContent = snap.child('Groups').numChildren() || 0;
+                document.getElementById('kpiReels').textContent = snap.child('Reels').numChildren() || 0;
+                document.getElementById('kpiMarket').textContent = snap.child('Product').numChildren() || 0;
+                document.getElementById('kpiParties').textContent = snap.child('Party').numChildren() || 0;
+                document.getElementById('kpiChats').textContent = snap.child('Chats').numChildren() || 0;
+                document.getElementById('kpiQavs').textContent = snap.child('Request').numChildren() || 0;
+                document.getElementById('kpiBrandAds').textContent = snap.child('BrandAds').numChildren() || 0;
+            });
+
+            db.ref('Users').orderByChild('status').equalTo('online').on('value', (snap) => {
+                document.getElementById('kpiOnline').textContent = snap.numChildren() || 0;
+            });
+
+            // ========================================================
+            // 2. GLOBAL ADS SWITCH (Ads/type)
+            // ========================================================
+            const adsSwitch = document.getElementById('globalAdsSwitch');
+            db.ref('Ads').on('value', (snap) => {
+                if (snap.exists() && snap.child('type').val() === 'on') {
+                    adsSwitch.checked = true;
+                } else {
+                    adsSwitch.checked = false;
+                }
+            });
+
+            adsSwitch.onchange = () => {
+                db.ref('Ads').update({ type: adsSwitch.checked ? 'on' : 'off' });
+            };
+
+            // Global Broadcast
+            document.getElementById('btnSendGlobalBroadcast').onclick = async () => {
+                const text = document.getElementById('inputBroadcastText').value.trim();
+                const link = document.getElementById('inputBroadcastLink').value.trim();
+                if (!text) { alert('Ingresa el texto del anuncio.'); return; }
+
+                const adKey = db.ref('Anuncios').push().key;
+                await db.ref(`Anuncios/${adKey}`).set({
+                    id: adKey,
+                    text: text,
+                    link: link,
+                    timestamp: Date.now()
+                });
+                alert('📢 ¡Difusión global enviada a todos los usuarios de PROVIWEB!');
+                document.getElementById('inputBroadcastText').value = '';
+                document.getElementById('inputBroadcastLink').value = '';
+            };
+
+            // ========================================================
+            // 3. HOLDERS DE TOKEN QAV (Holders/)
+            // ========================================================
+            const CONTRACT_ADDRESS = '0xEc20Dd4bF3C4d618a74EA4E9a1dA1A7904929274';
+            db.ref('Holders').on('value', (snap) => {
+                if (!snap.exists()) return;
+                snap.forEach(c => {
+                    const data = c.val();
+                    if (data.contrac && data.contrac.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()) {
+                        document.getElementById('totalHoldersDisplay').textContent = 'Holders: ' + (data.cantidad || 0).toLocaleString();
+                        document.getElementById('inputHolderCount').value = data.cantidad || 0;
+                    }
+                });
+            });
+
+            document.getElementById('btnUpdateHolders').onclick = async () => {
+                const count = parseInt(document.getElementById('inputHolderCount').value) || 0;
+                const contract = document.getElementById('inputHolderContract').value.trim() || CONTRACT_ADDRESS;
+                await db.ref('Holders').child('qav_contract').set({
+                    contrac: contract,
+                    cantidad: count,
+                    updatedAt: Date.now()
+                });
+                alert('🪙 Total de holders de Token QAV actualizado con éxito.');
+            };
+
+            // ========================================================
+            // 4. VERIFICACIONES DE USUARIOS (Verification/)
+            // ========================================================
+            db.ref('Verification').on('value', (snap) => {
+                const container = document.getElementById('verifList');
+                if (!snap.exists() || snap.numChildren() === 0) {
+                    document.getElementById('countVerif').textContent = '0';
+                    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay solicitudes de verificación pendientes.</div>';
+                    return;
+                }
+
+                const items = [];
+                snap.forEach(c => {
+                    const v = c.val();
+                    if (v.status !== 'approved' && v.status !== 'rejected') {
+                        items.push({ id: c.key, ...v });
+                    }
+                });
+
+                document.getElementById('countVerif').textContent = items.length.toString();
+                if (items.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">Todas las solicitudes han sido atendidas.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                items.forEach(req => {
+                    const card = document.createElement('div');
+                    card.className = 'mod-item-card';
+                    card.innerHTML = `
+                        <div style="width:50px; height:50px; border-radius:50%; overflow:hidden; background:#000;">
+                            <img src="${req.photo || './assets/logotransparente-1dd37ce8.png'}" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:13.5px; color:#fff;">${req.name || 'Artista'} (@${req.username || 'usuario'})</div>
+                            <div style="font-size:12px; color:var(--text-secondary); margin:2px 0;">Conocido por: <strong>${req.known || 'Músico'}</strong></div>
+                            <a href="${req.link || '#'}" target="_blank" style="font-size:11px; color:#38bdf8; text-decoration:none;">🔗 Ver Enlace Oficial</a>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-action-sm btn-approve" onclick="approveUserVerif('${req.uID || req.id}', '${req.id}')">✓ Aprobar</button>
+                            <button class="btn-action-sm btn-reject" onclick="rejectUserVerif('${req.uID || req.id}', '${req.id}')">✕ Rechazar</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+            window.approveUserVerif = async (uid, reqId) => {
+                await db.ref(`Users/${uid}`).update({ verified: 'yes' });
+                await db.ref(`Verification/${reqId}`).update({ status: 'approved', approvedTimestamp: Date.now() });
+                alert('🌟 ¡Artista verificado oficialmente con insignia azul!');
+            };
+
+            window.rejectUserVerif = async (uid, reqId) => {
+                await db.ref(`Verification/${reqId}`).update({ status: 'rejected', rejectedTimestamp: Date.now() });
+                alert('Solicitud de verificación rechazada.');
+            };
+
+            // ========================================================
+            // 5. PUBLICIDAD DE MARCAS (BrandAds/)
+            // ========================================================
+            db.ref('BrandAds').on('value', (snap) => {
+                const container = document.getElementById('brandAdsList');
+                if (!snap.exists()) {
+                    document.getElementById('countBrandAds').textContent = '0';
+                    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay campañas de marca registradas.</div>';
+                    return;
+                }
+
+                const ads = [];
+                snap.forEach(c => {
+                    const ad = c.val();
+                    if (ad.status === 'pending_approval') {
+                        ads.push({ id: c.key, ...ad });
+                    }
+                });
+
+                document.getElementById('countBrandAds').textContent = ads.length.toString();
+                if (ads.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">No hay campañas de marca pendientes de aprobación.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                ads.forEach(ad => {
+                    const card = document.createElement('div');
+                    card.className = 'mod-item-card';
+                    card.innerHTML = `
+                        <div style="width:60px; height:60px; border-radius:12px; overflow:hidden; background:#000;">
+                            <img src="${ad.mediaUrl || './assets/backloginweb.png'}" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div>
+                            <div style="font-weight:900; font-size:13.5px; color:#fff;">${ad.brandName || 'Marca'} · $${ad.priceUsd} USD (${ad.format === 'reel_vertical' ? 'Reel' : 'Post'})</div>
+                            <div style="font-size:12px; color:var(--text-secondary); max-width:550px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ad.text || ''}</div>
+                            <div style="font-size:11px; color:#fbbf24;">PayPal TX: <strong>${ad.paypalTxId || 'Pendiente'}</strong></div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-action-sm btn-approve" onclick="approveBrandAd('${ad.id}')">✓ Aprobar al Feed</button>
+                            <button class="btn-action-sm btn-reject" onclick="rejectBrandAd('${ad.id}')">✕ Rechazar</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+            window.approveBrandAd = async (adId) => {
+                const snap = await db.ref(`BrandAds/${adId}`).once('value');
+                if (!snap.exists()) return;
+                const ad = snap.val();
+                const expiryTime = Date.now() + ((ad.durationDays || 15) * 86400000);
+
+                await db.ref(`BrandAds/${adId}`).update({
+                    status: 'active',
+                    approvedAt: Date.now(),
+                    expiryTime: expiryTime
+                });
+
+                const postKey = db.ref('Posts').push().key;
+                await db.ref(`Posts/${postKey}`).set({
+                    pId: postKey,
+                    adId: adId,
+                    uid: ad.brandUid || 'admin_brand',
+                    uName: ad.brandName || 'Marca Oficial',
+                    uDp: ad.brandLogo || './assets/logotransparente-1dd37ce8.png',
+                    pDescr: ad.text || '',
+                    pImage: ad.mediaUrl || '',
+                    type: 'ads',
+                    format: ad.format || 'post_feed',
+                    pTime: Date.now().toString(),
+                    promoted: true,
+                    promoData: {
+                        promoId: adId,
+                        brandName: ad.brandName,
+                        actionTitle: ad.actionTitle,
+                        actionUrl: ad.actionUrl,
+                        expiryTime: expiryTime
+                    }
+                });
+
+                alert('🏢 ¡Campaña de marca aprobada e inyectada en el feed principal!');
+            };
+
+            window.rejectBrandAd = async (adId) => {
+                await db.ref(`BrandAds/${adId}`).update({ status: 'rejected', rejectedAt: Date.now() });
+                alert('Campaña rechazada.');
+            };
+
+            // ========================================================
+            // 6. PROFESORES, MÚSICA, RETIROS, REPORTES, MENORES, BETAS
+            // ========================================================
+            db.ref('ProfessorVerification').on('value', (snap) => {
+                document.getElementById('countProf').textContent = snap.numChildren() || 0;
+            });
+            db.ref('MusicReview').on('value', (snap) => {
+                document.getElementById('countMusic').textContent = snap.numChildren() || 0;
+            });
+            db.ref('Payouts').on('value', (snap) => {
+                document.getElementById('countPayouts').textContent = snap.numChildren() || 0;
+            });
+            db.ref('Request').on('value', (snap) => {
+                document.getElementById('countQavOrders').textContent = snap.numChildren() || 0;
+            });
+            db.ref('ReportedPosts').on('value', (snap) => {
+                document.getElementById('countReports').textContent = snap.numChildren() || 0;
+            });
+            db.ref('MinorRequests').on('value', (snap) => {
+                document.getElementById('countMinors').textContent = snap.numChildren() || 0;
+            });
+            db.ref('ClosedTestRequests').on('value', (snap) => {
+                document.getElementById('countClosedTest').textContent = snap.numChildren() || 0;
+            });
+        
+            // ========================================================
+            // 7. GESTIÓN DE CLIENTES OAUTH 2.0 & SSO
+            // ========================================================
+            const btnRegOAuth = document.getElementById('btnRegisterOAuthClient');
+            if (btnRegOAuth) {
+                btnRegOAuth.onclick = async () => {
+                    const name = document.getElementById('newOAuthName').value.trim();
+                    const clientId = document.getElementById('newOAuthId').value.trim();
+                    const redirect = document.getElementById('newOAuthRedirect').value.trim();
+                    const logo = document.getElementById('newOAuthLogo').value.trim();
+
+                    if (!name || !clientId) {
+                        alert('Ingresa el nombre y el Client ID de la app.');
+                        return;
+                    }
+
+                    const safeKey = clientId.replace(/[.#$\[\]]/g, '_');
+                    await db.ref(`OAuthClients/${safeKey}`).set({
+                        clientId: clientId,
+                        name: name,
+                        redirectUri: redirect,
+                        logo: logo,
+                        createdAt: Date.now()
+                    });
+
+                    alert('🔑 Aplicación ' + name + ' registrada en PROVIWEB Connect.');
+                    document.getElementById('newOAuthName').value = '';
+                    document.getElementById('newOAuthId').value = '';
+                    document.getElementById('newOAuthRedirect').value = '';
+                    document.getElementById('newOAuthLogo').value = '';
+                };
+            }
+
+            db.ref('OAuthClients').on('value', (snap) => {
+                const baseOfficialClients = 4;
+                const count = snap.exists() ? (snap.numChildren() + baseOfficialClients) : baseOfficialClients;
+                const countEl = document.getElementById('countOAuthClients');
+                if (countEl) countEl.textContent = count.toString();
+            });
+
+        });
+    </script>
+</body>
+</html>

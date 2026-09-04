@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Perfil del artista">
+    <title>Artista - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+        body { background: var(--bg-primary); background-attachment: fixed; color: var(--text-primary); }
+        .header { width:100%; display:flex; justify-content:space-between; align-items:center; padding:14px 24px; background: var(--bg-card); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); position:fixed; top:0; left:0; z-index:1000; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .header .brand { font-size:22px; font-weight:800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .artist-shell { max-width: 900px; margin: 90px auto 60px; padding: 0 24px; }
+        .artist-hero { display: flex; gap: 24px; align-items: center; background: var(--bg-card); border-radius: 24px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid var(--border-glass); backdrop-filter: blur(12px); margin-bottom: 24px; }
+        .artist-avatar { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #2d2d3a, #1c1c24); flex-shrink: 0; }
+        .artist-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .artist-name { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
+        .artist-actions { display: flex; gap: 12px; margin-top: 12px; }
+        .artist-actions button { padding: 10px 18px; border-radius: 14px; border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+        .btn-back { background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid var(--border-glass); }
+        .btn-back:hover { background: rgba(255,255,255,0.15); }
+        .btn-profile { background: var(--gradient-primary); color: #fff; }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
+        .songs-section { margin-bottom: 28px; }
+        .albums-section { margin-bottom: 28px; }
+        .songs-list { display: flex; flex-direction: column; gap: 8px; background: var(--bg-card); border-radius: 16px; padding: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.2); border: 1px solid var(--border-glass); backdrop-filter: blur(12px); }
+        .albums-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+        .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); font-size: 14px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-glass); backdrop-filter: blur(12px); }
+        .header a { color: var(--text-primary); text-decoration: none; font-weight: 600; }
+        .header a:hover { color: var(--accent-purple); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">PROVIWEB</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+            <a href="mymusic.html">Música</a>
+            <img src="assets/perfilblue.png" alt="Perfil" style="width:36px;height:36px;cursor:pointer;border-radius:10px;" onclick="window.location.href='myprofile.html'">
+        </div>
+    </div>
+
+    <div class="artist-shell">
+        <div class="artist-hero">
+            <div class="artist-avatar" id="artistAvatar"><img src="assets/avatar.png" alt=""></div>
+            <div style="flex:1;min-width:0;">
+                <h1 class="artist-name" id="artistName">Artista</h1>
+                <div class="artist-actions">
+                    <button type="button" class="btn-back" id="btnBack">← Volver</button>
+                    <button type="button" class="btn-profile" id="btnOpenProfile">Ver perfil</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="songs-section">
+            <h2 class="section-title">Canciones</h2>
+            <div id="recyclerSongs" class="songs-list"></div>
+            <div id="emptySongs" class="empty-state" style="display:none;">No hay canciones.</div>
+        </section>
+
+        <section class="albums-section">
+            <h2 class="section-title">Álbumes</h2>
+            <div id="recyclerAlbums" class="albums-grid"></div>
+            <div id="emptyAlbums" class="empty-state" style="display:none;">No hay álbumes.</div>
+        </section>
+    </div>
+
+    <script src="js/music-player-manager.js"></script>
+    <script src="js/music-adapters.js"></script>
+    <script src="js/music-firebase.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const artistId = params.get('artistId') || params.get('uid');
+        if (!artistId) {
+            document.getElementById('artistName').textContent = 'Artista no especificado';
+            document.getElementById('recyclerSongs').innerHTML = '<div class="empty-state">Indica el artista en la URL (artistId=...).</div>';
+        } else {
+            const artistNameEl = document.getElementById('artistName');
+            const artistAvatarEl = document.getElementById('artistAvatar');
+            const recyclerSongs = document.getElementById('recyclerSongs');
+            const recyclerAlbums = document.getElementById('recyclerAlbums');
+            const emptySongs = document.getElementById('emptySongs');
+            const emptyAlbums = document.getElementById('emptyAlbums');
+
+            function loadArtistInfo() {
+                get(ref(db, `Users/${artistId}`)).then((snap) => {
+                    if (snap.exists()) {
+                        const d = snap.val();
+                        artistNameEl.textContent = d.name || 'Artista';
+                        const photo = d.photo || '';
+                        const img = artistAvatarEl.querySelector('img');
+                        if (img) img.src = photo || 'assets/avatar.png';
+                    }
+                });
+            }
+
+            function loadSongs() {
+                const MusicFirebase = window.MusicFirebase;
+                const MusicAdapters = window.MusicAdapters;
+                const MusicPlayerManager = window.MusicPlayerManager && window.MusicPlayerManager.getInstance();
+
+                if (MusicFirebase && MusicFirebase.loadArtistSongsAndAlbums) {
+                    MusicFirebase.loadArtistSongsAndAlbums(db, ref, onValue, artistId, (result) => {
+                        const { songList, albumNames, albumsMap } = result;
+                        if (songList.length === 0) {
+                            recyclerSongs.innerHTML = '';
+                            emptySongs.style.display = 'block';
+                        } else {
+                            emptySongs.style.display = 'none';
+                            if (MusicAdapters && MusicAdapters.renderSongList) {
+                                MusicAdapters.renderSongList(recyclerSongs, songList, {
+                                    openSongPage: true,
+                                    songPageBase: 'song.html',
+                                    useSongIdOnly: false
+                                });
+                            } else {
+                                recyclerSongs.innerHTML = songList.map(s => `<div>${s.title} - ${s.artist}</div>`).join('');
+                            }
+                        }
+                        if (albumNames.length === 0) {
+                            recyclerAlbums.innerHTML = '';
+                            emptyAlbums.style.display = 'block';
+                        } else {
+                            emptyAlbums.style.display = 'none';
+                            if (MusicAdapters && MusicAdapters.renderAlbumGrid) {
+                                MusicAdapters.renderAlbumGrid(recyclerAlbums, albumNames, albumsMap, artistId, {
+                                    songPageBase: 'song.html',
+                                    useSongIdOnly: false
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    onValue(ref(db, `AudiosPlay/${artistId}`), (snap) => {
+                        const songList = [];
+                        const albumsMap = {};
+                        const albumNames = [];
+                        if (snap.exists()) {
+                            snap.forEach((child) => {
+                                const d = child.val();
+                                const s = {
+                                    id: child.key,
+                                    userId: artistId,
+                                    pId: artistId,
+                                    songKey: `${artistId}_${child.key}`,
+                                    title: d.title || '',
+                                    artist: d.artist || '',
+                                    album: d.album || '',
+                                    url: d.url || d.audioUrl || '',
+                                    audioUrl: d.url || d.audioUrl || '',
+                                    coverUrl: d.coverUrl || d.cover || '',
+                                    duration: d.duration || '0:00'
+                                };
+                                if (s.audioUrl) {
+                                    songList.push(s);
+                                    const album = (s.album || '').trim() || 'Sin álbum';
+                                    if (!albumsMap[album]) { albumsMap[album] = []; albumNames.push(album); }
+                                    albumsMap[album].push(s);
+                                }
+                            });
+                        }
+                        if (songList.length === 0) {
+                            recyclerSongs.innerHTML = '';
+                            emptySongs.style.display = 'block';
+                        } else {
+                            emptySongs.style.display = 'none';
+                            if (window.MusicAdapters && window.MusicAdapters.renderSongList) {
+                                window.MusicAdapters.renderSongList(recyclerSongs, songList, { songPageBase: 'song.html' });
+                            }
+                        }
+                        if (albumNames.length === 0) {
+                            recyclerAlbums.innerHTML = '';
+                            emptyAlbums.style.display = 'block';
+                        } else {
+                            emptyAlbums.style.display = 'none';
+                            if (window.MusicAdapters && window.MusicAdapters.renderAlbumGrid) {
+                                window.MusicAdapters.renderAlbumGrid(recyclerAlbums, albumNames, albumsMap, artistId, { songPageBase: 'song.html' });
+                            }
+                        }
+                    }, { onlyOnce: true });
+                }
+            }
+
+            loadArtistInfo();
+            loadSongs();
+
+            document.getElementById('btnBack').addEventListener('click', () => history.back());
+            document.getElementById('btnOpenProfile').addEventListener('click', () => {
+                window.location.href = `userprofile.html?uid=${encodeURIComponent(artistId)}`;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Seguridad y ayuda: emergencias y apoyo según tu país">
+    <title>Seguridad y ayuda - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+        body { background: var(--bg-primary); background-attachment: fixed; padding-top: 70px; color: var(--text-primary); min-height: 100vh; }
+        .header { width:100%; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; background: var(--gradient-primary); color:white; position:fixed; top:0; left:0; z-index:1000; box-shadow: 0 4px 24px rgba(168, 85, 247, 0.3); }
+        .header .brand { font-size:22px; font-weight:700; letter-spacing: -0.02em; }
+        .header a.brand { text-decoration: none; color: inherit; transition: opacity 0.2s; }
+        .header a.brand:hover { opacity: 0.9; }
+        .header .nav-icons { display:flex; gap:12px; }
+        .header .nav-icons img { width:32px; height:32px; cursor:pointer; border-radius:50%; padding:4px; background: rgba(255,255,255,0.15); transition: transform 0.2s, background 0.2s; }
+        .header .nav-icons img:hover { transform: scale(1.12); background: rgba(255,255,255,0.25); }
+        .page-wrap { max-width: 800px; margin: 28px auto 60px; padding: 0 20px; }
+        .hero { text-align: center; margin-bottom: 32px; animation: heroIn 0.6s ease-out both; }
+        @keyframes heroIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .hero h1 { font-size: 28px; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+        .hero p { color: var(--text-secondary); font-size: 15px; line-height: 1.65; max-width: 520px; margin: 0 auto; }
+        .country-wrap { margin-bottom: 28px; animation: heroIn 0.6s ease-out 0.1s both; }
+        .country-wrap label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: var(--text-primary); }
+        .country-wrap select { width: 100%; max-width: 340px; padding: 14px 16px; border: 2px solid var(--border-glass); border-radius: 14px; font-size: 15px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,0.2); transition: border-color 0.2s, box-shadow 0.2s; }
+        .country-wrap select:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2); }
+        .country-wrap select option { background: var(--bg-primary); color: var(--text-primary); }
+        .help-cards { display: grid; gap: 14px; }
+        .help-card { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 18px; padding: 20px 22px; box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 var(--border-glass); border: 1px solid var(--border-glass); border-left: 4px solid var(--accent-purple); transition: transform 0.2s, box-shadow 0.2s; }
+        .help-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(168, 85, 247, 0.15); }
+        .help-card h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .help-card .number { font-size: 20px; font-weight: 800; color: var(--accent-purple); margin: 8px 0; letter-spacing: 0.02em; }
+        .help-card .note { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-top: 6px; }
+        .help-card a { color: var(--accent-purple); font-weight: 600; text-decoration: none; }
+        .help-card a:hover { text-decoration: underline; }
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--text-secondary); font-size: 15px; }
+        .vet-section { margin-top: 36px; padding-top: 28px; border-top: 2px solid var(--border-glass); }
+        .vet-section h2 { font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .vet-cards { display: grid; gap: 12px; }
+        .vet-card { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 16px; padding: 16px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-left: 4px solid #0d9488; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+        .vet-card:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(13,148,136,0.2); }
+        .vet-card .vet-name { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+        .vet-card .vet-place { font-size: 13px; color: var(--text-secondary); }
+        .vet-card .vet-phone { font-size: 14px; font-weight: 700; color: #0d9488; }
+        .vet-card .vet-note { font-size: 12px; color: var(--text-secondary); width: 100%; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+<canvas id="particlesCanvas"></canvas>
+<div class="header">
+    <a href="index.html" class="brand">PROVIWEB</a>
+    <div class="nav-icons">
+        <img src="assets/logotransparente.png" alt="Inicio" title="Inicio" onclick="window.location.href='index.html'">
+        <img src="assets/ajustes.png" alt="Mi perfil" title="Mi perfil" onclick="window.location.href='myprofile.html'">
+    </div>
+</div>
+
+<main class="page-wrap" id="mainContent">
+    <div class="hero">
+        <h1>🛡️ Seguridad y ayuda</h1>
+        <p>Área pública de ayuda. Consulta números de emergencia y apoyo según tu país. En caso de riesgo, contacta siempre a los servicios de tu localidad.</p>
+    </div>
+
+    <div class="country-wrap">
+        <label for="country">Selecciona tu país</label>
+        <select id="country">
+            <option value="">-- Elige un país --</option>
+            <option value="CO">Colombia</option>
+            <option value="ES">España</option>
+            <option value="MX">México</option>
+            <option value="AR">Argentina</option>
+            <option value="CL">Chile</option>
+            <option value="PE">Perú</option>
+        </select>
+    </div>
+
+    <div id="helpCards" class="help-cards">
+        <div id="emptyState" class="empty-state">Elige un país para ver los números de emergencia y apoyo.</div>
+    </div>
+
+    <div id="vetSection" class="vet-section" style="display: none;">
+        <h2>🐾 10 clínicas veterinarias destacadas</h2>
+        <div id="vetCards" class="vet-cards"></div>
+    </div>
+</main>
+
+<script>
+var DATA = {
+    CO: [
+        { title: 'Policía', icon: '🚔', number: '123', note: 'Emergencias generales y seguridad.' },
+        { title: 'Bomberos', icon: '🚒', number: '119', note: 'Incendios y emergencias.' },
+        { title: 'Línea de vida (crisis)', icon: '📞', number: '106', note: 'Atención 24h en crisis emocional y prevención.' },
+        { title: 'Apoyo emocional / psicológico', icon: '🧠', number: '018000 910588', note: 'Línea de apoyo emocional, 24h.' },
+        { title: 'Salud mental / psiquiatría', icon: '💚', number: '106 o 018000 910588', note: 'Orientación en salud mental. En urgencias acuda a hospital.' }
+    ],
+    ES: [
+        { title: 'Emergencias unificado', icon: '🚨', number: '112', note: 'Policía, bomberos, sanitarias, 24h.' },
+        { title: 'Policía Nacional', icon: '🚔', number: '091', note: 'Fuerzas y Cuerpos de Seguridad.' },
+        { title: 'Bomberos', icon: '🚒', number: '080 (según ciudad) o 112', note: 'Emergencias por incendio.' },
+        { title: 'Atención a la conducta suicida', icon: '📞', number: '024', note: '24 horas, prevención y crisis.' },
+        { title: 'Psicología / salud mental', icon: '🧠', number: '024 o 112', note: 'Orientación. Urgencias en hospital.' }
+    ],
+    MX: [
+        { title: 'Emergencias', icon: '🚨', number: '911', note: 'Policía, bomberos, ambulancias, 24h.' },
+        { title: 'Policía', icon: '🚔', number: '911 (o 066 en CDMX)', note: 'Seguridad pública.' },
+        { title: 'Bomberos', icon: '🚒', number: '911', note: 'Incendios y rescate.' },
+        { title: 'Línea de la vida', icon: '📞', number: '800 911 2000', note: 'Atención en crisis y prevención, 24h.' },
+        { title: 'Psicología / salud mental', icon: '🧠', number: '800 911 2000', note: 'Orientación. Urgencias en hospital.' }
+    ],
+    AR: [
+        { title: 'Emergencias', icon: '🚨', number: '911', note: 'Emergencias generales (CABA y varias provincias).' },
+        { title: 'Policía', icon: '🚔', number: '911 o 101', note: 'Según jurisdicción.' },
+        { title: 'Bomberos', icon: '🚒', number: '100', note: 'Incendios y rescate.' },
+        { title: 'Línea de prevención del suicidio', icon: '📞', number: '135 (CABA) / líneas provinciales', note: 'Consulte línea de su provincia.' },
+        { title: 'Psicología / salud mental', icon: '🧠', number: 'Consultar en provincia', note: 'Orientación en centros de salud y hospitales.' }
+    ],
+    CL: [
+        { title: 'Carabineros (Policía)', icon: '🚔', number: '133', note: 'Orden y seguridad.' },
+        { title: 'Bomberos', icon: '🚒', number: '132', note: 'Incendios y emergencias.' },
+        { title: 'Emergencias médicas', icon: '🚑', number: '131', note: 'SAMU.' },
+        { title: 'Salud responde (orientación)', icon: '📞', number: '600 360 7777', note: 'Orientación en salud.' },
+        { title: 'Psicología / crisis', icon: '🧠', number: '600 360 7777 o 132', note: 'Orientación. Urgencias en SAPU o hospital.' }
+    ],
+    PE: [
+        { title: 'Policía Nacional', icon: '🚔', number: '105', note: 'Emergencias policiales.' },
+        { title: 'Bomberos', icon: '🚒', number: '116', note: 'Incendios y rescate.' },
+        { title: 'Emergencias médicas', icon: '🚑', number: '106', note: 'SAMU.' },
+        { title: 'Línea 113 (salud)', icon: '📞', number: '113', note: 'Orientación en salud, 24h.' },
+        { title: 'Psicología / salud mental', icon: '🧠', number: '113 o acuda a establecimiento de salud', note: 'Orientación y derivación.' }
+    ]
+};
+
+var VET_CLINICS = {
+    CO: [
+        { name: 'Pet Plus (Hospital Pepe Sierra)', place: 'Bogotá', phone: 'Consultar web', note: 'Red más grande de Colombia. Hospitales 24h en varias sedes.' },
+        { name: 'Pet Plus (Virrey)', place: 'Bogotá', phone: 'Consultar web', note: 'Urgencias y especialidades.' },
+        { name: 'Pet Plus (Paseo Villa del Río)', place: 'Bogotá', phone: 'Consultar web', note: 'Atención 24 horas.' },
+        { name: 'Pet Company', place: 'Bogotá (Calle 98B)', phone: 'Consultar web', note: 'Clínica 24h, imagenología, cirugía, laboratorio.' },
+        { name: 'Clínica Protectora de Animales (CPA) Magdala', place: 'Bogotá', phone: 'Consultar web', note: 'Urgencias 24h, 365 días.' },
+        { name: 'CPA Modelia', place: 'Bogotá', phone: 'Consultar web', note: 'Pequeños animales, especializados.' },
+        { name: 'CPA Cedritos', place: 'Bogotá', phone: 'Consultar web', note: 'Atención integral.' },
+        { name: 'CPA Teusaquillo', place: 'Bogotá', phone: 'Consultar web', note: 'Más de 500 reseñas positivas.' },
+        { name: 'Pet Plus Medellín', place: 'Medellín', phone: 'Consultar web', note: 'Red nacional.' },
+        { name: 'Pet Plus Barranquilla', place: 'Barranquilla', phone: 'Consultar web', note: 'Hospital y clínicas.' }
+    ],
+    ES: [
+        { name: 'Kivet (red nacional)', place: 'Varias ciudades', phone: 'Consultar web', note: 'Más de 50 clínicas en España y Portugal.' },
+        { name: 'VetCon', place: 'Madrid (Salamanca)', phone: 'Consultar web', note: 'Tecnología avanzada, odontología, dermatología.' },
+        { name: 'Estivet', place: 'Sevilla', phone: 'Consultar web', note: 'Urgencias, cirugía, medicina interna.' },
+        { name: 'Hospital Veterinario UAX', place: 'Madrid (Villanueva de la Cañada)', phone: 'Consultar web', note: 'Referencia universitaria, 24h.' },
+        { name: 'Centro Veterinario Madrid', place: 'Madrid', phone: 'Consultar web', note: 'Especialidades y urgencias.' },
+        { name: 'Hospital Veterinario Catalunya', place: 'Barcelona', phone: 'Consultar web', note: 'Alta complejidad.' },
+        { name: 'Veterinarios Valencia 24h', place: 'Valencia', phone: 'Consultar web', note: 'Atención continua.' },
+        { name: 'Clínica Veterinaria Málaga', place: 'Málaga', phone: 'Consultar web', note: 'Urgencias y especialidades.' },
+        { name: 'Veterinario 24h Bilbao', place: 'Bilbao', phone: 'Consultar web', note: 'Guardia 24 horas.' },
+        { name: 'Kivet Barcelona', place: 'Barcelona', phone: 'Consultar web', note: 'Cardiología, oncología, dermatología.' }
+    ],
+    MX: [
+        { name: 'Hospital Veterinario DELTA', place: 'CDMX (Narvarte)', phone: '55 5536 9137', note: 'Urgencias 24h, 365 días. Alta especialidad.' },
+        { name: 'Hospital Veterinario del Valle', place: 'CDMX (Del Valle)', phone: '(55) 4398-3144', note: 'Urgencias 24h. Líder nacional.' },
+        { name: 'Animal Home Coapa', place: 'CDMX (Coapa)', phone: '(55) 5678 4620', note: '24h, sur de CDMX.' },
+        { name: 'Animal Home San Jerónimo', place: 'CDMX (Pedregal)', phone: 'Consultar web', note: 'Atención 24h.' },
+        { name: 'Pet & Vet Ciudad Jardín', place: 'CDMX', phone: 'Consultar web', note: 'Urgencias 24 horas.' },
+        { name: 'Veterinaria 24h Guadalajara', place: 'Guadalajara', phone: 'Consultar web', note: 'Referencia en Jalisco.' },
+        { name: 'Hospital Veterinario Monterrey', place: 'Monterrey', phone: 'Consultar web', note: 'Especialidades y urgencias.' },
+        { name: 'Veterinarios 24h Puebla', place: 'Puebla', phone: 'Consultar web', note: 'Atención continua.' },
+        { name: 'Clínica Veterinaria Querétaro', place: 'Querétaro', phone: 'Consultar web', note: 'Medicina y cirugía.' },
+        { name: 'Veterinaria Cancún 24h', place: 'Cancún', phone: 'Consultar web', note: 'Urgencias en zona turística.' }
+    ],
+    AR: [
+        { name: 'Wellvet', place: 'Buenos Aires', phone: 'Consultar web', note: 'Emergencias 24h. Más de 20 especialidades, 800 m².' },
+        { name: 'Central Veterinaria Tigre', place: 'Tigre (GBA)', phone: 'Consultar web', note: '24h, laboratorio, cardiología, neurología.' },
+        { name: 'Veterinaria 24hs CABA', place: 'CABA', phone: 'Consultar web', note: 'Directorio de clínicas 24h por barrio.' },
+        { name: 'Hospital Veterinario UBA', place: 'Buenos Aires', phone: 'Consultar web', note: 'Facultad de Veterinaria, referencia.' },
+        { name: 'Clínica Veterinaria Palermo', place: 'CABA (Palermo)', phone: 'Consultar web', note: 'Atención integral.' },
+        { name: 'Veterinaria Caballito 24h', place: 'CABA (Caballito)', phone: 'Consultar web', note: 'Guardia permanente.' },
+        { name: 'Veterinaria Belgrano', place: 'CABA (Belgrano)', phone: 'Consultar web', note: 'Urgencias y especialidades.' },
+        { name: 'Veterinaria Córdoba Capital', place: 'Córdoba', phone: 'Consultar web', note: 'Referencia provincial.' },
+        { name: 'Veterinaria Rosario 24h', place: 'Rosario', phone: 'Consultar web', note: 'Atención continua.' },
+        { name: 'Veterinaria Mendoza', place: 'Mendoza', phone: 'Consultar web', note: 'Clínicas destacadas.' }
+    ],
+    CL: [
+        { name: 'Vet24 Recoleta', place: 'Santiago (Recoleta)', phone: '+56 51259 0703', note: 'Urgencias 24h. Consulta diurna/nocturna.' },
+        { name: 'Vet24 Ñuñoa', place: 'Santiago (Ñuñoa)', phone: 'Consultar web', note: 'Atención continua.' },
+        { name: 'Vet24 Providencia', place: 'Santiago (Providencia)', phone: 'Consultar web', note: 'Cirugía, laboratorio.' },
+        { name: 'Centralvet Vicuña Mackenna', place: 'Santiago', phone: '+56 2 2635 4001', note: '24 años de trayectoria. Cardio, neuro, oftalmo.' },
+        { name: 'Clínica Veterinaria Mascotas Santiago (CVMS)', place: 'San Miguel', phone: '(+56-2) 32809379', note: 'UCI, UTI, urgencias 24h.' },
+        { name: 'Hospital Clínico FAVET (U. de Chile)', place: 'La Pintana, Santiago', phone: '+56 2 29785523', note: 'Tecnología de punta, emergencias.' },
+        { name: 'Veterinaria 24h Viña del Mar', place: 'Viña del Mar', phone: 'Consultar web', note: 'Costa central.' },
+        { name: 'Veterinaria Concepción 24h', place: 'Concepción', phone: 'Consultar web', note: 'Referencia sur.' },
+        { name: 'Clínica Veterinaria Valparaíso', place: 'Valparaíso', phone: 'Consultar web', note: 'Atención especializada.' },
+        { name: 'Veterinaria La Serena', place: 'La Serena', phone: 'Consultar web', note: 'Norte chico.' }
+    ],
+    PE: [
+        { name: 'VETIVET 24 Horas', place: 'Lima', phone: 'Consultar web', note: 'Atención integral, laboratorio, imágenes, cirugía.' },
+        { name: 'Reflexvet', place: 'Lima (Surquillo)', phone: 'Consultar web', note: '24h. Laparoscopia, resonancia, UCI.' },
+        { name: 'SOS Veterinaria', place: 'Lima (Miraflores)', phone: 'Consultar web', note: 'Mejor valorada. Urgencias 24/7, RM, endoscopía.' },
+        { name: 'HeyVet', place: 'Lima (Miraflores)', phone: 'Consultar web', note: 'Emergencias 24h. Av. Reducto 1518.' },
+        { name: 'Clínica Pancho Cavero', place: 'Lima (Barranco)', phone: 'Consultar web', note: 'Destacada en rankings.' },
+        { name: 'Clínica Veterinaria Surco', place: 'Lima (Santiago de Surco)', phone: 'Consultar web', note: 'Atención y urgencias.' },
+        { name: 'Veterinaria 24h Arequipa', place: 'Arequipa', phone: 'Consultar web', note: 'Referencia sur.' },
+        { name: 'Veterinaria Cusco', place: 'Cusco', phone: 'Consultar web', note: 'Zona turística.' },
+        { name: 'Veterinaria Trujillo', place: 'Trujillo', phone: 'Consultar web', note: 'Norte del país.' },
+        { name: 'Veterinaria Chiclayo', place: 'Chiclayo', phone: 'Consultar web', note: 'Lambayeque.' }
+    ]
+};
+
+function render(countryCode) {
+    var container = document.getElementById('helpCards');
+    var empty = document.getElementById('emptyState');
+    var vetSection = document.getElementById('vetSection');
+    var vetCards = document.getElementById('vetCards');
+    if (!countryCode || !DATA[countryCode]) {
+        empty.style.display = 'block';
+        vetSection.style.display = 'none';
+        [].slice.call(container.querySelectorAll('.help-card')).forEach(function(el) { el.remove(); });
+        vetCards.innerHTML = '';
+        return;
+    }
+    empty.style.display = 'none';
+    container.querySelectorAll('.help-card').forEach(function(el) { el.remove(); });
+    DATA[countryCode].forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'help-card';
+        card.innerHTML = '<h3>' + item.icon + ' ' + item.title + '</h3>' +
+            '<div class="number">' + item.number + '</div>' +
+            '<p class="note">' + item.note + '</p>';
+        container.appendChild(card);
+    });
+    if (VET_CLINICS[countryCode]) {
+        vetSection.style.display = 'block';
+        vetCards.innerHTML = '';
+        VET_CLINICS[countryCode].forEach(function(v) {
+            var vc = document.createElement('div');
+            vc.className = 'vet-card';
+            vc.innerHTML = '<div><span class="vet-name">' + v.name + '</span><br><span class="vet-place">' + v.place + '</span></div>' +
+                (v.phone ? '<span class="vet-phone">' + v.phone + '</span>' : '') +
+                (v.note ? '<span class="vet-note">' + v.note + '</span>' : '');
+            vetCards.appendChild(vc);
+        });
+    } else {
+        vetSection.style.display = 'none';
+        vetCards.innerHTML = '';
+    }
+}
+
+document.getElementById('country').addEventListener('change', function() {
+    render(this.value);
+});
+</script>
+<script src="assets/particles.js"></script>
+</body>
+</html>

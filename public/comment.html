@@ -1,0 +1,2091 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Comentarios">
+<meta name="author" content="israviolink - Israel Rodríguez">
+<title>PROVIWEB - Comentarios</title>
+<script defer src="js/post-media.js"></script>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+    --bg-primary: #0f0f13;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --accent-purple: #a855f7;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    background-attachment: fixed;
+    color: var(--text-primary); 
+    -webkit-font-smoothing: antialiased;
+    padding-top: 80px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* HEADER */
+.header {
+    width:100%; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:14px 24px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border-glass);
+    color: var(--text-primary); 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    z-index:1000; 
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.brand {
+    font-size:22px;
+    font-weight:800;
+    cursor:pointer;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0 4px 8px rgba(168, 85, 247, 0.3));
+}
+a.brand { text-decoration: none; color: inherit; }
+
+.back-btn {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: var(--accent-purple);
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
+}
+
+.back-btn:hover {
+    background: rgba(168, 85, 247, 0.25);
+    transform:translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+/* CONTAINER */
+.container {
+    max-width:800px;
+    margin:0 auto;
+    padding:24px;
+}
+
+/* POST CARD */
+.post-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius:24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
+    margin-bottom:24px;
+    overflow:hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 0.8;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.post-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px;
+    border-bottom:1px solid var(--border-glass);
+}
+
+.user-info {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    cursor:pointer;
+}
+
+.user-photo {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+}
+
+.user-details {
+    flex:1;
+    min-width:0;
+}
+
+.user-name {
+    font-weight:600;
+    color: var(--text-primary);
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.verified-badge {
+    width:16px;
+    height:16px;
+}
+
+.username {
+    font-size:12px;
+    color: var(--text-secondary);
+}
+
+.post-content {
+    padding:12px;
+}
+
+.post-text {
+    font-size:14px;
+    color: var(--text-primary);
+    line-height:1.5;
+    margin-bottom:10px;
+    word-wrap:break-word;
+}
+
+.post-media {
+    width:100%;
+    max-height:500px;
+    height:auto;
+    object-fit:contain;
+    border-radius:8px;
+    margin:10px 0;
+    display:block;
+}
+
+.post-video {
+    width:100%;
+    max-height:500px;
+    height:auto;
+    border-radius:8px;
+    margin:10px 0;
+    display:block;
+}
+
+.post-footer {
+    padding:8px 12px;
+    border-top:1px solid var(--border-glass);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.post-actions {
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.action-btn {
+    background:none;
+    border:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:5px 10px;
+    border-radius:8px;
+    font-size:14px;
+    color: var(--text-secondary);
+    transition:var(--transition);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.action-btn.active {
+    color: var(--accent-purple);
+}
+
+/* COMMENTS SECTION */
+.comments-section {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius:24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
+    padding:20px;
+}
+
+.comments-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-glass);
+}
+
+.comments-title {
+    font-size:18px;
+    font-weight:600;
+    color: var(--text-primary);
+}
+
+.comments-count {
+    font-size:14px;
+    color: var(--text-secondary);
+}
+
+.comments-list {
+    max-height:500px;
+    overflow-y:auto;
+    margin-bottom:20px;
+}
+
+.comments-list::-webkit-scrollbar {
+    width:6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius:10px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);
+    border-radius:10px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-purple);
+}
+
+.comment-item {
+    display:flex;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid var(--border-glass);
+    animation:fadeIn 0.3s ease-out;
+}
+
+.comment-item:last-child {
+    border-bottom:none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity:0;
+        transform:translateY(-5px);
+    }
+    to {
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.comment-user-photo {
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    border:2px solid var(--accent-purple);
+    cursor:pointer;
+}
+
+.comment-content {
+    flex:1;
+    min-width:0;
+}
+
+.comment-user-name {
+    font-weight:600;
+    font-size:13px;
+    color: var(--text-primary);
+    margin-bottom:4px;
+    cursor:pointer;
+}
+
+.comment-text {
+    font-size:14px;
+    color: var(--text-secondary);
+    word-wrap:break-word;
+    line-height:1.4;
+    margin-bottom:4px;
+}
+
+.comment-time {
+    font-size:11px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.no-comments {
+    text-align:center;
+    padding:40px;
+    color: var(--text-secondary);
+    font-size:14px;
+}
+
+/* COMMENT INPUT */
+.comment-input-section {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    padding-top:15px;
+    border-top:1px solid var(--border-glass);
+}
+
+.comment-input {
+    flex:1;
+    padding:12px 18px;
+    border:1px solid var(--border-glass);
+    border-radius:16px;
+    font-size:14px;
+    outline:none;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(15, 15, 19, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-primary);
+}
+
+.comment-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.comment-input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+    background: rgba(15, 15, 19, 0.8);
+    transform: translateY(-1px);
+}
+
+.comment-send-btn {
+    padding:12px 24px;
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.comment-send-btn:hover {
+    transform:translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.comment-send-btn:active {
+    transform:translateY(0);
+}
+
+.loading {
+    text-align:center;
+    padding:40px;
+    color: var(--text-secondary);
+}
+
+/* NOTIFICATIONS CARD */
+.nav-icons {
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.notifications-card {
+    position:fixed;
+    top:70px;
+    right:24px;
+    width:400px;
+    max-width:calc(100vw - 48px);
+    max-height:calc(100vh - 90px);
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius:24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-glass);
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    animation:slideDownRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDownRight {
+    from {
+        transform:translateY(-20px);
+        opacity:0;
+    }
+    to {
+        transform:translateY(0);
+        opacity:1;
+    }
+}
+
+.notifications-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 20px;
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border-bottom:2px solid var(--border-glass);
+}
+
+.notifications-header h3 {
+    margin:0;
+    font-size:18px;
+    font-weight:600;
+}
+
+.close-notifications-btn {
+    background:none;
+    border:none;
+    color: var(--text-primary);
+    font-size:28px;
+    cursor:pointer;
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    transition:var(--transition);
+    line-height:1;
+}
+
+.close-notifications-btn:hover {
+    background:rgba(255,255,255,0.2);
+}
+
+.notifications-content {
+    flex:1;
+    overflow-y:auto;
+    padding:10px;
+}
+
+.notification-section {
+    margin-bottom:15px;
+    border-radius:8px;
+    background: rgba(15, 15, 19, 0.5);
+    overflow:hidden;
+    border: 1px solid var(--border-glass);
+}
+
+.notification-section-header {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 15px;
+    cursor:pointer;
+    transition:background 0.2s;
+}
+
+.notification-section-header:hover {
+    background:rgba(168, 85, 247, 0.1);
+}
+
+.notification-icon {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    flex-shrink:0;
+}
+
+.notification-section-info {
+    flex:1;
+    min-width:0;
+}
+
+.notification-section-title {
+    font-weight:600;
+    font-size:14px;
+    color: var(--text-primary);
+    margin-bottom:2px;
+}
+
+.notification-section-desc {
+    font-size:12px;
+    color: var(--text-secondary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.notification-indicator {
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background: var(--accent-purple);
+    margin-left:8px;
+    flex-shrink:0;
+    transition:all 0.3s;
+}
+
+.notification-indicator.selected {
+    background:#4CAF50;
+    transform:scale(1.2);
+}
+
+.notification-list {
+    max-height:300px;
+    overflow-y:auto;
+    padding:5px;
+}
+
+.notification-item {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 15px;
+    border-radius:8px;
+    margin-bottom:5px;
+    background: rgba(28, 28, 36, 0.5);
+    cursor:pointer;
+    transition:background 0.2s;
+    border: 1px solid var(--border-glass);
+}
+
+.notification-item:hover {
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.notification-item img {
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+}
+
+.notification-item-info {
+    flex:1;
+    min-width:0;
+}
+
+.notification-item-name {
+    font-weight:600;
+    font-size:14px;
+    color: var(--text-primary);
+    margin-bottom:2px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.notification-item-username {
+    font-size:12px;
+    color: var(--text-secondary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* GIFT POPUP */
+.gift-popup {
+    display:none;
+    position:absolute;
+    bottom:100%;
+    left:0;
+    background: var(--bg-card);
+    border-radius:15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding:8px;
+    z-index:1000;
+    margin-bottom:5px;
+    min-width:200px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(20px);
+}
+
+.gift-option {
+    width:100%;
+    padding:8px 12px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-align:left;
+    font-size:14px;
+    border-radius:8px;
+    transition:background 0.2s;
+    margin-bottom:2px;
+    color: var(--text-primary);
+}
+
+.gift-option:hover {
+    background: rgba(168, 85, 247, 0.2);
+}
+
+/* OPTIONS MENU */
+.options-menu {
+    display:none;
+    position:absolute;
+    right:0;
+    top:100%;
+    background: var(--bg-card);
+    border-radius:8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index:1000;
+    min-width:150px;
+    margin-top:5px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(20px);
+}
+
+.option-item {
+    width:100%;
+    padding:10px 15px;
+    border:none;
+    background:none;
+    text-align:left;
+    cursor:pointer;
+    font-size:14px;
+    transition:background 0.2s;
+    color: var(--text-primary);
+}
+
+.option-item:hover {
+    background: rgba(168, 85, 247, 0.2);
+}
+
+/* REACTION POPUP */
+.reaction-popup {
+    display:none;
+    position:absolute;
+    bottom:100%;
+    left:0;
+    background: var(--bg-card);
+    border-radius:25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding:5px;
+    z-index:1000;
+    margin-bottom:5px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(20px);
+}
+
+.reaction-option {
+    font-size:24px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:5px;
+    border-radius:50%;
+    transition:transform 0.2s;
+    margin:0 2px;
+}
+
+.reaction-option:hover {
+    transform:scale(1.3);
+    background: rgba(168, 85, 247, 0.2);
+}
+
+@media(max-width:600px) {
+    .container {
+        padding:10px;
+    }
+    .post-card, .comments-section {
+        border-radius:0;
+        margin-left:-10px;
+        margin-right:-10px;
+    }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<!-- HEADER -->
+<div class="header">
+    <button class="back-btn" onclick="window.history.back()">← Volver</button>
+    <a href="home.html" class="brand">PROVIWEB</a>
+    <div class="nav-icons">
+        <img src="assets/notificacion.png" alt="notificacionicon" title="Notificaciones" data-img="assets/notificacion.png" id="notifIcon" style="cursor:pointer;width:24px;height:24px;">
+        <img src="assets/perfilblue.png" alt="ajustesicon" title="Ajustes" data-img="assets/perfilblue.png" onclick="window.location.href='myprofile.html'" style="cursor:pointer;width:24px;height:24px;">
+    </div>
+</div>
+
+<!-- NOTIFICATIONS CARD -->
+<div id="notificationsCard" class="notifications-card" style="display:none;">
+    <div class="notifications-header">
+        <h3>🔔 Notificaciones</h3>
+        <button id="closeNotificationsBtn" class="close-notifications-btn">×</button>
+    </div>
+    
+    <div class="notifications-content">
+        <!-- Seguidores -->
+        <div class="notification-section" id="notyFollow">
+            <div class="notification-section-header">
+                <div class="notification-icon" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);display:flex;align-items:center;justify-content:center;font-size:24px;">👥</div>
+                <div class="notification-section-info">
+                    <div class="notification-section-title">Seguidores</div>
+                    <div class="notification-section-desc" id="descUltimoItem">No hay nuevas notificaciones</div>
+                </div>
+                <div class="notification-indicator" id="botonSeguidores" style="display:none;"></div>
+            </div>
+            <div class="notification-list" id="scrollSeguidores" style="display:none;">
+                <div id="notifySeguidores"></div>
+            </div>
+        </div>
+
+        <!-- Interacciones -->
+        <div class="notification-section" id="notyInteraction">
+            <div class="notification-section-header">
+                <div class="notification-icon" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);display:flex;align-items:center;justify-content:center;font-size:24px;">👏</div>
+                <div class="notification-section-info">
+                    <div class="notification-section-title">Aplausos</div>
+                    <div class="notification-section-desc" id="textAplausos">No hay nuevas notificaciones</div>
+                </div>
+                <div class="notification-indicator" id="botonInteracciones" style="display:none;"></div>
+            </div>
+            <div class="notification-list" id="scrollInteraction" style="display:none;">
+                <div id="notify"></div>
+            </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="notification-section" id="notyBalance">
+            <div class="notification-section-header">
+                <div class="notification-icon" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);display:flex;align-items:center;justify-content:center;font-size:24px;">💰</div>
+                <div class="notification-section-info">
+                    <div class="notification-section-title">Balance</div>
+                    <div class="notification-section-desc" id="textBalance">No hay nuevas notificaciones</div>
+                </div>
+                <div class="notification-indicator" id="botonBalance" style="display:none;"></div>
+            </div>
+            <div class="notification-list" id="scrollBalance" style="display:none;">
+                <div id="notifyBalance"></div>
+            </div>
+        </div>
+
+        <!-- Practice -->
+        <div class="notification-section" id="notyPractice">
+            <div class="notification-section-header">
+                <div class="notification-icon" style="background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);display:flex;align-items:center;justify-content:center;font-size:24px;">🎵</div>
+                <div class="notification-section-info">
+                    <div class="notification-section-title">Practice</div>
+                    <div class="notification-section-desc" id="textPractice">No hay nuevas notificaciones</div>
+                </div>
+                <div class="notification-indicator" id="botonPractice" style="display:none;"></div>
+            </div>
+            <div class="notification-list" id="scrollPractice" style="display:none;">
+                <div id="notifyPractice"></div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="nothing" style="display:none;text-align:center;padding:40px;color: var(--text-secondary);">
+            <div style="font-size:48px;margin-bottom:15px;">🔔</div>
+            <div style="font-size:18px;font-weight:600;color: var(--text-primary);">No hay notificaciones</div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container" id="mainContent">
+    <div id="postContainer" class="post-card">
+        <div class="loading">Cargando post...</div>
+    </div>
+    
+    <div class="comments-section">
+        <div class="comments-header">
+            <div>
+                <div class="comments-title">Comentarios</div>
+                <div class="comments-count" id="commentsCount">0 comentarios</div>
+            </div>
+        </div>
+        
+        <div class="comments-list" id="commentsList">
+            <div class="loading">Cargando comentarios...</div>
+        </div>
+        
+        <div class="comment-input-section">
+            <input type="text" class="comment-input" id="commentInput" placeholder="Escribe un comentario...">
+            <button class="comment-send-btn" id="commentSendBtn">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, set, push, get, update, remove, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+    authDomain: "proviweb-d8764.firebaseapp.com",
+    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+    projectId: "proviweb-d8764",
+    storageBucket: "proviweb-d8764.appspot.com",
+    messagingSenderId: "475963980955",
+    appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+    measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Obtener parámetros de la URL
+const urlParams = new URLSearchParams(window.location.search);
+const postID = urlParams.get('postID') || urlParams.get('postId') || urlParams.get('pId') || urlParams.get('id') || urlParams.get('post');
+const postType = urlParams.get('type') || 'text';
+
+let currentUID = null;
+let postAuthorId = null;
+
+// Verificar autenticación
+onAuthStateChanged(auth, user => {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+    currentUID = user.uid;
+    loadPost();
+    loadComments();
+});
+
+// Función para obtener tiempo relativo
+function getTimeAgo(timestamp) {
+    if (!timestamp) return '';
+    const now = Date.now();
+    const diff = now - timestamp;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (seconds < 60) return 'hace un momento';
+    if (minutes < 60) return `hace ${minutes} min`;
+    if (hours < 24) return `hace ${hours} h`;
+    if (days < 7) return `hace ${days} d`;
+    return new Date(timestamp).toLocaleDateString();
+}
+
+// Función para procesar hashtags y links
+function processTextWithLinks(text) {
+    const container = document.createElement('span');
+    container.style.wordWrap = 'break-word';
+    container.style.overflowWrap = 'anywhere';
+    
+    const patterns = [
+        /(https?:\/\/[^\s]+)/g,
+        /(www\.[^\s]+)/g,
+        /#(\w+)/g,
+        /@(\w+)/g
+    ];
+    
+    let lastIndex = 0;
+    const matches = [];
+    
+    patterns.forEach((pattern, patternIndex) => {
+        let match;
+        while ((match = pattern.exec(text)) !== null) {
+            matches.push({
+                index: match.index,
+                length: match[0].length,
+                text: match[0],
+                type: patternIndex === 0 ? 'url' : patternIndex === 1 ? 'url' : patternIndex === 2 ? 'hashtag' : 'mention',
+                value: match[1] || match[0]
+            });
+        }
+    });
+    
+    matches.sort((a, b) => a.index - b.index);
+    
+    const filteredMatches = [];
+    let currentEnd = 0;
+    matches.forEach(match => {
+        if (match.index >= currentEnd) {
+            filteredMatches.push(match);
+            currentEnd = match.index + match.length;
+        }
+    });
+    
+    filteredMatches.forEach(match => {
+        if (match.index > lastIndex) {
+            const textNode = document.createTextNode(text.substring(lastIndex, match.index));
+            container.appendChild(textNode);
+        }
+        
+        const link = document.createElement('a');
+        link.style.cssText = 'color:#a855f7;text-decoration:none;cursor:pointer;font-weight:500;';
+        
+        if (match.type === 'hashtag') {
+            link.textContent = match.text;
+            link.href = '#';
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `home.html#search_${match.value}`;
+            });
+        } else if (match.type === 'mention') {
+            link.textContent = match.text;
+            link.href = '#';
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const username = match.value;
+                const usersRef = ref(db, 'Users');
+                const userQuery = query(usersRef, orderByChild('username'), equalTo(username));
+                const userSnap = await get(userQuery);
+                if (userSnap.exists()) {
+                    userSnap.forEach((userChild) => {
+                        window.location.href = `userprofile.html?uid=${userChild.key}`;
+                    });
+                }
+            });
+        } else if (match.type === 'url') {
+            let url = match.text;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            link.textContent = match.text;
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+        
+        container.appendChild(link);
+        lastIndex = match.index + match.length;
+    });
+    
+    if (lastIndex < text.length) {
+        const textNode = document.createTextNode(text.substring(lastIndex));
+        container.appendChild(textNode);
+    }
+    
+    return container;
+}
+
+// Cargar post
+function loadPost() {
+    if (!postID) {
+        document.getElementById('postContainer').innerHTML = '<div class="loading">Error: No se especificó el post</div>';
+        return;
+    }
+    
+    const postRef = ref(db, `Posts/${postID}`);
+    onValue(postRef, (snap) => {
+        if (!snap.exists()) {
+            document.getElementById('postContainer').innerHTML = '<div class="loading">Post no encontrado</div>';
+            return;
+        }
+        
+        const data = snap.val();
+        postAuthorId = data.id || data.uid;
+        
+        const postContainer = document.getElementById('postContainer');
+        postContainer.innerHTML = '';
+        
+        // Header del post
+        const header = document.createElement('div');
+        header.className = 'post-header';
+        
+        const userInfo = document.createElement('div');
+        userInfo.className = 'user-info';
+        userInfo.addEventListener('click', () => {
+            window.location.href = `userprofile.html?uid=${postAuthorId}`;
+        });
+        
+        const userPhoto = document.createElement('img');
+        userPhoto.className = 'user-photo';
+        userPhoto.src = 'assets/avatar.png';
+        
+        const userDetails = document.createElement('div');
+        userDetails.className = 'user-details';
+        
+        const userName = document.createElement('div');
+        userName.className = 'user-name';
+        
+        const username = document.createElement('div');
+        username.className = 'username';
+        
+        userDetails.appendChild(userName);
+        userDetails.appendChild(username);
+        
+        userInfo.appendChild(userPhoto);
+        userInfo.appendChild(userDetails);
+        header.appendChild(userInfo);
+        
+        // Cargar info del usuario
+        const userRef = ref(db, `Users/${postAuthorId}`);
+        onValue(userRef, (userSnap) => {
+            if (userSnap.exists()) {
+                const userData = userSnap.val();
+                if (userData.photo) userPhoto.src = userData.photo;
+                userName.innerHTML = `${userData.name || 'Usuario'} ${userData.verified ? '<img src="assets/verified.png" class="verified-badge">' : ''}`;
+                username.textContent = `@${userData.username || ''}`;
+            }
+        }, { onlyOnce: true });
+        
+        postContainer.appendChild(header);
+        
+        // Contenido del post
+        const content = document.createElement('div');
+        content.className = 'post-content';
+        
+        // Texto del post
+        if (data.text && postType !== 'bg' && postType !== 'party') {
+            const textDiv = document.createElement('div');
+            textDiv.className = 'post-text';
+            const processedText = processTextWithLinks(data.text);
+            textDiv.appendChild(processedText);
+            content.appendChild(textDiv);
+        }
+        
+        // Media según tipo (Audio, Video, Imágenes, Partituras, etc.)
+        const mediaBox = document.createElement('div');
+        mediaBox.className = 'post-media-box';
+        
+        if (window.ProviwebPostMedia && typeof window.ProviwebPostMedia.renderPostMedia === 'function') {
+            window.ProviwebPostMedia.renderPostMedia(data, mediaBox, {
+                postId: postID,
+                authorName: 'Publicación'
+            });
+            if (mediaBox.children.length > 0) {
+                content.appendChild(mediaBox);
+            }
+        } else {
+            if (postType === 'image' && data.meme) {
+                const img = document.createElement('img');
+                img.className = 'post-media';
+                img.src = data.meme;
+                content.appendChild(img);
+            } else if (data.vine) {
+                const video = document.createElement('video');
+                video.className = 'post-video';
+                video.src = data.vine;
+                video.controls = true;
+                video.playsInline = true;
+                content.appendChild(video);
+            }
+        }
+        
+        postContainer.appendChild(content);
+        
+        // Botón de opciones
+        const moreBtn = document.createElement('button');
+        moreBtn.innerHTML = '⋯';
+        moreBtn.style.cssText = 'background:none;border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;padding:5px;position:relative;';
+        
+        const optionsMenu = document.createElement('div');
+        optionsMenu.className = 'options-menu';
+        optionsMenu.innerHTML = `
+            <button class="option-item" data-action="save">💾 Guardar</button>
+            <button class="option-item" data-action="copy">📋 Copiar</button>
+            <button class="option-item" data-action="report">🚨 Reportar</button>
+            ${postAuthorId === currentUID ? '<button class="option-item" data-action="delete">🗑️ Eliminar</button>' : ''}
+        `;
+        
+        moreBtn.appendChild(optionsMenu);
+        moreBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            optionsMenu.style.display = optionsMenu.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // Cerrar menú al hacer click fuera
+        const closeMenu = (e) => {
+            if (!moreBtn.contains(e.target)) {
+                optionsMenu.style.display = 'none';
+            }
+        };
+        document.addEventListener('click', closeMenu);
+        
+        // Acciones del menú
+        optionsMenu.querySelectorAll('.option-item').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const action = btn.dataset.action;
+                
+                if (action === 'save') {
+                    const saveRef = ref(db, `Saves/${currentUID}/${postID}`);
+                    const snap = await get(saveRef);
+                    if (snap.exists()) {
+                        await remove(saveRef);
+                        alert('Post eliminado de guardados');
+                    } else {
+                        await set(saveRef, true);
+                        alert('Post guardado');
+                    }
+                } else if (action === 'copy') {
+                    navigator.clipboard.writeText(data.text || '');
+                    alert('Texto copiado');
+                } else if (action === 'report') {
+                    await set(ref(db, `ReportPost/${postID}`), true);
+                    alert('Post reportado');
+                } else if (action === 'delete') {
+                    if (confirm('¿Eliminar este post?')) {
+                        await remove(ref(db, `Posts/${postID}`));
+                        alert('Post eliminado');
+                        window.location.href = 'home.html';
+                    }
+                }
+                optionsMenu.style.display = 'none';
+            });
+        });
+        
+        header.appendChild(moreBtn);
+        
+        // Footer con acciones
+        const footer = document.createElement('div');
+        footer.className = 'post-footer';
+        
+        const actions = document.createElement('div');
+        actions.className = 'post-actions';
+        
+        // Botón de reacciones con popup
+        const likeBtnContainer = document.createElement('div');
+        likeBtnContainer.style.cssText = 'position:relative;';
+        
+        const likeBtn = document.createElement('button');
+        likeBtn.className = 'action-btn';
+        likeBtn.id = 'likeBtn';
+        
+        const reactionPopup = document.createElement('div');
+        reactionPopup.className = 'reaction-popup';
+        reactionPopup.style.display = 'none';
+        reactionPopup.innerHTML = `
+            <button class="reaction-option" data-reaction="aplausos">👏</button>
+            <button class="reaction-option" data-reaction="love">❤️</button>
+            <button class="reaction-option" data-reaction="laugh">😂</button>
+            <button class="reaction-option" data-reaction="wow">😮</button>
+            <button class="reaction-option" data-reaction="sad">😢</button>
+            <button class="reaction-option" data-reaction="angry">😠</button>
+        `;
+        
+        const aplausosRef = ref(db, `Aplausos/${postID}`);
+        const reactionRef = ref(db, `Reaction/${postID}/${currentUID}`);
+        
+        const updateReactionButton = () => {
+            onValue(aplausosRef, (snap) => {
+                const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+                const hasReacted = snap.exists() && snap.hasChild(currentUID);
+                
+                onValue(reactionRef, (reactSnap) => {
+                    if (reactSnap.exists()) {
+                        const reactType = reactSnap.val().type;
+                        const emojis = {
+                            'aplausos': '👏',
+                            'love': '❤️',
+                            'laugh': '😂',
+                            'wow': '😮',
+                            'sad': '😢',
+                            'angry': '😠'
+                        };
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> ${emojis[reactType] || '👏'}`;
+                        likeBtn.style.color = '#a855f7';
+                    } else if (hasReacted) {
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> 👏`;
+                        likeBtn.style.color = '#a855f7';
+                    } else {
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> 👏`;
+                        likeBtn.style.color = 'var(--text-secondary)';
+                    }
+                });
+            });
+        };
+        updateReactionButton();
+        
+        // Mostrar/ocultar popup de reacciones
+        let reactionTimeout;
+        likeBtn.addEventListener('mouseenter', () => {
+            clearTimeout(reactionTimeout);
+            reactionPopup.style.display = 'flex';
+        });
+        likeBtnContainer.addEventListener('mouseleave', () => {
+            reactionTimeout = setTimeout(() => {
+                reactionPopup.style.display = 'none';
+            }, 300);
+        });
+        reactionPopup.addEventListener('mouseenter', () => {
+            clearTimeout(reactionTimeout);
+        });
+        
+        // Manejar selección de reacción
+        reactionPopup.querySelectorAll('.reaction-option').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const reactionType = btn.dataset.reaction;
+                const aplausosUserRef = ref(db, `Aplausos/${postID}/${currentUID}`);
+                const snap = await get(aplausosUserRef);
+                
+                if (snap.exists()) {
+                    await set(reactionRef, { type: reactionType });
+                } else {
+                    await set(aplausosUserRef, true);
+                    await set(reactionRef, { type: reactionType });
+                    
+                    // Notificar al autor
+                    if (postAuthorId !== currentUID) {
+                        const userRef = ref(db, `Users/${currentUID}`);
+                        onValue(userRef, (userSnap) => {
+                            if (userSnap.exists()) {
+                                const timestamp = Date.now().toString();
+                                const notificationMessages = {
+                                    'aplausos': 'Le gusta tu Post',
+                                    'love': 'Ama tu Post',
+                                    'laugh': 'Ríe con tu Post',
+                                    'wow': 'Le impresiona tu Post',
+                                    'sad': 'Se entristece con tu Post',
+                                    'angry': 'No le gusta tu Post'
+                                };
+                                const notificationMessage = notificationMessages[reactionType] || 'Le gusta tu Post';
+                                const notificationRef = ref(db, `Users/${postAuthorId}/Notifications/${timestamp}`);
+                                set(notificationRef, {
+                                    pId: postID,
+                                    timestamp: timestamp,
+                                    pUid: postAuthorId,
+                                    notification: notificationMessage,
+                                    type: 'post',
+                                    sUid: currentUID
+                                });
+                                set(ref(db, `Users/${postAuthorId}/Count/${timestamp}`), true);
+                            }
+                        }, { onlyOnce: true });
+                    }
+                }
+                reactionPopup.style.display = 'none';
+            });
+        });
+        
+        // Click rápido para quitar reacción
+        likeBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const aplausosUserRef = ref(db, `Aplausos/${postID}/${currentUID}`);
+            const snap = await get(aplausosUserRef);
+            
+            if (snap.exists()) {
+                await remove(aplausosUserRef);
+                await remove(reactionRef);
+            }
+        });
+        
+        likeBtnContainer.appendChild(likeBtn);
+        likeBtnContainer.appendChild(reactionPopup);
+        actions.appendChild(likeBtnContainer);
+        
+        // Botón de comentarios
+        const commentBtn = document.createElement('button');
+        commentBtn.className = 'action-btn';
+        const commentsRef = ref(db, `Posts/${postID}/Comments`);
+        onValue(commentsRef, (snap) => {
+            const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+            commentBtn.innerHTML = `<span id="commentCount">${count}</span> 💬`;
+        });
+        actions.appendChild(commentBtn);
+        
+        // Botón de compartir
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'action-btn';
+        shareBtn.innerHTML = '📤';
+        shareBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Mira este post en PROVIWEB',
+                        text: data.text || '',
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Error compartiendo:', err);
+                }
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Enlace copiado al portapapeles');
+            }
+        });
+        actions.appendChild(shareBtn);
+        
+        // Sistema de regalos
+        const giftBtnContainer = document.createElement('div');
+        giftBtnContainer.style.cssText = 'position:relative;';
+        
+        const giftBtn = document.createElement('button');
+        giftBtn.className = 'action-btn';
+        giftBtn.id = 'giftBtn';
+        giftBtn.innerHTML = '🎁';
+        
+        const giftPopup = document.createElement('div');
+        giftPopup.className = 'gift-popup';
+        giftPopup.style.display = 'none';
+        
+        const giftAmounts = [
+            { amount: 1, type: 'undolar', emoji: '💰', label: '1 QAV' },
+            { amount: 3, type: 'tresdolares', emoji: '🎵', label: '3 QAV' },
+            { amount: 5, type: 'cincodolares', emoji: '🎸', label: '5 QAV' },
+            { amount: 10, type: 'diezdolares', emoji: '🎹', label: '10 QAV' },
+            { amount: 20, type: 'veintedolares', emoji: '🥁', label: '20 QAV' },
+            { amount: 25, type: 'veinticincodolares', emoji: '🎺', label: '25 QAV' },
+            { amount: 30, type: 'treintadolares', emoji: '🎻', label: '30 QAV' },
+            { amount: 50, type: 'cincuentadolares', emoji: '🎼', label: '50 QAV' },
+            { amount: 100, type: 'ciendolares', emoji: '💎', label: '100 QAV' }
+        ];
+        
+        giftAmounts.forEach(gift => {
+            const giftOption = document.createElement('button');
+            giftOption.className = 'gift-option';
+            giftOption.dataset.amount = gift.amount;
+            giftOption.dataset.type = gift.type;
+            giftOption.innerHTML = `${gift.emoji} ${gift.label}`;
+            giftOption.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                await sendGift(postID, postAuthorId, gift.amount, gift.type);
+                giftPopup.style.display = 'none';
+            });
+            giftPopup.appendChild(giftOption);
+        });
+        
+        giftBtnContainer.appendChild(giftBtn);
+        giftBtnContainer.appendChild(giftPopup);
+        
+        // Mostrar/ocultar popup de regalos
+        let giftTimeout;
+        giftBtn.addEventListener('mouseenter', () => {
+            clearTimeout(giftTimeout);
+            giftPopup.style.display = 'block';
+        });
+        giftBtnContainer.addEventListener('mouseleave', () => {
+            giftTimeout = setTimeout(() => {
+                giftPopup.style.display = 'none';
+            }, 300);
+        });
+        giftPopup.addEventListener('mouseenter', () => {
+            clearTimeout(giftTimeout);
+        });
+        
+        // Actualizar estado del botón de regalo
+        const balanceEnviadoRef = ref(db, `BalanceEnviado/${postID}`);
+        const enviadoRef = ref(db, `Enviado/${postID}/${currentUID}`);
+        
+        onValue(balanceEnviadoRef, (snap) => {
+            const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+            const hasSent = snap.exists() && snap.hasChild(currentUID);
+            
+            if (hasSent) {
+                onValue(enviadoRef, (enviadoSnap) => {
+                    if (enviadoSnap.exists()) {
+                        const giftType = enviadoSnap.val().type;
+                        const giftInfo = giftAmounts.find(g => g.type === giftType);
+                        if (giftInfo) {
+                            giftBtn.innerHTML = `${giftInfo.emoji} <span id="giftCount">${count}</span>`;
+                            giftBtn.style.color = '#FF6B6B';
+                        } else {
+                            giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+                            giftBtn.style.color = '#FF6B6B';
+                        }
+                    } else {
+                        giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+                        giftBtn.style.color = '#FF6B6B';
+                    }
+                });
+            } else {
+                giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+                giftBtn.style.color = 'var(--text-secondary)';
+            }
+        });
+        
+        // Click en botón de regalo para quitar (si ya envió)
+        giftBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const balanceEnviadoUserRef = ref(db, `BalanceEnviado/${postID}/${currentUID}`);
+            const snap = await get(balanceEnviadoUserRef);
+            
+            if (snap.exists()) {
+                if (confirm('¿Quitar el regalo enviado?')) {
+                    await remove(balanceEnviadoUserRef);
+                    await remove(enviadoRef);
+                }
+            }
+        });
+        
+        actions.appendChild(giftBtnContainer);
+        footer.appendChild(actions);
+        
+        postContainer.appendChild(footer);
+        
+        // Función para enviar regalo
+        async function sendGift(postId, receiverId, amount, giftType) {
+            try {
+                // Verificar balance del usuario
+                const senderBalanceRef = ref(db, `Balance/${currentUID}`);
+                const senderBalanceSnap = await get(senderBalanceRef);
+                
+                if (!senderBalanceSnap.exists() || !senderBalanceSnap.hasChild('balance')) {
+                    alert('No tienes balance disponible. Necesitas crear una wallet primero.');
+                    return;
+                }
+                
+                const senderBalance = parseFloat(senderBalanceSnap.val().balance || 0);
+                
+                if (senderBalance < amount) {
+                    alert(`No tienes suficiente balance. Necesitas ${amount} QAV pero tienes ${senderBalance} QAV.`);
+                    return;
+                }
+                
+                // Actualizar balance del emisor
+                const newSenderBalance = senderBalance - amount;
+                await update(senderBalanceRef, { balance: newSenderBalance.toString() });
+                
+                // Actualizar balance del receptor
+                const receiverBalanceRef = ref(db, `Balance/${receiverId}`);
+                const receiverBalanceSnap = await get(receiverBalanceRef);
+                const receiverBalance = receiverBalanceSnap.exists() && receiverBalanceSnap.hasChild('balance') 
+                    ? parseFloat(receiverBalanceSnap.val().balance || 0) 
+                    : 0;
+                const newReceiverBalance = receiverBalance + amount;
+                await set(receiverBalanceRef, { balance: newReceiverBalance.toString() });
+                
+                // Registrar envío de regalo
+                await set(ref(db, `BalanceEnviado/${postId}/${currentUID}`), true);
+                await set(ref(db, `Enviado/${postId}/${currentUID}`), { type: giftType });
+                
+                // Notificar al receptor
+                if (receiverId !== currentUID) {
+                    const userRef = ref(db, `Users/${currentUID}`);
+                    onValue(userRef, (userSnap) => {
+                        if (userSnap.exists()) {
+                            const timestamp = Date.now().toString();
+                            const notificationRef = ref(db, `Users/${receiverId}/Notifications/${timestamp}`);
+                            set(notificationRef, {
+                                pId: postId,
+                                timestamp: timestamp,
+                                pUid: receiverId,
+                                notification: `Recibiste ${amount} QAV en tu balance`,
+                                type: 'balance',
+                                sUid: currentUID
+                            });
+                            set(ref(db, `Users/${receiverId}/Count/${timestamp}`), true);
+                        }
+                    }, { onlyOnce: true });
+                }
+                
+                alert(`¡Enviaste ${amount} QAV! Tu nuevo balance es ${newSenderBalance} QAV.`);
+            } catch (error) {
+                console.error('Error enviando regalo:', error);
+                alert('Error al enviar el regalo. Por favor, intenta de nuevo.');
+            }
+        }
+        
+        // Registrar vista si es video
+        if (postType === 'video') {
+            set(ref(db, `Views/${postID}/${currentUID}`), true);
+        }
+    }, { onlyOnce: true });
+}
+
+// Cargar comentarios
+function loadComments() {
+    if (!postID) return;
+    
+    const commentsRef = ref(db, `Posts/${postID}/Comments`);
+    const commentsList = document.getElementById('commentsList');
+    const commentsCount = document.getElementById('commentsCount');
+    
+    onValue(commentsRef, (snap) => {
+        commentsList.innerHTML = '';
+        
+        if (!snap.exists()) {
+            commentsList.innerHTML = '<div class="no-comments">No hay comentarios aún. Sé el primero en comentar!</div>';
+            commentsCount.textContent = '0 comentarios';
+            return;
+        }
+        
+        const commentsArray = [];
+        snap.forEach((commentSnap) => {
+            commentsArray.push({
+                key: commentSnap.key,
+                data: commentSnap.val()
+            });
+        });
+        
+        // Ordenar por timestamp
+        commentsArray.sort((a, b) => {
+            const timeA = a.data.timestamp || parseInt(a.data.cId || 0);
+            const timeB = b.data.timestamp || parseInt(b.data.cId || 0);
+            return timeA - timeB;
+        });
+        
+        commentsCount.textContent = `${commentsArray.length} ${commentsArray.length === 1 ? 'comentario' : 'comentarios'}`;
+        
+        commentsArray.forEach(comment => {
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item';
+            
+            const commentUserPhoto = document.createElement('img');
+            commentUserPhoto.className = 'comment-user-photo';
+            commentUserPhoto.src = 'assets/avatar.png';
+            commentUserPhoto.addEventListener('click', () => {
+                window.location.href = `userprofile.html?uid=${comment.data.id}`;
+            });
+            
+            const commentContent = document.createElement('div');
+            commentContent.className = 'comment-content';
+            
+            const commentUserName = document.createElement('div');
+            commentUserName.className = 'comment-user-name';
+            commentUserName.addEventListener('click', () => {
+                window.location.href = `userprofile.html?uid=${comment.data.id}`;
+            });
+            
+            const commentText = document.createElement('div');
+            commentText.className = 'comment-text';
+            const processedComment = processTextWithLinks(comment.data.comment || '');
+            commentText.appendChild(processedComment);
+            
+            const commentTime = document.createElement('div');
+            commentTime.className = 'comment-time';
+            if (comment.data.timestamp || comment.data.cId) {
+                const commentTimestamp = comment.data.timestamp || parseInt(comment.data.cId || 0);
+                commentTime.textContent = getTimeAgo(commentTimestamp);
+            }
+            
+            commentContent.appendChild(commentUserName);
+            commentContent.appendChild(commentText);
+            commentContent.appendChild(commentTime);
+            
+            commentItem.appendChild(commentUserPhoto);
+            commentItem.appendChild(commentContent);
+            
+            // Cargar info del usuario que comentó
+            const commentUserRef = ref(db, `Users/${comment.data.id}`);
+            onValue(commentUserRef, (userSnap) => {
+                if (userSnap.exists()) {
+                    const userData = userSnap.val();
+                    if (userData.photo) commentUserPhoto.src = userData.photo;
+                    commentUserName.textContent = userData.name || 'Usuario';
+                }
+            }, { onlyOnce: true });
+            
+            commentsList.appendChild(commentItem);
+        });
+    });
+}
+
+// Enviar comentario
+const commentInput = document.getElementById('commentInput');
+const commentSendBtn = document.getElementById('commentSendBtn');
+
+commentSendBtn.addEventListener('click', async () => {
+    const text = commentInput.value.trim();
+    if (!text || !postID || !currentUID) return;
+    
+    commentSendBtn.disabled = true;
+    commentSendBtn.textContent = 'Enviando...';
+    
+    try {
+        const commentId = Date.now().toString();
+        const commentRef = ref(db, `Posts/${postID}/Comments/${commentId}`);
+        await set(commentRef, {
+            cId: commentId,
+            comment: text,
+            id: currentUID,
+            pId: postID,
+            timestamp: Date.now()
+        });
+        
+        // Registrar vista si es video
+        if (postType === 'video') {
+            await set(ref(db, `Views/${postID}/${currentUID}`), true);
+        }
+        
+        // Notificar al autor
+        if (postAuthorId && postAuthorId !== currentUID) {
+            const userRef = ref(db, `Users/${currentUID}`);
+            onValue(userRef, (userSnap) => {
+                if (userSnap.exists()) {
+                    const timestamp = Date.now().toString();
+                    const notificationRef = ref(db, `Users/${postAuthorId}/Notifications/${timestamp}`);
+                    set(notificationRef, {
+                        pId: postID,
+                        timestamp: timestamp,
+                        pUid: postAuthorId,
+                        notification: 'Comentó en tu Post',
+                        type: 'post',
+                        sUid: currentUID
+                    });
+                    set(ref(db, `Users/${postAuthorId}/Count/${timestamp}`), true);
+                }
+            }, { onlyOnce: true });
+        }
+        
+        commentInput.value = '';
+        commentSendBtn.disabled = false;
+        commentSendBtn.textContent = 'Enviar';
+    } catch (error) {
+        console.error('Error enviando comentario:', error);
+        alert('Error al enviar el comentario. Por favor, intenta de nuevo.');
+        commentSendBtn.disabled = false;
+        commentSendBtn.textContent = 'Enviar';
+    }
+});
+
+commentInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        commentSendBtn.click();
+    }
+});
+
+// ========== SISTEMA DE NOTIFICACIONES ==========
+const notifIcon = document.getElementById('notifIcon');
+const notificationsCard = document.getElementById('notificationsCard');
+const closeNotificationsBtn = document.getElementById('closeNotificationsBtn');
+
+// Abrir/cerrar card de notificaciones
+notifIcon.addEventListener('click', () => {
+    notificationsCard.style.display = notificationsCard.style.display === 'none' ? 'flex' : 'none';
+    if (notificationsCard.style.display === 'flex') {
+        loadAllNotifications();
+        // Limpiar Count al abrir
+        remove(ref(db, `Users/${currentUID}/Count`));
+    }
+});
+
+closeNotificationsBtn.addEventListener('click', () => {
+    notificationsCard.style.display = 'none';
+});
+
+// Cerrar al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (notificationsCard.style.display === 'flex' && 
+        !notificationsCard.contains(e.target) && 
+        e.target !== notifIcon) {
+        notificationsCard.style.display = 'none';
+    }
+});
+
+// Verificar si es notificación nueva (menos de 3 horas)
+function isNewNotification(timestamp) {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const threeHours = 3 * 60 * 60 * 1000;
+    return diff <= threeHours;
+}
+
+// Cargar todas las notificaciones
+function loadAllNotifications() {
+    if (!currentUID) return;
+    
+    const notificationsRef = ref(db, `Users/${currentUID}/Notifications`);
+    
+    onValue(notificationsRef, (snapshot) => {
+        const notifications = [];
+        const notificationNewFS = [];
+        const notificationNewB = [];
+        const notificationNewP = [];
+        
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                const notifData = child.val();
+                const timestamp = child.key;
+                
+                if (notifData.type === 'follow') {
+                    notificationNewFS.push({ ...notifData, timestamp });
+                } else if (notifData.type === 'post' || notifData.type === 'reel') {
+                    notifications.push({ ...notifData, timestamp });
+                } else if (notifData.type === 'balance') {
+                    notificationNewB.push({ ...notifData, timestamp });
+                } else if (notifData.type === 'practice') {
+                    notificationNewP.push({ ...notifData, timestamp });
+                }
+            });
+        }
+        
+        // Ordenar por timestamp (más recientes primero)
+        notifications.reverse();
+        notificationNewFS.reverse();
+        notificationNewB.reverse();
+        notificationNewP.reverse();
+        
+        // Renderizar cada tipo
+        renderFollowNotifications(notificationNewFS);
+        renderInteractionNotifications(notifications);
+        renderBalanceNotifications(notificationNewB);
+        renderPracticeNotifications(notificationNewP);
+        
+        // Mostrar empty state si no hay notificaciones
+        const totalCount = notifications.length + notificationNewFS.length + 
+                          notificationNewB.length + notificationNewP.length;
+        document.getElementById('nothing').style.display = totalCount === 0 ? 'block' : 'none';
+    });
+}
+
+// Renderizar notificaciones de seguidores
+function renderFollowNotifications(notifications) {
+    const container = document.getElementById('notifySeguidores');
+    const indicator = document.getElementById('botonSeguidores');
+    const desc = document.getElementById('descUltimoItem');
+    
+    container.innerHTML = '';
+    
+    if (notifications.length > 0) {
+        indicator.style.display = 'block';
+        
+        const firstNotif = notifications[0];
+        const timestamp = parseInt(firstNotif.timestamp);
+        const isNew = isNewNotification(timestamp);
+        
+        if (isNew) {
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            desc.textContent = `¡Nuevo Seguidor! . ${formattedDate}`;
+            desc.style.color = 'var(--text-primary)';
+        } else {
+            desc.textContent = 'Ver notificaciones antiguas...';
+            desc.style.color = 'var(--text-secondary)';
+        }
+        
+        notifications.forEach(notif => {
+            const item = createNotificationItem(notif, 'follow');
+            container.appendChild(item);
+        });
+    } else {
+        indicator.style.display = 'none';
+        desc.textContent = 'No hay nuevas notificaciones';
+        desc.style.color = 'var(--text-secondary)';
+    }
+}
+
+// Renderizar notificaciones de interacciones
+function renderInteractionNotifications(notifications) {
+    const container = document.getElementById('notify');
+    const indicator = document.getElementById('botonInteracciones');
+    const desc = document.getElementById('textAplausos');
+    
+    container.innerHTML = '';
+    
+    if (notifications.length > 0) {
+        indicator.style.display = 'block';
+        
+        const firstNotif = notifications[0];
+        const timestamp = parseInt(firstNotif.timestamp);
+        const isNew = isNewNotification(timestamp);
+        
+        if (isNew) {
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            desc.textContent = `¡Nueva interacción! . ${formattedDate}`;
+            desc.style.color = 'var(--text-primary)';
+        } else {
+            desc.textContent = 'Ver Interacciones antiguas...';
+            desc.style.color = 'var(--text-secondary)';
+        }
+        
+        notifications.forEach(notif => {
+            const item = createNotificationItem(notif, 'interaction');
+            container.appendChild(item);
+        });
+    } else {
+        indicator.style.display = 'none';
+        desc.textContent = 'No hay nuevas notificaciones';
+        desc.style.color = 'var(--text-secondary)';
+    }
+}
+
+// Renderizar notificaciones de balance
+function renderBalanceNotifications(notifications) {
+    const container = document.getElementById('notifyBalance');
+    const indicator = document.getElementById('botonBalance');
+    const desc = document.getElementById('textBalance');
+    
+    container.innerHTML = '';
+    
+    if (notifications.length > 0) {
+        indicator.style.display = 'block';
+        
+        const firstNotif = notifications[0];
+        const timestamp = parseInt(firstNotif.timestamp);
+        const isNew = isNewNotification(timestamp);
+        
+        if (isNew) {
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            desc.textContent = `¡New Balance! . ${formattedDate}`;
+            desc.style.color = 'var(--text-primary)';
+        } else {
+            desc.textContent = 'Ver notificaciones antiguas...';
+            desc.style.color = 'var(--text-secondary)';
+        }
+        
+        notifications.forEach(notif => {
+            const item = createNotificationItem(notif, 'balance');
+            container.appendChild(item);
+        });
+    } else {
+        indicator.style.display = 'none';
+        desc.textContent = 'No hay nuevas notificaciones';
+        desc.style.color = 'var(--text-secondary)';
+    }
+}
+
+// Renderizar notificaciones de practice
+function renderPracticeNotifications(notifications) {
+    const container = document.getElementById('notifyPractice');
+    const indicator = document.getElementById('botonPractice');
+    const desc = document.getElementById('textPractice');
+    
+    container.innerHTML = '';
+    
+    if (notifications.length > 0) {
+        indicator.style.display = 'block';
+        
+        const firstNotif = notifications[0];
+        const timestamp = parseInt(firstNotif.timestamp);
+        const isNew = isNewNotification(timestamp);
+        
+        if (isNew) {
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            desc.textContent = `¡New Practice! . ${formattedDate}`;
+            desc.style.color = 'var(--text-primary)';
+        } else {
+            desc.textContent = 'Ver notificaciones antiguas...';
+            desc.style.color = 'var(--text-secondary)';
+        }
+        
+        notifications.forEach(notif => {
+            const item = createNotificationItem(notif, 'practice');
+            container.appendChild(item);
+        });
+    } else {
+        indicator.style.display = 'none';
+        desc.textContent = 'No hay nuevas notificaciones';
+        desc.style.color = 'var(--text-secondary)';
+    }
+}
+
+// Crear item de notificación
+function createNotificationItem(notif, type) {
+    const item = document.createElement('div');
+    item.className = 'notification-item';
+    
+    const senderUid = notif.sUid || notif.senderUid;
+    const timestamp = parseInt(notif.timestamp);
+    
+    // Cargar información del usuario
+    const userRef = ref(db, `Users/${senderUid}`);
+    onValue(userRef, (userSnap) => {
+        if (userSnap.exists()) {
+            const userData = userSnap.val();
+            
+            const img = document.createElement('img');
+            img.src = userData.photo || 'assets/avatar.png';
+            img.alt = userData.name || 'Usuario';
+            
+            const info = document.createElement('div');
+            info.className = 'notification-item-info';
+            
+            const name = document.createElement('div');
+            name.className = 'notification-item-name';
+            name.textContent = userData.name || 'Usuario';
+            
+            if (userData.verified === 'yes') {
+                const verifiedBadge = document.createElement('span');
+                verifiedBadge.className = 'verified-badge';
+                verifiedBadge.textContent = '✓';
+                verifiedBadge.title = 'Verificado';
+                name.appendChild(verifiedBadge);
+            }
+            
+            if (userData.verifiedprofesor === 'yes') {
+                const profBadge = document.createElement('span');
+                profBadge.className = 'verified-badge';
+                profBadge.style.background = '#4CAF50';
+                profBadge.textContent = '🎓';
+                profBadge.title = 'Profesor Verificado';
+                name.appendChild(profBadge);
+            }
+            
+            const username = document.createElement('div');
+            username.className = 'notification-item-username';
+            const notificationText = notif.notification || notif.message || '';
+            const timeAgo = getTimeAgo(timestamp);
+            username.textContent = `${notificationText} - ${timeAgo}`;
+            
+            info.appendChild(name);
+            info.appendChild(username);
+            
+            item.innerHTML = '';
+            item.appendChild(img);
+            item.appendChild(info);
+            
+            // Click en item
+            item.addEventListener('click', () => {
+                if (type === 'interaction' && (notif.type === 'post' || notif.type === 'reel')) {
+                    const postId = notif.pId || notif.postId;
+                    if (notif.type === 'reel') {
+                        window.location.href = `home.html#reel_${postId}`;
+                    } else {
+                        window.location.href = `comment.html?postID=${postId}&type=post`;
+                    }
+                } else if (type === 'follow') {
+                    window.location.href = `userprofile.html?uid=${senderUid}`;
+                } else if (type === 'balance' && notif.pId) {
+                    window.location.href = `comment.html?postID=${notif.pId}&type=post`;
+                }
+            });
+            
+            // Click en imagen/nombre para ir a perfil
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `userprofile.html?uid=${senderUid}`;
+            });
+            name.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `userprofile.html?uid=${senderUid}`;
+            });
+        }
+    }, { onlyOnce: true });
+    
+    return item;
+}
+
+// Expandir/colapsar secciones
+document.getElementById('notyFollow').addEventListener('click', (e) => {
+    if (e.target.closest('.notification-section-header')) {
+        const list = document.getElementById('scrollSeguidores');
+        const indicator = document.getElementById('botonSeguidores');
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        indicator.classList.toggle('selected', list.style.display !== 'none');
+    }
+});
+
+document.getElementById('notyInteraction').addEventListener('click', (e) => {
+    if (e.target.closest('.notification-section-header')) {
+        const list = document.getElementById('scrollInteraction');
+        const indicator = document.getElementById('botonInteracciones');
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        indicator.classList.toggle('selected', list.style.display !== 'none');
+    }
+});
+
+document.getElementById('notyBalance').addEventListener('click', (e) => {
+    if (e.target.closest('.notification-section-header')) {
+        const list = document.getElementById('scrollBalance');
+        const indicator = document.getElementById('botonBalance');
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        indicator.classList.toggle('selected', list.style.display !== 'none');
+    }
+});
+
+document.getElementById('notyPractice').addEventListener('click', (e) => {
+    if (e.target.closest('.notification-section-header')) {
+        const list = document.getElementById('scrollPractice');
+        const indicator = document.getElementById('botonPractice');
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        indicator.classList.toggle('selected', list.style.display !== 'none');
+    }
+});
+
+// Cargar badge de notificaciones
+const countRef = ref(db, `Users/${currentUID}/Count`);
+onValue(countRef, (snapshot) => {
+    if (snapshot.exists()) {
+        const count = snapshot.numChildren();
+        if (count > 0) {
+            // Agregar badge visual al icono
+            let badge = notifIcon.querySelector('.notification-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'notification-badge';
+                badge.style.cssText = 'position:absolute;top:-5px;right:-5px;background:var(--accent-purple);color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-primary);';
+                notifIcon.style.position = 'relative';
+                notifIcon.appendChild(badge);
+            }
+            badge.textContent = count > 99 ? '99+' : count;
+        } else {
+            const badge = notifIcon.querySelector('.notification-badge');
+            if (badge) badge.remove();
+        }
+    } else {
+        const badge = notifIcon.querySelector('.notification-badge');
+        if (badge) badge.remove();
+    }
+});
+
+</script>
+</body>
+</html>

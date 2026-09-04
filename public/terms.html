@@ -1,0 +1,836 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Términos y condiciones">
+    <title>Términos y condiciones - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+    --bg-primary: #0f0f13;
+    --bg-secondary: #16161d;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6b6b7b;
+    --accent-purple: #a855f7;
+    --accent-blue: #007BFF;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --border-radius: 16px;
+    --border-radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+        
+        /* Aurora background animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+            animation: aurora 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes aurora {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(2%, 2%) rotate(2deg); }
+            50% { transform: translate(-1%, 3%) rotate(-1deg); }
+            75% { transform: translate(3%, -2%) rotate(1deg); }
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+        
+        /* Header */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 19, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .app-header-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .app-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .app-nav a:hover {
+            color: var(--text-primary);
+        }
+        
+        .app-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+        }
+        
+        .app-nav a:hover::after { width: 100%; }
+        
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent-purple);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 8px 0;
+        }
+        .skip-link:focus { top: 0; }
+        
+        /* Main container */
+        .legal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 2rem 4rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Glass card */
+        .legal-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--glass-shadow);
+        }
+        
+        /* Hero section */
+        .legal-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .legal-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .legal-meta {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .legal-chip {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .legal-lead {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-subtitle {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-links {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .legal-links a {
+            color: var(--accent-purple);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .legal-links a:hover {
+            color: var(--accent-pink);
+            text-decoration: underline;
+        }
+        
+        /* Table of contents */
+        .legal-toc {
+            background: rgba(28, 28, 36, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 5;
+        }
+        
+        .legal-toc h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legal-toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .legal-toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+        
+        .legal-toc a:hover {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        
+        .legal-section-icon {
+            margin-right: 0.5rem;
+            color: var(--accent-purple);
+        }
+        
+        /* Content sections */
+        .legal-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            scroll-margin-top: 120px;
+        }
+        
+        .legal-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .legal-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-card ul {
+            margin: 1rem 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .legal-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .legal-card strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .legal-card a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .legal-card a:hover {
+            color: var(--accent-pink);
+            text-decoration: underline;
+        }
+        
+        /* Highlight box */
+        .legal-highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(0, 123, 255, 0.08) 100%);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .legal-highlight-box p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        
+        .legal-highlight-box strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .legal-highlight-box ul {
+            margin: 0.5rem 0 0 0;
+            padding-left: 1.5rem;
+        }
+        
+        /* App notice */
+        .legal-app-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(52, 168, 83, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+            border: 1px solid rgba(52, 168, 83, 0.3);
+            border-radius: 12px;
+        }
+        
+        .legal-app-notice-icon { font-size: 1.5rem; }
+        
+        .legal-app-notice p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Back to top button */
+        .legal-back-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .legal-back-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .legal-back-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Footer */
+        .app-footer {
+            background: rgba(15, 15, 19, 0.9);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-purple);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-header-bar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .app-nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .legal-container {
+                padding: 140px 1rem 2rem;
+            }
+            
+            .legal-card {
+                padding: 1.5rem;
+            }
+            
+            .legal-title {
+                font-size: 1.75rem;
+            }
+            
+            .legal-toc {
+                position: relative;
+                top: 0;
+            }
+            
+            .legal-toc ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+    
+    <header class="app-header">
+        <div class="app-header-bar">
+            <a href="index.html" class="app-brand">PROVIWEB</a>
+            <nav class="app-nav">
+                <a href="index.html">Iniciar sesión</a>
+                <a href="register.html">Registro</a>
+                <a href="index.html">Inicio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="legal-container" id="mainContent">
+        <section class="legal-card">
+            <div class="legal-hero">
+                <h1 class="legal-title">Términos y condiciones</h1>
+                <div class="legal-meta">
+                    <span class="legal-chip">Documento legal</span>
+                    <span class="legal-chip">Última actualización: 4 de febrero de 2026</span>
+                </div>
+                <p class="legal-lead">
+                    Bienvenido a <strong>PROVIWEB</strong>. Estos Términos y Condiciones de Uso (en adelante, los
+                    "Términos") regulan el acceso, registro y utilización de la plataforma PROVIWEB, incluyendo su
+                    aplicación móvil, sitio web, servicios, funcionalidades, contenidos y cualquier producto digital
+                    asociado.
+                </p>
+                <p class="legal-subtitle">
+                    Al registrarte, acceder o utilizar PROVIWEB, <strong>aceptas de forma expresa, libre e informada</strong>
+                    estos Términos, así como la Política de Privacidad y las demás políticas complementarias publicadas en
+                    la plataforma. Si no estás de acuerdo con alguno de ellos, debes abstenerte de utilizar el servicio.
+                </p>
+                <div class="legal-links">
+                    <a href="privacy.html">Política de Privacidad</a> · Documento de referencia para el uso de datos y para la ficha de la app en Google Play.
+                </div>
+            </div>
+
+            <nav class="legal-toc" aria-label="Contenido de los términos">
+                <h2>📋 Contenido</h2>
+                <ul>
+                    <li><a href="#identidad"><span class="legal-section-icon">1.</span> Identidad del servicio</a></li>
+                    <li><a href="#conducta"><span class="legal-section-icon">5.3.</span> Conducta y bienestar</a></li>
+                    <li><a href="#contenido-prohibido"><span class="legal-section-icon">6.</span> Contenido prohibido</a></li>
+                    <li><a href="#app-google-play"><span class="legal-section-icon">—</span> App y Google Play</a></li>
+                    <li><a href="#legislacion"><span class="legal-section-icon">14.</span> Legislación y jurisdicción</a></li>
+                    <li><a href="#contacto"><span class="legal-section-icon">16.</span> Contacto</a></li>
+                </ul>
+            </nav>
+
+            <h2 id="identidad">1. Identidad del servicio</h2>
+            <p>
+                <strong>PROVIWEB</strong> es una plataforma digital especializada en el sector artístico y musical,
+                diseñada para facilitar la visibilidad, conexión profesional, difusión de contenido creativo y acceso
+                a oportunidades laborales para artistas, músicos y profesionales del sector cultural.
+            </p>
+            <p>Fundadores del proyecto:</p>
+            <ul>
+                <li><strong>Israel Rodríguez</strong> – Fundador</li>
+                <li><strong>José Camargo</strong> – Cofundador</li>
+            </ul>
+            <p>
+                PROVIWEB actúa como proveedor de servicios digitales y <strong>no como productor, editor ni titular del
+                contenido publicado por los usuarios</strong>.
+            </p>
+
+            <h2>2. Capacidad legal y aceptación</h2>
+            <p>Para utilizar PROVIWEB debes:</p>
+            <ul>
+                <li>Tener la mayoría de edad legal según la legislación de tu país</li>
+                <li>Contar con capacidad legal para aceptar estos Términos</li>
+                <li>Proporcionar información veraz, completa y actualizada</li>
+            </ul>
+            <p>
+                El uso de PROVIWEB por menores de edad está prohibido sin autorización legal expresa de sus
+                representantes.
+            </p>
+
+            <h2>3. Registro y cuentas de usuario</h2>
+            <p>El usuario es responsable de:</p>
+            <ul>
+                <li>La información proporcionada durante el registro</li>
+                <li>Mantener la confidencialidad de sus credenciales</li>
+                <li>Todas las actividades realizadas desde su cuenta</li>
+            </ul>
+            <p>
+                PROVIWEB se reserva el derecho de suspender o eliminar cuentas que incumplan estos Términos o la
+                normativa vigente.
+            </p>
+
+            <h2>4. Naturaleza del servicio</h2>
+            <p>
+                PROVIWEB funciona como una <strong>plataforma de intermediación y difusión</strong>, permitiendo a los
+                usuarios:
+            </p>
+            <ul>
+                <li>Crear perfiles artísticos o profesionales</li>
+                <li>Publicar contenido creativo</li>
+                <li>Interactuar con otros usuarios</li>
+                <li>Publicar y consultar oportunidades laborales</li>
+            </ul>
+            <p>
+                PROVIWEB <strong>no garantiza contrataciones, pagos, acuerdos comerciales ni resultados
+                profesionales</strong>.
+            </p>
+
+            <h2>5. Contenido generado por los usuarios</h2>
+            <p>
+                Todo contenido publicado en PROVIWEB (incluyendo, pero no limitado a, textos, imágenes, audios, videos,
+                partituras y material audiovisual) es <strong>responsabilidad exclusiva del usuario</strong> que lo
+                publica.
+            </p>
+            <p>Al publicar contenido, el usuario declara y garantiza que:</p>
+            <ul>
+                <li>Es titular de los derechos de autor o cuenta con las licencias, autorizaciones o permisos necesarios</li>
+                <li>El contenido no infringe derechos de terceros</li>
+                <li>El contenido cumple con la legislación vigente</li>
+            </ul>
+
+            <h3>5.1 Derechos de autor</h3>
+            <p>
+                PROVIWEB <strong>no reclama propiedad sobre el contenido de los usuarios</strong>.
+            </p>
+            <p>
+                El usuario conserva la titularidad de sus derechos de autor y propiedad intelectual. No obstante, al
+                publicar contenido concede a PROVIWEB una <strong>licencia no exclusiva, gratuita, mundial y
+                revocable</strong> para almacenar, reproducir, mostrar y distribuir dicho contenido <strong>únicamente
+                dentro de la plataforma</strong>, con fines operativos, promocionales y de funcionamiento del servicio.
+            </p>
+
+            <h3>5.2 Infracción de derechos de autor</h3>
+            <p>
+                PROVIWEB <strong>no es responsable</strong> por el uso no autorizado de obras protegidas por derechos
+                de autor que sean publicadas por los usuarios.
+            </p>
+            <p>
+                Cualquier infracción de derechos de autor, derechos conexos o propiedad intelectual <strong>recae única
+                y exclusivamente sobre el usuario</strong> que haya publicado el contenido infractor, quien asumirá
+                toda responsabilidad legal, civil y/o penal derivada de dicha infracción.
+            </p>
+            <p>PROVIWEB podrá:</p>
+            <ul>
+                <li>Retirar o bloquear contenido presuntamente infractor</li>
+                <li>Suspender o cancelar la cuenta del usuario infractor</li>
+                <li>Colaborar con autoridades competentes cuando sea legalmente requerido</li>
+            </ul>
+
+            <h2 id="conducta">5.3 Conducta y bienestar en la comunidad</h2>
+            <p>
+                PROVIWEB es un espacio para artistas y músicos. Esperamos que todos los usuarios contribuyan a un entorno <strong>respetuoso, seguro y profesional</strong>.
+            </p>
+            <div class="legal-highlight-box">
+                <p><strong>No toleramos</strong></p>
+                <ul>
+                    <li>Acoso, hostigamiento o intimidación (incluido por razón de identidad artística, género, origen o creencias)</li>
+                    <li>Contenido que atente contra la dignidad o la salud psicológica de las personas</li>
+                    <li>Suplantación de identidad o perfiles falsos que induzcan a error</li>
+                    <li>Spam, publicidad no autorizada o uso comercial abusivo</li>
+                </ul>
+            </div>
+            <p>
+                Los reportes por conducta inapropiada se revisan conforme a nuestros procedimientos. Las cuentas que vulneren estas normas pueden ser advertidas, suspendidas o eliminadas.
+            </p>
+
+            <h2 id="contenido-prohibido">6. Contenido prohibido</h2>
+            <p>Está estrictamente prohibido publicar contenido que:</p>
+            <ul>
+                <li>Infrinja derechos de autor o propiedad intelectual</li>
+                <li>Sea ilegal, ofensivo, violento, discriminatorio o difamatorio</li>
+                <li>Vulnere la privacidad de terceros</li>
+                <li>Promueva actividades fraudulentas o engañosas</li>
+                <li>No esté relacionado con fines artísticos, musicales o profesionales</li>
+            </ul>
+
+            <h2>7. Reportes y reclamaciones</h2>
+            <p>
+                PROVIWEB pone a disposición mecanismos para reportar contenido que infrinja estos Términos o derechos
+                de terceros.
+            </p>
+            <p>
+                La revisión de reportes se realizará conforme a los procedimientos internos de la plataforma.
+            </p>
+
+            <h2>8. Oportunidades laborales y relaciones entre usuarios</h2>
+            <p>
+                PROVIWEB actúa únicamente como intermediario tecnológico.
+            </p>
+            <p>
+                Las relaciones laborales, contractuales o comerciales que se generen entre usuarios son
+                responsabilidad exclusiva de las partes involucradas.
+            </p>
+            <p>
+                PROVIWEB <strong>no es empleador, contratante ni garante de pagos</strong>.
+            </p>
+
+            <h2>9. Publicidad y monetización</h2>
+            <p>
+                PROVIWEB puede incluir anuncios, contenido patrocinado o servicios pagos.
+            </p>
+            <p>
+                La visualización o contratación de estos servicios estará sujeta a condiciones adicionales.
+            </p>
+
+            <h2>10. Suspensión y terminación de cuentas</h2>
+            <p>PROVIWEB podrá suspender o eliminar cuentas cuando:</p>
+            <ul>
+                <li>Se infrinjan estos Términos</li>
+                <li>Se detecten actividades ilegales</li>
+                <li>Se publiquen contenidos que vulneren derechos de autor</li>
+            </ul>
+            <p>
+                El usuario puede solicitar la eliminación de su cuenta en cualquier momento.
+            </p>
+
+            <h2>11. Exclusión de garantías</h2>
+            <p>
+                PROVIWEB se proporciona "tal cual" y "según disponibilidad".
+            </p>
+            <p>No se garantiza:</p>
+            <ul>
+                <li>Disponibilidad continua</li>
+                <li>Ausencia de errores</li>
+                <li>Resultados específicos</li>
+            </ul>
+
+            <h2>12. Limitación de responsabilidad</h2>
+            <p>PROVIWEB no será responsable por:</p>
+            <ul>
+                <li>Contenido publicado por los usuarios</li>
+                <li>Infracciones de derechos de autor cometidas por usuarios</li>
+                <li>Daños indirectos o pérdida de información</li>
+                <li>Conflictos, disputas o acuerdos entre usuarios</li>
+            </ul>
+
+            <h2>13. Indemnización</h2>
+            <p>
+                El usuario acepta indemnizar y mantener indemne a PROVIWEB, sus fundadores y colaboradores frente a
+                cualquier reclamación, demanda o sanción derivada del uso indebido de la plataforma o de la publicación
+                de contenido que infrinja derechos de terceros.
+            </p>
+
+            <h2 id="app-google-play">Uso de la aplicación en Google Play</h2>
+            <p>
+                Si utilizas la aplicación PROVIWEB para Android distribuida en <strong>Google Play</strong>, además de estos Términos aplican las <strong>Condiciones de servicio de Google Play</strong> y las políticas de Google aplicables a las aplicaciones. Al descargar o actualizar la app desde Google Play, aceptas estos Términos y nuestra <a href="privacy.html">Política de Privacidad</a>. El enlace a esta Política de Privacidad y a estos Términos está disponible en la ficha de la aplicación en Google Play.
+            </p>
+            <p>
+                PROVIWEB se compromete a cumplir con las políticas de Google Play en materia de contenido, privacidad y seguridad. Cualquier uso de la app que vulnere estos Términos o las políticas de Google puede dar lugar a la retirada de la aplicación o a la limitación de tu acceso.
+            </p>
+
+            <h2 id="legislacion">14. Legislación aplicable y jurisdicción</h2>
+            <p>
+                Estos Términos se rigen por las leyes de la <strong>República de Colombia</strong>. Para usuarios en la Unión Europea o en España, se aplicarán asimismo las disposiciones imperativas de la normativa comunitaria y nacional que correspondan (incl. normativa de consumidores y protección de datos).
+            </p>
+            <p>
+                Cualquier controversia será sometida a los tribunales competentes según la ley aplicable. Para consumidores, podrán aplicarse los foros de residencia del consumidor en los casos previstos por la ley.
+            </p>
+
+            <h2>15. Modificaciones</h2>
+            <p>
+                PROVIWEB podrá modificar estos Términos en cualquier momento.
+            </p>
+            <p>
+                Las modificaciones serán publicadas en la plataforma y entrarán en vigor desde su publicación.
+            </p>
+
+            <h2 id="contacto">16. Contacto</h2>
+            <p>
+                Para consultas legales o relacionadas con estos Términos, reportar incumplimientos o solicitar eliminación de cuenta, puedes comunicarte a través de los canales oficiales de PROVIWEB (sitio web, aplicación o correo indicado en la plataforma).
+            </p>
+            <p>
+                <a href="privacy.html">Política de Privacidad</a> · <a href="index.html">Inicio</a>
+            </p>
+
+            <p style="margin-top:2rem;">
+                <strong>PROVIWEB</strong><br>
+                Una plataforma para artistas y músicos, construida con responsabilidad legal, respeto por los derechos
+                de autor y compromiso con la comunidad creativa.
+            </p>
+        </section>
+    </main>
+    
+    <button type="button" class="legal-back-top" id="legalBackTop" aria-label="Volver arriba">↑</button>
+    
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">PROVIWEB</div>
+                <p class="footer-text">Una plataforma para artistas y músicos, construida con responsabilidad legal, respeto por los derechos de autor y compromiso con la comunidad creativa.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="privacy.html">Política de Privacidad</a>
+                <a href="terms.html">Términos y Condiciones</a>
+                <a href="estandares-csae.html">Seguridad infantil / Estándares CSAE</a>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <a href="index.html">Inicio</a>
+                <a href="index.html">Iniciar sesión</a>
+                <a href="register.html">Registro</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 PROVIWEB. Todos los derechos reservados.
+        </div>
+    </footer>
+    
+    <script>
+        (function() {
+            var btn = document.getElementById('legalBackTop');
+            if (!btn) return;
+            function toggle() { btn.classList.toggle('visible', window.scrollY > 400); }
+            window.addEventListener('scroll', toggle, { passive: true });
+            btn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        })();
+    </script>
+</body>
+</html>

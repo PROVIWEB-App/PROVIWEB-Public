@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Ver Post">
+<title>PROVIWEB - Post</title>
+<script defer src="js/post-media.js"></script>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+    --bg-primary: #0f0f13;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --accent-purple: #a855f7;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* Aurora background effect */
+body { 
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    background-attachment: fixed;
+    color: var(--text-primary); 
+    -webkit-font-smoothing: antialiased;
+    padding-top: 70px;
+    padding-bottom: 60px;
+    animation: fadeIn 0.5s ease-out;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* HEADER */
+.header {
+    width:100%; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:14px 24px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border-glass);
+    color: var(--text-primary); 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    z-index:1000; 
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.header .back-btn {
+    background: rgba(168, 85, 247, 0.15);
+    border:none;
+    color: var(--accent-purple);
+    font-size:24px;
+    cursor:pointer;
+    padding:8px 14px;
+    border-radius:12px;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.header .back-btn:hover {
+    background: rgba(168, 85, 247, 0.25);
+    transform:translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.header h1 {
+    font-size:20px;
+    font-weight:700;
+    margin:0;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.header .header-brand-link {
+    font-size:18px;
+    font-weight:800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+.header .header-brand-link:hover { opacity: 0.9; }
+
+/* MAIN CONTAINER - Estilo Android */
+.main-container {
+    max-width:800px;
+    margin:0 auto;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    min-height:calc(100vh - 70px);
+    height:calc(100vh - 70px);
+    overflow:hidden;
+    position:relative;
+}
+
+/* Contenedor scrollable para post y comentarios */
+.scrollable-content {
+    flex:1;
+    overflow-y:auto;
+    padding:12px;
+    padding-bottom:20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.5);
+}
+
+/* Barra de comentarios fija (estilo Android) */
+.comment-bar {
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:800px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid var(--border-glass);
+    padding:8px 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    z-index:999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.comment-bar .add-btn {
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background: rgba(255, 255, 255, 0.1);
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:20px;
+    color: var(--text-secondary);
+    flex-shrink:0;
+    transition:all 0.3s;
+}
+
+.comment-bar .add-btn:hover {
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--accent-purple);
+}
+
+.comment-bar .comment-input-wrapper {
+    flex:1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius:20px;
+    padding:0 14px;
+    display:flex;
+    align-items:center;
+    min-height:35px;
+}
+
+.comment-bar .comment-input-wrapper input {
+    flex:1;
+    border:none;
+    background:transparent;
+    outline:none;
+    font-size:14px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-weight:500;
+    padding:8px 0;
+}
+
+.comment-bar .comment-input-wrapper input::placeholder {
+    color: var(--text-secondary);
+}
+
+.comment-bar .send-btn {
+    width:35px;
+    height:35px;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: var(--accent-purple);
+    font-size:20px;
+    flex-shrink:0;
+    transition:all 0.3s;
+}
+
+.comment-bar .send-btn:hover {
+    transform:scale(1.1);
+}
+
+/* Lista de comentarios */
+.comments-list-container {
+    margin-top:16px;
+    padding-top:16px;
+    border-top: 1px solid var(--border-glass);
+}
+
+/* Estilo de comentario individual (Android style) */
+.comment-item {
+    display:flex;
+    gap:12px;
+    padding:8px 16px;
+    margin-bottom:8px;
+    position:relative;
+}
+
+.comment-avatar {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    cursor:pointer;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    box-shadow: 0 2px 6px rgba(168, 85, 247, 0.15);
+}
+
+.comment-bubble {
+    flex:1;
+    min-width:0;
+}
+
+.comment-header {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:4px;
+    flex-wrap:wrap;
+}
+
+.comment-name {
+    font-weight:700;
+    font-size:16px;
+    color: var(--text-primary);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.comment-bubble-inner {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius:18px;
+    padding:10px 18px;
+    display:inline-block;
+    max-width:100%;
+    margin-top:4px;
+}
+
+.comment-text {
+    font-size:14px;
+    color: var(--text-secondary);
+    word-wrap:break-word;
+    line-height:1.5;
+    font-family: 'Inter', sans-serif;
+}
+
+.comment-footer {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    padding-left:18px;
+    flex-wrap:wrap;
+}
+
+.comment-time {
+    font-size:11px;
+    color: var(--text-secondary);
+    font-weight:500;
+}
+
+.comment-reply {
+    font-size:11px;
+    color: var(--text-secondary);
+    cursor:pointer;
+    font-weight:500;
+}
+
+.comment-reply:hover {
+    color: var(--accent-purple);
+}
+
+.comment-likes-container {
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin-left:16px;
+    flex:1;
+}
+
+.comment-reactions {
+    display:flex;
+    align-items:center;
+    gap:2px;
+}
+
+.comment-like-btn {
+    font-size:11px;
+    color: var(--text-secondary);
+    cursor:pointer;
+    font-weight:500;
+}
+
+.comment-like-btn:hover {
+    color: var(--accent-purple);
+}
+
+.comment-like-btn.liked {
+    color: var(--accent-purple);
+}
+
+.comment-likes-count {
+    font-size:14px;
+    color: var(--text-secondary);
+    font-weight:500;
+    margin-left:4px;
+}
+
+.verified-badge {
+    display:inline-flex;
+    width:15px;
+    height:15px;
+    background: var(--accent-purple);
+    color:white;
+    border-radius:50%;
+    font-size:10px;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.post-container {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius:24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
+    overflow:hidden;
+    margin-bottom:24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.post-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 0.6;
+}
+
+.post-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Loading */
+.loading {
+    text-align:center;
+    padding:40px;
+    color: var(--text-secondary);
+    font-weight:500;
+}
+
+.error {
+    text-align:center;
+    padding:40px;
+    color:#ef4444;
+    font-weight:600;
+    background: rgba(239, 68, 68, 0.15);
+    border-radius:16px;
+    margin:20px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Post Item Styles (igual que home.html) */
+.post-item {
+    display:flex;
+    flex-direction:column;
+    background:transparent;
+}
+
+.post-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 20px;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.user-info {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    cursor:pointer;
+}
+
+.user-photo {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border: 2px solid var(--accent-purple);
+}
+
+.user-details {
+    flex:1;
+    min-width:0;
+}
+
+.user-name {
+    font-weight:600;
+    color: var(--text-primary);
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.user-username {
+    font-size:12px;
+    color: var(--text-secondary);
+}
+
+.time-ago {
+    font-size:11px;
+    color: var(--text-secondary);
+    margin-top:2px;
+}
+
+.follow-btn {
+    padding:6px 12px;
+    border:none;
+    border-radius:15px;
+    background: var(--gradient-primary);
+    color:white;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s;
+}
+
+.follow-btn:hover {
+    opacity:0.8;
+}
+
+.follow-btn.following {
+    background: var(--text-secondary);
+}
+
+.post-content {
+    padding:20px;
+}
+
+.post-text {
+    font-size:15px;
+    line-height:1.6;
+    color: var(--text-primary);
+    margin-bottom:12px;
+    word-wrap:break-word;
+    font-weight:400;
+}
+
+.post-media {
+    width:100%;
+    border-radius:16px;
+    margin:12px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.post-media:hover {
+    transform: scale(1.02);
+}
+
+.post-actions {
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:14px 20px;
+    border-top: 1px solid var(--border-glass);
+    gap:12px;
+}
+
+.action-btn {
+    background: rgba(168, 85, 247, 0.1);
+    border:none;
+    cursor:pointer;
+    padding:8px 14px;
+    border-radius:12px;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    position:relative;
+    color: var(--text-secondary);
+    font-weight:600;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.action-btn:hover {
+    background: rgba(168, 85, 247, 0.2);
+    transform:translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    color: var(--accent-purple);
+}
+
+.action-btn.liked {
+    color:#ef4444;
+    background:rgba(239, 68, 68, 0.15);
+    border-color:rgba(239, 68, 68, 0.3);
+}
+
+.comments-section {
+    display:none;
+    padding:16px 20px;
+    border-top: 1px solid var(--border-glass);
+    max-height:400px;
+    overflow-y:auto;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.comments-section.active {
+    display:block;
+}
+
+.comments-list {
+    margin-bottom:16px;
+}
+
+
+
+.comment-input-container {
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.comment-input {
+    flex:1;
+    padding:12px 16px;
+    border: 1px solid var(--border-glass);
+    border-radius:16px;
+    font-size:14px;
+    outline:none;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
+}
+
+.comment-input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.comment-send-btn {
+    padding:12px 20px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:700;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.comment-send-btn:hover {
+    transform:translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.comment-send-btn:active {
+    transform:translateY(0);
+}
+
+/* Reaction Popup */
+.reaction-popup {
+    display:none;
+    position:absolute;
+    bottom:100%;
+    left:0;
+    background: var(--bg-card);
+    border-radius:15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-glass);
+    padding:8px;
+    z-index:1000;
+    margin-bottom:5px;
+}
+
+
+.reaction-emoji {
+    font-size:24px;
+    cursor:pointer;
+    transition:transform 0.2s;
+    padding:5px;
+}
+
+.reaction-emoji:hover {
+    transform:scale(1.3);
+}
+
+/* Gift Popup */
+.gift-popup {
+    display:none;
+    position:absolute;
+    bottom:100%;
+    left:0;
+    background: var(--bg-card);
+    border-radius:15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-glass);
+    padding:8px;
+    z-index:1000;
+    margin-bottom:5px;
+    min-width:200px;
+}
+
+.gift-option {
+    width:100%;
+    padding:8px 12px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-align:left;
+    font-size:14px;
+    color: var(--text-primary);
+    border-radius:8px;
+    transition:background 0.2s;
+    margin-bottom:2px;
+}
+
+.gift-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Media Carousel */
+.media-carousel {
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:8px;
+    scrollbar-width:thin;
+}
+
+.media-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.media-carousel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.media-carousel::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 10px;
+}
+
+.media-carousel::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.5);
+}
+
+.media-carousel img {
+    width:220px;
+    height:280px;
+    object-fit:cover;
+    border-radius:16px;
+    flex-shrink:0;
+    cursor:pointer;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.media-carousel img:hover {
+    transform:scale(1.08) translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Video Player */
+.video-player {
+    width:100%;
+    max-height:500px;
+    border-radius:16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Series Badge */
+.series-badge {
+    position:absolute;
+    bottom:12px;
+    left:12px;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    color:white;
+    padding:6px 12px;
+    border-radius:16px;
+    font-size:12px;
+    font-weight:700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-glass);
+}
+
+@media (max-width:768px) {
+    .main-container {
+        padding:0 10px;
+    }
+    
+    .comment-bar {
+        left:0;
+        right:0;
+        transform:none;
+        max-width:100%;
+    }
+    
+    .scrollable-content {
+        padding:12px 8px;
+    }
+    
+    .post-actions {
+        flex-wrap:wrap;
+    }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<!-- HEADER -->
+<div class="header">
+    <a href="home.html" class="header-brand-link">PROVIWEB</a>
+    <button class="back-btn" onclick="window.history.back()">←</button>
+    <h1>Publicación artística</h1>
+    <div style="width:40px;"></div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="main-container" id="mainContent">
+    <div class="scrollable-content">
+        <div id="postContainer">
+            <div class="loading">Cargando post...</div>
+        </div>
+        <div id="commentsList" class="comments-list-container"></div>
+    </div>
+    
+    <!-- Barra de comentarios fija (estilo Android) -->
+    <div class="comment-bar">
+        <button class="add-btn" id="addMediaBtn" title="Agregar imagen/video">+</button>
+        <div class="comment-input-wrapper">
+            <input type="text" id="commentInput" placeholder="Escribe un comentario..." />
+        </div>
+        <button class="send-btn" id="sendCommentBtn" title="Enviar">📤</button>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, remove, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+    authDomain: "proviweb-d8764.firebaseapp.com",
+    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+    projectId: "proviweb-d8764",
+    storageBucket: "proviweb-d8764.appspot.com",
+    messagingSenderId: "475963980955",
+    appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+    measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUID = null;
+let postId = null;
+let postAuthorId = null;
+let postData = null;
+
+// Obtener parámetros de URL
+const urlParams = new URLSearchParams(window.location.search);
+postId = urlParams.get('postId') || urlParams.get('pId') || urlParams.get('postID') || urlParams.get('id') || urlParams.get('post');
+const authorId = urlParams.get('authorId') || urlParams.get('id') || urlParams.get('uid');
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    currentUID = user.uid;
+    
+    if (!postId) {
+        document.getElementById('postContainer').innerHTML = '<div class="error">Post no encontrado</div>';
+        return;
+    }
+    
+    // Cargar post
+    await loadPost();
+});
+
+async function loadPost() {
+    const postRef = ref(db, `Posts/${postId}`);
+    const snapshot = await get(postRef);
+    
+    if (!snapshot.exists()) {
+        document.getElementById('postContainer').innerHTML = '<div class="error">Post no encontrado</div>';
+        return;
+    }
+    
+    postData = snapshot.val();
+    postAuthorId = postData.id || postData.uid || authorId;
+    
+    // Renderizar post (usando la misma estructura que home.html)
+    renderPost(postId, postData);
+}
+
+// Función para procesar texto con links, hashtags y menciones
+function processTextWithLinks(text) {
+    const container = document.createElement('span');
+    container.style.wordWrap = 'break-word';
+    container.style.overflowWrap = 'anywhere';
+    
+    const patterns = [
+        /(https?:\/\/[^\s]+)/g,
+        /(www\.[^\s]+)/g,
+        /#(\w+)/g,
+        /@(\w+)/g
+    ];
+    
+    let lastIndex = 0;
+    const matches = [];
+    
+    patterns.forEach((pattern, patternIndex) => {
+        let match;
+        while ((match = pattern.exec(text)) !== null) {
+            matches.push({
+                index: match.index,
+                length: match[0].length,
+                text: match[0],
+                type: patternIndex === 0 ? 'url' : patternIndex === 1 ? 'url' : patternIndex === 2 ? 'hashtag' : 'mention',
+                value: match[1] || match[0]
+            });
+        }
+    });
+    
+    matches.sort((a, b) => a.index - b.index);
+    
+    const filteredMatches = [];
+    let currentEnd = 0;
+    matches.forEach(match => {
+        if (match.index >= currentEnd) {
+            filteredMatches.push(match);
+            currentEnd = match.index + match.length;
+        }
+    });
+    
+    filteredMatches.forEach(match => {
+        if (match.index > lastIndex) {
+            const textNode = document.createTextNode(text.substring(lastIndex, match.index));
+            container.appendChild(textNode);
+        }
+        
+        const link = document.createElement('a');
+        link.style.cssText = 'color:#a855f7;text-decoration:none;cursor:pointer;font-weight:500;';
+        
+        if (match.type === 'hashtag') {
+            link.textContent = match.text;
+            link.href = '#';
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = `home.html?search=${encodeURIComponent(match.value)}`;
+            });
+        } else if (match.type === 'mention') {
+            link.textContent = match.text;
+            link.href = '#';
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const usersRef = ref(db, 'Users');
+                const userQuery = query(usersRef, orderByChild('username'), equalTo(match.value));
+                const userSnap = await get(userQuery);
+                if (userSnap.exists()) {
+                    userSnap.forEach((userChild) => {
+                        window.location.href = `userprofile.html?uid=${userChild.key}`;
+                    });
+                }
+            });
+        } else {
+            link.textContent = match.text;
+            link.href = match.text.startsWith('http') ? match.text : `https://${match.text}`;
+            link.target = '_blank';
+        }
+        
+        container.appendChild(link);
+        lastIndex = match.index + match.length;
+    });
+    
+    if (lastIndex < text.length) {
+        const textNode = document.createTextNode(text.substring(lastIndex));
+        container.appendChild(textNode);
+    }
+    
+    return container;
+}
+
+function getTimeAgo(timestamp) {
+    if (!timestamp) return '';
+    const now = Date.now();
+    const diff = now - timestamp;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (seconds < 60) return 'hace un momento';
+    if (minutes < 60) return `hace ${minutes} min`;
+    if (hours < 24) return `hace ${hours} h`;
+    if (days < 7) return `hace ${days} d`;
+    return new Date(timestamp).toLocaleDateString();
+}
+
+// Renderizar post completo (similar a renderSinglePost de home.html)
+function renderPost(postId, data) {
+    const container = document.getElementById('postContainer');
+    container.innerHTML = '';
+    
+    const item = document.createElement('div');
+    item.className = 'post-item';
+    item.setAttribute('data-post-id', postId);
+    
+    // HEADER
+    const header = document.createElement('div');
+    header.className = 'post-header';
+    
+    const userInfo = document.createElement('div');
+    userInfo.className = 'user-info';
+    userInfo.addEventListener('click', () => {
+        if (postAuthorId !== currentUID) {
+            window.location.href = `userprofile.html?uid=${postAuthorId}`;
+        } else {
+            window.location.href = 'myprofile.html';
+        }
+    });
+    
+    const userPhoto = document.createElement('img');
+    userPhoto.className = 'user-photo';
+    userPhoto.src = 'assets/avatar.png';
+    
+    const userDetails = document.createElement('div');
+    userDetails.className = 'user-details';
+    
+    const userName = document.createElement('div');
+    userName.className = 'user-name';
+    
+    const username = document.createElement('div');
+    username.className = 'user-username';
+    
+    const timeAgo = document.createElement('div');
+    timeAgo.className = 'time-ago';
+    timeAgo.textContent = getTimeAgo(data.pTime || data.timestamp);
+    
+    // Cargar info del usuario
+    const userRef = ref(db, `Users/${postAuthorId}`);
+    onValue(userRef, (userSnap) => {
+        if (userSnap.exists()) {
+            const userData = userSnap.val();
+            if (userData.photo) userPhoto.src = userData.photo;
+            userName.textContent = userData.name || 'Usuario';
+            username.textContent = `@${userData.username || 'username'}`;
+            
+            // Badge de verificación
+            if (userData.verified === 'yes') {
+                const badge = document.createElement('span');
+                badge.textContent = '✓';
+                badge.style.color = '#a855f7';
+                badge.title = 'Artista verificado';
+                userName.appendChild(badge);
+            } else if (userData.verifiedprofesor === 'yes') {
+                const badge = document.createElement('span');
+                badge.textContent = '🎓';
+                badge.style.color = '#FF6B6B';
+                userName.appendChild(badge);
+            }
+        }
+    }, { onlyOnce: true });
+    
+    userDetails.appendChild(userName);
+    userDetails.appendChild(username);
+    userDetails.appendChild(timeAgo);
+    userInfo.appendChild(userPhoto);
+    userInfo.appendChild(userDetails);
+    
+    // Botón seguir
+    const followBtn = document.createElement('button');
+    followBtn.className = 'follow-btn';
+    followBtn.textContent = 'Seguir';
+    
+    if (postAuthorId !== currentUID) {
+        const followRef = ref(db, `Follow/${postAuthorId}/Followers/${currentUID}`);
+        onValue(followRef, (snap) => {
+            if (snap.exists()) {
+                followBtn.textContent = 'Siguiendo';
+                followBtn.classList.add('following');
+            }
+        }, { onlyOnce: true });
+        
+        followBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const followRef = ref(db, `Follow/${postAuthorId}/Followers/${currentUID}`);
+            const snap = await get(followRef);
+            if (snap.exists()) {
+                await remove(followRef);
+                followBtn.textContent = 'Seguir';
+                followBtn.classList.remove('following');
+            } else {
+                await set(followRef, true);
+                followBtn.textContent = 'Siguiendo';
+                followBtn.classList.add('following');
+            }
+        });
+header.appendChild(userInfo);
+    header.appendChild(followBtn);
+    
+    // CONTENIDO
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'post-content';
+    
+    // Texto del post
+    if (data.text && data.type !== 'bg' && data.type !== 'party') {
+        const textDiv = document.createElement('div');
+        textDiv.className = 'post-text';
+        const processedText = processTextWithLinks(data.text);
+        textDiv.appendChild(processedText);
+        contentDiv.appendChild(textDiv);
+    }
+    
+    // Media (Imagen, Imágenes Múltiples, Video, Audio, Partituras, Serie, etc.)
+    const mediaContainer = document.createElement('div');
+    mediaContainer.className = 'post-media-box';
+    
+    if (window.ProviwebPostMedia && typeof window.ProviwebPostMedia.renderPostMedia === 'function') {
+        window.ProviwebPostMedia.renderPostMedia(data, mediaContainer, {
+            postId: postId,
+            authorName: postAuthorId || 'Artista',
+            onVideoPlay: () => {
+                if (currentUID) {
+                    set(ref(db, `Views/${postId}/${currentUID}`), true);
+                }
+            }
+        });
+        if (mediaContainer.children.length > 0) {
+            contentDiv.appendChild(mediaContainer);
+        }
+    }
+    
+    item.appendChild(contentDiv);
+    
+    // ACCIONES (Likes, Comentarios, Compartir, Regalos)
+    const actions = document.createElement('div');
+    actions.className = 'post-actions';
+    
+    // Botón Like/Aplausos con sistema de reacciones completo
+    const likeBtnContainer = document.createElement('div');
+    likeBtnContainer.style.cssText = 'position:relative;';
+    
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'action-btn';
+    likeBtn.innerHTML = '👏 <span id="likeCount">0</span>';
+    
+    // Popup de reacciones
+    const reactionPopup = document.createElement('div');
+    reactionPopup.className = 'reaction-popup';
+    reactionPopup.style.display = 'none';
+    reactionPopup.innerHTML = `
+        <button class="reaction-option" data-reaction="aplausos">👏</button>
+        <button class="reaction-option" data-reaction="love">❤️</button>
+        <button class="reaction-option" data-reaction="laugh">😂</button>
+        <button class="reaction-option" data-reaction="wow">😮</button>
+        <button class="reaction-option" data-reaction="sad">😢</button>
+        <button class="reaction-option" data-reaction="angry">😠</button>
+    `;
+    
+    const aplausosRef = ref(db, `Aplausos/${postId}`);
+    const reactionRef = ref(db, `Reaction/${postId}/${currentUID}`);
+    
+    const updateReactionButton = () => {
+        onValue(aplausosRef, (snap) => {
+            const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+            const hasReacted = snap.exists() && snap.hasChild(currentUID);
+            
+            onValue(reactionRef, (reactSnap) => {
+                if (reactSnap.exists()) {
+                    const reactType = reactSnap.val().type;
+                    const emojis = {
+                        'aplausos': '👏',
+                        'love': '❤️',
+                        'laugh': '😂',
+                        'wow': '😮',
+                        'sad': '😢',
+                        'angry': '😠'
+                    };
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> ${emojis[reactType] || '👏'}`;
+                        likeBtn.style.color = '#a855f7';
+                    } else if (hasReacted) {
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> 👏`;
+                        likeBtn.style.color = '#a855f7';
+                    } else {
+                        likeBtn.innerHTML = `<span id="likeCount">${count}</span> 👏`;
+                        likeBtn.style.color = '#a0a0b0';
+                    }
+            }, { onlyOnce: true });
+        });
+    };
+    updateReactionButton();
+    
+        // Mostrar/ocultar popup de reacciones
+        let reactionTimeout;
+        likeBtn.addEventListener('mouseenter', () => {
+            clearTimeout(reactionTimeout);
+            reactionPopup.style.display = 'flex';
+        });
+        likeBtnContainer.addEventListener('mouseleave', () => {
+            reactionTimeout = setTimeout(() => {
+                reactionPopup.style.display = 'none';
+            }, 300);
+        });
+        reactionPopup.addEventListener('mouseenter', () => {
+            clearTimeout(reactionTimeout);
+        });
+    
+    // Manejar selección de reacción
+    reactionPopup.querySelectorAll('.reaction-option').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const reactionType = btn.dataset.reaction;
+            const aplausosUserRef = ref(db, `Aplausos/${postId}/${currentUID}`);
+            const snap = await get(aplausosUserRef);
+            
+            if (snap.exists()) {
+                await set(reactionRef, { type: reactionType });
+            } else {
+                await set(aplausosUserRef, true);
+                await set(reactionRef, { type: reactionType });
+                
+                // Notificar al autor
+                if (postAuthorId !== currentUID) {
+                    const userRef = ref(db, `Users/${currentUID}`);
+                    onValue(userRef, (userSnap) => {
+                        if (userSnap.exists()) {
+                            const notificationMessages = {
+                                'aplausos': 'Le gusta tu Post',
+                                'love': 'Ama tu Post',
+                                'laugh': 'Ríe con tu Post',
+                                'wow': 'Le impresiona tu Post',
+                                'sad': 'Se entristece con tu Post',
+                                'angry': 'No le gusta tu Post'
+                            };
+                            
+                            const timestamp = Date.now().toString();
+                            const notificationRef = ref(db, `Users/${postAuthorId}/Notifications/${timestamp}`);
+                            set(notificationRef, {
+                                pId: postId,
+                                timestamp: timestamp,
+                                pUid: postAuthorId,
+                                notification: notificationMessages[reactionType] || 'Le gusta tu Post',
+                                type: 'post',
+                                sUid: currentUID
+                            });
+                            set(ref(db, `Users/${postAuthorId}/Count/${timestamp}`), true);
+                        }
+                    }, { onlyOnce: true });
+                }
+            }
+            reactionPopup.style.display = 'none';
+            updateReactionButton();
+        });
+    });
+    
+    // Click rápido para quitar reacción
+    likeBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const aplausosUserRef = ref(db, `Aplausos/${postId}/${currentUID}`);
+        const snap = await get(aplausosUserRef);
+        
+        if (snap.exists()) {
+            await remove(aplausosUserRef);
+            await remove(reactionRef);
+            updateReactionButton();
+        }
+    });
+    
+    likeBtnContainer.appendChild(likeBtn);
+    likeBtnContainer.appendChild(reactionPopup);
+    actions.appendChild(likeBtnContainer);
+    
+    // Botón Comentarios con sección expandible
+    const commentBtn = document.createElement('button');
+    commentBtn.className = 'action-btn';
+    const commentCountSpan = document.createElement('span');
+    commentCountSpan.id = `commentCount_${postId}`;
+    commentCountSpan.textContent = '0';
+    commentBtn.innerHTML = '💬 ';
+    commentBtn.appendChild(commentCountSpan);
+    
+    // Sección de comentarios expandible dentro del post
+    const commentsSection = document.createElement('div');
+    commentsSection.id = `commentsSection_${postId}`;
+    commentsSection.className = 'comments-section';
+    commentsSection.style.cssText = 'display:none;margin-top:8px;padding-top:16px;border-top:1px solid var(--border-glass);max-height:400px;overflow-y:auto;background:rgba(255, 255, 255, 0.03);';
+    
+    const commentsListInline = document.createElement('div');
+    commentsListInline.id = `commentsListInline_${postId}`;
+    commentsListInline.style.cssText = 'max-height:300px;overflow-y:auto;margin-bottom:12px;';
+    
+    // Input de comentario inline
+    const commentInputContainer = document.createElement('div');
+    commentInputContainer.style.cssText = 'display:flex;gap:8px;align-items:center;padding:0 4px;';
+    
+    const commentInputInline = document.createElement('input');
+    commentInputInline.type = 'text';
+    commentInputInline.id = `commentInputInline_${postId}`;
+    commentInputInline.placeholder = 'Escribe un comentario...';
+    commentInputInline.style.cssText = 'flex:1;padding:10px 14px;border:1px solid var(--border-glass);border-radius:20px;font-size:14px;outline:none;background:rgba(255, 255, 255, 0.08);color:#ffffff;';
+    
+    const commentSendBtnInline = document.createElement('button');
+    commentSendBtnInline.textContent = 'Enviar';
+    commentSendBtnInline.style.cssText = 'padding:10px 18px;background:linear-gradient(135deg, #a855f7 0%, #007BFF 100%);color:white;border:none;border-radius:20px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.3s;';
+    
+    commentSendBtnInline.addEventListener('mouseenter', () => {
+        commentSendBtnInline.style.opacity = '0.85';
+        commentSendBtnInline.style.transform = 'translateY(-1px)';
+    });
+    
+    commentSendBtnInline.addEventListener('mouseleave', () => {
+        commentSendBtnInline.style.opacity = '1';
+        commentSendBtnInline.style.transform = 'translateY(0)';
+    });
+    
+    // Enviar comentario desde la sección inline
+    commentSendBtnInline.addEventListener('click', async () => {
+        const text = commentInputInline.value.trim();
+        if (text) {
+            const commentId = Date.now().toString();
+            const commentRef = ref(db, `Posts/${postId}/Comments/${commentId}`);
+            await set(commentRef, {
+                cId: commentId,
+                comment: text,
+                id: currentUID,
+                pId: postId,
+                type: 'text',
+                timestamp: Date.now()
+            });
+            
+            // Registrar vista si es video
+            if (postData && postData.type === 'video') {
+                await set(ref(db, `Views/${postId}/${currentUID}`), true);
+            }
+            
+            // Notificar al autor
+            if (postAuthorId && postAuthorId !== currentUID) {
+                const userRef = ref(db, `Users/${currentUID}`);
+                onValue(userRef, (userSnap) => {
+                    if (userSnap.exists()) {
+                        const timestamp = Date.now().toString();
+                        const notificationRef = ref(db, `Users/${postAuthorId}/Notifications/${timestamp}`);
+                        set(notificationRef, {
+                            pId: postId,
+                            timestamp: timestamp,
+                            pUid: postAuthorId,
+                            notification: 'Comentó en tu Post',
+                            type: 'post',
+                            sUid: currentUID
+                        });
+                        set(ref(db, `Users/${postAuthorId}/Count/${timestamp}`), true);
+                    }
+                }, { onlyOnce: true });
+            }
+            
+            commentInputInline.value = '';
+        }
+    });
+    
+    commentInputInline.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            commentSendBtnInline.click();
+        }
+    });
+    
+    commentInputContainer.appendChild(commentInputInline);
+    commentInputContainer.appendChild(commentSendBtnInline);
+    
+    // Cargar comentarios en la sección inline
+    const commentsRef = ref(db, `Posts/${postId}/Comments`);
+    onValue(commentsRef, (snap) => {
+        const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+        commentCountSpan.textContent = count;
+        
+        // Renderizar comentarios en la sección inline
+        commentsListInline.innerHTML = '';
+        if (snap.exists()) {
+            const commentsArray = [];
+            snap.forEach((commentSnap) => {
+                commentsArray.push({
+                    key: commentSnap.key,
+                    data: commentSnap.val()
+                });
+            });
+            
+            // Ordenar por timestamp
+            commentsArray.sort((a, b) => {
+                const timeA = a.data.timestamp || parseInt(a.data.cId || 0);
+                const timeB = b.data.timestamp || parseInt(b.data.cId || 0);
+                return timeA - timeB;
+            });
+            
+            commentsArray.forEach(comment => {
+                const commentItem = document.createElement('div');
+                commentItem.style.cssText = 'display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255, 255, 255, 0.05);';
+                
+                const commentUserPhoto = document.createElement('img');
+                commentUserPhoto.style.cssText = 'width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer;';
+                commentUserPhoto.src = 'assets/avatar.png';
+                commentUserPhoto.addEventListener('click', () => {
+                    window.location.href = `userprofile.html?uid=${comment.data.id}`;
+                });
+                
+                const commentContent = document.createElement('div');
+                commentContent.style.cssText = 'flex:1;min-width:0;';
+                
+                const commentUserName = document.createElement('div');
+                commentUserName.style.cssText = 'font-weight:600;font-size:13px;color:#ffffff;margin-bottom:4px;cursor:pointer;';
+                commentUserName.addEventListener('click', () => {
+                    window.location.href = `userprofile.html?uid=${comment.data.id}`;
+                });
+                
+                const commentText = document.createElement('div');
+                commentText.style.cssText = 'font-size:14px;color:#a0a0b0;word-wrap:break-word;line-height:1.4;';
+                const processedComment = processTextWithLinks(comment.data.comment || '');
+                commentText.appendChild(processedComment);
+                
+                const commentTime = document.createElement('div');
+                commentTime.style.cssText = 'font-size:11px;color:#a0a0b0;margin-top:4px;';
+                if (comment.data.timestamp || comment.data.cId) {
+                    const commentTimestamp = comment.data.timestamp || parseInt(comment.data.cId || 0);
+                    commentTime.textContent = getTimeAgo(commentTimestamp);
+                }
+                
+                commentContent.appendChild(commentUserName);
+                commentContent.appendChild(commentText);
+                commentContent.appendChild(commentTime);
+                
+                commentItem.appendChild(commentUserPhoto);
+                commentItem.appendChild(commentContent);
+                
+                // Cargar info del usuario que comentó
+                const commentUserRef = ref(db, `Users/${comment.data.id}`);
+                onValue(commentUserRef, (userSnap) => {
+                    if (userSnap.exists()) {
+                        const userData = userSnap.val();
+                        if (userData.photo) commentUserPhoto.src = userData.photo;
+                        commentUserName.textContent = userData.name || 'Usuario';
+                    }
+                }, { onlyOnce: true });
+                
+                commentsListInline.appendChild(commentItem);
+            });
+        } else {
+            commentsListInline.innerHTML = '<div style="text-align:center;padding:20px;color:#a0a0b0;font-size:13px;">No hay comentarios aún. Sé el primero en comentar!</div>';
+        }
+    });
+    
+    commentsSection.appendChild(commentsListInline);
+    commentsSection.appendChild(commentInputContainer);
+    
+    // Toggle comentarios al hacer click
+    commentBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (postData && postData.type === 'video') {
+            set(ref(db, `Views/${postId}/${currentUID}`), true);
+        }
+        
+        // Toggle la sección de comentarios
+        const isVisible = commentsSection.style.display !== 'none';
+        if (isVisible) {
+            commentsSection.style.display = 'none';
+        } else {
+            commentsSection.style.display = 'block';
+            // Scroll suave a la sección de comentarios
+            setTimeout(() => {
+                commentsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+    
+    actions.appendChild(commentBtn);
+    
+    // Agregar la sección de comentarios después de las acciones
+    item.appendChild(commentsSection);
+    
+    // Botón Compartir
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'action-btn';
+    shareBtn.innerHTML = '📤';
+    shareBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Mira este post en PROVIWEB',
+                    text: data.text || '',
+                    url: window.location.href
+                });
+            } catch (err) {
+                console.log('Error compartiendo:', err);
+            }
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Enlace copiado al portapapeles');
+        }
+    });
+    actions.appendChild(shareBtn);
+    
+    // Botón Regalos completo (usando clases unificadas)
+    const giftBtnContainer = document.createElement('div');
+    giftBtnContainer.style.cssText = 'position:relative;';
+    
+    const giftBtn = document.createElement('button');
+    giftBtn.className = 'action-btn';
+    giftBtn.innerHTML = '🎁 <span id="giftCount">0</span>';
+    
+    // Popup de regalos
+    const giftPopup = document.createElement('div');
+    giftPopup.className = 'gift-popup';
+    giftPopup.style.display = 'none';
+    
+    const giftAmounts = [
+        { amount: 1, type: 'undolar', emoji: '💰', label: '1 QAV' },
+        { amount: 3, type: 'tresdolares', emoji: '🎵', label: '3 QAV' },
+        { amount: 5, type: 'cincodolares', emoji: '🎸', label: '5 QAV' },
+        { amount: 10, type: 'diezdolares', emoji: '🎹', label: '10 QAV' },
+        { amount: 20, type: 'veintedolares', emoji: '🥁', label: '20 QAV' },
+        { amount: 25, type: 'veinticincodolares', emoji: '🎺', label: '25 QAV' },
+        { amount: 30, type: 'treintadolares', emoji: '🎻', label: '30 QAV' },
+        { amount: 50, type: 'cincuentadolares', emoji: '🎼', label: '50 QAV' },
+        { amount: 100, type: 'ciendolares', emoji: '💎', label: '100 QAV' }
+    ];
+    
+    giftAmounts.forEach(gift => {
+        const giftOption = document.createElement('button');
+        giftOption.className = 'gift-option';
+        giftOption.dataset.amount = gift.amount;
+        giftOption.dataset.type = gift.type;
+        giftOption.innerHTML = `${gift.emoji} ${gift.label}`;
+        giftOption.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await sendGift(postId, postAuthorId, gift.amount, gift.type);
+            giftPopup.style.display = 'none';
+        });
+        giftPopup.appendChild(giftOption);
+    });
+    
+    // Actualizar estado del botón de regalo
+    const balanceEnviadoRef = ref(db, `BalanceEnviado/${postId}`);
+    const enviadoRef = ref(db, `Enviado/${postId}/${currentUID}`);
+    
+    onValue(balanceEnviadoRef, (snap) => {
+        const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+        const hasSent = snap.exists() && snap.hasChild(currentUID);
+        
+        if (hasSent) {
+            onValue(enviadoRef, (enviadoSnap) => {
+                if (enviadoSnap.exists()) {
+                    const giftType = enviadoSnap.val().type;
+                    const giftInfo = giftAmounts.find(g => g.type === giftType);
+                    if (giftInfo) {
+                        giftBtn.innerHTML = `${giftInfo.emoji} <span id="giftCount">${count}</span>`;
+                        giftBtn.style.color = '#FF6B6B';
+                    } else {
+                        giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+                        giftBtn.style.color = '#FF6B6B';
+                    }
+                } else {
+                    giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+                    giftBtn.style.color = '#FF6B6B';
+                }
+            }, { onlyOnce: true });
+        } else {
+            giftBtn.innerHTML = `🎁 <span id="giftCount">${count}</span>`;
+            giftBtn.style.color = '#a0a0b0';
+        }
+    });
+    
+    // Mostrar/ocultar popup
+    let giftTimeout;
+    giftBtn.addEventListener('mouseenter', () => {
+        clearTimeout(giftTimeout);
+        giftPopup.style.display = 'block';
+    });
+    giftBtnContainer.addEventListener('mouseleave', () => {
+        giftTimeout = setTimeout(() => {
+            giftPopup.style.display = 'none';
+        }, 300);
+    });
+    giftPopup.addEventListener('mouseenter', () => {
+        clearTimeout(giftTimeout);
+    });
+    
+    // Click para quitar regalo
+    giftBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const balanceEnviadoUserRef = ref(db, `BalanceEnviado/${postId}/${currentUID}`);
+        const snap = await get(balanceEnviadoUserRef);
+        
+        if (snap.exists()) {
+            if (confirm('¿Quitar el regalo enviado?')) {
+                await remove(balanceEnviadoUserRef);
+                await remove(enviadoRef);
+            }
+        }
+    });
+    
+    // Función para enviar regalo
+    async function sendGift(postId, receiverId, amount, giftType) {
+        try {
+            const senderBalanceRef = ref(db, `Balance/${currentUID}`);
+            const senderBalanceSnap = await get(senderBalanceRef);
+            
+            if (!senderBalanceSnap.exists() || !senderBalanceSnap.hasChild('balance')) {
+                alert('No tienes balance disponible. Necesitas crear una wallet primero.');
+                return;
+            }
+            
+            const senderBalance = parseFloat(senderBalanceSnap.val().balance || 0);
+            
+            if (senderBalance < amount) {
+                alert(`No tienes suficiente balance. Necesitas ${amount} QAV pero tienes ${senderBalance} QAV.`);
+                return;
+            }
+            
+            const newSenderBalance = senderBalance - amount;
+            await update(senderBalanceRef, { balance: newSenderBalance.toString() });
+            
+            const receiverBalanceRef = ref(db, `Balance/${receiverId}`);
+            const receiverBalanceSnap = await get(receiverBalanceRef);
+            const receiverBalance = receiverBalanceSnap.exists() && receiverBalanceSnap.hasChild('balance') 
+                ? parseFloat(receiverBalanceSnap.val().balance || 0) 
+                : 0;
+            const newReceiverBalance = receiverBalance + amount;
+            await set(receiverBalanceRef, { balance: newReceiverBalance.toString() });
+            
+            await set(ref(db, `BalanceEnviado/${postId}/${currentUID}`), { amount: amount, type: giftType });
+            await set(ref(db, `Enviado/${postId}/${currentUID}`), { type: giftType });
+            
+            // Notificar al receptor
+            if (receiverId !== currentUID) {
+                const userRef = ref(db, `Users/${currentUID}`);
+                onValue(userRef, (userSnap) => {
+                    if (userSnap.exists()) {
+                        const timestamp = Date.now().toString();
+                        const notificationRef = ref(db, `Users/${receiverId}/Notifications/${timestamp}`);
+                        set(notificationRef, {
+                            pId: postId,
+                            timestamp: timestamp,
+                            pUid: receiverId,
+                            notification: `Te envió ${amount} QAV`,
+                            type: 'gift',
+                            sUid: currentUID
+                        });
+                        set(ref(db, `Users/${receiverId}/Count/${timestamp}`), true);
+                    }
+                }, { onlyOnce: true });
+            }
+            
+            alert(`¡Regalo de ${amount} QAV enviado!`);
+        } catch (error) {
+            console.error('Error enviando regalo:', error);
+            alert('Error al enviar el regalo. Por favor, intenta de nuevo.');
+        }
+    }
+    
+    giftBtnContainer.appendChild(giftBtn);
+    giftBtnContainer.appendChild(giftPopup);
+    actions.appendChild(giftBtnContainer);
+    
+    // Ensamblar todo
+    item.appendChild(header);
+    item.appendChild(contentDiv);
+    item.appendChild(actions);
+    
+    container.appendChild(item);
+    
+    // Cargar comentarios en contenedor separado (estilo Android)
+    loadComments(postId);
+    
+    // Configurar barra de comentarios (solo una vez)
+    if (!commentBarSetup) {
+        currentPostIdForComments = postId;
+        setTimeout(() => setupCommentBar(postId), 100);
+    } else {
+        // Si ya está configurada, solo actualizar el postId actual
+        currentPostIdForComments = postId;
+    }
+}
+
+// Función para cargar y renderizar comentarios (estilo Android)
+function loadComments(postId) {
+    const commentsContainer = document.getElementById('commentsList');
+    if (!commentsContainer) return;
+    
+    const commentsRef = ref(db, `Posts/${postId}/Comments`);
+    
+    onValue(commentsRef, (snap) => {
+        commentsContainer.innerHTML = '';
+        
+        if (!snap.exists()) {
+            commentsContainer.innerHTML = '<div style="text-align:center;padding:40px;color:#a0a0b0;font-size:14px;">No hay comentarios aún</div>';
+            return;
+        }
+        
+        const comments = [];
+        snap.forEach((child) => {
+            comments.push({
+                key: child.key,
+                data: child.val()
+            });
+        });
+        
+        // Ordenar por timestamp (más antiguos primero, como Android)
+        comments.sort((a, b) => {
+            const timeA = a.data.timestamp || parseInt(a.data.cId || 0);
+            const timeB = b.data.timestamp || parseInt(b.data.cId || 0);
+            return timeA - timeB;
+        });
+        
+        comments.forEach((comment) => {
+            renderComment(comment, commentsContainer);
+        });
+    });
+}
+
+// Función para renderizar un comentario individual (estilo Android)
+function renderComment(comment, container) {
+    const commentItem = document.createElement('div');
+    commentItem.className = 'comment-item';
+    
+    // Avatar del usuario (estilo Android)
+    const commentUserPhoto = document.createElement('img');
+    commentUserPhoto.className = 'comment-avatar';
+    commentUserPhoto.src = 'assets/avatar.png';
+    commentUserPhoto.addEventListener('click', () => {
+        window.location.href = `userprofile.html?uid=${comment.data.id}`;
+    });
+    
+    // Contenedor del comentario (bubble style)
+    const commentBubble = document.createElement('div');
+    commentBubble.style.cssText = 'flex:1;min-width:0;';
+    
+    // Header del comentario (nombre + badges)
+    const commentHeader = document.createElement('div');
+    commentHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;';
+    
+    const commentNameContainer = document.createElement('div');
+    commentNameContainer.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;';
+    
+    const commentUserName = document.createElement('span');
+    commentUserName.style.cssText = 'font-weight:700;font-size:16px;color:#ffffff;';
+    commentUserName.addEventListener('click', () => {
+        window.location.href = `userprofile.html?uid=${comment.data.id}`;
+    });
+    
+    // Badge de verificación (se agregará después de cargar datos del usuario)
+    const verifiedBadge = document.createElement('span');
+    verifiedBadge.style.cssText = 'display:none;width:15px;height:15px;';
+    
+    commentNameContainer.appendChild(commentUserName);
+    commentNameContainer.appendChild(verifiedBadge);
+    commentHeader.appendChild(commentNameContainer);
+    
+    // Bubble del comentario (estilo Android exacto)
+    const commentBubbleInner = document.createElement('div');
+    commentBubbleInner.className = 'comment-bubble-inner';
+    
+    // Texto del comentario
+    const commentText = document.createElement('div');
+    commentText.className = 'comment-text';
+    
+    // Manejar diferentes tipos de comentarios
+    if (comment.data.type === 'image' || comment.data.type === 'video' || comment.data.type === 'gif') {
+        const mediaContainer = document.createElement('div');
+        mediaContainer.style.cssText = 'position:relative;display:inline-block;margin-top:8px;';
+        
+        const mediaImg = document.createElement('img');
+        mediaImg.style.cssText = 'max-width:250px;max-height:200px;border-radius:15px;cursor:pointer;display:block;';
+        mediaImg.src = comment.data.comment;
+        mediaImg.addEventListener('click', () => {
+            window.open(comment.data.comment, '_blank');
+        });
+        mediaContainer.appendChild(mediaImg);
+        
+        if (comment.data.type === 'video') {
+            const playIcon = document.createElement('div');
+            playIcon.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;background:rgba(0,0,0,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;pointer-events:none;';
+            playIcon.textContent = '▶';
+            mediaContainer.appendChild(playIcon);
+        }
+        commentText.appendChild(mediaContainer);
+    } else {
+        // Comentario de texto
+        const processedText = processTextWithLinks(comment.data.comment || '');
+        commentText.appendChild(processedText);
+    }
+    
+    commentBubbleInner.appendChild(commentText);
+    
+    // Footer del comentario (tiempo, reply, likes)
+    const commentFooter = document.createElement('div');
+    commentFooter.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:8px;padding-left:18px;flex-wrap:wrap;';
+    
+    const commentTime = document.createElement('span');
+    commentTime.style.cssText = 'font-size:11px;color:#a0a0b0;font-weight:500;';
+    if (comment.data.timestamp || comment.data.cId) {
+        const commentTimestamp = comment.data.timestamp || parseInt(comment.data.cId || 0);
+        commentTime.textContent = getTimeAgo(commentTimestamp);
+    }
+    
+    const replyBtn = document.createElement('span');
+    replyBtn.className = 'comment-reply';
+    replyBtn.textContent = 'Reply';
+    replyBtn.addEventListener('click', () => {
+        // TODO: Implementar funcionalidad de reply
+        console.log('Reply to comment:', comment.key);
+    });
+    
+    // Contenedor de likes
+    const likesContainer = document.createElement('div');
+    likesContainer.style.cssText = 'display:flex;align-items:center;gap:4px;margin-left:16px;flex:1;';
+    
+    // Reacciones mini (como en Android) - mostrar emojis de reacciones
+    const reactionsContainer = document.createElement('div');
+    reactionsContainer.style.cssText = 'display:flex;align-items:center;gap:2px;';
+    reactionsContainer.id = `reactions_${comment.key}`;
+    
+    // Cargar reacciones del comentario (estilo Android)
+    const reactionRef = ref(db, `Reaction/${comment.key}`);
+    onValue(reactionRef, (reactionSnap) => {
+        reactionsContainer.innerHTML = '';
+        if (reactionSnap.exists()) {
+            const reactions = {};
+            reactionSnap.forEach((child) => {
+                const type = child.val().type;
+                reactions[type] = (reactions[type] || 0) + 1;
+            });
+            
+            const emojiMap = {
+                'like': '👏',
+                'love': '❤️',
+                'laugh': '😂',
+                'wow': '😮',
+                'sad': '😢',
+                'angry': '😠'
+            };
+            
+            // Mostrar emojis de reacciones (solo si hay reacciones)
+            Object.keys(reactions).forEach(type => {
+                if (reactions[type] > 0 && emojiMap[type]) {
+                    const emoji = document.createElement('span');
+                    emoji.style.cssText = 'font-size:16px;line-height:1;';
+                    emoji.textContent = emojiMap[type];
+                    reactionsContainer.appendChild(emoji);
+                }
+            });
+        } else {
+            // Si no hay reacciones, verificar si hay likes antiguos
+            const oldLikesRef = ref(db, `Likes/${comment.key}`);
+            onValue(oldLikesRef, (oldLikesSnap) => {
+                if (oldLikesSnap.exists()) {
+                    const thumb = document.createElement('span');
+                    thumb.style.cssText = 'font-size:16px;line-height:1;';
+                    thumb.textContent = '👏';
+                    reactionsContainer.appendChild(thumb);
+                }
+            }, { onlyOnce: true });
+        }
+    });
+    
+    // Botón de like con reacciones (estilo Android)
+    const likeBtnContainer = document.createElement('div');
+    likeBtnContainer.style.cssText = 'position:relative;display:inline-block;';
+    
+    const likeBtn = document.createElement('span');
+    likeBtn.className = 'comment-like-btn';
+    likeBtn.textContent = 'Aplauso';
+    
+    // Popup de reacciones para comentarios
+    const commentReactionPopup = document.createElement('div');
+    commentReactionPopup.style.cssText = 'display:none;position:absolute;bottom:100%;left:0;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:25px;box-shadow:0 4px 12px rgba(0,0,0,0.4);padding:5px;z-index:1000;margin-bottom:5px;';
+    commentReactionPopup.innerHTML = `
+        <button class="reaction-option" data-reaction="like" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">👏</button>
+        <button class="reaction-option" data-reaction="love" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">❤️</button>
+        <button class="reaction-option" data-reaction="laugh" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">😂</button>
+        <button class="reaction-option" data-reaction="wow" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">😮</button>
+        <button class="reaction-option" data-reaction="sad" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">😢</button>
+        <button class="reaction-option" data-reaction="angry" style="font-size:24px;background:none;border:none;cursor:pointer;padding:5px;border-radius:50%;transition:transform 0.2s;">😠</button>
+    `;
+    
+    const likesCount = document.createElement('span');
+    likesCount.style.cssText = 'font-size:14px;color:#a0a0b0;font-weight:500;margin-left:4px;';
+    likesCount.id = `commentLikes_${comment.key}`;
+    
+    // Cargar likes del comentario
+    const cLikesRef = ref(db, `cLikes/${comment.key}`);
+    onValue(cLikesRef, (likesSnap) => {
+        const count = likesSnap.exists() ? Object.keys(likesSnap.val()).length : 0;
+        likesCount.textContent = count > 0 ? count : '';
+        
+        // Verificar reacción actual del usuario
+        const userReactionRef = ref(db, `Reaction/${comment.key}/${currentUID}`);
+        onValue(userReactionRef, (userReactionSnap) => {
+            if (userReactionSnap.exists()) {
+                const reactType = userReactionSnap.val().type;
+                const emojiMap = {
+                    'like': 'Aplausos',
+                    'love': 'Aplausos',
+                    'laugh': 'Aplausos',
+                    'wow': 'Aplausos',
+                    'sad': 'Aplausos',
+                    'angry': 'Aplausos'
+                };
+                likeBtn.textContent = emojiMap[reactType] || 'Aplausos';
+                likeBtn.style.color = '#a855f7';
+                likeBtn.classList.add('liked');
+            } else if (likesSnap.exists() && likesSnap.hasChild(currentUID)) {
+                likeBtn.textContent = 'Aplausos';
+                likeBtn.style.color = '#a855f7';
+                likeBtn.classList.add('liked');
+            } else {
+                likeBtn.textContent = 'Aplauso';
+                likeBtn.style.color = '#a0a0b0';
+                likeBtn.classList.remove('liked');
+            }
+        }, { onlyOnce: true });
+    });
+    
+    // Mostrar popup de reacciones
+    let commentReactionTimeout;
+    likeBtn.addEventListener('mouseenter', () => {
+        clearTimeout(commentReactionTimeout);
+        commentReactionPopup.style.display = 'flex';
+    });
+    likeBtnContainer.addEventListener('mouseleave', () => {
+        commentReactionTimeout = setTimeout(() => {
+            commentReactionPopup.style.display = 'none';
+        }, 300);
+    });
+    commentReactionPopup.addEventListener('mouseenter', () => {
+        clearTimeout(commentReactionTimeout);
+    });
+    
+    // Manejar selección de reacción
+    commentReactionPopup.querySelectorAll('.reaction-option').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const reactionType = btn.dataset.reaction;
+            const cLikesUserRef = ref(db, `cLikes/${comment.key}/${currentUID}`);
+            const snap = await get(cLikesUserRef);
+            
+            if (snap.exists()) {
+                // Ya tiene like, solo actualizar reacción
+                await set(ref(db, `Reaction/${comment.key}/${currentUID}`), { type: reactionType });
+            } else {
+                // Agregar like y reacción
+                await set(cLikesUserRef, true);
+                await set(ref(db, `Reaction/${comment.key}/${currentUID}`), { type: reactionType });
+            }
+            commentReactionPopup.style.display = 'none';
+        });
+    });
+    
+    // Click rápido para quitar like
+    likeBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const cLikesUserRef = ref(db, `cLikes/${comment.key}/${currentUID}`);
+        const snap = await get(cLikesUserRef);
+        
+        if (snap.exists()) {
+            await remove(cLikesUserRef);
+            await remove(ref(db, `Reaction/${comment.key}/${currentUID}`));
+        }
+    });
+    
+    likeBtnContainer.appendChild(likeBtn);
+    likeBtnContainer.appendChild(commentReactionPopup);
+    
+    likesContainer.appendChild(reactionsContainer);
+    likesContainer.appendChild(likeBtnContainer);
+    likesContainer.appendChild(likesCount);
+    
+    commentFooter.appendChild(commentTime);
+    commentFooter.appendChild(replyBtn);
+    commentFooter.appendChild(likesContainer);
+    
+    commentBubble.appendChild(commentHeader);
+    commentBubble.appendChild(commentBubbleInner);
+    commentBubble.appendChild(commentFooter);
+    
+    commentItem.appendChild(commentUserPhoto);
+    commentItem.appendChild(commentBubble);
+    
+    // Cargar información del usuario
+    const commentUserRef = ref(db, `Users/${comment.data.id}`);
+    onValue(commentUserRef, (userSnap) => {
+        if (userSnap.exists()) {
+            const userData = userSnap.val();
+            if (userData.photo) commentUserPhoto.src = userData.photo;
+            commentUserName.textContent = userData.name || 'Usuario';
+            
+            // Badges de verificación
+            if (userData.verified === 'yes') {
+                verifiedBadge.innerHTML = '✓';
+                verifiedBadge.style.cssText = 'display:inline-flex;width:15px;height:15px;background:#a855f7;color:white;border-radius:50%;font-size:10px;align-items:center;justify-content:center;font-weight:bold;';
+                verifiedBadge.title = 'Artista Verificado';
+            } else if (userData.verifiedprofesor === 'yes') {
+                verifiedBadge.innerHTML = '🎓';
+                verifiedBadge.style.cssText = 'display:inline-block;width:15px;height:15px;font-size:12px;';
+                verifiedBadge.title = 'Prof. Música Verificado';
+            } else if (userData.verifiedstudent === 'yes') {
+                verifiedBadge.innerHTML = '🎓';
+                verifiedBadge.style.cssText = 'display:inline-block;width:15px;height:15px;font-size:12px;';
+                verifiedBadge.title = 'Estudiante Verificado';
+            } else if (userData.verifiedentidad === 'yes') {
+                verifiedBadge.innerHTML = '🏛️';
+                verifiedBadge.style.cssText = 'display:inline-block;width:15px;height:15px;font-size:12px;';
+                verifiedBadge.title = 'Entidad Verificada';
+            } else if (userData.verifiedprofesorart === 'yes') {
+                verifiedBadge.innerHTML = '🎨';
+                verifiedBadge.style.cssText = 'display:inline-block;width:15px;height:15px;font-size:12px;';
+                verifiedBadge.title = 'Prof. Arte Verificado';
+            } else if (userData.musicservice === 'yes') {
+                verifiedBadge.innerHTML = '🎵';
+                verifiedBadge.style.cssText = 'display:inline-block;width:15px;height:15px;font-size:12px;';
+                verifiedBadge.title = 'Aedo Verificado';
+            }
+        }
+    }, { onlyOnce: true });
+    
+    container.appendChild(commentItem);
+}
+
+// Variables globales para la barra de comentarios
+let currentPostIdForComments = null;
+let commentBarSetup = false;
+
+// Configurar la barra de comentarios fija
+function setupCommentBar(postId) {
+    const sendBtn = document.getElementById('sendCommentBtn');
+    const commentInput = document.getElementById('commentInput');
+    const addMediaBtn = document.getElementById('addMediaBtn');
+    
+    if (!sendBtn || !commentInput) {
+        // Reintentar después de un breve delay si los elementos aún no están disponibles
+        setTimeout(() => setupCommentBar(postId), 100);
+        return;
+    }
+    
+    // Evitar múltiples event listeners
+    if (commentBarSetup) return;
+    
+    currentPostIdForComments = postId;
+    
+    // Enviar comentario
+    sendBtn.addEventListener('click', async () => {
+        const text = commentInput.value.trim();
+        if (!text || !currentPostIdForComments) return;
+        
+        sendBtn.disabled = true;
+        const originalText = sendBtn.textContent;
+        sendBtn.textContent = '⏳';
+        
+        try {
+            const commentId = Date.now().toString();
+            const commentRef = ref(db, `Posts/${currentPostIdForComments}/Comments/${commentId}`);
+            await set(commentRef, {
+                cId: commentId,
+                comment: text,
+                id: currentUID,
+                pId: currentPostIdForComments,
+                type: 'text',
+                timestamp: Date.now()
+            });
+            
+            // Registrar vista si es video
+            if (postData && postData.type === 'video') {
+                await set(ref(db, `Views/${currentPostIdForComments}/${currentUID}`), true);
+            }
+            
+            // Notificar al autor
+            if (postAuthorId && postAuthorId !== currentUID) {
+                const userRef = ref(db, `Users/${currentUID}`);
+                onValue(userRef, (userSnap) => {
+                    if (userSnap.exists()) {
+                        const timestamp = Date.now().toString();
+                        const notificationRef = ref(db, `Users/${postAuthorId}/Notifications/${timestamp}`);
+                        set(notificationRef, {
+                            pId: currentPostIdForComments,
+                            timestamp: timestamp,
+                            pUid: postAuthorId,
+                            notification: 'Comentó en tu Post',
+                            type: 'post',
+                            sUid: currentUID
+                        });
+                        set(ref(db, `Users/${postAuthorId}/Count/${timestamp}`), true);
+                    }
+                }, { onlyOnce: true });
+            }
+            
+            commentInput.value = '';
+        } catch (error) {
+            console.error('Error enviando comentario:', error);
+            alert('Error al enviar el comentario');
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.textContent = originalText;
+        }
+    });
+    
+    // Enviar con Enter
+    commentInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+    
+    // Botón de agregar media
+    if (addMediaBtn) {
+        addMediaBtn.addEventListener('click', () => {
+            // TODO: Implementar selector de imagen/video/gif
+            showNotAvailable('La funcionalidad de agregar media aún no está disponible');
+        });
+    }
+    
+    commentBarSetup = true;
+}
+}
+</script>
+
+
+</body>
+</html>

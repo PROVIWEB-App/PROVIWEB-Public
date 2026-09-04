@@ -1,0 +1,2660 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Registro de artistas y músicos">
+    <meta name="author" content="ISRAVIOLINK - Israel Rodríguez">
+    <link rel="canonical" href="https://proviweb.com">
+    <title>Registro - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <script src="js/auth-maintenance.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== VARIABLES DE TEMA OSCURO - ALINEADAS CON INDEX ========== */
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-secondary: #16161d;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(139, 92, 246, 0.5);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b6b7b;
+            --accent-purple: #a855f7;
+            --accent-blue: #007BFF;
+            --accent-pink: #007BFF;
+            --accent-cyan: #06b6d4;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --gradient-glow: linear-gradient(135deg, #8b5cf6 0%, #007BFF 50%, #8b5cf6 100%);
+            --shadow-purple: 0 4px 20px rgba(139, 92, 246, 0.3);
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== AURORA BACKGROUND ========== */
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            animation: auroraMove 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes auroraMove {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            33% {
+                transform: translate(2%, 2%) rotate(1deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translate(-1%, 1%) rotate(-1deg);
+                opacity: 0.9;
+            }
+        }
+
+        /* ========== HEADER Y LOGO ========== */
+        .brand-name {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 30px;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 10;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-logo {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 20px rgba(139, 92, 246, 0.4));
+            transition: transform 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                filter: drop-shadow(0 4px 20px rgba(139, 92, 246, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 4px 30px rgba(139, 92, 246, 0.6));
+            }
+        }
+
+        /* ========== CANVAS DE PARTÍCULAS ========== */
+        #particlesCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========== EFECTO DE PARTÍCULAS ADICIONALES ========== */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ========== STICKERS FLOTANTES ========== */
+        .floating-stickers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .sticker {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.15;
+            animation: floatSticker 15s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));
+        }
+
+        @keyframes floatSticker {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-30px) rotate(10deg);
+                opacity: 0.25;
+            }
+        }
+
+        /* ========== CONTROL DE SONIDO ========== */
+        .sound-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .sound-control:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: var(--accent-purple);
+            transform: scale(1.1);
+        }
+
+        /* ========== CONTENEDOR PRINCIPAL CON GLASS EFFECT ========== */
+        .register-container {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            margin-top: 100px;
+            padding: 50px 60px;
+            text-align: center;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 10;
+            margin-bottom: 50px;
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-purple);
+            opacity: 0.8;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .register-container::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #8b5cf6, #007BFF, #8b5cf6, #007BFF);
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-size: 300% 300%;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        .register-container:hover::after {
+            opacity: 0.4;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .register-container h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #a855f7 0%, #007BFF 50%, #a855f7 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .register-container .subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-bottom: 35px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        /* ========== SWITCH TOGGLE ========== */
+        .switch-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .switch-row span { 
+            font-size: 14px; 
+            color: var(--text-secondary); 
+        }
+        .switch { 
+            position: relative; 
+            display: inline-block; 
+            width: 48px; 
+            height: 26px; 
+        }
+        .switch input { 
+            opacity: 0; 
+            width: 0; 
+            height: 0; 
+        }
+        .slider {
+            position: absolute; 
+            cursor: pointer; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: var(--bg-secondary); 
+            border-radius: 26px; 
+            transition: 0.3s;
+            border: 1px solid var(--border-glass);
+        }
+        .slider::before {
+            position: absolute; 
+            content: ""; 
+            height: 20px; 
+            width: 20px; 
+            left: 3px; 
+            bottom: 2px;
+            background: var(--text-primary); 
+            border-radius: 50%; 
+            transition: 0.3s; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .switch input:checked + .slider { 
+            background: linear-gradient(135deg, #8b5cf6 0%, #007BFF 100%); 
+        }
+        .switch input:checked + .slider::before { 
+            transform: translateX(22px); 
+        }
+
+        .organization-block { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: rgba(139, 92, 246, 0.08); 
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ========== CHIPS ========== */
+        .chips-row { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            margin: 8px 0; 
+        }
+        .chip {
+            padding: 12px 20px; 
+            border-radius: 50px; 
+            font-size: 14px; 
+            font-weight: 500;
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(22, 22, 29, 0.6); 
+            color: var(--text-secondary); 
+            border: 1px solid var(--border-glass);
+        }
+        .chip:hover { 
+            border-color: var(--accent-purple); 
+            color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        }
+        .chip.selected { 
+            background: var(--gradient-primary); 
+            color: #fff; 
+            border-color: transparent;
+            box-shadow: var(--shadow-purple);
+            transform: translateY(-2px);
+        }
+
+        /* ========== INPUTS ========== */
+        .register-container input,
+        .register-container select {
+            width: 100%;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-glass);
+            background: rgba(22, 22, 29, 0.6);
+            color: var(--text-primary);
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .register-container input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .register-container input:focus,
+        .register-container select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 
+                0 0 0 4px rgba(168, 85, 247, 0.15), 
+                0 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+            background: rgba(22, 22, 29, 0.8);
+        }
+
+        .input-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            color: var(--text-primary);
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .register-hint {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: -8px 0 15px 0;
+            padding-left: 4px;
+            line-height: 1.5;
+        }
+        .register-hint strong { 
+            color: var(--text-secondary); 
+        }
+
+        .register-step {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 10px 0 20px 0;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-purple);
+            line-height: 1.5;
+        }
+
+        /* ========== SCROLL HORIZONTAL ========== */
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            gap: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-purple) transparent;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-track {
+            background: rgba(22, 22, 29, 0.5);
+            border-radius: 10px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 10px;
+        }
+
+        .category-item {
+            padding: 12px 22px;
+            background: rgba(22, 22, 29, 0.6);
+            border-radius: 25px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .category-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+            border-color: var(--accent-purple);
+            color: var(--text-primary);
+        }
+
+        .category-item.selected {
+            background: var(--gradient-primary);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: var(--shadow-purple);
+            transform: translateY(-2px);
+        }
+
+        /* ========== CHECKBOX CONTAINER ========== */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: rgba(22, 22, 29, 0.5);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1px solid var(--border-glass);
+        }
+
+        .checkbox-container:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateX(5px);
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            margin-right: 12px;
+            cursor: pointer;
+            transform: scale(1.3);
+            accent-color: var(--accent-purple);
+        }
+
+        .checkbox-container label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .checkbox-container label a {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .checkbox-container label a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        /* ========== BOTÓN PRINCIPAL ========== */
+        .register-container button {
+            width: 100%;
+            padding: 18px 32px;
+            border-radius: var(--border-radius);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-purple);
+            margin-top: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .register-container button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .register-container button:hover::before {
+            left: 100%;
+        }
+
+        .register-container button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.5);
+        }
+
+        .register-container button:active {
+            transform: translateY(-1px);
+        }
+
+        .register-container button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        /* ========== LINKS ========== */
+        .login-link {
+            margin-top: 25px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .login-link a {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .login-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .login-link a:hover::after {
+            width: 100%;
+        }
+
+        /* ========== ERRORES ========== */
+        .error {
+            color: #f87171;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: none;
+            text-align: left;
+            padding: 10px 14px;
+            background: rgba(248, 113, 113, 0.1);
+            border-radius: var(--border-radius);
+            border-left: 4px solid #f87171;
+            animation: shake 0.5s ease;
+            line-height: 1.4;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* ========== RESPONSIVE MEJORAS ========== */
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 30px 25px;
+                margin-top: 80px;
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+
+            .register-container h1 {
+                font-size: 32px;
+            }
+
+            .brand-name {
+                margin-top: 20px;
+            }
+
+            .logo-img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .legal {
+                margin-left: 15px;
+                margin-right: 15px;
+                padding: 20px;
+            }
+        }
+
+        /* ========== FOOTER LEGAL ========== */
+        .legal {
+            max-width: 800px;
+            margin: 30px auto 50px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: var(--bg-glass);
+            padding: 30px;
+            border-radius: var(--border-radius-lg);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+
+        .legal:hover {
+            background: rgba(28, 28, 36, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
+            border-color: var(--border-hover);
+        }
+
+        .legal a {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .legal a:hover {
+            opacity: 0.9;
+        }
+
+        .legal .creator {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .legal .creator b {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ========== MODALES ========== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 19, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.1);
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px);
+        }
+
+        .modal-content h2 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .modal-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -30px);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        #cedulaFrontalPreview img,
+        #cedulaTraseraPreview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            border: 2px solid var(--border-glass);
+        }
+
+        /* ========== SECCIÓN FRASE DE SEGURIDAD ========== */
+        .security-phrase-box {
+            margin: 16px 0; 
+            padding: 12px; 
+            background: rgba(139, 92, 246, 0.1); 
+            border-radius: 8px; 
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .security-phrase-box .input-label span {
+            font-weight: 400; 
+            color: var(--text-secondary);
+        }
+
+        /* ========== NUEVOS CAMPOS REGISTRO ========== */
+        .social-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .social-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(168,85,247,0.2);
+        }
+
+        .social-input-row:focus-within {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+        }
+
+        .social-icon {
+            font-size: 20px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .social-input-row input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .social-input-row input:focus {
+            outline: none;
+        }
+
+        .location-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .location-row select,
+        .location-row input {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(168,85,247,0.3);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .location-row select:focus,
+        .location-row input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+            outline: none;
+        }
+
+        #genreContainer {
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        #genreContainer .chip {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        #genreContainer .chip:hover {
+            background: rgba(168,85,247,0.3);
+        }
+
+        #genreContainer .chip.selected {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border-color: #a855f7;
+        }
+
+        .experience-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .exp-option {
+            cursor: pointer;
+        }
+
+        .exp-option input {
+            display: none;
+        }
+
+        .exp-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 12px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .exp-option input:checked + .exp-label {
+            border-color: #8b5cf6;
+            background: rgba(139,92,246,0.1);
+        }
+
+        .exp-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .exp-text {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .exp-text small {
+            font-weight: 400;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .interest-item {
+            cursor: pointer;
+        }
+
+        .interest-item input {
+            display: none;
+        }
+
+        .interest-item span {
+            display: block;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .interest-item input:checked + span {
+            border-color: #8b5cf6;
+            background: rgba(139,92,246,0.1);
+        }
+
+        .collab-section {
+            background: rgba(139,92,246,0.05);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(168,85,247,0.2);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .experience-options {
+                grid-template-columns: 1fr;
+            }
+            .interests-grid {
+                grid-template-columns: 1fr;
+            }
+            .location-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .register-container {
+                margin-top: 80px;
+                padding: 30px 20px;
+            }
+
+            .register-container h1 {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+
+        /* ========== THEME OVERRIDE PROVIWEB (UNIFICACION UI) ========== */
+        body.auth-page {
+            background:
+                radial-gradient(circle at 14% 16%, rgba(168, 85, 247, 0.2), transparent 40%),
+                radial-gradient(circle at 84% 78%, rgba(0, 123, 255, 0.16), transparent 42%),
+                linear-gradient(180deg, #0f0f13 0%, #0c0d12 56%, #090a10 100%);
+            color: var(--text-primary);
+        }
+
+        .brand-name {
+            font-size: 1.05rem;
+            letter-spacing: 0.16em;
+            margin-top: 22px;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+
+        .page-logo {
+            margin-bottom: 12px;
+        }
+
+        .logo-img {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .register-container {
+            width: min(920px, calc(100% - 24px));
+            margin-top: 24px;
+            margin-bottom: 26px;
+            padding: clamp(22px, 3vw, 34px);
+            border-radius: 24px;
+            background: rgba(22, 23, 32, 0.78);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
+            text-align: left;
+        }
+
+        .register-container h1 {
+            font-size: clamp(1.65rem, 4.2vw, 2.3rem);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .register-container .subtitle,
+        .register-step {
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            letter-spacing: 0.01em;
+        }
+
+        .register-container input,
+        .register-container select,
+        .security-phrase-box input,
+        #birthDateModal input,
+        #parentConsentModal input {
+            background: rgba(13, 15, 24, 0.78);
+            border-color: rgba(255, 255, 255, 0.13);
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 13px 14px;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .register-container input:focus,
+        .register-container select:focus,
+        #birthDateModal input:focus,
+        #parentConsentModal input:focus {
+            border-color: rgba(168, 85, 247, 0.75);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.16);
+            transform: none;
+        }
+
+        .input-label {
+            font-size: 0.88rem;
+            color: #d1d5db;
+            margin-top: 8px;
+        }
+
+        .register-hint {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: -2px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container label {
+            color: #d1d5db;
+            font-size: 0.84rem;
+        }
+
+        .checkbox-container a,
+        .login-link a,
+        .legal a {
+            color: #93c5fd;
+        }
+
+        .chip {
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 0.82rem;
+            background: rgba(13, 15, 24, 0.7);
+        }
+
+        .chip.selected {
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.32);
+        }
+
+        .organization-block,
+        .collab-section,
+        .security-phrase-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .register-container button,
+        #confirmBirthDate,
+        #cancelBirthDate,
+        #submitConsent,
+        #cancelConsent {
+            border-radius: 12px;
+            padding: 13px 16px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+            color: #fff;
+            border: 0;
+            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.24);
+        }
+
+        .register-container button:hover,
+        #confirmBirthDate:hover,
+        #submitConsent:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        #cancelBirthDate,
+        #cancelConsent {
+            background: rgba(255, 255, 255, 0.07) !important;
+            color: #d1d5db !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            box-shadow: none;
+        }
+
+        .error,
+        #generalError,
+        #birthDateError,
+        #consentError {
+            border-radius: 10px;
+            font-size: 0.82rem;
+            border-left: 0;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.12);
+            color: #fecaca;
+        }
+
+        .modal {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: rgba(20, 22, 30, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            color: var(--text-primary);
+        }
+
+        .legal {
+            width: min(920px, calc(100% - 24px));
+            margin: 0 auto 34px;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #9ca3af;
+            font-size: 0.78rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="auth-page">
+
+    <span style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; font-size: 11px; font-weight: 900; padding: 3px 10px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">MANTENIMIENTO DEL SISTEMA</span>
+        <h2 style="font-size: 19px; font-weight: 900; color: #fff; margin-bottom: 8px;">Registro e Inicio de Sesión Temporalmente Inhabilitados</h2>
+        <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.6; margin-bottom: 16px;">
+            Estamos realizando reparaciones y mejoras internas en el sistema de cuentas y servidores. El registro de nuevos artistas se reanudará en breve. ¡Gracias por tu paciencia!
+        </p>
+        <a href="index.html" style="display: inline-block; background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%); color: #000; font-weight: 900; font-size: 13.5px; padding: 12px 24px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);">
+            Volver a la Página Principal ➜
+        </a>
+    </div>
+
+
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<!-- Canvas para partículas animadas -->
+<canvas id="particlesCanvas"></canvas>
+
+<!-- Stickers flotantes animados -->
+<div class="floating-stickers">
+    <div class="sticker" data-emoji="🎵" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+    <div class="sticker" data-emoji="🎨" style="left: 85%; top: 15%; animation-delay: 1s;"></div>
+    <div class="sticker" data-emoji="🎤" style="left: 15%; top: 60%; animation-delay: 2s;"></div>
+    <div class="sticker" data-emoji="🎭" style="left: 80%; top: 55%; animation-delay: 0.5s;"></div>
+    <div class="sticker" data-emoji="🎹" style="left: 5%; top: 80%; animation-delay: 1.5s;"></div>
+    <div class="sticker" data-emoji="🎸" style="left: 90%; top: 75%; animation-delay: 2.5s;"></div>
+    <div class="sticker" data-emoji="🎻" style="left: 50%; top: 10%; animation-delay: 0.8s;"></div>
+    <div class="sticker" data-emoji="🎺" style="left: 45%; top: 85%; animation-delay: 1.8s;"></div>
+</div>
+
+<!-- Control de sonido -->
+<div class="sound-control" id="soundControl" title="Activar/Desactivar sonidos">
+    <span id="soundIcon">🔊</span>
+</div>
+
+<!-- Partículas de fondo -->
+<div class="particles-container" id="particlesContainer"></div>
+
+<div class="brand-name">PROVIWEB</div>
+<div class="page-logo">
+    <img src="assets/logotransparente.png" class="logo-img" alt="Logo PROVIWEB">
+</div>
+
+<div class="register-container" id="mainContent">
+    <h1>Únete a PROVIWEB</h1>
+    <p class="subtitle">Crea tu perfil profesional y conecta con la comunidad artística</p>
+    <p class="register-step">📋 Completa todos los campos obligatorios. Los mensajes bajo cada campo te guían.</p>
+
+    <div class="section-title">Información de Usuario</div>
+    <div class="error" id="emailError">Correo electrónico inválido</div>
+    <input type="email" id="email" placeholder="ejemplo@gmail.com" autocomplete="email" required>
+    <p class="register-hint">Usa un correo de <strong>Gmail</strong>, <strong>Yahoo</strong>, <strong>Hotmail</strong>, <strong>Outlook</strong> o <strong>@proviweb.com</strong>.</p>
+    
+    <div class="error" id="passwordError">La contraseña debe cumplir los requisitos de seguridad (longitud, mayúsculas, minúsculas, números y símbolos)</div>
+    <input type="password" id="password" placeholder="Contraseña" autocomplete="new-password" required>
+    <p class="register-hint">Mínimo <strong>8 caracteres</strong>. Te recomendamos usar mayúsculas, minúsculas, números y algún símbolo.</p>
+    
+    <div class="error" id="nameError">El nombre es requerido</div>
+    <input type="text" id="name" placeholder="Nombre completo" autocomplete="name" required>
+    <p class="register-hint">El nombre con el que te identificarás en PROVIWEB.</p>
+    
+    <div class="error" id="usernameError">El usuario debe tener al menos 3 caracteres</div>
+    <input type="text" id="username" placeholder="Nombre de usuario" autocomplete="username" required>
+    <p class="register-hint">Solo letras, números, guion (-) y guion bajo (_). Sin puntos, @ ni otros símbolos.</p>
+
+    <div class="section-title">Información Artística</div>
+    <div class="error" id="instrumentError">¿Qué instrumento usas para tu arte?</div>
+    <input type="text" id="instrument" placeholder="Ej: Guitarra, Piano, Voz, Batería..." autocomplete="off">
+    <p class="register-hint">Indica el instrumento o disciplina principal con la que te presentas.</p>
+
+    <label class="input-label">Categoría (obligatorio)</label>
+    <p class="register-hint">Primero elige una <strong>categoría</strong> (ej. Música, Arte, Letras). Luego elige una <strong>subcategoría</strong> en la fila de abajo.</p>
+    <div class="horizontal-scroll chips-row" id="categoryContainer"></div>
+    <label class="input-label" id="subcategoryLabel" style="display:none;">Subcategoría</label>
+    <div class="horizontal-scroll chips-row" id="subcategoryContainer"></div>
+    <div class="error" id="categoryError">Debes seleccionar una categoría</div>
+
+    <div class="section-title">¿Eres organización?</div>
+    <div class="switch-row">
+        <span>Individual</span>
+        <label class="switch">
+            <input type="checkbox" id="switchOrganization" autocomplete="off">
+            <span class="slider"></span>
+        </label>
+        <span>Organización</span>
+    </div>
+    <p class="register-hint">Activa solo si te registras en nombre de una organización (orquesta, academia, etc.).</p>
+    <div id="linearOrganizations" class="organization-block" style="display:none;">
+        <label class="input-label">Organización</label>
+        <p class="register-hint">Elige tu organización y luego tu <strong>rol</strong> (Coordinador, Director, Profesor, etc.).</p>
+        <div class="horizontal-scroll chips-row" id="organizationContainer"></div>
+        <label class="input-label" id="organizationRoleLabel" style="display:none;">Rol</label>
+        <div class="horizontal-scroll chips-row" id="organizationRoleContainer"></div>
+    </div>
+
+    <label class="input-label">Enlace Social (Facebook, Instagram, TikTok)</label>
+    <input type="url" id="userLink" placeholder="https://..." autocomplete="off">
+    <p class="register-hint">Opcional. Enlaza tu perfil de redes para que te encuentren.</p>
+
+    <div class="checkbox-container">
+        <input type="checkbox" id="acceptTerms" autocomplete="off">
+        <label for="acceptTerms">Acepto la <a href="privacy.html">Política de Privacidad</a> y los <a href="terms.html">Términos y Condiciones</a></label>
+    </div>
+    <p class="register-hint">Debes marcar esta casilla para poder registrarte.</p>
+
+    <div class="security-phrase-box">
+        <label class="input-label">Frase de seguridad <span>(opcional)</span></label>
+        <input type="text" id="fraseSeguridad" placeholder="Ej: Mi frase secreta PROVIWEB" autocomplete="off" maxlength="80" style="margin-top:8px;" aria-describedby="fraseSeguridadHelp">
+        <p id="fraseSeguridadHelp" class="register-hint" style="margin-top:8px;">Cada vez que inicies sesión la verás aquí; así sabes que estás en el sitio real de PROVIWEB.</p>
+    </div>
+
+    <!-- NUEVOS CAMPOS MEJORADOS -->
+    <div class="section-title">🌐 Redes Sociales</div>
+    <p class="register-hint">Conecta tus redes para que otros te encuentren (todos opcionales)</p>
+    
+    <div class="social-inputs">
+        <div class="social-input-row">
+            <span class="social-icon">📷</span>
+            <input type="url" id="instagram" placeholder="https://instagram.com/tuusuario" autocomplete="off">
+        </div>
+        <div class="social-input-row">
+            <span class="social-icon">🎵</span>
+            <input type="url" id="tiktok" placeholder="https://tiktok.com/@tuusuario" autocomplete="off">
+        </div>
+        <div class="social-input-row">
+            <span class="social-icon">▶️</span>
+            <input type="url" id="youtube" placeholder="https://youtube.com/c/tucanal" autocomplete="off">
+        </div>
+        <div class="social-input-row">
+            <span class="social-icon">🎧</span>
+            <input type="url" id="spotify" placeholder="Link de Spotify (artista/canción)" autocomplete="off">
+        </div>
+        <div class="social-input-row">
+            <span class="social-icon">💼</span>
+            <input type="url" id="portfolio" placeholder="Link a tu portafolio/web personal" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="section-title">📍 Ubicación</div>
+    <div class="location-row">
+        <select id="country" required>
+            <option value="">Selecciona tu país</option>
+            <option value="AR">🇦🇷 Argentina</option>
+            <option value="BO">🇧🇴 Bolivia</option>
+            <option value="BR">🇧🇷 Brasil</option>
+            <option value="CL">🇨🇱 Chile</option>
+            <option value="CO">🇨🇴 Colombia</option>
+            <option value="CR">🇨🇷 Costa Rica</option>
+            <option value="CU">🇨🇺 Cuba</option>
+            <option value="EC">🇪🇨 Ecuador</option>
+            <option value="ES">🇪🇸 España</option>
+            <option value="GT">🇬🇹 Guatemala</option>
+            <option value="HN">🇭🇳 Honduras</option>
+            <option value="MX">🇲🇽 México</option>
+            <option value="NI">🇳🇮 Nicaragua</option>
+            <option value="PA">🇵🇦 Panamá</option>
+            <option value="PE">🇵🇪 Perú</option>
+            <option value="PY">🇵🇾 Paraguay</option>
+            <option value="SV">🇸🇻 El Salvador</option>
+            <option value="UY">🇺🇾 Uruguay</option>
+            <option value="VE">🇻🇪 Venezuela</option>
+            <option value="US">🇺🇸 Estados Unidos</option>
+            <option value="OT">🌍 Otro</option>
+        </select>
+        <input type="text" id="city" placeholder="Ciudad" autocomplete="off">
+    </div>
+
+    <div class="section-title">🎭 Géneros y Estilos Artísticos</div>
+    <p class="register-hint">Selecciona los géneros con los que te identificas (máximo 5)</p>
+    <div class="chips-row" id="genreContainer">
+        <span class="chip" data-value="rock">🎸 Rock</span>
+        <span class="chip" data-value="pop">🎤 Pop</span>
+        <span class="chip" data-value="jazz">🎷 Jazz</span>
+        <span class="chip" data-value="clasica">🎻 Clásica</span>
+        <span class="chip" data-value="electronica">🎹 Electrónica</span>
+        <span class="chip" data-value="reggaeton">🔥 Reggaeton</span>
+        <span class="chip" data-value="salsa">💃 Salsa</span>
+        <span class="chip" data-value="bachata">🌹 Bachata</span>
+        <span class="chip" data-value="vallenato">🪗 Vallenato</span>
+        <span class="chip" data-value="folklore">🎺 Folklore</span>
+        <span class="chip" data-value="urban">🏙️ Urbano</span>
+        <span class="chip" data-value="alternativo">🎨 Alternativo</span>
+        <span class="chip" data-value="fusion">🌊 Fusión</span>
+        <span class="chip" data-value="experimental">🔮 Experimental</span>
+    </div>
+
+    <div class="section-title">📊 Información Profesional</div>
+    <label class="input-label">Nivel de Experiencia</label>
+    <div class="experience-options">
+        <label class="exp-option">
+            <input type="radio" name="experience" value="beginner" checked>
+            <span class="exp-label">
+                <span class="exp-icon">🌱</span>
+                <span class="exp-text">Principiante<br><small>Estoy aprendiendo</small></span>
+            </span>
+        </label>
+        <label class="exp-option">
+            <input type="radio" name="experience" value="intermediate">
+            <span class="exp-label">
+                <span class="exp-icon">🌿</span>
+                <span class="exp-text">Intermedio<br><small>Tengo experiencia</small></span>
+            </span>
+        </label>
+        <label class="exp-option">
+            <input type="radio" name="experience" value="professional">
+            <span class="exp-label">
+                <span class="exp-icon">🌳</span>
+                <span class="exp-text">Profesional<br><small>Dedico mi vida al arte</small></span>
+            </span>
+        </label>
+    </div>
+
+    <label class="input-label">¿Qué buscas en PROVIWEB?</label>
+    <p class="register-hint">Selecciona tus objetivos (puedes marcar varios)</p>
+    <div class="interests-grid">
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="showcase">
+            <span>🎨 Mostrar mi trabajo</span>
+        </label>
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="collaborate">
+            <span>🤝 Colaborar con otros</span>
+        </label>
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="learn">
+            <span>📚 Aprender</span>
+        </label>
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="teach">
+            <span>👨‍🏫 Enseñar</span>
+        </label>
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="opportunities">
+            <span>💼 Encontrar oportunidades</span>
+        </label>
+        <label class="interest-item">
+            <input type="checkbox" name="interests" value="sell">
+            <span>💰 Vender mis servicios</span>
+        </label>
+    </div>
+
+    <div class="collab-section">
+        <div class="switch-row">
+            <span>🔓 Abierto a colaboraciones</span>
+            <label class="switch">
+                <input type="checkbox" id="openToCollaborate" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <p class="register-hint">Activa esto para que otros artistas sepan que puedes trabajar juntos</p>
+    </div>
+
+    <label class="input-label">Código de referido</label>
+    <input type="text" id="referralCode" placeholder="Si alguien te dio un código, escríbelo aquí" autocomplete="off">
+    <p class="register-hint">Opcional. Si te invitaron con un código, ingrésalo para vincular tu cuenta.</p>
+    <div class="error" id="generalError" style="display:none;"></div>
+    <p class="register-hint" style="margin-bottom: 8px;">Al pulsar Registrarse se comprobarán tus datos y te pediremos tu fecha de nacimiento para continuar.</p>
+    <button type="button" id="signUpBtn">Registrarse</button>
+
+    <div class="login-link">
+        ¿Ya tienes una cuenta? <a href="#" id="loginLink">Iniciar sesión</a>
+    </div>
+</div>
+
+<!-- Modal de Fecha de Nacimiento -->
+<div id="birthDateModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2>📅 Verificación de Edad</h2>
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">Necesitamos verificar tu edad para continuar con el registro.</p>
+        <p class="register-hint" style="margin-bottom: 12px;">Si eres <strong>mayor de 18 años</strong>, solo confirma tu fecha y continuarás. Si eres menor, te pediremos el consentimiento de tu padre o tutor.</p>
+        <label class="input-label">Fecha de Nacimiento</label>
+        <input type="date" id="birthDate" required style="margin-bottom: 20px;">
+        <div class="error" id="birthDateError" style="display:none;">Debes ser mayor de 18 años para registrarte sin consentimiento parental.</div>
+        <div style="display:flex;gap:10px;">
+            <button id="confirmBirthDate" style="flex:1;">Continuar</button>
+            <button id="cancelBirthDate" style="flex:1; background: var(--bg-secondary); color: var(--text-secondary);">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Consentimiento de Padres -->
+<div id="parentConsentModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:600px;max-height:90vh;overflow-y:auto;">
+        <h2>👨‍👩‍👧 Consentimiento Parental</h2>
+        <div style="background:rgba(139, 92, 246, 0.1);padding:15px;border-radius:var(--border-radius);margin-bottom:20px;border-left:4px solid #8b5cf6;">
+            <p style="font-size:14px;line-height:1.6;color:var(--text-secondary);">
+                <strong style="color: var(--text-primary);">¿Por qué solicitamos este consentimiento?</strong><br>
+                De acuerdo con las nuevas leyes de protección de datos y privacidad de menores (como GDPR, COPPA y leyes locales), 
+                es necesario obtener el consentimiento explícito de los padres o tutores legales para que menores de edad puedan 
+                utilizar nuestra plataforma. Esto garantiza la seguridad y protección de los datos personales del menor.
+            </p>
+        </div>
+        
+        <label class="input-label">Cédula del Padre/Madre - Frontal</label>
+        <input type="file" id="cedulaFrontal" accept="image/*" style="margin-bottom:10px;">
+        <div id="cedulaFrontalPreview" style="margin-bottom:15px;"></div>
+        
+        <label class="input-label">Cédula del Padre/Madre - Trasera</label>
+        <input type="file" id="cedulaTrasera" accept="image/*" style="margin-bottom:10px;">
+        <div id="cedulaTraseraPreview" style="margin-bottom:15px;"></div>
+        
+        <label class="input-label">Número de Celular del Padre/Madre</label>
+        <input type="tel" id="parentPhone" placeholder="Ej: +57 300 123 4567" required style="margin-bottom:20px;">
+        <div class="error" id="consentError" style="display:none;"></div>
+        
+        <div style="display:flex;gap:10px;">
+            <button id="submitConsent" style="flex:1;">Enviar Consentimiento</button>
+            <button id="cancelConsent" style="flex:1; background: var(--bg-secondary); color: var(--text-secondary);">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div class="legal">
+    <p>
+        Al continuar aceptas nuestras  
+        <a href="privacy.html">Políticas de privacidad</a> y  
+        <a href="terms.html">Términos y condiciones</a>
+    </p>
+    <p class="creator">
+        © 2026 PROVIWEB  
+        <br>
+        Creado por <b>ISRAVIOLINK</b>  
+        <br>
+        Israel Rodríguez
+    </p>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, query, orderByChild, equalTo, remove, update, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+    // Configuración Firebase (igual que index.html)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+        authDomain: "proviweb-d8764.firebaseapp.com",
+        databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+        projectId: "proviweb-d8764",
+        storageBucket: "proviweb-d8764.appspot.com",
+        messagingSenderId: "475963980955",
+        appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+        measurementId: "G-TCH23FGP8D"
+    };
+
+    let app, auth, db, storage;
+
+    /**
+     * Auto-llenar campos de email y contraseña si vienen desde login
+     * Redirección cuando el usuario no existe
+     */
+    function autoFillFromLogin() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const autoFill = urlParams.get('autoFill');
+        const email = urlParams.get('email');
+        const password = urlParams.get('password');
+        
+        if (autoFill === 'true' && email) {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            if (emailInput) {
+                emailInput.value = decodeURIComponent(email);
+                // Resaltar el campo para que el usuario note que se llenó automáticamente
+                emailInput.style.background = 'rgba(168, 85, 247, 0.1)';
+                emailInput.style.borderColor = '#a855f7';
+            }
+            
+            if (passwordInput && password) {
+                passwordInput.value = decodeURIComponent(password);
+                passwordInput.style.background = 'rgba(168, 85, 247, 0.1)';
+                passwordInput.style.borderColor = '#a855f7';
+            }
+            
+            // Mostrar mensaje informativo
+            showNotification('🔐 Hemos pre-llenado tus datos. Completa el resto de la información para registrarte.', 'info');
+            
+            // Limpiar URL para no mantener la contraseña visible
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+    
+    /**
+     * Mostrar notificación temporal
+     */
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${type === 'info' ? 'linear-gradient(135deg, #a855f7, #7c3aed)' : '#dc3545'};
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Remover después de 5 segundos
+        setTimeout(() => {
+            notification.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+    }
+
+    (async function initFirebase() {
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getDatabase(app);
+            storage = getStorage(app);
+            const btn = document.getElementById('signUpBtn');
+            if (btn) { btn.disabled = false; btn.setAttribute('aria-busy', 'false'); }
+            
+            // Auto-llenar campos si vienen de redirección desde login
+            autoFillFromLogin();
+        } catch (err) {
+            console.error('Init Firebase error crítico:', err);
+            const btn = document.getElementById('signUpBtn');
+            if (btn) { btn.disabled = false; }
+            alert('Error al cargar Firebase. Recarga la página.');
+        }
+        // Fallback: habilitar botón tras 2s por si la init fue lenta
+        setTimeout(function() {
+            const btn = document.getElementById('signUpBtn');
+            if (btn && btn.disabled) { btn.disabled = false; }
+        }, 2000);
+    })();
+
+    // ========== SISTEMA DE ANIMACIONES Y EFECTOS ==========
+
+    // Crear partículas dinámicas
+    function createParticles() {
+        const container = document.getElementById('particlesContainer');
+        if (!container) return;
+        
+        const particleCount = 25;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            
+            // Random colors from the palette
+            const colors = ['#a855f7', '#007BFF', '#007BFF', '#06b6d4'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.opacity = 0.2 + Math.random() * 0.3;
+            
+            container.appendChild(particle);
+        }
+    }
+    
+    // Inicializar partículas al cargar
+    createParticles();
+
+    // Control de sonido
+    let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+    const soundControl = document.getElementById('soundControl');
+    const soundIcon = document.getElementById('soundIcon');
+    if (soundControl) {
+        soundControl.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            if (soundIcon) soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+            playSound('toggle');
+        });
+    }
+    if (soundIcon) soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+
+    // Función para reproducir sonidos
+    function playSound(type) {
+        if (!soundEnabled) return;
+        
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        switch(type) {
+            case 'click':
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+                break;
+            case 'hover':
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+                break;
+            case 'success':
+                oscillator.frequency.value = 1000;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+                break;
+            case 'toggle':
+                oscillator.frequency.value = 500;
+                oscillator.type = 'square';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+                break;
+        }
+    }
+
+    // Partículas animadas en canvas
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
+            this.color = `hsl(${Math.random() * 60 + 260}, 70%, 60%)`;
+        }
+        
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            
+            if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+            if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+        }
+        
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.opacity;
+            ctx.fill();
+        }
+    }
+
+    const particles = [];
+    for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        // Conectar partículas cercanas
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(139, 92, 246, ${0.2 * (1 - distance / 100)})`;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Efectos de gestos en botones y elementos interactivos
+    const buttons = document.querySelectorAll('button, .chip, a');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            playSound('hover');
+            if (button.classList.contains('chip')) {
+                button.style.transform = 'translateY(-3px) scale(1.05)';
+            }
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            if (button.classList.contains('chip') && !button.classList.contains('selected')) {
+                button.style.transform = 'scale(1)';
+            }
+        });
+        
+        button.addEventListener('click', () => {
+            playSound('click');
+        });
+    });
+
+    // Efectos en inputs
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            playSound('hover');
+        });
+        
+        input.addEventListener('input', () => {
+            if (input.value.length > 0 && input.type !== 'checkbox') {
+                input.style.borderColor = '#10b981';
+            }
+        });
+    });
+
+    // Efecto de cursor personalizado
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    // Efecto de ripple en clicks
+    document.addEventListener('click', (e) => {
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = e.clientX + 'px';
+        ripple.style.top = e.clientY + 'px';
+        document.body.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
+
+    // Animación de stickers al hacer hover
+    document.querySelectorAll('.sticker').forEach(sticker => {
+        sticker.addEventListener('mouseenter', () => {
+            sticker.style.transform = 'scale(1.3) rotate(15deg)';
+            playSound('hover');
+        });
+        
+        sticker.addEventListener('mouseleave', () => {
+            sticker.style.transform = 'scale(1) rotate(0deg)';
+        });
+        
+        sticker.addEventListener('click', () => {
+            playSound('success');
+            sticker.style.animation = 'bounce 0.5s ease';
+            setTimeout(() => {
+                sticker.style.animation = '';
+            }, 500);
+        });
+    });
+
+    // Efecto parallax suave
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const stickers = document.querySelectorAll('.sticker');
+        stickers.forEach((sticker, index) => {
+            const speed = 0.5 + (index * 0.1);
+            sticker.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+
+    // ========== FUNCIONALIDAD DE REGISTRO ==========
+
+    // Login link
+    const loginLink = document.getElementById('loginLink');
+    if (loginLink) {
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            playSound('click');
+            window.location.href = "index.html";
+        });
+    }
+
+    // ========== CATEGORÍAS Y ORGANIZACIONES (igual que Android) ==========
+    const CATEGORIAS = ["Música", "Arte", "Letras", "Escuela", "Academia", "Facultad", "Universidad", "Centro Cultural", "Biblioteca", "Tienda", "Hotel", "Posada", "Hostal", "Restaurant", "Transporte"];
+    const SUBCATEGORIAS_MAP = {
+        "Música": ["M.Clasica", "M.Mariachi", "M.Rock", "M.Jazz", "M.Blues", "M.Folk", "M.Urbana", "M.Tropical", "M.Eléctronica", "M.Salsa", "M.Merenge", "M.Reggaeton", "M.Experimental", "M.Rondalla", "M.Big Band", "M.Indie", "M.Flamenco", "M.Reggae", "M.Ska", "M.Infantil"],
+        "Arte": ["A.Pintura", "A.Escultura", "A.Fotografía", "A.Dibujo", "A.Grabado", "A.Digital", "A.Arquitectura"],
+        "Letras": ["L.Poesía", "L.Narrativa", "L.Ensayo", "L.Dramaturgia", "L.Crónica", "L.Filosofía", "L.Cuento", "L.Novela", "L.Microrrelato"],
+        "Escuela": ["E.Escuela Pública", "E.Escuela Privada"],
+        "Academia": ["Ac.Privada", "Ac.Pública"],
+        "Facultad": ["Fac.Música", "Fac.Artes Visuales", "Fac.Danza", "Fac.Teatro", "Fac.Cine y Medios Audiovisuales", "Fac.Literatura y Letras", "Fac.Diseño Gráfico", "Fac.Diseño de Moda", "Fac.Artes Escénicas", "Fac.Artes Plásticas", "Fac.Música Contemporánea", "Fac.Música Clásica", "Fac.Musicología", "Fac.Fotografía", "Fac.Composición Musical", "Fac.Producción Musical"],
+        "Universidad": ["Uni.Pública", "Uni.Privada"],
+        "Centro Cultural": ["Cc.Público", "Cc.Privado"],
+        "Biblioteca": ["Bb.Pública", "Bb.Privada"],
+        "Tienda": ["T.Recomendada", "T.Instrumentos Musicales", "T.Partituras y Libros de Música", "T.Accesorios Musicales", "T.Tienda de Arte y Materiales", "T.Galería de Arte", "T.Papelería Creativa", "T.Tienda de Pintura y Dibujo", "T.Tienda de Fotografía", "T.Tienda de Danza", "T.Tienda de Teatro y Escenografía", "T.Tienda de Música Electrónica y DJ", "T.Tienda de Música Clásica", "T.Tienda de Arte Digital", "T.Tienda de Artesanía Musical", "T.Tienda de Merchandising Musical"],
+        "Hotel": ["Hotel.3 estrella", "Hotel.4 estrellas", "Hotel.5 estrellas", "Hotel.Cadena"],
+        "Posada": ["Posada.3 estrella", "Posada.4 estrellas", "Posada.5 estrellas", "Posada.Cadena"],
+        "Hostal": ["Hostal.3 estrella", "Hostal.4 estrellas", "Hostal.5 estrellas", "Hostal.Cadena"],
+        "Restaurant": ["Restaurant.local", "Restaurant.Cadena"],
+        "Transporte": ["Trans.Terrestre", "Trans.Aéreo", "Trans.Marítimo"]
+    };
+    const ORGANIZACIONES = ["El Sistema(VE)", "YOA(LA)", "Batuta(CO)", "FUNDAR(CO)", "Guri(BR)", "FOJI(CL)", "POIJ(AR)", "SNFM(MX)", "Ollin Yoliztli(CDMX)", "EIM&Ch(MX/Guadalajara)", "SP(PR)", "ANMP(PR)", "AMCh(CL)", "FMA(AR)", "ACM(EC)"];
+    const ROLES_ORG = ["Coordinador", "Director", "Secretaria", "Asistente", "Profesor", "Atrilero", "Utility", "Músico", "Técnico", "Administrativo"];
+
+    let selectedGeneroMusic = "";
+    let selectedOrganization = "";
+    let selectedOrganizationRole = "";
+    let selectedGenres = []; // NUEVO: Array para géneros seleccionados (máximo 5)
+
+    // NUEVO: Lógica para chips de géneros musicales
+    const genreContainer = document.getElementById('genreContainer');
+    if (genreContainer) {
+        genreContainer.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                playSound('click');
+                const value = chip.dataset.value;
+                
+                if (chip.classList.contains('selected')) {
+                    // Deseleccionar
+                    chip.classList.remove('selected');
+                    selectedGenres = selectedGenres.filter(g => g !== value);
+                } else {
+                    // Seleccionar (máximo 5)
+                    if (selectedGenres.length < 5) {
+                        chip.classList.add('selected');
+                        selectedGenres.push(value);
+                    } else {
+                        // Mostrar mensaje de límite alcanzado
+                        showNotification('Máximo 5 géneros seleccionados', 'warning');
+                    }
+                }
+            });
+        });
+    }
+
+    const categoryContainer = document.getElementById('categoryContainer');
+    const subcategoryContainer = document.getElementById('subcategoryContainer');
+    const subcategoryLabel = document.getElementById('subcategoryLabel');
+    const categoryErrorEl = document.getElementById('categoryError');
+    const organizationContainer = document.getElementById('organizationContainer');
+    const organizationRoleContainer = document.getElementById('organizationRoleContainer');
+    const organizationRoleLabel = document.getElementById('organizationRoleLabel');
+    const linearOrganizations = document.getElementById('linearOrganizations');
+    const switchOrganization = document.getElementById('switchOrganization');
+
+    function addChips(container, items, selectedValue, onSelect) {
+        container.innerHTML = "";
+        items.forEach(item => {
+            const chip = document.createElement('div');
+            chip.className = 'chip' + (selectedValue === item ? ' selected' : '');
+            chip.textContent = item;
+            chip.addEventListener('click', () => {
+                playSound('click');
+                container.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                onSelect(item);
+            });
+            container.appendChild(chip);
+        });
+    }
+
+    CATEGORIAS.forEach(cat => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = cat;
+        chip.addEventListener('click', () => {
+            playSound('click');
+            categoryContainer.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            const subs = SUBCATEGORIAS_MAP[cat] || [];
+            subcategoryLabel.style.display = subs.length ? 'block' : 'none';
+            subcategoryContainer.style.display = subs.length ? 'flex' : 'none';
+            selectedGeneroMusic = "";
+            addChips(subcategoryContainer, subs, "", (sub) => { selectedGeneroMusic = sub; });
+        });
+        categoryContainer.appendChild(chip);
+    });
+
+    if (switchOrganization) switchOrganization.addEventListener('change', () => {
+        const isOrg = switchOrganization.checked;
+        linearOrganizations.style.display = isOrg ? 'block' : 'none';
+        if (!isOrg) { selectedOrganization = ""; selectedOrganizationRole = ""; organizationRoleContainer.innerHTML = ""; organizationRoleLabel.style.display = 'none'; }
+        else {
+            organizationContainer.innerHTML = "";
+            ORGANIZACIONES.forEach(org => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.textContent = org;
+                chip.addEventListener('click', () => {
+                    playSound('click');
+                    organizationContainer.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+                    chip.classList.add('selected');
+                    selectedOrganization = org;
+                    organizationRoleLabel.style.display = 'block';
+                    addChips(organizationRoleContainer, ROLES_ORG, selectedOrganizationRole, (role) => { selectedOrganizationRole = role; });
+                });
+                organizationContainer.appendChild(chip);
+            });
+        }
+    });
+
+    // Preselección de organización cuando el registro viene desde FUNDAR o flujo de aliados
+    (() => {
+        const params = new URLSearchParams(window.location.search);
+        const fromParam = (params.get('from') || '').toLowerCase();
+        const orgParam = params.get('org');
+        const orgModeParam = (params.get('orgMode') || '').toLowerCase();
+        const shouldEnableOrgMode = fromParam === 'ally' || orgModeParam === '1' || orgModeParam === 'true';
+        const shouldPrefillFundar = fromParam === 'fundar' || !!orgParam;
+        const orgToSelect = orgParam || 'FUNDAR(CO)';
+
+        if (!switchOrganization || !linearOrganizations) return;
+
+        if (shouldEnableOrgMode || shouldPrefillFundar) {
+            switchOrganization.checked = true;
+            switchOrganization.dispatchEvent(new Event('change'));
+        }
+
+        if (!shouldPrefillFundar) return;
+        if (!ORGANIZACIONES.includes(orgToSelect)) return;
+
+        const orgChips = Array.from(organizationContainer.querySelectorAll('.chip'));
+        const targetChip = orgChips.find(chip => chip.textContent.trim() === orgToSelect);
+        if (targetChip) targetChip.click();
+    })();
+
+    // Overlay animation
+    async function showOverlay(message, seconds = 3){
+        const overlay = document.createElement('div');
+        overlay.id = 'loginOverlay';
+        overlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 19, 0.9); display: flex; justify-content: center; align-items: center; z-index: 2000;
+            backdrop-filter: blur(10px);
+        `;
+
+        overlay.innerHTML = `
+            <div style="background:#1c1c24;padding:30px 40px;border-radius:15px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:15px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 25px 50px rgba(0,0,0,0.5), 0 8px 32px rgba(139,92,246,0.3);">
+                <div style="font-weight:bold;background:linear-gradient(135deg, #8b5cf6 0%, #007BFF 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:18px;">${message}</div>
+                <svg width="60" height="60">
+                    <circle class="bg" cx="30" cy="30" r="25" stroke="#252532" stroke-width="5" fill="none"></circle>
+                    <circle class="progress" cx="30" cy="30" r="25" stroke="url(#gradient)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="157"></circle>
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#007BFF;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressCircle = overlay.querySelector('.progress');
+        let offset = 157;
+        const totalSteps = seconds * 60;
+        const step = 157 / totalSteps;
+
+        return new Promise(res => {
+            const interval = setInterval(() => {
+                offset -= step;
+                if(offset <= 0){
+                    offset = 0;
+                    clearInterval(interval);
+                }
+                progressCircle.style.strokeDashoffset = offset;
+            }, 1000 / 60);
+
+            setTimeout(() => {
+                overlay.remove();
+                res();
+            }, seconds * 1000);
+        });
+    }
+
+    // Variables globales para el registro
+    let userFormData = {};
+    let isMinor = false;
+    let currentUserId = null;
+
+    // Sign Up button (siempre clickeable; si Firebase no está listo se muestra mensaje al pulsar)
+    const signUpBtn = document.getElementById('signUpBtn');
+    if (signUpBtn) signUpBtn.addEventListener('click', async () => {
+        if (!auth || !db) {
+            const generalError = document.getElementById('generalError');
+            if (generalError) {
+                generalError.textContent = 'Espera a que cargue la página e intenta de nuevo.';
+                generalError.style.display = 'block';
+            }
+            alert('La página aún no ha terminado de cargar. Espera unos segundos y vuelve a pulsar Registrarse.');
+            return;
+        }
+        const generalError = document.getElementById('generalError');
+        if (generalError) { generalError.style.display = 'none'; generalError.textContent = ''; }
+        playSound('click');
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const name = document.getElementById('name').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const instrument = document.getElementById('instrument').value.trim();
+        const link = document.getElementById('userLink').value.trim();
+        const referral = document.getElementById('referralCode').value.trim();
+        const accepted = document.getElementById('acceptTerms').checked;
+
+        // Validaciones (igual que Android: dominios, contraseña 8+, usuario sin caracteres especiales, categoría e instrumento obligatorios)
+        let valid = true;
+        document.querySelectorAll('.error').forEach(e => e.style.display = 'none');
+        if (categoryErrorEl) categoryErrorEl.style.display = 'none';
+
+        const allowedDomains = ['@gmail.com', '@proviweb.com', '@yahoo.com', '@hotmail.com', '@outlook.com'];
+        const emailOk = email.length > 0 && allowedDomains.some(d => email.endsWith(d));
+        if (!emailOk) {
+            document.getElementById('emailError').textContent = 'Ingresa un correo válido (Gmail, Yahoo, Hotmail, Outlook o proviweb.com).';
+            document.getElementById('emailError').style.display = 'block';
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (password.length < 8) {
+            document.getElementById('passwordError').textContent = 'La contraseña debe tener al menos 8 caracteres.';
+            document.getElementById('passwordError').style.display = 'block';
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (name.length === 0) {
+            document.getElementById('nameError').style.display = 'block';
+            valid = false;
+            playSound('toggle');
+        }
+
+        const usernameForbidden = /[.@|{}|,~¡!¿?=#$%&*()_+\[\]]/;
+        if (username.length === 0 || usernameForbidden.test(username)) {
+            document.getElementById('usernameError').textContent = "El usuario no puede contener caracteres como . @ | { } , ~ ¡ ! ¿ ? = # $ % & * ( ) _ +";
+            document.getElementById('usernameError').style.display = 'block';
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (!accepted) {
+            alert("Debes aceptar los términos y la política de privacidad");
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (!selectedGeneroMusic) {
+            if (categoryErrorEl) { categoryErrorEl.style.display = 'block'; }
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (!instrument.trim()) {
+            document.getElementById('instrumentError').style.display = 'block';
+            valid = false;
+            playSound('toggle');
+        }
+
+        if (!valid) {
+            const msg = [];
+            if (!emailOk) msg.push('Correo válido (Gmail, Yahoo, Hotmail, Outlook o proviweb.com)');
+            if (password.length < 8) msg.push('Contraseña de al menos 8 caracteres');
+            if (!name.length) msg.push('Nombre');
+            if (username.length === 0 || usernameForbidden.test(username)) msg.push('Usuario sin caracteres especiales (. @ | etc.)');
+            if (!accepted) msg.push('Aceptar términos y política de privacidad');
+            if (!selectedGeneroMusic) msg.push('Elegir una categoría y luego una subcategoría');
+            if (!instrument.trim()) msg.push('Instrumento');
+            if (msg.length) alert('Revisa: ' + msg.join(', '));
+            return;
+        }
+
+        const isOrg = switchOrganization && switchOrganization.checked;
+        if (isOrg && (!selectedOrganization || !selectedOrganizationRole)) {
+            alert("Si eres organización, selecciona una organización y tu rol.");
+            playSound('toggle');
+            return;
+        }
+
+        const fraseSeguridadInput = document.getElementById('fraseSeguridad');
+        
+        // NUEVO: Recolectar redes sociales
+        const instagram = document.getElementById('instagram')?.value.trim() || '';
+        const tiktok = document.getElementById('tiktok')?.value.trim() || '';
+        const youtube = document.getElementById('youtube')?.value.trim() || '';
+        const spotify = document.getElementById('spotify')?.value.trim() || '';
+        const portfolio = document.getElementById('portfolio')?.value.trim() || '';
+        
+        // NUEVO: Recolectar ubicación
+        const country = document.getElementById('country')?.value || '';
+        const city = document.getElementById('city')?.value.trim() || '';
+        
+        // NUEVO: Recolectar nivel de experiencia
+        const experienceRadio = document.querySelector('input[name="experience"]:checked');
+        const experienceLevel = experienceRadio ? experienceRadio.value : 'beginner';
+        
+        // NUEVO: Recolectar intereses
+        const interestCheckboxes = document.querySelectorAll('input[name="interests"]:checked');
+        const interests = Array.from(interestCheckboxes).map(cb => cb.value);
+        
+        // NUEVO: Recolectar disponibilidad para colaborar
+        const openToCollaborate = document.getElementById('openToCollaborate')?.checked ?? true;
+        
+        userFormData = {
+            email,
+            password,
+            name,
+            username,
+            instrument: instrument.trim(),
+            generoMusic: selectedGeneroMusic,
+            link: link || '',
+            referral: referral.trim(),
+            fraseSeguridad: fraseSeguridadInput ? fraseSeguridadInput.value.trim().slice(0, 80) : '',
+            organizaton: isOrg ? "Organization" : "Individual",
+            organizationName: isOrg ? selectedOrganization : "",
+            organizationRole: isOrg ? selectedOrganizationRole : "",
+            // NUEVOS CAMPOS
+            social: {
+                instagram,
+                tiktok,
+                youtube,
+                spotify,
+                portfolio
+            },
+            location: {
+                country,
+                city
+            },
+            genres: selectedGenres, // Array de géneros seleccionados
+            experienceLevel,
+            interests,
+            openToCollaborate
+        };
+
+        signUpBtn.disabled = true;
+        signUpBtn.textContent = 'Comprobando...';
+        try {
+            if (userFormData.referral) {
+                const codeSnap = await get(ref(db, 'Code/' + userFormData.referral));
+                if (!codeSnap.exists()) {
+                    alert("Código de referido inválido o expirado.");
+                    signUpBtn.disabled = false;
+                    signUpBtn.textContent = 'Registrarse';
+                    playSound('toggle');
+                    return;
+                }
+                userFormData.referralHisId = codeSnap.child('user').val() || null;
+            }
+
+            const emailQuery = query(ref(db, 'Users'), orderByChild('email'), equalTo(userFormData.email));
+            const emailSnap = await get(emailQuery);
+            if (emailSnap.exists() && emailSnap.numChildren() > 0) {
+                alert("Este correo ya está registrado.");
+                signUpBtn.disabled = false;
+                signUpBtn.textContent = 'Registrarse';
+                playSound('toggle');
+                return;
+            }
+
+            const usernameQuery = query(ref(db, 'Users'), orderByChild('username'), equalTo(userFormData.username));
+            const usernameSnap = await get(usernameQuery);
+            if (usernameSnap.exists() && usernameSnap.numChildren() > 0) {
+                alert("Este nombre de usuario ya existe.");
+                signUpBtn.disabled = false;
+                signUpBtn.textContent = 'Registrarse';
+                playSound('toggle');
+                return;
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Error al comprobar correo o usuario. Intenta de nuevo.");
+            signUpBtn.disabled = false;
+            signUpBtn.textContent = 'Registrarse';
+            playSound('toggle');
+            return;
+        }
+        signUpBtn.disabled = false;
+        signUpBtn.textContent = 'Registrarse';
+        document.getElementById('birthDateModal').style.display = 'flex';
+    });
+
+    // Modal de Fecha de Nacimiento
+    const birthDateModal = document.getElementById('birthDateModal');
+    const confirmBirthDate = document.getElementById('confirmBirthDate');
+    const cancelBirthDate = document.getElementById('cancelBirthDate');
+    const birthDateInput = document.getElementById('birthDate');
+    const birthDateError = document.getElementById('birthDateError');
+
+    confirmBirthDate.addEventListener('click', async () => {
+        const birthDate = birthDateInput.value;
+        if (!birthDate) {
+            birthDateError.textContent = 'Por favor ingresa tu fecha de nacimiento';
+            birthDateError.style.display = 'block';
+            return;
+        }
+
+        // Calcular edad
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+
+        if (age < 18) {
+            isMinor = true;
+            birthDateModal.style.display = 'none';
+            // Proceder con registro de menor
+            await registerUser(true, birthDate);
+        } else {
+            isMinor = false;
+            birthDateModal.style.display = 'none';
+            // Proceder con registro normal
+            await registerUser(false, birthDate);
+        }
+    });
+
+    cancelBirthDate.addEventListener('click', () => {
+        birthDateModal.style.display = 'none';
+        signUpBtn.disabled = false;
+        signUpBtn.textContent = 'Registrarse';
+    });
+
+    // Función para registrar usuario
+    async function registerUser(minor, birthDate) {
+        signUpBtn.disabled = true;
+        signUpBtn.textContent = 'Registrando...';
+        
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, userFormData.email, userFormData.password);
+            const user = userCredential.user;
+            currentUserId = user.uid;
+
+            // Preparar datos del usuario (igual que Android: HashMap en register())
+            const userData = {
+                id: user.uid,
+                name: userFormData.name,
+                email: userFormData.email,
+                username: userFormData.username,
+                bio: "¡Hola! Soy nuevo en PROVIWEB 🎵✨",
+                verified: "",
+                verifiedprofesor: "",
+                verifiedstudent: "",
+                verifiedentidad: "",
+                verifiedprofesorart: "",
+                musicservice: "",
+                location: userFormData.location ? `${userFormData.location.city}, ${userFormData.location.country}` : "",
+                phone: "",
+                status: Date.now().toString(),
+                typingTo: "noOne",
+                link: userFormData.link || "",
+                photo: "",
+                verifyEmail: false,
+                instrument: userFormData.instrument || "",
+                generoMusic: userFormData.generoMusic || "",
+                organizaton: userFormData.organizaton || "Individual",
+                organizationName: userFormData.organizationName || "",
+                organizationRole: userFormData.organizationRole || "",
+                fraseSeguridad: (userFormData.fraseSeguridad || "").trim().slice(0, 80),
+                twoFactorMethod: "email",
+                createdAt: new Date().toISOString(),
+                // NUEVOS CAMPOS
+                social: userFormData.social || {},
+                country: userFormData.location?.country || "",
+                city: userFormData.location?.city || "",
+                genres: userFormData.genres || [],
+                experienceLevel: userFormData.experienceLevel || "beginner",
+                interests: userFormData.interests || [],
+                openToCollaborate: userFormData.openToCollaborate ?? true,
+                profileCompleted: false // Para saber si el usuario completó su perfil completo
+            };
+
+            // Si es menor, agregar campo menoredad
+            if (minor) {
+                userData.menoredad = "true";
+                userData.birthDate = birthDate;
+            }
+
+            await set(ref(db, 'Users/' + user.uid), userData);
+
+            if (userFormData.referral && userFormData.referralHisId) {
+                try {
+                    const balanceRef = ref(db, 'Balance/' + userFormData.referralHisId);
+                    const balanceSnap = await get(balanceRef);
+                    const current = balanceSnap.exists() ? parseFloat(balanceSnap.child('balance').val() || 0) : 0;
+                    await update(balanceRef, { balance: String(current + 10) });
+                    await remove(ref(db, 'Code/' + userFormData.referral));
+                } catch (e) {
+                    console.warn('No se pudo aplicar bono de referido:', e);
+                }
+            }
+
+            if (minor) {
+                document.getElementById('parentConsentModal').style.display = 'flex';
+            } else {
+                playSound('success');
+                await showOverlay("¡Registro exitoso! Ahora completa tu perfil (foto y portada).", 3);
+                window.location.href = "edirmyprofile.html?firstTime=1";
+            }
+
+        } catch(error) {
+            console.error(error);
+            signUpBtn.disabled = false;
+            signUpBtn.textContent = 'Registrarse';
+            
+            let errorMessage = 'Error al registrar usuario.';
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = 'Este correo electrónico ya está en uso.';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'Correo electrónico inválido.';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = 'La contraseña no cumple la política de seguridad (longitud, mayúsculas, minúsculas, números o símbolos).';
+                    break;
+                default:
+                    errorMessage = error.message;
+            }
+            
+            alert(errorMessage);
+            playSound('toggle');
+        }
+    }
+
+    // Modal de Consentimiento de Padres
+    const parentConsentModal = document.getElementById('parentConsentModal');
+    const submitConsent = document.getElementById('submitConsent');
+    const cancelConsent = document.getElementById('cancelConsent');
+    const cedulaFrontalInput = document.getElementById('cedulaFrontal');
+    const cedulaTraseraInput = document.getElementById('cedulaTrasera');
+    const parentPhoneInput = document.getElementById('parentPhone');
+    const consentError = document.getElementById('consentError');
+
+    // Preview de imágenes
+    cedulaFrontalInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('cedulaFrontalPreview').innerHTML = `<img src="${e.target.result}" alt="Cédula Frontal">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    cedulaTraseraInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('cedulaTraseraPreview').innerHTML = `<img src="${e.target.result}" alt="Cédula Trasera">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    submitConsent.addEventListener('click', async () => {
+        const cedulaFrontal = cedulaFrontalInput.files[0];
+        const cedulaTrasera = cedulaTraseraInput.files[0];
+        const parentPhone = parentPhoneInput.value.trim();
+
+        consentError.style.display = 'none';
+
+        if (!cedulaFrontal || !cedulaTrasera) {
+            consentError.textContent = 'Debes subir ambas imágenes de la cédula (frontal y trasera)';
+            consentError.style.display = 'block';
+            return;
+        }
+
+        if (!parentPhone) {
+            consentError.textContent = 'Debes ingresar el número de celular del padre/madre';
+            consentError.style.display = 'block';
+            return;
+        }
+
+        submitConsent.disabled = true;
+        submitConsent.textContent = 'Subiendo documentos...';
+
+        try {
+            // Subir imágenes a Firebase Storage
+            const cedulaFrontalRef = storageRef(storage, `consentimientos/${currentUserId}/cedula_frontal_${Date.now()}.jpg`);
+            const cedulaTraseraRef = storageRef(storage, `consentimientos/${currentUserId}/cedula_trasera_${Date.now()}.jpg`);
+
+            const snapshotFrontal = await uploadBytes(cedulaFrontalRef, cedulaFrontal);
+            const snapshotTrasera = await uploadBytes(cedulaTraseraRef, cedulaTrasera);
+
+            const cedulaFrontalUrl = await getDownloadURL(snapshotFrontal.ref);
+            const cedulaTraseraUrl = await getDownloadURL(snapshotTrasera.ref);
+
+            // Guardar consentimiento en Firebase Database
+            const consentData = {
+                userId: currentUserId,
+                cedulaFrontal: cedulaFrontalUrl,
+                cedulaTrasera: cedulaTraseraUrl,
+                parentPhone: parentPhone,
+                revisado: "no",
+                fechaSolicitud: Date.now(),
+                timestamp: serverTimestamp()
+            };
+
+            await set(ref(db, `UserConcentimientos/${currentUserId}`), consentData);
+
+            playSound('success');
+            await showOverlay("Consentimiento enviado. Esperando aprobación...", 3);
+            
+            // No redirigir, mostrar mensaje
+            alert('Tu registro ha sido completado. Sin embargo, necesitas esperar la aprobación del consentimiento parental antes de poder iniciar sesión. Te contactaremos por WhatsApp cuando sea revisado.');
+            window.location.href = "index.html";
+
+        } catch(error) {
+            console.error(error);
+            submitConsent.disabled = false;
+            submitConsent.textContent = 'Enviar Consentimiento';
+            consentError.textContent = 'Error al subir los documentos. Intenta nuevamente.';
+            consentError.style.display = 'block';
+            playSound('toggle');
+        }
+    });
+
+    cancelConsent.addEventListener('click', () => {
+        parentConsentModal.style.display = 'none';
+        // Cerrar sesión del usuario si canceló
+        if (currentUserId) {
+            signOut(auth);
+        }
+        window.location.href = "register.html";
+    });
+
+    // Desactivar autocomplete en username
+    document.getElementById('username').setAttribute('autocomplete', 'off');
+
+    console.log('🎵 PROVIWEB - Sistema de registro con tema oscuro activado');
+</script>
+
+</body>
+</html>

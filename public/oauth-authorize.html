@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Iniciar Sesión con PROVIWEB - Portal de Autorización Segura SSO">
+    <title>Iniciar Sesión con PROVIWEB</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #08080d;
+            --bg-card: #12121e;
+            --bg-input: #181828;
+            --border-glass: rgba(255, 255, 255, 0.14);
+            --border-focus: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-purple: #c084fc;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --gradient-brand: linear-gradient(135deg, #fbbf24 0%, #a855f7 50%, #38bdf8 100%);
+            --gradient-btn: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.15), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.12), transparent 45%),
+                linear-gradient(180deg, #08080d 0%, #0d0d16 100%);
+        }
+
+        .sso-card {
+            max-width: 460px;
+            width: 100%;
+            background: rgba(18, 18, 30, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 26px;
+            padding: 32px 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(251, 191, 36, 0.1);
+            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Top Brand Header */
+        .sso-brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .sso-brand-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        /* Connect Bridge Banner */
+        .connect-bridge-box {
+            background: #161626;
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .app-avatar-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .bridge-icon-arrow {
+            font-size: 18px;
+            color: var(--accent-gold);
+            animation: pulseArrow 1.5s infinite;
+        }
+
+        @keyframes pulseArrow {
+            0%, 100% { transform: translateX(0); opacity: 0.8; }
+            50% { transform: translateX(4px); opacity: 1; }
+        }
+
+        /* Active User Account Box */
+        .user-account-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%), #151524;
+            border: 1.5px solid rgba(251, 191, 36, 0.35);
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-gold);
+            background: #000;
+        }
+
+        /* Permissions list */
+        .permissions-box {
+            background: #11111c;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 22px;
+        }
+
+        .perm-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .perm-item:last-child { margin-bottom: 0; }
+        .perm-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+        /* Buttons */
+        .btn-sso-action {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 900;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-sso-primary {
+            background: var(--gradient-btn);
+            color: #000000;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+            margin-bottom: 10px;
+        }
+        .btn-sso-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn-sso-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+        }
+        .btn-sso-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        /* Form Inputs for Unauthenticated Users */
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1.5px solid rgba(255, 255, 255, 0.16);
+            color: #ffffff;
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+        }
+
+        .spinner-sso {
+            width: 38px;
+            height: 38px;
+            border: 3.5px solid rgba(251, 191, 36, 0.2);
+            border-top-color: #fbbf24;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="sso-card" id="ssoCardContainer">
+        <!-- TOP BRAND -->
+        <div class="sso-brand-header">
+            <img src="./assets/logotransparente-1dd37ce8.png" alt="PROVIWEB" class="sso-brand-logo">
+            <span style="font-weight: 900; font-size: 16px; letter-spacing: 0.5px; color: #fff;">
+                PROVIWEB <span style="color: #fbbf24;">CONNECT</span>
+            </span>
+        </div>
+
+        <!-- APP BRIDGE SHOWCASE -->
+        <div class="connect-bridge-box">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="app-avatar-box" id="clientLogoBox">
+                    <span style="font-size: 26px;" id="clientDefaultIcon">🎵</span>
+                    <img src="" id="clientLogoImg" style="width:100%; height:100%; object-fit:cover; display:none;">
+                </div>
+                <div>
+                    <div style="font-weight: 900; font-size: 13.5px; color: #fff; display:flex; align-items:center; gap:4px;">
+                        <span id="clientAppName">Pulso · Metrónomo & Afinador Pro</span>
+                        <span style="color: #38bdf8; font-size: 12px;" title="Aplicación Oficial Verificada">✓</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted);" id="clientPackageId">com.israviolink.pulso</div>
+                </div>
+            </div>
+            <div class="bridge-icon-arrow">➜</div>
+            <div class="app-avatar-box" style="border-color:rgba(251,191,36,0.5);">
+                <img src="./assets/logotransparente-1dd37ce8.png" style="width:36px; height:36px; object-fit:contain;">
+            </div>
+        </div>
+
+        <h1 style="font-size: 17px; font-weight: 900; text-align: center; color: #fff; margin-bottom: 6px;" id="ssoTitle">
+            Autorizar Inicio de Sesión
+        </h1>
+        <p style="font-size: 12.5px; color: var(--text-secondary); text-align: center; line-height: 1.45; margin-bottom: 18px;" id="ssoSubtitle">
+            <strong id="clientAppNameStrong">Pulso</strong> solicita acceso para iniciar sesión con tu cuenta oficial de PROVIWEB.
+        </p>
+
+        <!-- STATE: LOADING -->
+        <div id="stateLoading" style="text-align: center; padding: 20px 0;">
+            <div class="spinner-sso"></div>
+            <div style="font-size: 12px; color: var(--text-muted);">Validando cliente y sesión de usuario...</div>
+        </div>
+
+        <!-- STATE: AUTHENTICATED USER (ONE-CLICK LOGIN) -->
+        <div id="stateAuthenticated" style="display: none;">
+            <div class="user-account-box">
+                <img src="./assets/logotransparente-1dd37ce8.png" id="ssoUserAvatar" class="user-avatar-circle">
+                <div style="overflow: hidden; flex: 1;">
+                    <div style="font-weight: 900; font-size: 13.5px; color: #fff; display: flex; align-items: center; gap: 4px;">
+                        <span id="ssoUserName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Artista PROVIWEB</span>
+                        <span style="color:#fbbf24; font-size:11px;" id="ssoUserBadge">⭐</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="ssoUserEmail">usuario@proviweb.com</div>
+                    <div style="font-size: 10.5px; color: #4ade80; margin-top: 2px;" id="ssoUserQav">Saldo: 0 QAV</div>
+                </div>
+            </div>
+
+            <div class="permissions-box">
+                <div style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">
+                    Permisos solicitados por esta aplicación:
+                </div>
+                <div class="perm-item">
+                    <span class="perm-icon">👤</span>
+                    <div><strong>Perfil de Artista:</strong> Tu nombre, usuario y foto de avatar.</div>
+                </div>
+                <div class="perm-item">
+                    <span class="perm-icon">✉️</span>
+                    <div><strong>Correo Electrónico:</strong> Para asociar tu cuenta y recibir notificaciones.</div>
+                </div>
+                <div class="perm-item">
+                    <span class="perm-icon">🪙</span>
+                    <div><strong>Saldo QAV:</strong> Para compras y sincronización musical en la app.</div>
+                </div>
+            </div>
+
+            <button type="button" class="btn-sso-action btn-sso-primary" id="btnAuthorizeSso">
+                <span>🔐</span><span>Continuar como <span id="btnUserNameText">Músico</span></span>
+            </button>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-sso-action btn-sso-secondary" id="btnSwitchAccount">
+                    🔄 Cambiar Cuenta
+                </button>
+                <button type="button" class="btn-sso-action btn-sso-secondary" id="btnCancelSso" style="color: #f87171;">
+                    ✕ Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- STATE: UNAUTHENTICATED USER (INLINE LOGIN) -->
+        <div id="stateUnauthenticated" style="display: none;">
+            <form id="ssoLoginForm">
+                <div class="form-group">
+                    <label>Correo Electrónico de PROVIWEB:</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="tu@correo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Tu contraseña" required>
+                </div>
+                <button type="submit" class="btn-sso-action btn-sso-primary" id="btnLoginAndAuthorize">
+                    <span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>
+                </button>
+                <button type="button" class="btn-sso-action btn-sso-secondary" id="btnCancelLogin" style="color: #f87171;">
+                    ✕ Cancelar
+                </button>
+            </form>
+        </div>
+
+        <!-- FOOTER PRIVACY NOTE -->
+        <div style="margin-top: 20px; text-align: center; font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+            Al autorizar, permites que la aplicación acceda de forma segura a los datos especificados según los <a href="index.html" style="color:#fbbf24; text-decoration:none;">Términos de PROVIWEB</a>.
+        </div>
+    </div>
+
+    <!-- FIREBASE INITIALIZATION & SSO LOGIC -->
+    <script src="js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            // 1. Parse OAuth 2.0 Query Parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientId = urlParams.get('client_id') || 'com.israviolink.app';
+            const requestedRedirectUri = urlParams.get('redirect_uri') || '';
+            const responseType = urlParams.get('response_type') || 'code';
+            const scope = urlParams.get('scope') || 'profile email qav';
+            const state = urlParams.get('state') || '';
+
+            // Known Client Apps Pre-Configuration
+            const KNOWN_CLIENTS = {
+                'com.israviolink.admin': {
+                    name: 'PROVIWEB Admin Suite · Control Maestro',
+                    packageId: 'com.israviolink.admin',
+                    icon: '🛡️',
+                    logo: './assets/logotransparente-1dd37ce8.png',
+                    verified: true,
+                    requiresAdmin: true,
+                    defaultRedirectUri: 'israviolink-admin://oauth/callback',
+                    allowedRedirectUris: ['israviolink-admin://oauth/callback']
+                },
+                'com.israviolink.app': {
+                    name: 'PROVIWEB App Oficial · Android',
+                    packageId: 'com.israviolink.app',
+                    icon: '🎻',
+                    logo: './assets/logotransparente-1dd37ce8.png',
+                    verified: true,
+                    requiresAdmin: false,
+                    defaultRedirectUri: 'israviolink://oauth/callback',
+                    allowedRedirectUris: ['israviolink://oauth/callback']
+                },
+                'com.israviolink.nunti': {
+                    name: 'NUNTI · Comunidad y Gestión',
+                    packageId: 'com.israviolink.nunti',
+                    icon: '🛰️',
+                    logo: './assets/logotransparente-1dd37ce8.png',
+                    verified: true,
+                    requiresAdmin: false,
+                    defaultRedirectUri: 'israviolink-nunti://oauth/callback',
+                    allowedRedirectUris: ['israviolink-nunti://oauth/callback']
+                },
+                'com.israviolink.pulso': {
+                    name: 'Pulso · Metrónomo & Afinador Pro',
+                    packageId: 'com.israviolink.pulso',
+                    icon: '🎵',
+                    logo: './assets/logotransparente-1dd37ce8.png',
+                    verified: true,
+                    requiresAdmin: false,
+                    defaultRedirectUri: 'israviolink-pulso://oauth/callback',
+                    allowedRedirectUris: ['israviolink-pulso://oauth/callback']
+                },
+                'com.israviolink.metronomo': {
+                    name: 'Metrónomo Web Pro',
+                    packageId: 'com.israviolink.metronomo',
+                    icon: '⏱️',
+                    logo: './assets/logotransparente-1dd37ce8.png',
+                    verified: true,
+                    requiresAdmin: false,
+                    defaultRedirectUri: 'israviolink-metronomo://oauth/callback',
+                    allowedRedirectUris: ['israviolink-metronomo://oauth/callback']
+                }
+            };
+
+            // 2. Fetch or Match Client Info
+            let clientData = KNOWN_CLIENTS[clientId] || {
+                name: clientId,
+                packageId: clientId,
+                icon: '📱',
+                logo: '',
+                verified: false
+            };
+
+            // Check if client is registered in RTDB: OAuthClients/{clientId}
+            try {
+                const clientSnap = await db.ref(`OAuthClients/${clientId.replace(/[.#$\[\]]/g, '_')}`).once('value');
+                if (clientSnap.exists()) {
+                    clientData = { ...clientData, ...clientSnap.val() };
+                }
+            } catch(e) { console.warn('Could not query OAuthClients from RTDB:', e); }
+
+            function normalizeUriList(value) {
+                if (!value) return [];
+                if (Array.isArray(value)) return value.map(String).map(v => v.trim()).filter(Boolean);
+                return String(value).split(',').map(v => v.trim()).filter(Boolean);
+            }
+
+            function isAllowedRedirect(uri, data) {
+                if (!uri) return false;
+                const staticAllowed = normalizeUriList(data.allowedRedirectUris);
+                const dbAllowed = normalizeUriList(data.redirectUris);
+                const singleDbRedirect = normalizeUriList(data.redirectUri);
+                const merged = new Set([...staticAllowed, ...dbAllowed, ...singleDbRedirect]);
+                if (merged.has(uri)) return true;
+
+                try {
+                    const parsed = new URL(uri);
+                    const host = (parsed.hostname || '').toLowerCase();
+                    const protocol = (parsed.protocol || '').toLowerCase();
+                    const allowedWebHosts = ['proviweb.com', 'www.proviweb.com', 'proviweb-d8764-c592e.web.app'];
+                    if ((protocol === 'https:' || protocol === 'http:') && allowedWebHosts.includes(host)) {
+                        return true;
+                    }
+                } catch (err) {
+                    return false;
+                }
+                return false;
+            }
+
+            const defaultRedirectUri = clientData.defaultRedirectUri || clientData.redirectUri || 'israviolink://oauth/callback';
+            const redirectUri = requestedRedirectUri || defaultRedirectUri;
+
+            function failAuthorization(message) {
+                const loading = document.getElementById('stateLoading');
+                if (loading) {
+                    loading.innerHTML = `
+                        <div style="font-size:14px; font-weight:800; color:#f87171; margin-bottom:10px;">No se pudo iniciar el acceso</div>
+                        <div style="font-size:12px; color:#cbd5e1; line-height:1.45;">${message}</div>
+                    `;
+                }
+            }
+
+            if (responseType !== 'code') {
+                failAuthorization('Solo se permite response_type=code en PROVIWEB Connect.');
+                return;
+            }
+
+            if (!isAllowedRedirect(redirectUri, clientData)) {
+                failAuthorization('El redirect_uri no está autorizado para esta aplicación. Registra la URI en la consola OAuth.');
+                return;
+            }
+
+            // Render Client Info in UI
+            document.getElementById('clientAppName').textContent = clientData.name;
+            document.getElementById('clientAppNameStrong').textContent = clientData.name;
+            document.getElementById('clientPackageId').textContent = clientData.packageId || clientId;
+            if (clientData.logo) {
+                const logoImg = document.getElementById('clientLogoImg');
+                logoImg.src = clientData.logo;
+                logoImg.style.display = 'block';
+                document.getElementById('clientDefaultIcon').style.display = 'none';
+            }
+
+            let currentAuthUser = null;
+            let currentProfileData = null;
+
+            // 3. Handle Auth State
+            auth.onAuthStateChanged(async (user) => {
+                const stateLoading = document.getElementById('stateLoading');
+                const stateAuth = document.getElementById('stateAuthenticated');
+                const stateUnauth = document.getElementById('stateUnauthenticated');
+
+                stateLoading.style.display = 'none';
+
+                if (user) {
+                    currentAuthUser = user;
+                    stateAuth.style.display = 'block';
+                    stateUnauth.style.display = 'none';
+
+                    // Fetch user profile from Users/{uid} and Balance/{uid}
+                    let name = user.displayName || user.email.split('@')[0];
+                    let photo = user.photoURL || './assets/logotransparente-1dd37ce8.png';
+                    let qavBalance = 0;
+                    let profileNode = null;
+
+                    try {
+                        const [userSnap, balSnap] = await Promise.all([
+                            db.ref(`Users/${user.uid}`).once('value'),
+                            db.ref(`Balance/${user.uid}/balance`).once('value')
+                        ]);
+                        if (userSnap.exists()) {
+                            profileNode = userSnap.val();
+                            name = profileNode.name || profileNode.username || name;
+                            photo = profileNode.photo || profileNode.image || photo;
+                        }
+                        if (balSnap.exists()) {
+                            qavBalance = balSnap.val() || 0;
+                        }
+                    } catch(e) {}
+
+                    const isAdminUser = (user.email === 'viwebpro@gmail.com') || (profileNode && (profileNode.role === 'admin' || profileNode.isAdmin === true));
+                    currentProfileData = { uid: user.uid, email: user.email, name, photo, qavBalance, isAdmin: isAdminUser };
+
+                    if (clientId === 'com.israviolink.admin') {
+                        const permBox = document.querySelector('.permissions-box');
+                        if (permBox) {
+                            const previousBadge = document.getElementById('oauthAdminAccessBadge');
+                            if (previousBadge) previousBadge.remove();
+                            const adminBadge = document.createElement('div');
+                            adminBadge.id = 'oauthAdminAccessBadge';
+                            adminBadge.style.cssText = 'background:rgba(251,191,36,0.15); border:1px solid #fbbf24; color:#fbbf24; padding:8px 12px; border-radius:10px; font-size:12px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;';
+                            adminBadge.innerHTML = isAdminUser ? '<span>👑</span><span>Acceso de Super Administrador Autorizado</span>' : '<span>⚠️</span><span>Esta aplicación es la Consola de Administración Oficial</span>';
+                            permBox.insertBefore(adminBadge, permBox.firstChild);
+                        }
+                    }
+
+                    document.getElementById('ssoUserName').textContent = name;
+                    document.getElementById('btnUserNameText').textContent = name.split(' ')[0];
+                    document.getElementById('ssoUserEmail').textContent = user.email;
+                    document.getElementById('ssoUserAvatar').src = photo;
+                    document.getElementById('ssoUserQav').textContent = `Saldo: ${qavBalance.toLocaleString()} QAV`;
+                } else {
+                    currentAuthUser = null;
+                    stateAuth.style.display = 'none';
+                    stateUnauth.style.display = 'block';
+                }
+            });
+
+            // 4. Perform Authorization & Generate OAuth Code
+            async function performOAuthAuthorization() {
+                if (!currentAuthUser) return;
+
+                const btnAuth = document.getElementById('btnAuthorizeSso');
+                btnAuth.disabled = true;
+                btnAuth.innerHTML = '<span>⏳</span><span>Generando Credencial Segura...</span>';
+
+                const authCode = 'pwa_code_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+                const expiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes TTL
+
+                const codePayload = {
+                    code: authCode,
+                    uid: currentAuthUser.uid,
+                    email: currentAuthUser.email,
+                    name: currentProfileData?.name || 'Músico',
+                    photo: currentProfileData?.photo || '',
+                    clientId: clientId,
+                    redirectUri: redirectUri,
+                    scope: scope,
+                    createdAt: Date.now(),
+                    expiresAt: expiryTime
+                };
+
+                try {
+                    // 1. Save Auth Code in RTDB: OAuthAuthCodes/{authCode}
+                    await db.ref(`OAuthAuthCodes/${authCode}`).set(codePayload);
+
+                    // 2. Register authorized app in User profile: UserAuthorizedApps/{uid}/{clientId}
+                    await db.ref(`UserAuthorizedApps/${currentAuthUser.uid}/${clientId.replace(/[.#$\[\]]/g, '_')}`).set({
+                        clientId: clientId,
+                        appName: clientData.name,
+                        logo: clientData.logo || '',
+                        authorizedAt: Date.now(),
+                        scope: scope
+                    });
+
+                    // 3. Construct Callback URL
+                    const delimiter = redirectUri.includes('?') ? '&' : '?';
+                    const finalCallbackUrl = `${redirectUri}${delimiter}code=${encodeURIComponent(authCode)}` + (state ? `&state=${encodeURIComponent(state)}` : '');
+
+                    btnAuth.innerHTML = '<span>✅</span><span>¡Autorizado! Redirigiendo...</span>';
+
+                    setTimeout(() => {
+                        // Redirect to Android Deep Link or Web URL
+                        window.location.href = finalCallbackUrl;
+                    }, 500);
+
+                } catch(error) {
+                    console.error('OAuth error:', error);
+                    alert('Error al autorizar la aplicación: ' + error.message);
+                    btnAuth.disabled = false;
+                    btnAuth.innerHTML = '<span>🔐</span><span>Reintentar Autorización</span>';
+                }
+            }
+
+            document.getElementById('btnAuthorizeSso').onclick = performOAuthAuthorization;
+
+            // 5. Switch Account
+            document.getElementById('btnSwitchAccount').onclick = async () => {
+                await auth.signOut();
+            };
+
+            // 6. Cancel
+            document.getElementById('btnCancelSso').onclick = () => {
+                const delimiter = redirectUri.includes('?') ? '&' : '?';
+                const cancelUrl = `${redirectUri}${delimiter}error=access_denied&error_description=User+cancelled+the+request` + (state ? `&state=${encodeURIComponent(state)}` : '');
+                window.location.href = cancelUrl;
+            };
+            document.getElementById('btnCancelLogin').onclick = () => {
+                document.getElementById('btnCancelSso').click();
+            };
+
+            // 7. Inline Login Form
+            document.getElementById('ssoLoginForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const btn = document.getElementById('btnLoginAndAuthorize');
+
+                btn.disabled = true;
+                btn.innerHTML = '<span>⏳</span><span>Iniciando Sesión...</span>';
+
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    // onAuthStateChanged will handle switching to stateAuthenticated
+                } catch(err) {
+                    console.error('Login error:', err);
+                    alert('Error al iniciar sesión: ' + err.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>';
+                }
+            };
+        });
+    </script>
+</body>
+</html>

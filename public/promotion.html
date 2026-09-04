@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB Promotion Studio - Promociona tu música, obras y contenido artístico con la economía QAV">
+    <title>Estudio de Promoción - PROVIWEB</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0b0b10;
+            --bg-secondary: #12121a;
+            --bg-card: #161622;
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-purple: #a855f7;
+            --accent-blue: #007BFF;
+            --accent-gold: #fbbf24;
+            --accent-green: #22c55e;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+            --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+            --gradient-platinum: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Top App Bar */
+        .promo-topbar {
+            height: 56px;
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .promo-back-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .promo-back-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--accent-purple);
+        }
+
+        .wallet-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #e9d5ff;
+        }
+
+        /* Main Container */
+        .promo-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        /* Hero Banner */
+        .promo-hero-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(0, 123, 255, 0.15) 100%), #14141e;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        /* Segmented Tabs */
+        .promo-tabs-nav {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 22px;
+        }
+
+        .promo-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .promo-tab-btn.active {
+            background: var(--gradient-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .promo-panel { display: none; }
+        .promo-panel.active { display: block; animation: fadeIn 0.3s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Card */
+        .promo-step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+
+        .promo-step-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        /* Content Selector Carousel */
+        .content-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .selectable-content-item {
+            background: #111118;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+        }
+
+        .selectable-content-item:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .selectable-content-item.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+        }
+
+        .selectable-content-item.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: #a855f7;
+            color: #fff;
+            font-weight: 900;
+            font-size: 11px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Plans Grid (Silver, Gold, Platinum) */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+        }
+
+        .plan-card {
+            background: #111118;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .plan-card.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.12);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25);
+        }
+
+        .plan-badge {
+            font-size: 10px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 6px;
+            width: fit-content;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-silver .plan-badge { background: rgba(203, 213, 225, 0.2); color: #cbd5e1; border: 1px solid #94a3b8; }
+        .plan-gold .plan-badge { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid #fbbf24; }
+        .plan-platinum .plan-badge { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+
+        .plan-price {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .plan-features-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .plan-features-list li::before {
+            content: '✓ ';
+            color: #4ade80;
+            font-weight: 900;
+        }
+
+        /* Form Inputs */
+        .promo-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border-radius: 10px;
+            background: #111118;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .promo-input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+        }
+
+        /* Submit Button */
+        .btn-launch-campaign {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: var(--gradient-primary);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-launch-campaign:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.6);
+        }
+
+        /* Campaign Stats Cards */
+        .campaign-item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .campaign-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: #111118;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .campaign-stat-num {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .campaign-stat-label {
+            font-size: 10.5px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 600px) {
+            .promo-hero-card { flex-direction: column; text-align: center; }
+            .plans-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <header class="promo-topbar">
+        <a href="home.html" class="promo-back-btn">← Volver</a>
+        <div style="font-weight: 800; font-size: 14px; color: #fff;">🚀 Estudio de Promoción</div>
+        <div class="wallet-pill" id="walletBalancePill">💎 0.00 QAV</div>
+    </header>
+
+    <main class="promo-container">
+        <!-- HERO BANNER -->
+        <div class="promo-hero-card">
+            <div>
+                <h1 style="font-size: 20px; font-weight: 900; margin-bottom: 6px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Impulsa tu Arte & Conecta con Más Audiencia</h1>
+                <p style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.4;">Destaca tus publicaciones, canciones, partituras y conciertos en el feed principal y salas de ensayo.</p>
+            </div>
+            <div style="font-size: 40px;">📢</div>
+        </div>
+
+        <!-- TABS NAV -->
+        <div class="promo-tabs-nav">
+            <button type="button" class="promo-tab-btn active" data-panel="panelCreate">
+                <span>➕</span><span>Nueva Campaña</span>
+            </button>
+            <button type="button" class="promo-tab-btn" data-panel="panelStats">
+                <span>📊</span><span>Mis Campañas (<span id="activeCount">0</span>)</span>
+            </button>
+        </div>
+
+        <!-- PANEL 1: CREAR CAMPAÑA -->
+        <div class="promo-panel active" id="panelCreate">
+            <!-- PASO 1: SELECCIONAR CONTENIDO -->
+            <div class="promo-step-card">
+                <div class="promo-step-title">
+                    <span>1️⃣</span><span>Selecciona la Obra o Publicación a Promocionar</span>
+                </div>
+                <div class="content-selector-grid" id="userContentSelector">
+                    <div style="color: var(--text-secondary); font-size: 12px; padding: 20px; text-align: center; grid-column: 1 / -1;">
+                        Cargando tus publicaciones y música... 🎵
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2: ELEGIR PLAN -->
+            <div class="promo-step-card">
+                <div class="promo-step-title">
+                    <span>2️⃣</span><span>Elige tu Plan de Alcance</span>
+                </div>
+                <div class="plans-grid">
+                    <!-- SILVER -->
+                    <div class="plan-card plan-silver" data-plan="silver" data-cost="30" data-duration="3">
+                        <div class="plan-badge">SILVER · 3 DÍAS</div>
+                        <div class="plan-price">30 <span style="font-size: 14px; font-weight: 700; color: #a855f7;">QAV</span></div>
+                        <ul class="plan-features-list">
+                            <li>Alcance estimado: ~1,500 personas</li>
+                            <li>Badge Patrocinado en el Feed</li>
+                            <li>Prioridad estándar en explorador</li>
+                        </ul>
+                    </div>
+
+                    <!-- GOLD -->
+                    <div class="plan-card plan-gold selected" data-plan="gold" data-cost="60" data-duration="7">
+                        <div class="plan-badge">GOLD (RECOMENDADO) · 7 DÍAS</div>
+                        <div class="plan-price">60 <span style="font-size: 14px; font-weight: 700; color: #fbbf24;">QAV</span></div>
+                        <ul class="plan-features-list">
+                            <li>Alcance estimado: ~5,000 personas</li>
+                            <li>Botón de Acción Directa (CTA)</li>
+                            <li>Destacado en feed de artistas</li>
+                        </ul>
+                    </div>
+
+                    <!-- PLATINUM -->
+                    <div class="plan-card plan-platinum" data-plan="platinum" data-cost="200" data-duration="30">
+                        <div class="plan-badge">PLATINUM · 30 DÍAS</div>
+                        <div class="plan-price">200 <span style="font-size: 14px; font-weight: 700; color: #38bdf8;">QAV</span></div>
+                        <ul class="plan-features-list">
+                            <li>Alcance estimado: ~25,000 personas</li>
+                            <li>Máxima prioridad en salas y búsqueda</li>
+                            <li>Métricas analíticas avanzadas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 3: BOTÓN DE ACCIÓN (CTA) -->
+            <div class="promo-step-card">
+                <div class="promo-step-title">
+                    <span>3️⃣</span><span>Configura el Botón de Acción Directa</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                    <div>
+                        <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Texto del Botón:</label>
+                        <select id="ctaActionTitle" class="promo-input">
+                            <option value="Ver Perfil Artístico">👤 Ver Perfil Artístico</option>
+                            <option value="Escuchar Música">🎵 Escuchar Tema Completo</option>
+                            <option value="Visitar Sitio Web">🌐 Visitar Sitio Web</option>
+                            <option value="Contratar / Contactar">💼 Contratar / Contactar</option>
+                            <option value="Ver Partitura">🎼 Ver Partitura</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Enlace de Destino (URL o Instagram/Spotify):</label>
+                        <input type="url" id="ctaActionUrl" class="promo-input" placeholder="https://instagram.com/tu_usuario o enlace">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 4: LANZAR CAMPAÑA -->
+            <button type="button" class="btn-launch-campaign" id="btnLaunchPromo">
+                <span>🚀 Activar Promoción con Saldo QAV</span>
+            </button>
+        </div>
+
+        <!-- PANEL 2: MIS ESTADÍSTICAS -->
+        <div class="promo-panel" id="panelStats">
+            <div id="myPromotionsList">
+                <div style="color: var(--text-secondary); font-size: 12px; padding: 30px; text-align: center;">
+                    Cargando tus campañas activas...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FIREBASE INITIALIZATION & LOGIC -->
+    <script src="js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const auth = firebase.auth();
+            const db = firebase.database();
+
+            let currentUser = null;
+            let currentBalance = 0;
+            let selectedContent = null;
+            let selectedPlan = { type: 'gold', cost: 60, durationDays: 7 };
+
+            // 1. Tab Switching
+            const tabBtns = document.querySelectorAll('.promo-tab-btn');
+            const panels = document.querySelectorAll('.promo-panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    const target = btn.dataset.panel;
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+
+            // 2. Plan Selection
+            const planCards = document.querySelectorAll('.plan-card');
+            planCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    planCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+
+                    selectedPlan = {
+                        type: card.dataset.plan,
+                        cost: parseFloat(card.dataset.cost),
+                        durationDays: parseInt(card.dataset.duration)
+                    };
+                });
+            });
+
+            // 3. Auth Listener & Load User Content
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                currentUser = user;
+
+                // Load Balance
+                db.ref(`Balance/${user.uid}/balance`).on('value', (snap) => {
+                    currentBalance = parseFloat(snap.val()) || 0;
+                    document.getElementById('walletBalancePill').textContent = `💎 ${currentBalance.toFixed(2)} QAV`;
+                });
+
+                // Load User Posts for Selector
+                loadUserPosts(user.uid);
+
+                // Load Active Promotions
+                loadMyPromotions(user.uid);
+            });
+
+            async function loadUserPosts(uid) {
+                const selector = document.getElementById('userContentSelector');
+                try {
+                    const snap = await db.ref('Posts').orderByChild('uid').equalTo(uid).once('value');
+                    const posts = [];
+                    snap.forEach(child => {
+                        posts.push({ id: child.key, ...child.val() });
+                    });
+
+                    if (posts.length === 0) {
+                        selector.innerHTML = '<div style="color:var(--text-secondary); font-size:12px; padding:20px; text-align:center; grid-column:1/-1;">No tienes publicaciones aún. ¡Crea una publicación en Inicio para promocionarla!</div>';
+                        return;
+                    }
+
+                    selector.innerHTML = '';
+                    posts.reverse().forEach((p, idx) => {
+                        const item = document.createElement('div');
+                        item.className = `selectable-content-item ${idx === 0 ? 'selected' : ''}`;
+                        if (idx === 0) selectedContent = p;
+
+                        const textPreview = p.pDescr || p.pDescription || p.description || 'Publicación sin texto';
+                        const mediaImg = p.pImage || (p.images && p.images[0]) || './assets/logotransparente-1dd37ce8.png';
+
+                        item.innerHTML = `
+                            <div style="height: 90px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                <img src="${mediaImg}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='./assets/logotransparente-1dd37ce8.png'">
+                            </div>
+                            <div style="font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${textPreview}
+                            </div>
+                            <div style="font-size: 10px; color: var(--text-muted);">
+                                📝 Post · ${p.pCategory || 'Música'}
+                            </div>
+                        `;
+
+                        item.onclick = () => {
+                            document.querySelectorAll('.selectable-content-item').forEach(i => i.classList.remove('selected'));
+                            item.classList.add('selected');
+                            selectedContent = p;
+                        };
+
+                        selector.appendChild(item);
+                    });
+                } catch(e) {
+                    console.error('Error loading posts:', e);
+                }
+            }
+
+            // 4. Launch Campaign
+            document.getElementById('btnLaunchPromo').onclick = async () => {
+                if (!selectedContent) {
+                    alert('Por favor selecciona una publicación o canción para promocionar.');
+                    return;
+                }
+
+                if (currentBalance < selectedPlan.cost) {
+                    alert(`Saldo insuficiente. Necesitas ${selectedPlan.cost} QAVs y tienes ${currentBalance.toFixed(2)} QAVs. Puedes recargar o ganar QAVs en la sección de Juegos y Torneos.`);
+                    return;
+                }
+
+                const ctaTitle = document.getElementById('ctaActionTitle').value;
+                const ctaUrl = document.getElementById('ctaActionUrl').value.trim() || `${window.location.origin}/userprofile.html?uid=${currentUser.uid}`;
+
+                const confirmPromo = confirm(`¿Confirmas la activación de la campaña ${selectedPlan.type.toUpperCase()} por ${selectedPlan.cost} QAVs durante ${selectedPlan.durationDays} días?`);
+                if (!confirmPromo) return;
+
+                const promoId = 'promo_' + Date.now();
+                const startTime = Date.now();
+                const expiryTime = startTime + (selectedPlan.durationDays * 24 * 60 * 60 * 1000);
+
+                const promoData = {
+                    promoId: promoId,
+                    contentId: selectedContent.id || selectedContent.pId,
+                    authorId: currentUser.uid,
+                    type: 'post',
+                    startTime: startTime,
+                    expiryTime: expiryTime,
+                    planType: selectedPlan.type,
+                    cost: selectedPlan.cost,
+                    actionTitle: ctaTitle,
+                    actionUrl: ctaUrl,
+                    impressions: 0,
+                    clicks: 0,
+                    status: 'active'
+                };
+
+                try {
+                    // Save to Promotions/ and UserPromotions/
+                    await db.ref(`Promotions/${promoId}`).set(promoData);
+                    await db.ref(`UserPromotions/${currentUser.uid}/${promoId}`).set(promoData);
+                    
+                    // Mark Post as promoted
+                    await db.ref(`Posts/${selectedContent.id || selectedContent.pId}/promoted`).set(true);
+                    await db.ref(`Posts/${selectedContent.id || selectedContent.pId}/promoData`).set(promoData);
+
+                    // Deduct balance
+                    const newBalance = currentBalance - selectedPlan.cost;
+                    await db.ref(`Balance/${currentUser.uid}/balance`).set(newBalance);
+
+                    alert('🎉 ¡Tu campaña de promoción ha sido activada con éxito en PROVIWEB!');
+                    
+                    // Switch to stats tab
+                    tabBtns[1].click();
+                } catch(e) {
+                    console.error('Error activating campaign:', e);
+                    alert('Hubo un error al activar la promoción.');
+                }
+            };
+
+            // 5. Load Active Promotions
+            function loadMyPromotions(uid) {
+                const list = document.getElementById('myPromotionsList');
+                db.ref(`UserPromotions/${uid}`).on('value', (snap) => {
+                    const promos = [];
+                    snap.forEach(child => {
+                        promos.push(child.val());
+                    });
+
+                    document.getElementById('activeCount').textContent = promos.length;
+
+                    if (promos.length === 0) {
+                        list.innerHTML = `
+                            <div style="text-align:center; padding: 40px 20px; color: var(--text-secondary);">
+                                <div style="font-size: 36px; margin-bottom: 8px;">📢</div>
+                                <div style="font-weight: 800; font-size: 14px; color: #fff;">Sin Campañas Activas</div>
+                                <p style="font-size: 12px; margin-top: 4px;">Crea tu primera promoción para destacar tu contenido artístico.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    list.innerHTML = '';
+                    promos.reverse().forEach(promo => {
+                        const isExpired = Date.now() > promo.expiryTime;
+                        const remainingDays = Math.max(0, Math.ceil((promo.expiryTime - Date.now()) / (1000 * 60 * 60 * 24)));
+
+                        const card = document.createElement('div');
+                        card.className = 'campaign-item-card';
+                        card.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-weight:800; font-size:13px; color:#fff;">
+                                    🚀 Campaña ${(promo.planType || 'GOLD').toUpperCase()}
+                                </div>
+                                <span style="font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:6px; background:${isExpired ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)'}; color:${isExpired ? '#f87171' : '#4ade80'};">
+                                    ${isExpired ? 'FINALIZADA' : `ACTIVA · ${remainingDays} DÍAS RESTANTES`}
+                                </span>
+                            </div>
+
+                            <div class="campaign-stats-grid">
+                                <div>
+                                    <div class="campaign-stat-num">${promo.impressions || 0}</div>
+                                    <div class="campaign-stat-label">👁️ Impresiones</div>
+                                </div>
+                                <div>
+                                    <div class="campaign-stat-num">${promo.clicks || 0}</div>
+                                    <div class="campaign-stat-label">🖱️ Clics</div>
+                                </div>
+                                <div>
+                                    <div class="campaign-stat-num">${promo.cost || 60} QAV</div>
+                                    <div class="campaign-stat-label">💎 Inversión</div>
+                                </div>
+                            </div>
+
+                            <div style="font-size:11.5px; color:var(--text-secondary); display:flex; justify-content:space-between; align-items:center;">
+                                <span>Acción: <strong>${promo.actionTitle || 'Ver Perfil'}</strong></span>
+                                <a href="${promo.actionUrl || '#'}" target="_blank" style="color:var(--accent-purple); text-decoration:none; font-weight:700;">Ver Enlace ➜</a>
+                            </div>
+                        `;
+                        list.appendChild(card);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

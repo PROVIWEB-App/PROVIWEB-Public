@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación en dos pasos - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background: var(--bg-primary); 
+            min-height: 100vh; 
+            color: var(--text-primary); 
+        }
+        .header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            height: 56px; 
+            background: var(--bg-card); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass); 
+            display: flex; 
+            align-items: center; 
+            padding: 0 16px; 
+            z-index: 100; 
+        }
+        .header a { 
+            color: var(--accent-purple); 
+            text-decoration: none; 
+            font-weight: 600; 
+        }
+        .container { 
+            max-width: 480px; 
+            margin: 80px auto 40px; 
+            padding: 24px; 
+            background: var(--bg-card); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+        }
+        .container h1 { 
+            font-size: 22px; 
+            color: var(--text-primary); 
+            margin-bottom: 8px; 
+        }
+        .container p { 
+            color: var(--text-secondary); 
+            font-size: 15px; 
+            line-height: 1.5; 
+            margin-bottom: 20px; 
+        }
+        #qrcodeContainer { 
+            text-align: center; 
+            margin: 20px 0; 
+        }
+        #qrcodeContainer img { 
+            border: 2px solid var(--border-glass); 
+            border-radius: 12px; 
+            padding: 8px; 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        .secret-code { 
+            font-family: monospace; 
+            font-size: 14px; 
+            background: rgba(0, 0, 0, 0.3); 
+            color: var(--text-primary);
+            padding: 12px; 
+            border-radius: 8px; 
+            word-break: break-all; 
+            margin: 16px 0; 
+            border: 1px solid var(--border-glass);
+        }
+        input[type="text"] { 
+            width: 100%; 
+            padding: 14px; 
+            font-size: 1.2rem; 
+            letter-spacing: 0.4em; 
+            text-align: center; 
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            border: 2px solid var(--border-glass); 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            margin-bottom: 12px; 
+        }
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+        .btn { 
+            display: inline-block; 
+            padding: 12px 24px; 
+            background: var(--gradient-primary); 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            width: 100%; 
+        }
+        .btn:hover { 
+            opacity: 0.9;
+        }
+        .btn:disabled { 
+            background: rgba(255, 255, 255, 0.1); 
+            cursor: not-allowed; 
+            opacity: 0.5;
+        }
+        .btn-secondary { 
+            background: rgba(255, 255, 255, 0.1); 
+            margin-top: 8px; 
+            border: 1px solid var(--border-glass);
+        }
+        .btn-secondary:hover { 
+            background: rgba(255, 255, 255, 0.15); 
+        }
+        .error { 
+            color: #ff6b6b; 
+            font-size: 14px; 
+            margin-top: 8px; 
+        }
+        .success { 
+            color: #51cf66; 
+            font-size: 15px; 
+            margin-top: 12px; 
+        }
+        .state-section { display: none; }
+        .state-section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="#" id="headerBackLink">‹ Volver al perfil</a>
+    </div>
+
+    <div class="container">
+        <h1>Autenticación en dos pasos</h1>
+
+        <div id="stateLoading" class="state-section active">
+            <p>Cargando…</p>
+        </div>
+
+        <div id="stateSetup" class="state-section">
+            <p>Usa una app como <strong>Google Authenticator</strong> o <strong>Authy</strong>. Escanea el código QR con la app o introduce la clave manualmente. Luego escribe aquí el código de 6 dígitos que muestra la app para activar.</p>
+            <div id="qrcodeContainer"></div>
+            <p style="font-size:13px; color: var(--text-secondary);">Si no puedes escanear, introduce esta clave en la app:</p>
+            <div id="secretDisplay" class="secret-code"></div>
+            <input type="text" id="setupCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+            <button type="button" id="btnVerifySetup" class="btn">Activar app de autenticación</button>
+            <p id="setupError" class="error"></p>
+        </div>
+
+        <div id="stateEnabled" class="state-section">
+            <p class="success">Tienes activada la <strong>app de autenticación</strong>. Al iniciar sesión se te pedirá el código de la app en lugar del correo.</p>
+            <p style="font-size:14px; color: var(--text-secondary);">Para volver a usar solo el correo, introduce el código actual de tu app y pulsa desactivar.</p>
+            <input type="text" id="disableCode" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Código actual" autocomplete="one-time-code">
+            <button type="button" id="btnDisable" class="btn btn-secondary">Desactivar y usar solo correo</button>
+            <p id="disableError" class="error"></p>
+        </div>
+
+        <div id="stateError" class="state-section">
+            <p id="errorMessage" class="error"></p>
+            <a href="myprofile.html" class="btn">Volver al perfil</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        function show(id) {
+            document.querySelectorAll('.state-section').forEach(el => el.classList.remove('active'));
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        }
+
+        function setText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        }
+
+        const fromParam = new URLSearchParams(window.location.search).get('from') || '';
+        const headerBackLink = document.getElementById('headerBackLink');
+        if (headerBackLink) {
+            if (fromParam === 'home' || fromParam === 'register') {
+                headerBackLink.textContent = '‹ Volver';
+                headerBackLink.href = 'home.html';
+            } else {
+                headerBackLink.href = 'myprofile.html';
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            const uid = user.uid;
+            const userSnap = await get(ref(db, 'Users/' + uid));
+            const userData = userSnap.exists() ? userSnap.val() : {};
+            const twoFactorMethod = userData.twoFactorMethod || 'email';
+            const appVerify = userData.appVerify === true || userData.appVerify === 'true';
+
+            // Si llegó desde home/register y aún no tiene appVerify, siempre mostrar configuración (QR + código)
+            const mustSetup = (fromParam === 'home' || fromParam === 'register') && !appVerify;
+
+            if (twoFactorMethod === 'authenticator' && !mustSetup) {
+                show('stateEnabled');
+                document.getElementById('disableCode').value = '';
+                document.getElementById('btnDisable').onclick = async () => {
+                    const code = document.getElementById('disableCode').value.trim();
+                    setText('disableError', '');
+                    if (!/^\d{6}$/.test(code)) {
+                        setText('disableError', 'Introduce los 6 dígitos de tu app.');
+                        return;
+                    }
+                    document.getElementById('btnDisable').disabled = true;
+                    try {
+                        const functions = getFunctions(app, 'us-central1');
+                        await httpsCallable(functions, 'disableTotp')({ code });
+                        show('stateSetup');
+                        await startSetup();
+                    } catch (err) {
+                        setText('disableError', err.message || 'Código incorrecto.');
+                        document.getElementById('btnDisable').disabled = false;
+                    }
+                };
+                return;
+            }
+
+            await startSetup();
+        });
+
+        async function startSetup() {
+            show('stateSetup');
+            setText('setupError', '');
+            document.getElementById('setupCode').value = '';
+            const btn = document.getElementById('btnVerifySetup');
+            btn.disabled = true;
+            const qrContainer = document.getElementById('qrcodeContainer');
+            const secretDisplay = document.getElementById('secretDisplay');
+            qrContainer.innerHTML = '<p style="color: var(--text-secondary);">Generando código QR…</p>';
+            secretDisplay.textContent = '…';
+
+            try {
+                const functions = getFunctions(app, 'us-central1');
+                const result = await httpsCallable(functions, 'setupTotp')();
+                const data = result && result.data;
+                const otpauthUrl = data && data.otpauthUrl;
+                const secretBase32 = data && data.secretBase32;
+
+                if (!otpauthUrl || !secretBase32) {
+                    setText('setupError', 'No se recibió el código. Intenta de nuevo.');
+                    qrContainer.innerHTML = '';
+                    secretDisplay.textContent = '';
+                    return;
+                }
+
+                secretDisplay.textContent = secretBase32;
+                qrContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.alt = 'QR para app de autenticación';
+                img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(otpauthUrl);
+                img.style.maxWidth = '100%';
+                qrContainer.appendChild(img);
+                btn.disabled = false;
+                btn.onclick = verifySetup;
+            } catch (err) {
+                const msg = (err && err.message) || 'No se pudo iniciar la configuración.';
+                setText('setupError', msg);
+                show('stateError');
+                setText('errorMessage', msg);
+                qrContainer.innerHTML = '';
+                secretDisplay.textContent = '';
+            }
+        }
+
+        async function verifySetup() {
+            const code = document.getElementById('setupCode').value.trim();
+            setText('setupError', '');
+            if (!/^\d{6}$/.test(code)) {
+                setText('setupError', 'Introduce los 6 dígitos que muestra tu app.');
+                return;
+            }
+            const btn = document.getElementById('btnVerifySetup');
+            btn.disabled = true;
+            try {
+                const functions = getFunctions(app, 'us-central1');
+                await httpsCallable(functions, 'verifyTotpSetup')({ code });
+                show('stateEnabled');
+                document.getElementById('disableCode').value = '';
+                document.getElementById('btnDisable').onclick = async () => {
+                    const disableCode = document.getElementById('disableCode').value.trim();
+                    setText('disableError', '');
+                    if (!/^\d{6}$/.test(disableCode)) {
+                        setText('disableError', 'Introduce los 6 dígitos de tu app.');
+                        return;
+                    }
+                    document.getElementById('btnDisable').disabled = true;
+                    try {
+                        const functions = getFunctions(app, 'us-central1');
+                        await httpsCallable(functions, 'disableTotp')({ code: disableCode });
+                        await startSetup();
+                    } catch (err) {
+                        setText('disableError', err.message || 'Código incorrecto.');
+                        document.getElementById('btnDisable').disabled = false;
+                    }
+                };
+                // Si llegó desde home o register, redirigir a home tras configurar
+                if (fromParam === 'home' || fromParam === 'register') {
+                    setTimeout(() => { window.location.href = 'home.html'; }, 800);
+                }
+            } catch (err) {
+                setText('setupError', err.message || 'Código incorrecto. Comprueba la hora del móvil.');
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('setupCode').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+        document.getElementById('disableCode').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Panel admin de aliados PROVIWEB con funciones activas segun plan.">
+    <title>Panel Aliado - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --card-bg: rgba(29, 29, 40, 0.78);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #a1a1b6;
+            --text-muted: #717184;
+            --accent-1: #a855f7;
+            --accent-2: #007BFF;
+            --gradient-main: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            color: var(--text-primary);
+            background:
+                radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.18), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(0, 123, 255, 0.16), transparent 45%),
+                linear-gradient(180deg, #0f0f13, #0d0d12 55%, #0a0a10);
+            min-height: 100vh;
+        }
+
+        .ally-admin-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 44px;
+        }
+
+        .ally-admin-topbar {
+            position: sticky;
+            top: 14px;
+            z-index: 20;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            background: rgba(15, 15, 19, 0.84);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+        }
+
+        .ally-admin-brand {
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.15rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .topbar-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .topbar-btn {
+            border: 1px solid var(--card-border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.82rem;
+            padding: 9px 12px;
+            transition: all 0.2s ease;
+        }
+
+        .topbar-btn:hover {
+            color: var(--text-primary);
+            border-color: rgba(168, 85, 247, 0.4);
+            background: rgba(168, 85, 247, 0.12);
+        }
+
+        .topbar-btn.immersive {
+            border-color: rgba(168, 85, 247, 0.45);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(0, 123, 255, 0.2));
+            color: #f5f3ff;
+        }
+
+        .topbar-btn.immersive:hover {
+            border-color: rgba(168, 85, 247, 0.65);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.32), rgba(0, 123, 255, 0.28));
+            color: #ffffff;
+        }
+
+        .hero-card,
+        .card,
+        .module-card,
+        .plan-checklist {
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-card {
+            border-radius: 22px;
+            padding: 20px;
+        }
+
+        .hero-card h1 {
+            margin: 0;
+            font-size: clamp(1.4rem, 4vw, 2.1rem);
+            line-height: 1.15;
+            font-weight: 800;
+        }
+
+        .hero-card p {
+            margin: 10px 0 0;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.7;
+            max-width: 72ch;
+        }
+
+        .hero-meta {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hero-chip {
+            border-radius: 999px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            font-size: 0.77rem;
+            font-weight: 700;
+            padding: 7px 11px;
+        }
+
+        .hero-chip strong { color: var(--text-primary); }
+        .hero-chip.plan {
+            border-color: rgba(168, 85, 247, 0.35);
+            background: rgba(168, 85, 247, 0.14);
+            color: #e9d5ff;
+        }
+        .hero-chip.status-ok {
+            border-color: rgba(52, 211, 153, 0.35);
+            background: rgba(52, 211, 153, 0.12);
+            color: #a7f3d0;
+        }
+        .hero-chip.status-warn {
+            border-color: rgba(251, 191, 36, 0.35);
+            background: rgba(251, 191, 36, 0.12);
+            color: #fde68a;
+        }
+
+        .summary-row {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 12px;
+        }
+
+        .card { padding: 14px; }
+        .card h2 {
+            margin: 0;
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .card p {
+            margin: 8px 0 0;
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.62;
+        }
+
+        .progress-track {
+            margin-top: 10px;
+            width: 100%;
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 25%;
+            background: var(--gradient-main);
+            transition: width 0.25s ease;
+        }
+
+        .plan-helper {
+            margin-top: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            background: rgba(168, 85, 247, 0.12);
+            padding: 10px;
+            font-size: 0.8rem;
+            color: #ddd6fe;
+            line-height: 1.55;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .kpi-card {
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .kpi-value {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .kpi-label {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .section-title {
+            margin: 16px 0 4px;
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            margin: 0 0 12px;
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.65;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .module-card {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 250px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            border-color: rgba(168, 85, 247, 0.28);
+            transform: translateY(-2px);
+        }
+
+        .module-card.is-locked {
+            border-color: rgba(251, 113, 133, 0.25);
+            background: rgba(38, 24, 30, 0.66);
+        }
+
+        .module-card.is-locked::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(8, 8, 12, 0.45) 100%);
+            pointer-events: none;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .module-header h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .module-level {
+            border-radius: 999px;
+            border: 1px solid var(--card-border);
+            padding: 4px 8px;
+            color: var(--text-secondary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .module-card.is-locked .module-level {
+            border-color: rgba(251, 191, 36, 0.35);
+            color: #fde68a;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .module-body-text {
+            margin: 0 0 10px;
+            color: var(--text-secondary);
+            font-size: 0.83rem;
+            line-height: 1.55;
+        }
+
+        .module-lock-note {
+            margin-top: auto;
+            border-radius: 10px;
+            border: 1px dashed rgba(251, 191, 36, 0.4);
+            background: rgba(251, 191, 36, 0.1);
+            color: #fde68a;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.5;
+            padding: 8px;
+            display: none;
+        }
+
+        .module-card.is-locked .module-lock-note {
+            display: block;
+        }
+
+        form {
+            display: grid;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            font-family: inherit;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            padding: 9px 10px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        select {
+            color-scheme: dark;
+        }
+
+        select option,
+        select optgroup {
+            color: #0f172a;
+            background: #ffffff;
+        }
+
+        select option:checked {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+        }
+
+        textarea {
+            min-height: 72px;
+            resize: vertical;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            border: 0;
+            border-radius: 10px;
+            font-size: 0.81rem;
+            font-weight: 800;
+            padding: 9px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background: var(--gradient-main);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.24);
+        }
+
+        .btn-primary:hover { transform: translateY(-1px); }
+
+        .btn-secondary {
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(168, 85, 247, 0.35);
+            color: #e9d5ff;
+        }
+
+        .btn-inline-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .item-list {
+            margin: 8px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 7px;
+            max-height: 150px;
+            overflow: auto;
+        }
+
+        .item-list li {
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px;
+            font-size: 0.77rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .item-list li strong {
+            color: var(--text-primary);
+            display: block;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .item-list li small {
+            color: var(--text-muted);
+            font-size: 0.71rem;
+        }
+
+        .empty-state {
+            color: var(--text-muted);
+            font-size: 0.77rem;
+            border: 1px dashed var(--card-border);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .delete-btn {
+            border: 1px solid rgba(251, 113, 133, 0.45);
+            background: rgba(251, 113, 133, 0.12);
+            color: #fecdd3;
+            border-radius: 8px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            padding: 5px 7px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover { background: rgba(251, 113, 133, 0.2); }
+
+        .talent-toolbar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .talent-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .talent-results {
+            margin-top: 10px;
+            display: grid;
+            gap: 8px;
+            max-height: 260px;
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .talent-card {
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 9px;
+        }
+
+        .talent-card strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .talent-card small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.74rem;
+            line-height: 1.45;
+        }
+
+        .talent-card .tags {
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            line-height: 1.45;
+        }
+
+        .talent-card .actions {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tiny-btn {
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tiny-btn:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            color: #e9d5ff;
+            background: rgba(168, 85, 247, 0.12);
+        }
+
+        .inline-hint {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.74rem;
+            line-height: 1.5;
+        }
+
+        .analytics-wrap {
+            margin-top: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .analytics-kpis {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .analytics-kpi {
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px;
+            text-align: center;
+        }
+
+        .analytics-kpi strong {
+            display: block;
+            font-size: 1.05rem;
+            line-height: 1.1;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .analytics-kpi span {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .country-chart-block h4 {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .country-chart {
+            margin-top: 8px;
+            display: grid;
+            gap: 7px;
+            max-height: 170px;
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .country-row {
+            display: grid;
+            grid-template-columns: 82px 1fr 40px;
+            gap: 6px;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .country-name {
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .country-bar-track {
+            border-radius: 999px;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .country-bar-fill {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            background: var(--gradient-main);
+            transition: width 0.7s ease;
+        }
+
+        .country-count {
+            text-align: right;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .application-toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: end;
+        }
+
+        .application-list {
+            margin-top: 10px;
+            display: grid;
+            gap: 8px;
+            max-height: 260px;
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .application-card {
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 9px;
+        }
+
+        .application-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .application-head strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            line-height: 1.35;
+        }
+
+        .application-head small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            line-height: 1.4;
+        }
+
+        .status-pill {
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 0.64rem;
+            font-weight: 800;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+
+        .status-pill.pending {
+            color: #67e8f9;
+            border-color: rgba(34, 211, 238, 0.4);
+            background: rgba(34, 211, 238, 0.12);
+        }
+
+        .status-pill.accepted {
+            color: #86efac;
+            border-color: rgba(74, 222, 128, 0.4);
+            background: rgba(74, 222, 128, 0.12);
+        }
+
+        .status-pill.declined {
+            color: #fecdd3;
+            border-color: rgba(251, 113, 133, 0.45);
+            background: rgba(251, 113, 133, 0.14);
+        }
+
+        .application-meta {
+            margin-top: 6px;
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            line-height: 1.45;
+            display: grid;
+            gap: 3px;
+        }
+
+        .application-actions {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tiny-btn.accept {
+            color: #86efac;
+            border-color: rgba(74, 222, 128, 0.4);
+            background: rgba(74, 222, 128, 0.12);
+        }
+
+        .tiny-btn.decline {
+            color: #fecdd3;
+            border-color: rgba(251, 113, 133, 0.45);
+            background: rgba(251, 113, 133, 0.14);
+        }
+
+        .plan-checklist {
+            margin-top: 12px;
+            padding: 14px;
+        }
+
+        .plan-checklist ul {
+            margin: 10px 0 0;
+            padding-left: 18px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .plan-checklist li {
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+
+        .plan-checklist li.is-locked {
+            color: var(--text-muted);
+            text-decoration: line-through;
+            text-decoration-color: rgba(251, 113, 133, 0.6);
+        }
+
+        .upgrade-cta {
+            margin-top: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            background: rgba(168, 85, 247, 0.12);
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .upgrade-cta p {
+            margin: 0;
+            color: #ddd6fe;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .toast {
+            position: fixed;
+            right: 14px;
+            bottom: 14px;
+            z-index: 60;
+            min-width: 240px;
+            max-width: 360px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: rgba(15, 15, 19, 0.9);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38);
+            transform: translateY(16px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.warn {
+            border-color: rgba(251, 191, 36, 0.4);
+            background: rgba(58, 47, 22, 0.94);
+            color: #fde68a;
+        }
+
+        .toast.ok {
+            border-color: rgba(52, 211, 153, 0.4);
+            background: rgba(20, 54, 44, 0.94);
+            color: #a7f3d0;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+        }
+
+        /* Animaciones del panel aliado */
+        .ally-reveal {
+            opacity: 0;
+            transform: translateY(16px) scale(0.985);
+            filter: blur(2px);
+            will-change: transform, opacity, filter;
+        }
+
+        .ally-reveal.is-visible {
+            animation: allyRevealIn 0.56s cubic-bezier(0.22, 0.84, 0.27, 1) forwards;
+            animation-delay: var(--ally-delay, 0ms);
+        }
+
+        .kpi-card,
+        .analytics-kpi,
+        .talent-card,
+        .application-card {
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover,
+        .analytics-kpi:hover,
+        .talent-card:hover,
+        .application-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(168, 85, 247, 0.35);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+        }
+
+        .item-list li,
+        .talent-card,
+        .application-card,
+        .country-row {
+            animation: allyItemIn 0.36s ease both;
+        }
+
+        @keyframes allyRevealIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.985);
+                filter: blur(2px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes allyItemIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ally-reveal,
+            .ally-reveal.is-visible,
+            .item-list li,
+            .talent-card,
+            .application-card,
+            .country-row {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                filter: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .summary-row { grid-template-columns: 1fr; }
+            .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .module-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 680px) {
+            .ally-admin-topbar {
+                position: static;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .topbar-actions {
+                justify-content: flex-start;
+            }
+            .form-row { grid-template-columns: 1fr; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .upgrade-cta { align-items: stretch; }
+            .btn-primary,
+            .btn-secondary { width: 100%; }
+            .talent-toolbar { grid-template-columns: 1fr; }
+            .analytics-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .application-toolbar { grid-template-columns: 1fr; }
+            .country-row { grid-template-columns: 76px 1fr 34px; }
+        }
+    </style>
+</head>
+<body>
+<main class="ally-admin-shell">
+    <div class="ally-admin-topbar">
+        <a class="ally-admin-brand" href="home.html">PROVIWEB - Panel Aliado</a>
+        <div class="topbar-actions">
+            <a class="topbar-btn" href="home.html">Ir a Home</a>
+            <a class="topbar-btn immersive" href="home.html?mode=immersive">🌐 Mundo inmersivo</a>
+            <a class="topbar-btn" href="ser-aliado.html">Ver planes</a>
+            <a class="topbar-btn" href="ally-register.html">Registro aliado</a>
+            <a class="topbar-btn" href="edirmyprofile.html?ally=1">Editar perfil</a>
+        </div>
+    </div>
+
+    <section class="hero-card">
+        <h1>Centro de administracion de aliados</h1>
+        <p>Este panel concentra las funciones operativas para aliados PROVIWEB. El acceso se habilita automaticamente segun tu plan activo: Comunidad, Visibilidad, Formacion o Estrategico.</p>
+        <div class="hero-meta">
+            <span class="hero-chip"><strong>Entidad:</strong> <span id="allyEntityName">Aliado PROVIWEB</span></span>
+            <span class="hero-chip"><strong>Tipo:</strong> <span id="allyEntityType">No definido</span></span>
+            <span class="hero-chip"><strong>Distintivo:</strong> <span id="allyBadge">Pendiente</span></span>
+            <span class="hero-chip plan" id="planBadge">Plan Comunidad</span>
+            <span class="hero-chip status-warn" id="authState">Sin sesion iniciada</span>
+        </div>
+    </section>
+    <section class="summary-row">
+        <article class="card">
+            <h2>Estado de plan y cobertura</h2>
+            <p id="planSummaryText">Plan base para publicar convocatorias y organizar postulaciones en la plataforma.</p>
+            <div class="progress-track" aria-hidden="true">
+                <div class="progress-bar" id="planProgress"></div>
+            </div>
+            <div class="plan-helper" id="planHelperText">
+                Puedes subir de plan cuando necesites activaciones de marca, formacion o integracion comercial avanzada.
+            </div>
+        </article>
+        <article class="card">
+            <h2>Indicadores operativos</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-value" id="kpiOpportunities">0</span>
+                    <span class="kpi-label">Convocatorias</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-value" id="kpiLeads">0</span>
+                    <span class="kpi-label">Postulaciones</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-value" id="kpiActivations">0</span>
+                    <span class="kpi-label">Activaciones</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-value" id="kpiAdvanced">0</span>
+                    <span class="kpi-label">Formacion/QAV</span>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <h2 class="section-title">Funciones operativas por plan</h2>
+    <p class="section-subtitle">Cada bloque representa una capacidad del programa de aliados. Si una funcion aparece bloqueada, puedes habilitarla al escalar tu plan.</p>
+
+    <section class="module-grid">
+        <article class="module-card" data-module="opportunities" data-min-plan="comunidad">
+            <div class="module-header">
+                <h3>Publicar convocatorias</h3>
+                <span class="module-level">Comunidad+</span>
+            </div>
+            <p class="module-body-text">Publica convocatorias completas para que aparezcan en Home y reciban registros reales de usuarios.</p>
+            <form id="opportunityForm">
+                <div class="form-row">
+                    <div>
+                        <label for="oppTitle">Titulo</label>
+                        <input id="oppTitle" name="title" type="text" maxlength="80" required>
+                    </div>
+                    <div>
+                        <label for="oppDiscipline">Disciplina</label>
+                        <select id="oppDiscipline" name="discipline" required>
+                            <option value="Musica">Musica</option>
+                            <option value="Artes Visuales">Artes Visuales</option>
+                            <option value="Letras">Letras</option>
+                            <option value="Teatro">Teatro</option>
+                            <option value="Danza">Danza</option>
+                            <option value="Cine y Audiovisual">Cine y Audiovisual</option>
+                            <option value="Fotografia">Fotografia</option>
+                            <option value="Diseno Grafico">Diseno Grafico</option>
+                            <option value="Diseno de Moda">Diseno de Moda</option>
+                            <option value="Artes Escenicas">Artes Escenicas</option>
+                            <option value="Artes Plasticas">Artes Plasticas</option>
+                            <option value="Composicion Musical">Composicion Musical</option>
+                            <option value="Produccion Musical">Produccion Musical</option>
+                            <option value="Gestion Cultural">Gestion Cultural</option>
+                            <option value="Docencia Artistica">Docencia Artistica</option>
+                            <option value="Interdisciplinar">Interdisciplinar</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="oppDescription">Descripcion</label>
+                    <textarea id="oppDescription" name="description" maxlength="1200" placeholder="Describe requisitos, perfil, beneficios y condiciones." required></textarea>
+                </div>
+                <div>
+                    <label for="oppExternalLinks">Links externos</label>
+                    <textarea id="oppExternalLinks" name="externalLinks" maxlength="1000" placeholder="https://tu-link.com&#10;https://otro-link.com"></textarea>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="oppImageUrl">Imagen (URL)</label>
+                        <input id="oppImageUrl" name="imageUrl" type="url" maxlength="600" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label for="oppAddress">Direccion / ubicacion</label>
+                        <input id="oppAddress" name="address" type="text" maxlength="140" placeholder="Ej: Bogota, Colombia o Online" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="oppVisibility">Visibilidad</label>
+                        <select id="oppVisibility" name="visibility" required>
+                            <option value="public">Publica</option>
+                            <option value="private">Privada</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="oppPricingModel">Tipo de acceso</label>
+                        <select id="oppPricingModel" name="pricingModel" required>
+                            <option value="free">Gratuita</option>
+                            <option value="paid">De pago</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="oppModality">Modalidad</label>
+                        <select id="oppModality" name="modality" required>
+                            <option value="online">Online</option>
+                            <option value="presencial">Presencial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="oppDeadline">Fecha limite</label>
+                        <input id="oppDeadline" name="deadline" type="date" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="oppNote">Nota adicional</label>
+                    <textarea id="oppNote" name="note" maxlength="600" placeholder="Observaciones para usuarios registrados (opcional)."></textarea>
+                </div>
+                <button class="btn-primary" type="submit">Publicar convocatoria</button>
+                <p class="inline-hint">Incluye todos los datos para mejorar conversion de registros y calidad de postulaciones.</p>
+            </form>
+            <ul class="item-list" id="opportunityList"></ul>
+            <div class="module-lock-note"></div>
+        </article>
+
+        <article class="module-card" data-module="leads" data-min-plan="comunidad">
+            <div class="module-header">
+                <h3>Registros y analitica</h3>
+                <span class="module-level">Comunidad+</span>
+            </div>
+            <p class="module-body-text">Monitorea cuantas personas se registran, desde donde llegan y decide cada postulacion (aceptar o declinar).</p>
+            <div class="application-toolbar">
+                <div>
+                    <label for="applicationOpportunitySelect">Convocatoria para revisar registros</label>
+                    <select id="applicationOpportunitySelect">
+                        <option value="">Selecciona una convocatoria publicada</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn-secondary" id="applicationsRefreshBtn" type="button">Actualizar registros</button>
+                </div>
+            </div>
+            <div class="analytics-wrap">
+                <div class="analytics-kpis">
+                    <div class="analytics-kpi">
+                        <strong id="analyticsPublished">0</strong>
+                        <span>Publicadas</span>
+                    </div>
+                    <div class="analytics-kpi">
+                        <strong id="analyticsRegistered">0</strong>
+                        <span>Registros</span>
+                    </div>
+                    <div class="analytics-kpi">
+                        <strong id="analyticsPending">0</strong>
+                        <span>Pendientes</span>
+                    </div>
+                    <div class="analytics-kpi">
+                        <strong id="analyticsAccepted">0</strong>
+                        <span>Aceptados</span>
+                    </div>
+                    <div class="analytics-kpi">
+                        <strong id="analyticsDeclined">0</strong>
+                        <span>Declinados</span>
+                    </div>
+                </div>
+                <div class="country-chart-block">
+                    <h4>Registros por pais</h4>
+                    <div id="countryAnalyticsBars" class="country-chart"></div>
+                </div>
+            </div>
+            <div id="leadList" class="application-list"></div>
+            <div class="module-lock-note"></div>
+        </article>
+
+        <article class="module-card" data-module="talent" data-min-plan="comunidad">
+            <div class="module-header">
+                <h3>Base de artistas y contacto</h3>
+                <span class="module-level">Comunidad+</span>
+            </div>
+            <p class="module-body-text">Filtra usuarios por perfil artistico (`generoMusic`) y gestiona contacto directo: ver perfil, mensaje o enviar convocatoria.</p>
+            <div class="talent-toolbar">
+                <div>
+                    <label for="talentGenreFilter">Perfil artistico (genero)</label>
+                    <select id="talentGenreFilter">
+                        <option value="">Todos los perfiles</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="talentSearchInput">Busqueda por nombre/usuario</label>
+                    <input id="talentSearchInput" type="text" maxlength="60" placeholder="Ej: mariachi, violin, @usuario">
+                </div>
+            </div>
+            <div class="talent-actions-row">
+                <button class="btn-secondary" id="talentFilterBtn" type="button">Aplicar filtro</button>
+                <button class="btn-secondary" id="talentRefreshBtn" type="button">Actualizar base</button>
+            </div>
+            <div>
+                <label for="talentOpportunitySelect">Convocatoria a enviar</label>
+                <select id="talentOpportunitySelect">
+                    <option value="">Selecciona una convocatoria guardada</option>
+                </select>
+            </div>
+            <div id="talentResults" class="talent-results"></div>
+            <div class="module-lock-note"></div>
+        </article>
+
+        <article class="module-card" data-module="brand" data-min-plan="visibilidad">
+            <div class="module-header">
+                <h3>Activaciones de marca</h3>
+                <span class="module-level">Visibilidad+</span>
+            </div>
+            <p class="module-body-text">Solicita presencia editorial, campanas y acciones de posicionamiento dentro de PROVIWEB.</p>
+            <form id="brandForm">
+                <div class="form-row">
+                    <div>
+                        <label for="brandCampaign">Campana</label>
+                        <input id="brandCampaign" name="campaign" type="text" maxlength="80" required>
+                    </div>
+                    <div>
+                        <label for="brandGoal">Objetivo</label>
+                        <select id="brandGoal" name="goal" required>
+                            <option value="Visibilidad">Visibilidad</option>
+                            <option value="Captacion">Captacion</option>
+                            <option value="Reputacion">Reputacion</option>
+                            <option value="Conversion">Conversion</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-primary" type="submit">Guardar activacion</button>
+            </form>
+            <ul class="item-list" id="brandList"></ul>
+            <div class="module-lock-note"></div>
+        </article>
+
+        <article class="module-card" data-module="training" data-min-plan="formacion">
+            <div class="module-header">
+                <h3>Centro de formacion</h3>
+                <span class="module-level">Formacion+</span>
+            </div>
+            <p class="module-body-text">Configura talleres y masterclasses para captacion calificada en comunidad artistica.</p>
+            <form id="trainingForm">
+                <div class="form-row">
+                    <div>
+                        <label for="trainingTitle">Masterclass / taller</label>
+                        <input id="trainingTitle" name="title" type="text" maxlength="90" required>
+                    </div>
+                    <div>
+                        <label for="trainingDate">Fecha</label>
+                        <input id="trainingDate" name="date" type="date" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="trainingCupos">Cupos estimados</label>
+                    <input id="trainingCupos" name="slots" type="number" min="1" max="300" required>
+                </div>
+                <button class="btn-primary" type="submit">Guardar actividad formativa</button>
+            </form>
+            <ul class="item-list" id="trainingList"></ul>
+            <div class="module-lock-note"></div>
+        </article>
+
+        <article class="module-card" data-module="qav" data-min-plan="estrategico">
+            <div class="module-header">
+                <h3>Integracion comercial QAV</h3>
+                <span class="module-level">Estrategico</span>
+            </div>
+            <p class="module-body-text">Gestiona ofertas comerciales y beneficios para economia interna del ecosistema PROVIWEB.</p>
+            <form id="qavForm">
+                <div class="form-row">
+                    <div>
+                        <label for="qavProduct">Producto/servicio</label>
+                        <input id="qavProduct" name="product" type="text" maxlength="80" required>
+                    </div>
+                    <div>
+                        <label for="qavPrice">Valor COP</label>
+                        <input id="qavPrice" name="price" type="number" min="1000" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="qavBenefit">Beneficio para comunidad</label>
+                    <input id="qavBenefit" name="benefit" type="text" maxlength="90" placeholder="Ej: 20% de descuento con QAV">
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="qavReviewDate">Mesa trimestral (fecha)</label>
+                        <input id="qavReviewDate" name="reviewDate" type="date">
+                    </div>
+                    <div>
+                        <label for="qavPriorityGoal">Objetivo prioritario</label>
+                        <input id="qavPriorityGoal" name="priorityGoal" type="text" maxlength="80" placeholder="Ej: conversión y retención">
+                    </div>
+                </div>
+                <button class="btn-primary" type="submit">Guardar oferta QAV</button>
+            </form>
+            <ul class="item-list" id="qavList"></ul>
+            <div class="module-lock-note"></div>
+        </article>
+    </section>
+
+    <section class="plan-checklist">
+        <h2>Checklist de ejecucion por plan</h2>
+        <ul>
+            <li data-min-plan="comunidad">Publicar convocatorias y mantener embudo de postulaciones activo.</li>
+            <li data-min-plan="comunidad">Filtrar artistas por perfil artistico (generoMusic), abrir perfil y contactar por chat.</li>
+            <li data-min-plan="comunidad">Enviar convocatorias directas a talento identificado desde la base de usuarios.</li>
+            <li data-min-plan="visibilidad">Planificar campanas de presencia de marca con objetivos medibles.</li>
+            <li data-min-plan="visibilidad">Gestionar acciones de sello digital y posicionamiento institucional.</li>
+            <li data-min-plan="formacion">Programar masterclasses o talleres para captacion por interes real.</li>
+            <li data-min-plan="formacion">Convertir actividades formativas en base de contactos calificados.</li>
+            <li data-min-plan="estrategico">Activar integracion comercial QAV y seguimiento prioritario trimestral.</li>
+        </ul>
+        <div class="upgrade-cta">
+            <p id="upgradeMessage">Tu plan actual ya habilita funciones base. Escala cuando necesites mas alcance comercial.</p>
+            <div class="btn-inline-row">
+                <a class="btn-primary" id="upgradeButton" href="ser-aliado.html#programa-pagos-aliados">Ver upgrades</a>
+                <a class="btn-secondary" href="ally-register.html">Actualizar registro</a>
+            </div>
+        </div>
+    </section>
+
+    <p class="footer-note">Panel aliado PROVIWEB. Publicaciones y registros se sincronizan con Firebase para operar en Home y en este panel.</p>
+</main>
+
+<div class="toast" id="allyToast" aria-live="polite"></div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js';
+    import { getDatabase, ref, get, set, update, remove } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: 'AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw',
+        authDomain: 'proviweb-d8764.firebaseapp.com',
+        databaseURL: 'https://proviweb-d8764-default-rtdb.firebaseio.com',
+        projectId: 'proviweb-d8764',
+        storageBucket: 'proviweb-d8764.appspot.com',
+        messagingSenderId: '475963980955',
+        appId: '1:475963980955:web:8444288d8ba13e428e1a3e'
+    };
+
+    const SELECTED_PLAN_KEY = 'proviweb_selected_ally_plan';
+    const PLAN_ORDER = ['comunidad', 'visibilidad', 'formacion', 'estrategico'];
+    const PLAN_DATA = {
+        comunidad: {
+            label: 'Plan Comunidad',
+            summary: 'Plan base para publicar convocatorias, acceder a base de musicos y gestionar postulaciones.',
+            helper: 'Ideal para instituciones musicales que comienzan operacion digital en PROVIWEB.'
+        },
+        visibilidad: {
+            label: 'Plan Visibilidad',
+            summary: 'Incluye funciones base y habilita activaciones de marca y presencia institucional ampliada.',
+            helper: 'Recomendado cuando tu organizacion busca posicionamiento y alcance controlado.'
+        },
+        formacion: {
+            label: 'Plan Formacion',
+            summary: 'Incluye Visibilidad y habilita modulos de talleres/masterclasses para captacion calificada.',
+            helper: 'Pensado para aliados con estrategia de conversion basada en valor educativo.'
+        },
+        estrategico: {
+            label: 'Plan Estrategico',
+            summary: 'Maxima cobertura: activaciones completas, formacion y operacion comercial avanzada con QAV.',
+            helper: 'Disenado para alianzas de largo plazo con integracion comercial y seguimiento prioritario.'
+        }
+    };
+
+    const MODULE_LOCK_TEXT = {
+        comunidad: 'Disponible desde Plan Comunidad.',
+        visibilidad: 'Disponible desde Plan Visibilidad.',
+        formacion: 'Disponible desde Plan Formacion.',
+        estrategico: 'Disponible desde Plan Estrategico.'
+    };
+
+    const VISIBILITY_LABELS = {
+        public: 'Publica',
+        private: 'Privada'
+    };
+
+    const PRICING_LABELS = {
+        free: 'Gratuita',
+        paid: 'De pago'
+    };
+
+    const MODALITY_LABELS = {
+        online: 'Online',
+        presencial: 'Presencial'
+    };
+
+    const ART_PROFILE_OPTIONS = [
+        'M.Clasica', 'M.Mariachi', 'M.Rock', 'M.Jazz', 'M.Blues', 'M.Folk', 'M.Urbana', 'M.Tropical',
+        'M.Electronica', 'M.Salsa', 'M.Merenge', 'M.Reggaeton', 'M.Experimental', 'M.Rondalla', 'M.Big Band',
+        'M.Indie', 'M.Flamenco', 'M.Reggae', 'M.Ska', 'M.Infantil',
+        'A.Pintura', 'A.Escultura', 'A.Fotografia', 'A.Dibujo', 'A.Grabado', 'A.Digital', 'A.Arquitectura',
+        'L.Poesia', 'L.Narrativa', 'L.Ensayo', 'L.Dramaturgia', 'L.Cronica', 'L.Filosofia', 'L.Cuento',
+        'L.Novela', 'L.Microrrelato', 'Fac.Musica', 'Fac.Artes Visuales', 'Fac.Danza', 'Fac.Teatro',
+        'Fac.Cine y Medios Audiovisuales', 'Fac.Literatura y Letras', 'Fac.Diseno Grafico', 'Fac.Diseno de Moda',
+        'Fac.Artes Escenicas', 'Fac.Artes Plasticas', 'Fac.Musica Contemporanea', 'Fac.Musica Clasica',
+        'Fac.Musicologia', 'Fac.Fotografia', 'Fac.Composicion Musical', 'Fac.Produccion Musical'
+    ];
+
+    const state = {
+        currentPlan: 'comunidad',
+        userId: 'guest',
+        entityName: 'Aliado PROVIWEB',
+        entityType: 'No definido',
+        badge: 'Pendiente',
+        authorName: '',
+        authorUsername: '',
+        authorPhoto: '',
+        opportunities: [],
+        remoteOpportunities: [],
+        selectedOpportunityId: '',
+        leads: [],
+        brand: [],
+        training: [],
+        qav: [],
+        talentUsers: [],
+        filteredTalentUsers: []
+    };
+
+    let firebaseDb = null;
+
+    const els = {
+        planBadge: document.getElementById('planBadge'),
+        planSummary: document.getElementById('planSummaryText'),
+        planHelper: document.getElementById('planHelperText'),
+        planProgress: document.getElementById('planProgress'),
+        upgradeMessage: document.getElementById('upgradeMessage'),
+        upgradeButton: document.getElementById('upgradeButton'),
+        entityName: document.getElementById('allyEntityName'),
+        entityType: document.getElementById('allyEntityType'),
+        allyBadge: document.getElementById('allyBadge'),
+        authState: document.getElementById('authState'),
+        toast: document.getElementById('allyToast'),
+        kpiOpportunities: document.getElementById('kpiOpportunities'),
+        kpiLeads: document.getElementById('kpiLeads'),
+        kpiActivations: document.getElementById('kpiActivations'),
+        kpiAdvanced: document.getElementById('kpiAdvanced'),
+        analyticsPublished: document.getElementById('analyticsPublished'),
+        analyticsRegistered: document.getElementById('analyticsRegistered'),
+        analyticsPending: document.getElementById('analyticsPending'),
+        analyticsAccepted: document.getElementById('analyticsAccepted'),
+        analyticsDeclined: document.getElementById('analyticsDeclined'),
+        countryAnalyticsBars: document.getElementById('countryAnalyticsBars'),
+        applicationOpportunitySelect: document.getElementById('applicationOpportunitySelect'),
+        applicationsRefreshBtn: document.getElementById('applicationsRefreshBtn'),
+        talentGenreFilter: document.getElementById('talentGenreFilter'),
+        talentSearchInput: document.getElementById('talentSearchInput'),
+        talentFilterBtn: document.getElementById('talentFilterBtn'),
+        talentRefreshBtn: document.getElementById('talentRefreshBtn'),
+        talentOpportunitySelect: document.getElementById('talentOpportunitySelect'),
+        talentResults: document.getElementById('talentResults')
+    };
+
+    const forms = {
+        opportunities: document.getElementById('opportunityForm'),
+        leads: null,
+        brand: document.getElementById('brandForm'),
+        training: document.getElementById('trainingForm'),
+        qav: document.getElementById('qavForm'),
+        talent: null
+    };
+
+    const listEls = {
+        opportunities: document.getElementById('opportunityList'),
+        leads: document.getElementById('leadList'),
+        brand: document.getElementById('brandList'),
+        training: document.getElementById('trainingList'),
+        qav: document.getElementById('qavList'),
+        talent: document.getElementById('talentResults')
+    };
+
+    function normalizePlan(value) {
+        const key = String(value || '').toLowerCase().trim();
+        return PLAN_ORDER.includes(key) ? key : '';
+    }
+
+    function rankOf(plan) {
+        return PLAN_ORDER.indexOf(normalizePlan(plan));
+    }
+
+    function hasAccess(minPlan) {
+        return rankOf(state.currentPlan) >= rankOf(minPlan);
+    }
+
+    function toast(message, type) {
+        if (!els.toast) return;
+        els.toast.textContent = message;
+        els.toast.className = 'toast show ' + (type || '');
+        window.clearTimeout(toast._timer);
+        toast._timer = window.setTimeout(() => {
+            els.toast.className = 'toast';
+        }, 2200);
+    }
+
+    let panelAccessRedirectScheduled = false;
+
+    function schedulePanelAccessRedirect(message) {
+        if (panelAccessRedirectScheduled) return;
+        panelAccessRedirectScheduled = true;
+        if (els.authState) {
+            els.authState.textContent = 'Acceso restringido';
+            els.authState.classList.remove('status-ok');
+            els.authState.classList.add('status-warn');
+        }
+        toast(message || 'Acceso restringido a este panel.', 'warn');
+        window.setTimeout(() => {
+            window.location.href = 'home.html';
+        }, 900);
+    }
+
+    function hasAllyOrAdminFlag(data) {
+        if (!data || typeof data !== 'object') return false;
+        const accountType = String(data.accountType || '').toLowerCase();
+        const organization = String(data.organizaton || data.organization || '').toLowerCase();
+        const role = String(data.role || '').toLowerCase();
+        const verified = String(data.verified || '').toLowerCase();
+        const allyStatus = String(data.allyStatus || '').toLowerCase();
+
+        return (
+            accountType === 'ally' ||
+            accountType === 'admin' ||
+            organization === 'aliado' ||
+            organization === 'admin' ||
+            role === 'admin' ||
+            role === 'moderator' ||
+            role === 'ally' ||
+            role === 'partner' ||
+            Boolean(data.allyRole) ||
+            allyStatus === 'active' ||
+            verified === 'admin' ||
+            verified === 'ally'
+        );
+    }
+
+    async function resolveAllyAdminPanelAccess(db, uid, userData, allyData) {
+        let allowed = hasAllyOrAdminFlag(userData) || hasAllyOrAdminFlag(allyData);
+        if (!allowed && allyData && typeof allyData === 'object') {
+            allowed = Object.keys(allyData).length > 0;
+        }
+        if (allowed || !db || !uid) return allowed;
+
+        try {
+            const [adminSnap, allySnap, alliesSnap] = await Promise.all([
+                get(ref(db, 'Admin/' + uid)),
+                get(ref(db, 'Ally/' + uid)),
+                get(ref(db, 'Allies/' + uid))
+            ]);
+
+            if (adminSnap.exists()) {
+                const adminData = adminSnap.val();
+                if (adminData === true || adminData.admin === true || adminData.administrador === true) {
+                    return true;
+                }
+            }
+
+            if (allySnap.exists()) {
+                const allyNode = allySnap.val();
+                if (allyNode === true || allyNode.ally === true || allyNode.aliado === true) {
+                    return true;
+                }
+            }
+
+            if (alliesSnap.exists()) {
+                return true;
+            }
+        } catch (error) {
+            return false;
+        }
+
+        return false;
+    }
+
+    function keyFor(name) {
+        return 'proviweb_ally_admin_' + name + '_' + state.userId + '_v1';
+    }
+
+    function readList(name) {
+        try {
+            const raw = localStorage.getItem(keyFor(name));
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function saveList(name, list) {
+        try {
+            localStorage.setItem(keyFor(name), JSON.stringify(list));
+        } catch (error) {
+            toast('No fue posible guardar en este dispositivo.', 'warn');
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function normalizeVisibility(value) {
+        return String(value || '').toLowerCase() === 'private' ? 'private' : 'public';
+    }
+
+    function normalizePricing(value) {
+        return String(value || '').toLowerCase() === 'paid' ? 'paid' : 'free';
+    }
+
+    function normalizeModality(value) {
+        return String(value || '').toLowerCase() === 'online' ? 'online' : 'presencial';
+    }
+
+    function parseExternalLinks(rawValue) {
+        const source = String(rawValue || '');
+        if (!source) return [];
+        const links = source
+            .split(/\r?\n|,|;/)
+            .map((entry) => String(entry || '').trim())
+            .filter(Boolean)
+            .filter((entry) => /^https?:\/\//i.test(entry));
+        return Array.from(new Set(links));
+    }
+
+    function linksFromItem(item) {
+        const base = [];
+        if (Array.isArray(item.externalLinks)) {
+            item.externalLinks.forEach((link) => {
+                const value = String(link || '').trim();
+                if (value) base.push(value);
+            });
+        }
+        const contact = String(item.contact || '').trim();
+        const link = String(item.link || '').trim();
+        if (contact && /^https?:\/\//i.test(contact)) base.push(contact);
+        if (link && /^https?:\/\//i.test(link)) base.push(link);
+        return Array.from(new Set(base));
+    }
+
+    function renderList(name, emptyText, itemRenderer) {
+        const target = listEls[name];
+        const data = state[name];
+        if (!target) return;
+        if (!data || data.length === 0) {
+            target.innerHTML = '<li class="empty-state">' + escapeHtml(emptyText) + '</li>';
+            return;
+        }
+        target.innerHTML = data.map(itemRenderer).join('');
+    }
+
+    function renderAllLegacy() {
+        renderList('opportunities', 'Sin convocatorias creadas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.title) + '</strong><small>' +
+            escapeHtml(item.discipline) + ' - ' + escapeHtml(item.location) + ' - cierre ' + escapeHtml(item.deadline) +
+            '</small></div><button class="delete-btn" type="button" data-list="opportunities" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('leads', 'Sin postulaciones registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.name) + '</strong><small>' +
+            escapeHtml(item.role) + ' - ' + escapeHtml(item.status) +
+            (item.source ? ' - ' + escapeHtml(item.source) : '') +
+            '</small></div><button class="delete-btn" type="button" data-list="leads" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('brand', 'Sin activaciones registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.campaign) + '</strong><small>Objetivo: ' + escapeHtml(item.goal) +
+            '</small></div><button class="delete-btn" type="button" data-list="brand" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('training', 'Sin actividades formativas registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.title) + '</strong><small>' +
+            escapeHtml(item.date) + ' - ' + escapeHtml(String(item.slots)) + ' cupos' +
+            '</small></div><button class="delete-btn" type="button" data-list="training" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('qav', 'Sin ofertas QAV registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.product) + '</strong><small>$' +
+            escapeHtml(Number(item.price || 0).toLocaleString('es-CO')) + ' COP' +
+            (item.benefit ? ' - ' + escapeHtml(item.benefit) : '') +
+            (item.reviewDate ? ' - Mesa: ' + escapeHtml(item.reviewDate) : '') +
+            (item.priorityGoal ? ' - Meta: ' + escapeHtml(item.priorityGoal) : '') +
+            '</small></div><button class="delete-btn" type="button" data-list="qav" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        if (els.kpiOpportunities) els.kpiOpportunities.textContent = String(getAllOpportunities().length);
+        if (els.kpiLeads) els.kpiLeads.textContent = String(state.leads.length);
+        if (els.kpiActivations) els.kpiActivations.textContent = String(state.brand.length);
+        if (els.kpiAdvanced) els.kpiAdvanced.textContent = String(state.training.length + state.qav.length);
+        refreshOpportunitySelect();
+    }
+
+    function getAllOpportunitiesLegacy() {
+        const localItems = Array.isArray(state.opportunities) ? state.opportunities : [];
+        const remoteItems = Array.isArray(state.remoteOpportunities) ? state.remoteOpportunities : [];
+        return [...localItems, ...remoteItems];
+    }
+
+    function refreshOpportunitySelectLegacy() {
+        if (!els.talentOpportunitySelect) return;
+        const previousValue = els.talentOpportunitySelect.value;
+        let html = '<option value="">Selecciona una convocatoria guardada</option>';
+        getAllOpportunities().forEach((item) => {
+            const label = escapeHtml(item.title + ' · ' + item.discipline + ' · ' + item.location + (item.source === 'firebase' ? ' · Home' : ' · Panel'));
+            html += '<option value="' + escapeHtml(item.id) + '">' + label + '</option>';
+        });
+        els.talentOpportunitySelect.innerHTML = html;
+        if (previousValue && getAllOpportunities().some((item) => item.id === previousValue)) {
+            els.talentOpportunitySelect.value = previousValue;
+        }
+    }
+
+    function populateTalentGenreOptions() {
+        if (!els.talentGenreFilter) return;
+        let html = '<option value="">Todos los perfiles</option>';
+        ART_PROFILE_OPTIONS.forEach((profile) => {
+            html += '<option value="' + escapeHtml(profile) + '">' + escapeHtml(profile) + '</option>';
+        });
+        els.talentGenreFilter.innerHTML = html;
+    }
+
+    function renderTalentResults() {
+        if (!els.talentResults) return;
+        const users = state.filteredTalentUsers || [];
+        if (!users.length) {
+            els.talentResults.innerHTML = '<div class="empty-state">No hay usuarios que coincidan con el filtro actual.</div>';
+            return;
+        }
+        els.talentResults.innerHTML = users.map((user) => {
+            const genresText = Array.isArray(user.genres) && user.genres.length ? user.genres.join(', ') : 'Sin estilos secundarios';
+            const collab = user.openToCollaborate === false ? 'No disponible para colaborar' : 'Disponible para colaborar';
+            return (
+                '<article class="talent-card">' +
+                    '<strong>' + escapeHtml(user.name || 'Usuario') + ' · @' + escapeHtml(user.username || 'sin_usuario') + '</strong>' +
+                    '<small>Perfil: ' + escapeHtml(user.generoMusic || 'Sin perfil') + ' · Instrumento: ' + escapeHtml(user.instrument || 'No definido') + '</small>' +
+                    '<small>' + escapeHtml(user.city || '') + (user.country ? ', ' + escapeHtml(user.country) : '') + ' · ' + escapeHtml(collab) + '</small>' +
+                    '<div class="tags">Estilos: ' + escapeHtml(genresText) + '</div>' +
+                    '<div class="actions">' +
+                        '<a class="tiny-btn" href="userprofile.html?uid=' + encodeURIComponent(user.uid) + '">Ver perfil</a>' +
+                        '<a class="tiny-btn" href="chat.html?hisUID=' + encodeURIComponent(user.uid) + '">Mensaje</a>' +
+                        '<button class="tiny-btn" type="button" data-action="send-opportunity" data-uid="' + escapeHtml(user.uid) + '">Enviar convocatoria</button>' +
+                    '</div>' +
+                '</article>'
+            );
+        }).join('');
+    }
+
+    function applyTalentFilters() {
+        const genreFilter = (els.talentGenreFilter && els.talentGenreFilter.value ? els.talentGenreFilter.value.trim() : '');
+        const queryText = (els.talentSearchInput && els.talentSearchInput.value ? els.talentSearchInput.value : '').trim().toLowerCase();
+        state.filteredTalentUsers = state.talentUsers.filter((user) => {
+            if (genreFilter && String(user.generoMusic || '') !== genreFilter) return false;
+            if (!queryText) return true;
+            const searchable = [
+                user.name || '',
+                user.username || '',
+                user.generoMusic || '',
+                user.instrument || '',
+                user.city || '',
+                user.country || ''
+            ].join(' ').toLowerCase();
+            return searchable.includes(queryText);
+        });
+        renderTalentResults();
+    }
+
+    async function loadTalentUsersFromFirebase() {
+        if (!firebaseDb) return;
+        try {
+            const usersSnap = await get(ref(firebaseDb, 'Users'));
+            if (!usersSnap.exists()) {
+                state.talentUsers = [];
+                state.filteredTalentUsers = [];
+                renderTalentResults();
+                return;
+            }
+            const list = [];
+            usersSnap.forEach((child) => {
+                const data = child.val() || {};
+                const uid = child.key;
+                if (!uid || uid === state.userId) return;
+                const accountType = String(data.accountType || '').toLowerCase();
+                const role = String(data.role || '').toLowerCase();
+                const verified = String(data.verified || '').toLowerCase();
+                const isAdminOrAlly = accountType === 'ally' || accountType === 'admin' || role === 'admin' || role === 'ally' || verified === 'admin' || verified === 'ally';
+                if (isAdminOrAlly) return;
+
+                list.push({
+                    uid,
+                    name: data.name || '',
+                    username: data.username || '',
+                    generoMusic: data.generoMusic || '',
+                    instrument: data.instrument || '',
+                    genres: Array.isArray(data.genres) ? data.genres : [],
+                    openToCollaborate: data.openToCollaborate,
+                    city: data.city || '',
+                    country: data.country || ''
+                });
+            });
+            list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'es', { sensitivity: 'base' }));
+            state.talentUsers = list;
+            applyTalentFilters();
+        } catch (error) {
+            toast('No se pudo cargar la base de artistas.', 'warn');
+        }
+    }
+
+    async function loadOwnedOpportunitiesFromFirebaseLegacy() {
+        if (!firebaseDb || !state.userId || state.userId === 'guest') return;
+        try {
+            const snap = await get(ref(firebaseDb, 'Opportunities'));
+            if (!snap.exists()) {
+                state.remoteOpportunities = [];
+                renderAll();
+                return;
+            }
+            const remoteItems = [];
+            snap.forEach((child) => {
+                const data = child.val() || {};
+                if (String(data.createdBy || '') !== String(state.userId)) return;
+                remoteItems.push({
+                    id: 'db_' + child.key,
+                    title: data.title || 'Convocatoria',
+                    discipline: data.category || data.type || 'General',
+                    location: data.location || 'Sin ubicación',
+                    deadline: data.deadline || '',
+                    source: 'firebase'
+                });
+            });
+            remoteItems.sort((a, b) => String(a.title || '').localeCompare(String(b.title || ''), 'es', { sensitivity: 'base' }));
+            state.remoteOpportunities = remoteItems;
+            renderAll();
+        } catch (error) {
+            // noop
+        }
+    }
+
+    async function sendOpportunityToTalent(targetUid) {
+        if (!firebaseDb || !targetUid || !state.userId || state.userId === 'guest') {
+            toast('Inicia sesion para usar esta accion.', 'warn');
+            return;
+        }
+        const selectedOppId = els.talentOpportunitySelect ? els.talentOpportunitySelect.value : '';
+        if (!selectedOppId) {
+            toast('Selecciona una convocatoria antes de enviarla.', 'warn');
+            return;
+        }
+        const opportunity = getAllOpportunities().find((item) => String(item.id) === String(selectedOppId));
+        if (!opportunity) {
+            toast('La convocatoria seleccionada no esta disponible.', 'warn');
+            return;
+        }
+        try {
+            const ts = Date.now();
+            const message = state.entityName + ' te invita a la convocatoria "' + opportunity.title + '" (' + opportunity.discipline + ', ' + opportunity.location + ').';
+            await set(ref(firebaseDb, 'Users/' + targetUid + '/Notifications/' + ts), {
+                sUid: state.userId,
+                senderUid: state.userId,
+                notification: message,
+                type: 'ally_invitation',
+                intent: 'opportunity_invite',
+                timestamp: ts,
+                opportunityTitle: opportunity.title,
+                opportunityDiscipline: opportunity.discipline,
+                opportunityLocation: opportunity.location,
+                allyEntity: state.entityName,
+                allyPlan: state.currentPlan
+            });
+            toast('Convocatoria enviada al usuario seleccionado.', 'ok');
+        } catch (error) {
+            toast('No se pudo enviar la convocatoria.', 'warn');
+        }
+    }
+
+    function loadDataLegacy() {
+        state.opportunities = readList('opportunities');
+        state.leads = readList('leads');
+        state.brand = readList('brand');
+        state.training = readList('training');
+        state.qav = readList('qav');
+        renderAll();
+    }
+
+    function persistPlan(plan) {
+        try {
+            localStorage.setItem(SELECTED_PLAN_KEY, plan);
+        } catch (error) {}
+    }
+
+    function applyPlan(plan) {
+        state.currentPlan = normalizePlan(plan) || 'comunidad';
+        const planData = PLAN_DATA[state.currentPlan];
+        const rank = rankOf(state.currentPlan);
+
+        if (els.planBadge) els.planBadge.textContent = planData.label;
+        if (els.planSummary) els.planSummary.textContent = planData.summary;
+        if (els.planHelper) els.planHelper.textContent = planData.helper;
+        if (els.planProgress) els.planProgress.style.width = String((rank + 1) * 25) + '%';
+        if (els.upgradeButton) {
+            const nextPlan = PLAN_ORDER[Math.min(rank + 1, PLAN_ORDER.length - 1)];
+            els.upgradeButton.href = rank === PLAN_ORDER.length - 1 ? 'ser-aliado.html#beneficios-marca' : 'ser-aliado.html#programa-pagos-aliados';
+            els.upgradeButton.textContent = rank === PLAN_ORDER.length - 1 ? 'Ver beneficios' : 'Escalar a ' + PLAN_DATA[nextPlan].label;
+        }
+
+        if (els.upgradeMessage) {
+            if (rank === 0) els.upgradeMessage.textContent = 'Plan base activo. Sube a Visibilidad para habilitar campanas de marca.';
+            if (rank === 1) els.upgradeMessage.textContent = 'Ya activaste visibilidad. Sube a Formacion para modulos de masterclasses.';
+            if (rank === 2) els.upgradeMessage.textContent = 'Tu plan ya permite formacion. Sube a Estrategico para integracion comercial QAV.';
+            if (rank === 3) els.upgradeMessage.textContent = 'Cobertura completa activa. Manten operacion con KPIs y seguimiento trimestral.';
+        }
+
+        document.querySelectorAll('.module-card[data-min-plan]').forEach((card) => {
+            const minPlan = normalizePlan(card.getAttribute('data-min-plan'));
+            const enabled = hasAccess(minPlan);
+            card.classList.toggle('is-locked', !enabled);
+            const note = card.querySelector('.module-lock-note');
+            if (note) note.textContent = MODULE_LOCK_TEXT[minPlan] || 'Funcion bloqueada por plan.';
+            card.querySelectorAll('input, select, textarea, button').forEach((control) => {
+                control.disabled = !enabled;
+            });
+        });
+
+        document.querySelectorAll('.plan-checklist li[data-min-plan]').forEach((li) => {
+            const minPlan = normalizePlan(li.getAttribute('data-min-plan'));
+            li.classList.toggle('is-locked', !hasAccess(minPlan));
+        });
+    }
+
+    function bindFormsLegacy() {
+        forms.opportunities.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!hasAccess('comunidad')) return;
+            const fd = new FormData(forms.opportunities);
+            state.opportunities.unshift({
+                id: String(Date.now()),
+                title: String(fd.get('title') || '').trim(),
+                discipline: String(fd.get('discipline') || '').trim(),
+                location: String(fd.get('location') || '').trim(),
+                deadline: String(fd.get('deadline') || '').trim()
+            });
+            saveList('opportunities', state.opportunities);
+            forms.opportunities.reset();
+            renderAll();
+            toast('Convocatoria guardada.', 'ok');
+        });
+
+        forms.leads.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!hasAccess('comunidad')) return;
+            const fd = new FormData(forms.leads);
+            state.leads.unshift({
+                id: String(Date.now()),
+                name: String(fd.get('name') || '').trim(),
+                role: String(fd.get('role') || '').trim(),
+                status: String(fd.get('status') || '').trim(),
+                source: String(fd.get('source') || '').trim()
+            });
+            saveList('leads', state.leads);
+            forms.leads.reset();
+            renderAll();
+            toast('Postulacion registrada.', 'ok');
+        });
+
+        forms.brand.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!hasAccess('visibilidad')) {
+                toast('Esta funcion se habilita desde Plan Visibilidad.', 'warn');
+                return;
+            }
+            const fd = new FormData(forms.brand);
+            state.brand.unshift({
+                id: String(Date.now()),
+                campaign: String(fd.get('campaign') || '').trim(),
+                goal: String(fd.get('goal') || '').trim()
+            });
+            saveList('brand', state.brand);
+            forms.brand.reset();
+            renderAll();
+            toast('Activacion guardada.', 'ok');
+        });
+
+        forms.training.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!hasAccess('formacion')) {
+                toast('Esta funcion se habilita desde Plan Formacion.', 'warn');
+                return;
+            }
+            const fd = new FormData(forms.training);
+            state.training.unshift({
+                id: String(Date.now()),
+                title: String(fd.get('title') || '').trim(),
+                date: String(fd.get('date') || '').trim(),
+                slots: Number(fd.get('slots') || 0)
+            });
+            saveList('training', state.training);
+            forms.training.reset();
+            renderAll();
+            toast('Actividad de formacion guardada.', 'ok');
+        });
+
+        forms.qav.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (!hasAccess('estrategico')) {
+                toast('Esta funcion se habilita en Plan Estrategico.', 'warn');
+                return;
+            }
+            const fd = new FormData(forms.qav);
+            state.qav.unshift({
+                id: String(Date.now()),
+                product: String(fd.get('product') || '').trim(),
+                price: Number(fd.get('price') || 0),
+                benefit: String(fd.get('benefit') || '').trim(),
+                reviewDate: String(fd.get('reviewDate') || '').trim(),
+                priorityGoal: String(fd.get('priorityGoal') || '').trim()
+            });
+            saveList('qav', state.qav);
+            forms.qav.reset();
+            renderAll();
+            toast('Oferta QAV guardada.', 'ok');
+        });
+    }
+
+    function bindDeleteButtonsLegacy() {
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            if (target.matches('.delete-btn[data-list][data-id]')) {
+                const listName = target.getAttribute('data-list');
+                const itemId = target.getAttribute('data-id');
+                if (!listName || !itemId || !Array.isArray(state[listName])) return;
+                state[listName] = state[listName].filter((item) => String(item.id) !== String(itemId));
+                saveList(listName, state[listName]);
+                renderAll();
+                toast('Elemento eliminado.', 'ok');
+                return;
+            }
+            if (target.matches('[data-action="send-opportunity"][data-uid]')) {
+                const targetUid = target.getAttribute('data-uid');
+                if (!hasAccess('comunidad')) {
+                    toast('Tu plan no habilita esta accion.', 'warn');
+                    return;
+                }
+                sendOpportunityToTalent(targetUid);
+            }
+        });
+    }
+
+    function bindTalentControls() {
+        populateTalentGenreOptions();
+        if (els.talentFilterBtn) {
+            els.talentFilterBtn.addEventListener('click', () => {
+                applyTalentFilters();
+            });
+        }
+        if (els.talentSearchInput) {
+            els.talentSearchInput.addEventListener('input', () => {
+                applyTalentFilters();
+            });
+        }
+        if (els.talentGenreFilter) {
+            els.talentGenreFilter.addEventListener('change', () => {
+                applyTalentFilters();
+            });
+        }
+        if (els.talentRefreshBtn) {
+            els.talentRefreshBtn.addEventListener('click', () => {
+                loadTalentUsersFromFirebase();
+            });
+        }
+    }
+
+    function initialPlan() {
+        const params = new URLSearchParams(window.location.search);
+        const urlPlan = normalizePlan(params.get('plan'));
+        const storedPlan = normalizePlan(localStorage.getItem(SELECTED_PLAN_KEY));
+        return urlPlan || storedPlan || 'comunidad';
+    }
+
+    async function hydrateFromFirebaseLegacy() {
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getDatabase(app);
+            firebaseDb = db;
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    state.userId = 'guest';
+                    state.remoteOpportunities = [];
+                    loadData();
+                    state.talentUsers = [];
+                    state.filteredTalentUsers = [];
+                    renderTalentResults();
+                    if (els.authState) {
+                        els.authState.textContent = 'Sin sesion iniciada';
+                        els.authState.classList.remove('status-ok');
+                        els.authState.classList.add('status-warn');
+                    }
+                    return;
+                }
+
+                state.userId = String(user.uid);
+                loadData();
+                loadTalentUsersFromFirebase();
+                loadOwnedOpportunitiesFromFirebase();
+                if (els.authState) {
+                    els.authState.textContent = 'Sesion aliada activa';
+                    els.authState.classList.remove('status-warn');
+                    els.authState.classList.add('status-ok');
+                }
+
+                const userSnap = await get(ref(db, 'Users/' + user.uid));
+                const allySnap = await get(ref(db, 'Allies/' + user.uid));
+                const userData = userSnap.exists() ? userSnap.val() : {};
+                const allyData = allySnap.exists() ? allySnap.val() : {};
+
+                const dbPlan = normalizePlan(allyData.allyPlan || userData.allyPlan);
+                if (dbPlan) {
+                    persistPlan(dbPlan);
+                    applyPlan(dbPlan);
+                }
+
+                state.entityName = String(allyData.entityName || userData.organizationName || userData.username || userData.name || state.entityName);
+                state.entityType = String(allyData.allyType || userData.allyType || state.entityType);
+                state.badge = String(allyData.allyBadge || userData.allyBadge || state.badge);
+
+                if (els.entityName) els.entityName.textContent = state.entityName;
+                if (els.entityType) els.entityType.textContent = state.entityType;
+                if (els.allyBadge) els.allyBadge.textContent = state.badge;
+            });
+        } catch (error) {
+            if (els.authState) {
+                els.authState.textContent = 'Modo local';
+                els.authState.classList.remove('status-ok');
+                els.authState.classList.add('status-warn');
+            }
+            schedulePanelAccessRedirect('No se pudo validar tu acceso. Intenta de nuevo desde Home.');
+        }
+    }
+
+    function getAllOpportunities() {
+        const remoteItems = Array.isArray(state.remoteOpportunities) ? state.remoteOpportunities : [];
+        const localItems = Array.isArray(state.opportunities) ? state.opportunities : [];
+        const registry = new Map();
+
+        remoteItems.forEach((item) => {
+            if (!item || !item.id) return;
+            registry.set(String(item.id), item);
+        });
+
+        localItems.forEach((item) => {
+            if (!item || !item.id) return;
+            const key = String(item.id);
+            if (registry.has(key)) return;
+            registry.set(key, {
+                ...item,
+                source: item.source || 'local',
+                visibility: normalizeVisibility(item.visibility || 'public'),
+                pricingModel: normalizePricing(item.pricingModel || 'free'),
+                modality: normalizeModality(item.modality || 'presencial'),
+                externalLinks: linksFromItem(item)
+            });
+        });
+
+        return Array.from(registry.values());
+    }
+
+    function collectAllApplications() {
+        const rows = [];
+        state.remoteOpportunities.forEach((opportunity) => {
+            const apps = opportunity && opportunity.applications && typeof opportunity.applications === 'object'
+                ? opportunity.applications
+                : {};
+            Object.entries(apps).forEach(([uid, appData]) => {
+                rows.push({
+                    uid,
+                    opportunityId: opportunity.id,
+                    opportunityTitle: opportunity.title || 'Convocatoria',
+                    ...(appData || {})
+                });
+            });
+        });
+        rows.sort((a, b) => (b.appliedAt || 0) - (a.appliedAt || 0));
+        return rows;
+    }
+
+    function resolveCountryFromApplication(app) {
+        const direct = String(app.country || '').trim();
+        if (direct) return direct;
+        const byTalent = state.talentUsers.find((user) => String(user.uid) === String(app.uid));
+        if (byTalent && byTalent.country) return String(byTalent.country).trim();
+        return 'Sin pais';
+    }
+
+    function renderCountryAnalytics(applications) {
+        if (!els.countryAnalyticsBars) return;
+        if (!applications.length) {
+            els.countryAnalyticsBars.innerHTML = '<div class="empty-state">Aun no hay registros para analizar por pais.</div>';
+            return;
+        }
+
+        const counter = {};
+        applications.forEach((app) => {
+            const country = resolveCountryFromApplication(app) || 'Sin pais';
+            counter[country] = (counter[country] || 0) + 1;
+        });
+
+        const entries = Object.entries(counter).sort((a, b) => b[1] - a[1]).slice(0, 12);
+        const topValue = entries.length ? entries[0][1] : 1;
+        els.countryAnalyticsBars.innerHTML = entries.map(([country, count]) => {
+            const percentage = topValue > 0 ? Math.round((count / topValue) * 100) : 0;
+            return (
+                '<div class="country-row">' +
+                    '<span class="country-name">' + escapeHtml(country) + '</span>' +
+                    '<span class="country-bar-track"><span class="country-bar-fill" data-width="' + percentage + '%"></span></span>' +
+                    '<span class="country-count">' + escapeHtml(String(count)) + '</span>' +
+                '</div>'
+            );
+        }).join('');
+
+        window.requestAnimationFrame(() => {
+            els.countryAnalyticsBars.querySelectorAll('.country-bar-fill').forEach((bar) => {
+                bar.style.width = bar.getAttribute('data-width') || '0%';
+            });
+        });
+    }
+
+    function renderApplicationsForSelectedOpportunity() {
+        const target = listEls.leads;
+        if (!target) return;
+        const selectedValue = els.applicationOpportunitySelect ? els.applicationOpportunitySelect.value : '';
+        const selectedId = selectedValue || state.selectedOpportunityId;
+        const selected = state.remoteOpportunities.find((item) => String(item.id) === String(selectedId));
+
+        if (!selected) {
+            target.innerHTML = '<div class="empty-state">Selecciona una convocatoria para ver y gestionar registros.</div>';
+            return;
+        }
+
+        state.selectedOpportunityId = String(selected.id);
+        const apps = Object.entries(selected.applications || {})
+            .map(([uid, data]) => ({ uid, ...(data || {}) }))
+            .sort((a, b) => (b.appliedAt || 0) - (a.appliedAt || 0));
+
+        if (!apps.length) {
+            target.innerHTML = '<div class="empty-state">Esta convocatoria aun no tiene registros.</div>';
+            return;
+        }
+
+        target.innerHTML = apps.map((app) => {
+            const status = app.status === 'accepted' || app.status === 'declined' ? app.status : 'pending';
+            const statusLabel = status === 'accepted' ? 'Aceptado' : status === 'declined' ? 'Declinado' : 'Pendiente';
+            const country = resolveCountryFromApplication(app);
+            const city = String(app.city || '').trim();
+            const location = city ? (city + ', ' + country) : country;
+            const appliedDate = app.appliedAt ? new Date(app.appliedAt).toLocaleDateString('es-CO') : 'Sin fecha';
+            return (
+                '<article class="application-card">' +
+                    '<div class="application-head">' +
+                        '<div>' +
+                            '<strong>' + escapeHtml(app.name || 'Usuario') + '</strong>' +
+                            '<small>@' + escapeHtml(app.username || 'sin_usuario') + '</small>' +
+                        '</div>' +
+                        '<span class="status-pill ' + status + '">' + statusLabel + '</span>' +
+                    '</div>' +
+                    '<div class="application-meta">' +
+                        '<span>Telefono: ' + escapeHtml(app.phone || 'No definido') + '</span>' +
+                        '<span>Ubicacion: ' + escapeHtml(location) + '</span>' +
+                        '<span>Fecha registro: ' + escapeHtml(appliedDate) + '</span>' +
+                        '<span>Mensaje: ' + escapeHtml(app.message || 'Sin mensaje') + '</span>' +
+                        (app.reason ? '<span>Motivo: ' + escapeHtml(app.reason) + '</span>' : '') +
+                    '</div>' +
+                    '<div class="application-actions">' +
+                        '<a class="tiny-btn" href="userprofile.html?uid=' + encodeURIComponent(app.uid) + '">Perfil</a>' +
+                        '<a class="tiny-btn" href="chat.html?hisUID=' + encodeURIComponent(app.uid) + '">Mensaje</a>' +
+                        (status !== 'accepted' ? '<button class="tiny-btn accept" type="button" data-action="application-accept" data-opportunity-id="' + escapeHtml(String(selected.id)) + '" data-applicant-uid="' + escapeHtml(app.uid) + '">Aceptar</button>' : '') +
+                        (status !== 'declined' ? '<button class="tiny-btn decline" type="button" data-action="application-decline" data-opportunity-id="' + escapeHtml(String(selected.id)) + '" data-applicant-uid="' + escapeHtml(app.uid) + '">Declinar</button>' : '') +
+                    '</div>' +
+                '</article>'
+            );
+        }).join('');
+    }
+
+    function refreshOpportunitySelect() {
+        const opportunities = getAllOpportunities();
+        const previousTalent = els.talentOpportunitySelect ? els.talentOpportunitySelect.value : '';
+        const previousApplications = els.applicationOpportunitySelect ? els.applicationOpportunitySelect.value : state.selectedOpportunityId;
+
+        if (els.talentOpportunitySelect) {
+            let html = '<option value="">Selecciona una convocatoria guardada</option>';
+            opportunities.forEach((item) => {
+                const label = escapeHtml(
+                    (item.title || 'Convocatoria') + ' - ' +
+                    (item.discipline || 'General') + ' - ' +
+                    (item.location || item.address || 'Sin ubicacion') +
+                    (item.source === 'firebase' ? ' - Home' : ' - Panel')
+                );
+                html += '<option value="' + escapeHtml(String(item.id)) + '">' + label + '</option>';
+            });
+            els.talentOpportunitySelect.innerHTML = html;
+            if (previousTalent && opportunities.some((item) => String(item.id) === String(previousTalent))) {
+                els.talentOpportunitySelect.value = previousTalent;
+            }
+        }
+
+        if (els.applicationOpportunitySelect) {
+            let html = '<option value="">Selecciona una convocatoria publicada</option>';
+            state.remoteOpportunities.forEach((item) => {
+                html += '<option value="' + escapeHtml(String(item.id)) + '">' +
+                    escapeHtml((item.title || 'Convocatoria') + ' - ' + (item.discipline || 'General')) +
+                '</option>';
+            });
+            els.applicationOpportunitySelect.innerHTML = html;
+
+            const hasSelected = previousApplications && state.remoteOpportunities.some((item) => String(item.id) === String(previousApplications));
+            if (hasSelected) {
+                els.applicationOpportunitySelect.value = previousApplications;
+                state.selectedOpportunityId = previousApplications;
+            } else if (state.remoteOpportunities.length) {
+                state.selectedOpportunityId = String(state.remoteOpportunities[0].id);
+                els.applicationOpportunitySelect.value = state.selectedOpportunityId;
+            } else {
+                state.selectedOpportunityId = '';
+            }
+        }
+    }
+
+    function renderAll() {
+        const opportunities = getAllOpportunities();
+        if (listEls.opportunities) {
+            if (!opportunities.length) {
+                listEls.opportunities.innerHTML = '<li class="empty-state">Sin convocatorias creadas.</li>';
+            } else {
+                listEls.opportunities.innerHTML = opportunities.map((item) => {
+                    const linksCount = linksFromItem(item).length;
+                    const applicationsCount = item.applications && typeof item.applications === 'object'
+                        ? Object.keys(item.applications).length
+                        : 0;
+                    const visibility = VISIBILITY_LABELS[normalizeVisibility(item.visibility)] || 'Publica';
+                    const pricing = PRICING_LABELS[normalizePricing(item.pricingModel)] || 'Gratuita';
+                    const modality = MODALITY_LABELS[normalizeModality(item.modality)] || 'Presencial';
+                    const source = item.source === 'firebase' ? 'Home' : 'Panel';
+                    return (
+                        '<li><div><strong>' + escapeHtml(item.title || 'Convocatoria') + '</strong><small>' +
+                        escapeHtml((item.discipline || 'General') + ' - ' + (item.location || item.address || 'Sin ubicacion')) +
+                        ' - ' + escapeHtml(visibility + ' - ' + pricing + ' - ' + modality) +
+                        ' - links ' + escapeHtml(String(linksCount)) +
+                        ' - registros ' + escapeHtml(String(applicationsCount)) +
+                        ' - fuente ' + escapeHtml(source) +
+                        '</small></div>' +
+                        '<button class="delete-btn" type="button" data-action="delete-opportunity" data-id="' + escapeHtml(String(item.id)) + '" data-source="' + escapeHtml(item.source || 'local') + '">Eliminar</button></li>'
+                    );
+                }).join('');
+            }
+        }
+
+        renderList('brand', 'Sin activaciones registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.campaign) + '</strong><small>Objetivo: ' + escapeHtml(item.goal) +
+            '</small></div><button class="delete-btn" type="button" data-list="brand" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('training', 'Sin actividades formativas registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.title) + '</strong><small>' +
+            escapeHtml(item.date) + ' - ' + escapeHtml(String(item.slots)) + ' cupos' +
+            '</small></div><button class="delete-btn" type="button" data-list="training" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        renderList('qav', 'Sin ofertas QAV registradas.', (item) => (
+            '<li><div><strong>' + escapeHtml(item.product) + '</strong><small>$' +
+            escapeHtml(Number(item.price || 0).toLocaleString('es-CO')) + ' COP' +
+            (item.benefit ? ' - ' + escapeHtml(item.benefit) : '') +
+            (item.reviewDate ? ' - Mesa: ' + escapeHtml(item.reviewDate) : '') +
+            (item.priorityGoal ? ' - Meta: ' + escapeHtml(item.priorityGoal) : '') +
+            '</small></div><button class="delete-btn" type="button" data-list="qav" data-id="' + escapeHtml(item.id) + '">Eliminar</button></li>'
+        ));
+
+        const allApplications = collectAllApplications();
+        const pendingCount = allApplications.filter((item) => String(item.status || 'pending') === 'pending').length;
+        const acceptedCount = allApplications.filter((item) => String(item.status || '') === 'accepted').length;
+        const declinedCount = allApplications.filter((item) => String(item.status || '') === 'declined').length;
+
+        if (els.kpiOpportunities) els.kpiOpportunities.textContent = String(opportunities.length);
+        if (els.kpiLeads) els.kpiLeads.textContent = String(allApplications.length);
+        if (els.kpiActivations) els.kpiActivations.textContent = String(state.brand.length);
+        if (els.kpiAdvanced) els.kpiAdvanced.textContent = String(state.training.length + state.qav.length);
+
+        if (els.analyticsPublished) els.analyticsPublished.textContent = String(state.remoteOpportunities.length);
+        if (els.analyticsRegistered) els.analyticsRegistered.textContent = String(allApplications.length);
+        if (els.analyticsPending) els.analyticsPending.textContent = String(pendingCount);
+        if (els.analyticsAccepted) els.analyticsAccepted.textContent = String(acceptedCount);
+        if (els.analyticsDeclined) els.analyticsDeclined.textContent = String(declinedCount);
+
+        renderCountryAnalytics(allApplications);
+        refreshOpportunitySelect();
+        renderApplicationsForSelectedOpportunity();
+    }
+
+    async function loadOwnedOpportunitiesFromFirebase() {
+        if (!firebaseDb || !state.userId || state.userId === 'guest') return;
+        try {
+            const snap = await get(ref(firebaseDb, 'Opportunities'));
+            if (!snap.exists()) {
+                state.remoteOpportunities = [];
+                renderAll();
+                return;
+            }
+
+            const remoteItems = [];
+            snap.forEach((child) => {
+                const data = child.val() || {};
+                if (String(data.createdBy || '') !== String(state.userId)) return;
+                const linksRaw = Array.isArray(data.externalLinks) ? data.externalLinks : [];
+                const links = Array.from(new Set([...linksRaw, data.contact, data.link]
+                    .map((entry) => String(entry || '').trim())
+                    .filter((entry) => /^https?:\/\//i.test(entry))));
+                remoteItems.push({
+                    id: child.key,
+                    key: child.key,
+                    title: data.title || 'Convocatoria',
+                    discipline: data.discipline || data.category || 'General',
+                    description: data.description || '',
+                    location: data.location || data.address || 'Sin ubicacion',
+                    address: data.address || data.location || '',
+                    deadline: data.deadline || '',
+                    visibility: normalizeVisibility(data.visibility || 'public'),
+                    pricingModel: normalizePricing(data.pricingModel || 'free'),
+                    modality: normalizeModality(data.modality || 'presencial'),
+                    note: data.note || '',
+                    imageUrl: data.imageUrl || '',
+                    externalLinks: links,
+                    applications: data.applications && typeof data.applications === 'object' ? data.applications : {},
+                    createdAt: Number(data.createdAt || 0),
+                    authorName: data.authorName || state.entityName || '',
+                    authorUsername: data.authorUsername || state.authorUsername || '',
+                    authorPhoto: data.authorPhoto || state.authorPhoto || '',
+                    source: 'firebase'
+                });
+            });
+
+            remoteItems.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            state.remoteOpportunities = remoteItems;
+            if (state.selectedOpportunityId && !remoteItems.some((item) => String(item.id) === String(state.selectedOpportunityId))) {
+                state.selectedOpportunityId = '';
+            }
+            renderAll();
+        } catch (error) {
+            toast('No se pudo cargar convocatorias publicadas.', 'warn');
+        }
+    }
+
+    async function notifyPanelUser(userId, message, intent) {
+        if (!firebaseDb || !userId) return;
+        const ts = Date.now();
+        await set(ref(firebaseDb, 'Users/' + userId + '/Notifications/' + ts), {
+            sUid: state.userId || 'PROVIWEB',
+            senderUid: state.userId || 'PROVIWEB',
+            notification: message,
+            type: 'ally_opportunity_review',
+            timestamp: ts,
+            ...(intent ? { intent } : {})
+        });
+    }
+
+    async function setApplicationDecisionFromAdmin(opportunityId, applicantUid, status) {
+        if (!firebaseDb || !opportunityId || !applicantUid || !hasAccess('comunidad')) return;
+        if (status !== 'accepted' && status !== 'declined') return;
+
+        const opportunity = state.remoteOpportunities.find((item) => String(item.id) === String(opportunityId));
+        if (!opportunity) {
+            toast('La convocatoria ya no esta disponible.', 'warn');
+            return;
+        }
+
+        let reason = '';
+        if (status === 'declined') {
+            reason = (window.prompt('Indica el motivo para declinar este registro:', '') || '').trim();
+            if (!reason) {
+                toast('Debes indicar un motivo para declinar.', 'warn');
+                return;
+            }
+        }
+
+        try {
+            await update(ref(firebaseDb, 'Opportunities/' + opportunityId + '/applications/' + applicantUid), {
+                status,
+                reason,
+                reviewedBy: state.userId,
+                reviewedAt: Date.now(),
+                updatedAt: Date.now()
+            });
+
+            const msg = status === 'accepted'
+                ? 'Tu registro fue aceptado en \"' + (opportunity.title || 'Convocatoria') + '\".'
+                : 'Tu registro fue declinado en \"' + (opportunity.title || 'Convocatoria') + '\". Motivo: ' + reason;
+            await notifyPanelUser(applicantUid, msg, { kind: 'opportunity', opportunityId });
+            toast(status === 'accepted' ? 'Registro aceptado.' : 'Registro declinado.', 'ok');
+            await loadOwnedOpportunitiesFromFirebase();
+        } catch (error) {
+            toast('No se pudo actualizar el registro.', 'warn');
+        }
+    }
+
+    async function deleteOpportunityFromPanel(opportunityId, source) {
+        if (!opportunityId) return;
+        if (source === 'firebase') {
+            if (!firebaseDb || !state.userId || state.userId === 'guest') {
+                toast('Inicia sesion para eliminar convocatorias publicadas.', 'warn');
+                return;
+            }
+            const ok = window.confirm('Eliminar esta convocatoria tambien la quitara de Home y sus registros.');
+            if (!ok) return;
+            try {
+                await remove(ref(firebaseDb, 'Opportunities/' + opportunityId));
+                toast('Convocatoria eliminada.', 'ok');
+                await loadOwnedOpportunitiesFromFirebase();
+            } catch (error) {
+                toast('No se pudo eliminar la convocatoria.', 'warn');
+            }
+            return;
+        }
+
+        state.opportunities = state.opportunities.filter((item) => String(item.id) !== String(opportunityId));
+        saveList('opportunities', state.opportunities);
+        renderAll();
+        toast('Convocatoria local eliminada.', 'ok');
+    }
+
+    function loadData() {
+        state.opportunities = readList('opportunities');
+        state.leads = [];
+        state.brand = readList('brand');
+        state.training = readList('training');
+        state.qav = readList('qav');
+        renderAll();
+    }
+
+    function bindForms() {
+        if (forms.opportunities) {
+            forms.opportunities.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                if (!hasAccess('comunidad')) return;
+                if (!firebaseDb || !state.userId || state.userId === 'guest') {
+                    toast('Debes iniciar sesion para publicar convocatorias.', 'warn');
+                    return;
+                }
+
+                const fd = new FormData(forms.opportunities);
+                const title = String(fd.get('title') || '').trim();
+                const discipline = String(fd.get('discipline') || '').trim();
+                const description = String(fd.get('description') || '').trim();
+                const address = String(fd.get('address') || '').trim();
+                const links = parseExternalLinks(fd.get('externalLinks'));
+                const imageUrl = String(fd.get('imageUrl') || '').trim();
+                const visibility = normalizeVisibility(fd.get('visibility'));
+                const pricingModel = normalizePricing(fd.get('pricingModel'));
+                const modality = normalizeModality(fd.get('modality'));
+                const deadline = String(fd.get('deadline') || '').trim();
+                const note = String(fd.get('note') || '').trim();
+
+                if (!title || !discipline || !description || !address || !deadline) {
+                    toast('Completa titulo, disciplina, descripcion, direccion y fecha limite.', 'warn');
+                    return;
+                }
+
+                const id = 'ally_' + Date.now();
+                const payload = {
+                    title,
+                    type: 'convocatoria',
+                    category: discipline,
+                    discipline,
+                    description,
+                    location: address,
+                    address,
+                    visibility,
+                    pricingModel,
+                    modality,
+                    note,
+                    deadline,
+                    imageUrl: /^https?:\/\//i.test(imageUrl) ? imageUrl : '',
+                    externalLinks: links,
+                    contact: links[0] || '',
+                    link: links[0] || '',
+                    createdAt: Date.now(),
+                    createdBy: state.userId,
+                    authorName: state.entityName || state.authorName || 'Aliado PROVIWEB',
+                    authorUsername: state.authorUsername || '',
+                    authorPhoto: state.authorPhoto || '',
+                    allyEntity: state.entityName || '',
+                    allyPlan: state.currentPlan
+                };
+
+                try {
+                    await set(ref(firebaseDb, 'Opportunities/' + id), payload);
+                    forms.opportunities.reset();
+                    toast('Convocatoria publicada en Home.', 'ok');
+                    await loadOwnedOpportunitiesFromFirebase();
+                } catch (error) {
+                    toast('No se pudo publicar la convocatoria.', 'warn');
+                }
+            });
+        }
+
+        if (forms.brand) {
+            forms.brand.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (!hasAccess('visibilidad')) {
+                    toast('Esta funcion se habilita desde Plan Visibilidad.', 'warn');
+                    return;
+                }
+                const fd = new FormData(forms.brand);
+                state.brand.unshift({
+                    id: String(Date.now()),
+                    campaign: String(fd.get('campaign') || '').trim(),
+                    goal: String(fd.get('goal') || '').trim()
+                });
+                saveList('brand', state.brand);
+                forms.brand.reset();
+                renderAll();
+                toast('Activacion guardada.', 'ok');
+            });
+        }
+
+        if (forms.training) {
+            forms.training.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (!hasAccess('formacion')) {
+                    toast('Esta funcion se habilita desde Plan Formacion.', 'warn');
+                    return;
+                }
+                const fd = new FormData(forms.training);
+                state.training.unshift({
+                    id: String(Date.now()),
+                    title: String(fd.get('title') || '').trim(),
+                    date: String(fd.get('date') || '').trim(),
+                    slots: Number(fd.get('slots') || 0)
+                });
+                saveList('training', state.training);
+                forms.training.reset();
+                renderAll();
+                toast('Actividad de formacion guardada.', 'ok');
+            });
+        }
+
+        if (forms.qav) {
+            forms.qav.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (!hasAccess('estrategico')) {
+                    toast('Esta funcion se habilita en Plan Estrategico.', 'warn');
+                    return;
+                }
+                const fd = new FormData(forms.qav);
+                state.qav.unshift({
+                    id: String(Date.now()),
+                    product: String(fd.get('product') || '').trim(),
+                    price: Number(fd.get('price') || 0),
+                    benefit: String(fd.get('benefit') || '').trim(),
+                    reviewDate: String(fd.get('reviewDate') || '').trim(),
+                    priorityGoal: String(fd.get('priorityGoal') || '').trim()
+                });
+                saveList('qav', state.qav);
+                forms.qav.reset();
+                renderAll();
+                toast('Oferta QAV guardada.', 'ok');
+            });
+        }
+    }
+
+    function bindDeleteButtons() {
+        document.addEventListener('click', async (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+
+            const actionEl = target.closest('[data-action]');
+            if (actionEl) {
+                const action = actionEl.getAttribute('data-action');
+                if (action === 'send-opportunity') {
+                    const targetUid = actionEl.getAttribute('data-uid');
+                    if (!hasAccess('comunidad')) {
+                        toast('Tu plan no habilita esta accion.', 'warn');
+                        return;
+                    }
+                    await sendOpportunityToTalent(targetUid);
+                    return;
+                }
+                if (action === 'delete-opportunity') {
+                    const id = actionEl.getAttribute('data-id');
+                    const source = actionEl.getAttribute('data-source') || 'local';
+                    await deleteOpportunityFromPanel(id, source);
+                    return;
+                }
+                if (action === 'application-accept') {
+                    const opportunityId = actionEl.getAttribute('data-opportunity-id');
+                    const applicantUid = actionEl.getAttribute('data-applicant-uid');
+                    await setApplicationDecisionFromAdmin(opportunityId, applicantUid, 'accepted');
+                    return;
+                }
+                if (action === 'application-decline') {
+                    const opportunityId = actionEl.getAttribute('data-opportunity-id');
+                    const applicantUid = actionEl.getAttribute('data-applicant-uid');
+                    await setApplicationDecisionFromAdmin(opportunityId, applicantUid, 'declined');
+                    return;
+                }
+            }
+
+            if (target.matches('.delete-btn[data-list][data-id]')) {
+                const listName = target.getAttribute('data-list');
+                const itemId = target.getAttribute('data-id');
+                if (!listName || !itemId || !Array.isArray(state[listName])) return;
+                state[listName] = state[listName].filter((item) => String(item.id) !== String(itemId));
+                saveList(listName, state[listName]);
+                renderAll();
+                toast('Elemento eliminado.', 'ok');
+            }
+        });
+    }
+
+    function bindApplicationControls() {
+        if (els.applicationOpportunitySelect) {
+            els.applicationOpportunitySelect.addEventListener('change', () => {
+                state.selectedOpportunityId = els.applicationOpportunitySelect.value || '';
+                renderApplicationsForSelectedOpportunity();
+            });
+        }
+        if (els.applicationsRefreshBtn) {
+            els.applicationsRefreshBtn.addEventListener('click', () => {
+                loadOwnedOpportunitiesFromFirebase();
+            });
+        }
+    }
+
+    async function hydrateFromFirebase() {
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getDatabase(app);
+            firebaseDb = db;
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    state.userId = 'guest';
+                    state.authorName = '';
+                    state.authorUsername = '';
+                    state.authorPhoto = '';
+                    state.remoteOpportunities = [];
+                    state.selectedOpportunityId = '';
+                    loadData();
+                    state.talentUsers = [];
+                    state.filteredTalentUsers = [];
+                    renderTalentResults();
+                    if (els.authState) {
+                        els.authState.textContent = 'Sin sesion iniciada';
+                        els.authState.classList.remove('status-ok');
+                        els.authState.classList.add('status-warn');
+                    }
+                    schedulePanelAccessRedirect('Inicia sesion con una cuenta aliada o admin para usar este panel.');
+                    return;
+                }
+
+                panelAccessRedirectScheduled = false;
+                state.userId = String(user.uid);
+                loadData();
+                if (els.authState) {
+                    els.authState.textContent = 'Sesion aliada activa';
+                    els.authState.classList.remove('status-warn');
+                    els.authState.classList.add('status-ok');
+                }
+
+                const userSnap = await get(ref(db, 'Users/' + user.uid));
+                const allySnap = await get(ref(db, 'Allies/' + user.uid));
+                const userData = userSnap.exists() ? userSnap.val() : {};
+                const allyData = allySnap.exists() ? allySnap.val() : {};
+                const hasPanelAccess = await resolveAllyAdminPanelAccess(db, user.uid, userData, allyData);
+
+                if (!hasPanelAccess) {
+                    schedulePanelAccessRedirect('Este panel es exclusivo para cuentas aliadas y administradores.');
+                    return;
+                }
+
+                const dbPlan = normalizePlan(allyData.allyPlan || userData.allyPlan);
+                if (dbPlan) {
+                    persistPlan(dbPlan);
+                    applyPlan(dbPlan);
+                }
+
+                state.entityName = String(allyData.entityName || userData.organizationName || userData.name || userData.username || state.entityName);
+                state.entityType = String(allyData.allyType || userData.allyType || state.entityType);
+                state.badge = String(allyData.allyBadge || userData.allyBadge || state.badge);
+                state.authorName = String(userData.name || state.entityName || 'Aliado PROVIWEB');
+                state.authorUsername = String(userData.username || '');
+                state.authorPhoto = String(userData.photo || '');
+
+                if (els.entityName) els.entityName.textContent = state.entityName;
+                if (els.entityType) els.entityType.textContent = state.entityType;
+                if (els.allyBadge) els.allyBadge.textContent = state.badge;
+
+                await loadTalentUsersFromFirebase();
+                await loadOwnedOpportunitiesFromFirebase();
+            });
+        } catch (error) {
+            if (els.authState) {
+                els.authState.textContent = 'Modo local';
+                els.authState.classList.remove('status-ok');
+                els.authState.classList.add('status-warn');
+            }
+            schedulePanelAccessRedirect('No se pudo validar tu acceso. Intenta de nuevo desde Home.');
+        }
+    }
+
+    function initPanelAnimations() {
+        if (document.body.getAttribute('data-ally-anim') === 'ready') return;
+        document.body.setAttribute('data-ally-anim', 'ready');
+
+        const immediate = Array.from(document.querySelectorAll(
+            '.ally-admin-topbar, .hero-card, .summary-row, .section-title, .section-subtitle'
+        ));
+        const deferred = Array.from(document.querySelectorAll(
+            '.module-card, .plan-checklist, .footer-note'
+        ));
+
+        const mark = (element, delayMs) => {
+            if (!(element instanceof HTMLElement)) return;
+            element.classList.add('ally-reveal');
+            element.style.setProperty('--ally-delay', String(Math.max(0, delayMs)) + 'ms');
+        };
+
+        immediate.forEach((element, index) => mark(element, index * 60));
+        deferred.forEach((element, index) => mark(element, (index % 5) * 55));
+
+        window.requestAnimationFrame(() => {
+            immediate.forEach((element) => {
+                element.classList.add('is-visible');
+            });
+        });
+
+        if (!('IntersectionObserver' in window)) {
+            deferred.forEach((element) => element.classList.add('is-visible'));
+            return;
+        }
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            });
+        }, {
+            threshold: 0.14,
+            rootMargin: '0px 0px -8% 0px'
+        });
+
+        deferred.forEach((element) => revealObserver.observe(element));
+    }
+
+    function init() {
+        const plan = initialPlan();
+        persistPlan(plan);
+        applyPlan(plan);
+        loadData();
+        bindForms();
+        bindDeleteButtons();
+        bindTalentControls();
+        bindApplicationControls();
+        initPanelAnimations();
+        renderTalentResults();
+        hydrateFromFirebase();
+    }
+
+    init();
+</script>
+</body>
+</html>

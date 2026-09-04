@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentación Oficial de Iniciar Sesión con PROVIWEB (SSO / OAuth 2.0)">
+    <title>PROVIWEB Connect - Guía de Integración SSO</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a10;
+            --bg-card: #131322;
+            --bg-code: #0d0d16;
+            --border-glass: rgba(255, 255, 255, 0.14);
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-purple: #c084fc;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --gradient-brand: linear-gradient(135deg, #fbbf24 0%, #a855f7 50%, #38bdf8 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .docs-topbar {
+            height: 60px;
+            background: rgba(18, 18, 28, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .docs-back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 750;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .docs-back-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--accent-gold);
+            color: #fbbf24;
+        }
+
+        .docs-container {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .docs-hero {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%), #131322;
+            border: 1.5px solid rgba(251, 191, 36, 0.45);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card-box {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 22px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        /* Code Block */
+        pre {
+            background: var(--bg-code);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: #e2e8f0;
+            overflow-x: auto;
+            line-height: 1.5;
+            margin: 12px 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #fbbf24;
+            font-size: 12px;
+        }
+
+        /* Official Button Showcase */
+        .proviweb-sso-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #181828 0%, #1f1f35 100%);
+            border: 1.5px solid #fbbf24;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(251, 191, 36, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .proviweb-sso-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(251, 191, 36, 0.4);
+            border-color: #fde047;
+        }
+
+        .proviweb-sso-btn.gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+            color: #000000;
+            border: none;
+        }
+
+        /* Sandbox Box */
+        .sandbox-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(34, 197, 94, 0.08) 100%), #11111c;
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="docs-topbar">
+        <a href="index.html" class="docs-back-btn">← Volver al Inicio</a>
+        <div style="font-weight: 900; font-size: 15px; color: #fff; display:flex; align-items:center; gap:6px;">
+            <span>🎵</span><span>PROVIWEB Connect · Guía de Integración SSO</span>
+        </div>
+        <a href="admin.html" class="docs-back-btn" style="background:rgba(251,191,36,0.15); border-color:var(--accent-gold); color:#fbbf24;">
+            👑 Consola Admin
+        </a>
+    </header>
+
+    <main class="docs-container">
+        <!-- HERO -->
+        <div class="docs-hero">
+            <div>
+                <span style="font-size: 11px; font-weight: 900; background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); padding: 3px 10px; border-radius: 8px;">SINGLE SIGN-ON / OAUTH 2.0</span>
+                <h1 style="font-size: 24px; font-weight: 900; margin: 8px 0 6px; background: var(--gradient-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Iniciar Sesión con PROVIWEB en Otras Aplicaciones
+                </h1>
+                <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; max-width: 680px;">
+                    Permite que tus aplicaciones satélite (<code>com.israviolink.app</code>, <code>com.israviolink.admin</code>, <code>com.israviolink.nunti</code> y <code>com.israviolink.pulso</code>) inicien sesión de forma segura y centralizada con la cuenta de artista de PROVIWEB.
+                </p>
+            </div>
+            <div style="font-size: 54px; filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.4));">🔐</div>
+        </div>
+
+        <!-- SECCIÓN 1: BOTONES OFICIALES -->
+        <div class="card-box">
+            <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                🎨 1. Botones Oficiales "Iniciar Sesión con PROVIWEB"
+            </h2>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                Integra el botón oficial en tu aplicación para garantizar una identidad visual coherente y reconocible:
+            </p>
+
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
+                <a href="oauth-authorize.html?client_id=com.israviolink.pulso&redirect_uri=https://proviweb-d8764-c592e.web.app/docs-sso.html&state=demo&scope=profile+email+qav" class="proviweb-sso-btn">
+                    <img src="./assets/logotransparente-1dd37ce8.png" style="width:22px; height:22px; object-fit:contain;">
+                    <span>Iniciar Sesión con PROVIWEB</span>
+                </a>
+
+                <a href="oauth-authorize.html?client_id=com.israviolink.pulso&redirect_uri=https://proviweb-d8764-c592e.web.app/docs-sso.html&state=demo&scope=profile+email+qav" class="proviweb-sso-btn gold">
+                    <img src="./assets/logotransparente-1dd37ce8.png" style="width:22px; height:22px; object-fit:contain;">
+                    <span>Iniciar Sesión con PROVIWEB</span>
+                </a>
+            </div>
+
+            <div style="font-size:12px; color:var(--text-muted);">
+                HTML del botón:
+            </div>
+            <pre>&lt;a href="https://proviweb-d8764-c592e.web.app/oauth-authorize.html?client_id=com.israviolink.pulso&amp;redirect_uri=israviolink-pulso://oauth/callback&amp;scope=profile+email+qav" class="proviweb-sso-btn"&gt;
+    &lt;img src="proviweb_logo.png" style="width:22px; height:22px;"&gt;
+    &lt;span&gt;Iniciar Sesión con PROVIWEB&lt;/span&gt;
+&lt;/a&gt;</pre>
+
+            <div style="font-size:12px; color:var(--text-muted); margin-top:10px;">
+                Configuración oficial de paquetes Android:
+            </div>
+            <pre>com.israviolink.app   -> israviolink://oauth/callback
+com.israviolink.admin -> israviolink-admin://oauth/callback
+com.israviolink.nunti -> israviolink-nunti://oauth/callback
+com.israviolink.pulso -> israviolink-pulso://oauth/callback</pre>
+        </div>
+
+        <!-- SECCIÓN 2: INTEGRACIÓN EN ANDROID (KOTLIN / JAVA) -->
+        <div class="card-box">
+            <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                📱 2. Integración en Android (Ej: com.israviolink.pulso)
+            </h2>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                En tu aplicación Android nativa, puedes abrir el portal de autorización con <strong>Chrome Custom Tabs</strong> para una experiencia fluida y recibir el código mediante un <strong>Deep Link</strong>.
+            </p>
+
+            <h3 style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 16px;">
+                Paso A: Declarar el Deep Link en <code>AndroidManifest.xml</code>
+            </h3>
+            <pre>&lt;activity android:name=".OAuthCallbackActivity" android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.VIEW" /&gt;
+        &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+        &lt;category android:name="android.intent.category.BROWSABLE" /&gt;
+        &lt;!-- Deep link: israviolink-pulso://oauth/callback --&gt;
+        &lt;data android:scheme="israviolink-pulso" android:host="oauth" android:path="/callback" /&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;</pre>
+
+            <h3 style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 16px;">
+                Paso B: Lanzar la pantalla de autorización (Kotlin)
+            </h3>
+            <pre>val authUrl = "https://proviweb-d8764-c592e.web.app/oauth-authorize.html?" +
+    "client_id=com.israviolink.pulso&amp;" +
+    "redirect_uri=israviolink-pulso://oauth/callback&amp;" +
+    "scope=profile+email+qav&amp;" +
+    "state=" + UUID.randomUUID().toString()
+
+val customTabsIntent = CustomTabsIntent.Builder().build()
+customTabsIntent.launchUrl(context, Uri.parse(authUrl))</pre>
+
+            <h3 style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 16px;">
+                Paso C: Recibir el código e iniciar sesión
+            </h3>
+            <pre>// En OAuthCallbackActivity.kt:
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    val uri = intent?.data
+    val code = uri?.getQueryParameter("code")
+    val state = uri?.getQueryParameter("state")
+
+    if (code != null) {
+        // Canjear código con la Cloud Function oauthTokenExchange
+        exchangeCodeForToken(code)
+    }
+}</pre>
+        </div>
+
+        <!-- SECCIÓN 3: PROBADOR / SANDBOX INTERACTIVO -->
+        <div class="card-box">
+            <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                🧪 3. Probador & Simulador Interactivo de Autorización
+            </h2>
+            <p style="font-size: 13px; color: var(--text-secondary);">
+                Prueba el flujo de autorización en vivo directamente desde tu navegador:
+            </p>
+
+            <div class="sandbox-box">
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; font-weight:800; color:#fff; display:block; margin-bottom:6px;">Selecciona la Aplicación a Probar:</label>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.admin', 'israviolink-admin://oauth/callback')">🛡️ com.israviolink.admin</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.app', 'israviolink://oauth/callback')">🎻 com.israviolink.app</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.nunti', 'israviolink-nunti://oauth/callback')">🛰️ com.israviolink.nunti</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.pulso', 'israviolink-pulso://oauth/callback')">🎵 com.israviolink.pulso</button>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:800; color:#fff; display:block; margin-bottom:4px;">Client ID:</label>
+                        <input type="text" id="sbClientId" class="form-input" value="com.israviolink.admin">
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:800; color:#fff; display:block; margin-bottom:4px;">Redirect URI:</label>
+                        <input type="text" id="sbRedirectUri" class="form-input" value="https://proviweb-d8764-c592e.web.app/docs-sso.html">
+                    </div>
+                </div>
+
+                <button type="button" id="btnTestOAuthFlow" class="proviweb-sso-btn gold" style="width:100%; justify-content:center;">
+                    🚀 Probar Flujo de Autorización en Vivo
+                </button>
+
+                <div id="sandboxResultBox" style="display:none; margin-top:16px; background:#08080d; border:1px solid #4ade80; border-radius:12px; padding:14px;">
+                    <div style="font-size:13px; font-weight:900; color:#4ade80; margin-bottom:6px;">🎉 ¡Código de Autorización Recibido Exitosamente!</div>
+                    <div style="font-size:12px; color:#cbd5e1; word-break:break-all;">
+                        <strong>Código Generado:</strong> <span id="receivedCodeSpan" style="color:#fbbf24; font-family:monospace;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        
+        window.selectAppTest = function(pkg, uri) {
+            document.getElementById('sbClientId').value = pkg;
+            document.getElementById('sbRedirectUri').value = 'https://proviweb-d8764-c592e.web.app/docs-sso.html';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            if (code) {
+                const resBox = document.getElementById('sandboxResultBox');
+                const codeSpan = document.getElementById('receivedCodeSpan');
+                if (resBox && codeSpan) {
+                    resBox.style.display = 'block';
+                    codeSpan.textContent = code;
+                }
+            }
+
+            document.getElementById('btnTestOAuthFlow').onclick = () => {
+                const cId = document.getElementById('sbClientId').value.trim();
+                const rUri = document.getElementById('sbRedirectUri').value.trim();
+                window.location.href = `oauth-authorize.html?client_id=${encodeURIComponent(cId)}&redirect_uri=${encodeURIComponent(rUri)}&scope=profile+email+qav&state=sandbox_${Date.now()}`;
+            };
+        });
+    </script>
+</body>
+</html>

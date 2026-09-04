@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Registra tu establecimiento de música en vivo">
+    <title>Registrar Establecimiento - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/venues-theme.css">
+    <style>
+        /* Hero */
+        .register-hero {
+            margin-top: 60px;
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        .register-hero__title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .register-hero__subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 40px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 968px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto 60px;
+            }
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px 24px;
+            border: 1px solid var(--border-glass);
+            text-align: center;
+            position: relative;
+            transition: var(--transition);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+
+        .pricing-card--featured {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(168,85,247,0.3), 0 20px 40px rgba(168,85,247,0.2);
+        }
+
+        .pricing-card--featured:hover {
+            box-shadow: 0 0 0 2px rgba(168,85,247,0.5), 0 24px 48px rgba(168,85,247,0.3);
+        }
+
+        .pricing-card--atlas {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 2px rgba(245,158,11,0.3), 0 20px 40px rgba(245,158,11,0.15);
+        }
+
+        .pricing-card--atlas:hover {
+            box-shadow: 0 0 0 2px rgba(245,158,11,0.5), 0 24px 48px rgba(245,158,11,0.25);
+        }
+
+        .pricing-card__badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(168,85,247,0.4);
+        }
+
+        .pricing-card__badge--atlas {
+            background: var(--gradient-gold);
+            box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+        }
+
+        .pricing-card__icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .pricing-card__name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pricing-card__price {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .pricing-card__price span {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .pricing-card__price--pro {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pricing-card__price--atlas {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pricing-card__period {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .pricing-card__features {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px;
+        }
+
+        .pricing-card__features li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .pricing-card__features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-card__features .check {
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .pricing-card__features .cross {
+            color: #ef4444;
+            opacity: 0.5;
+        }
+
+        .pricing-card__btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+
+        .pricing-card__btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Registration Form */
+        .registration-section {
+            padding: 40px 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .registration-form {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section__title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Checkbox Group */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--bg-glass);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-glass);
+        }
+
+        .checkbox-item:hover {
+            background: rgba(168,85,247,0.1);
+            border-color: rgba(168,85,247,0.3);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-purple);
+        }
+
+        /* Schedule Selector */
+        .schedule-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .schedule-day {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            transition: var(--transition);
+        }
+
+        .schedule-day:hover {
+            border-color: rgba(168,85,247,0.3);
+        }
+
+        .schedule-day__name {
+            width: 90px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .schedule-day__toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .schedule-day__toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-purple);
+        }
+
+        .schedule-day__times {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .schedule-day__times input {
+            width: 90px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .schedule-day__live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .schedule-day__live input[type="checkbox"] {
+            accent-color: var(--accent-purple);
+        }
+
+        /* Submit Button */
+        .form-submit {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(239,68,68,0.1);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .modal-content__icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content__title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-content__text {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Login Required */
+        .login-required {
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        .login-required__icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .login-required__title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .login-required__text {
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto 24px;
+        }
+
+        .login-required__buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Hidden utility class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Plan Selection Indicator */
+        .plan-selected {
+            background: rgba(168,85,247,0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border: 1px solid rgba(168,85,247,0.3);
+        }
+
+        .plan-selected__name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .plan-selected__price {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .register-hero__title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+<script src="js/auth-maintenance.js"></script>
+    <!-- Header -->
+    <header class="venues-header">
+        <a href="#" class="brand" id="venueBrand">PROVIWEB</a>
+        <nav class="venues-nav">
+            <a href="venues-explore.html" class="secondary">🎵 Establecimientos</a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="register-hero">
+        <h1 class="register-hero__title">🏢 Registra tu Establecimiento</h1>
+        <p class="register-hero__subtitle">
+            Únete a PROVIWEB y conecta con músicos talentosos. Gestiona tu agenda, 
+            publica convocatorias y haz crecer tu negocio.
+        </p>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing-section">
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="pricing-card__icon">🆓</div>
+                <h3 class="pricing-card__name">Gratuito</h3>
+                <div class="pricing-card__price">$0<span>/mes</span></div>
+                <p class="pricing-card__period">Para empezar</p>
+                <ul class="pricing-card__features">
+                    <li><span class="check">✓</span> Perfil público básico</li>
+                    <li><span class="check">✓</span> Hasta 5 eventos activos</li>
+                    <li><span class="check">✓</span> 3 convocatorias mensuales</li>
+                    <li><span class="check">✓</span> Búsqueda estándar de músicos</li>
+                    <li><span class="cross">✗</span> Estadísticas avanzadas</li>
+                    <li><span class="cross">✗</span> Perfil destacado</li>
+                </ul>
+                <button class="pricing-card__btn btn--secondary" onclick="selectPlan('free')">
+                    Seleccionar
+                </button>
+            </div>
+
+            <!-- PRO Plan -->
+            <div class="pricing-card pricing-card--featured">
+                <div class="pricing-card__badge">Recomendado</div>
+                <div class="pricing-card__icon">⭐</div>
+                <h3 class="pricing-card__name">PRO</h3>
+                <div class="pricing-card__price pricing-card__price--pro">$49.900<span>/mes</span></div>
+                <p class="pricing-card__period">Para crecer</p>
+                <ul class="pricing-card__features">
+                    <li><span class="check">✓</span> Todo lo del plan Gratuito</li>
+                    <li><span class="check">✓</span> Perfil destacado con sello PRO</li>
+                    <li><span class="check">✓</span> Eventos ilimitados</li>
+                    <li><span class="check">✓</span> Convocatorias ilimitadas</li>
+                    <li><span class="check">✓</span> Filtros avanzados de búsqueda</li>
+                    <li><span class="check">✓</span> Estadísticas avanzadas</li>
+                </ul>
+                <button class="pricing-card__btn btn--primary" onclick="selectPlan('pro')">
+                    Seleccionar PRO
+                </button>
+            </div>
+
+            <!-- Atlas Plan -->
+            <div class="pricing-card pricing-card--atlas">
+                <div class="pricing-card__badge pricing-card__badge--atlas">👑 Premium</div>
+                <div class="pricing-card__icon">👑</div>
+                <h3 class="pricing-card__name">Atlas</h3>
+                <div class="pricing-card__price pricing-card__price--atlas">$149.900<span>/mes</span></div>
+                <p class="pricing-card__period">Para escalar</p>
+                <ul class="pricing-card__features">
+                    <li><span class="check">✓</span> Todo lo del plan PRO</li>
+                    <li><span class="check">✓</span> Posicionamiento prioritario</li>
+                    <li><span class="check">✓</span> Múltiples administradores</li>
+                    <li><span class="check">✓</span> Promoción prioritaria</li>
+                    <li><span class="check">✓</span> Reportes comerciales</li>
+                    <li><span class="check">✓</span> Soporte prioritario 24/7</li>
+                </ul>
+                <button class="pricing-card__btn btn--gold" onclick="selectPlan('atlas')">
+                    Seleccionar Atlas
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section class="registration-section">
+        <div id="loginRequired" class="login-required">
+            <div class="login-required__icon">🔒</div>
+            <h2 class="login-required__title">Inicia sesión para continuar</h2>
+            <p class="login-required__text">
+                Para registrar tu establecimiento en PROVIWEB necesitas tener una cuenta. 
+                Inicia sesión o crea una cuenta gratuita para comenzar.
+            </p>
+            <div class="login-required__buttons">
+                <a href="index.html?redirect=venue-register.html" class="btn btn--primary">
+                    🔐 Iniciar sesión
+                </a>
+                <a href="register.html?redirect=venue-register.html" class="btn btn--secondary">
+                    📝 Crear cuenta
+                </a>
+            </div>
+        </div>
+
+        <form id="registrationForm" class="registration-form" style="display: none;">
+            <div id="errorMessage" class="error-message"></div>
+
+            <!-- Plan Selection -->
+            <div class="form-section">
+                <h3 class="form-section__title">📋 Plan seleccionado</h3>
+                <div class="plan-selected">
+                    <div>
+                        <div id="selectedPlanName" class="plan-selected__name">Gratuito</div>
+                        <div id="selectedPlanPrice" class="plan-selected__price">$0/mes</div>
+                    </div>
+                    <button type="button" class="btn btn--secondary btn--small" onclick="scrollToPlans()">
+                        Cambiar
+                    </button>
+                </div>
+                
+                <!-- Payment Section (hidden for free plan) -->
+                <div id="paymentSection" class="payment-section" style="display: none; margin-top: 20px;">
+                    <div class="payment-card" style="background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 20px;">
+                        <p style="margin: 0 0 16px 0; font-size: 0.9rem;">
+                            <strong>Pago requerido para activar el plan.</strong> Una vez realizado el pago, tu establecimiento se activará inmediatamente.
+                        </p>
+                        
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <a id="payPalBtn" href="https://paypal.me/proviweb" target="_blank" rel="noopener" class="btn btn--primary" style="background: linear-gradient(135deg, #0070ba, #003087); flex: 1; min-width: 200px; text-align: center; text-decoration: none;">
+                                <span>💳</span> Pagar con PayPal
+                            </a>
+                        </div>
+                        
+                        <div style="margin-top: 16px; padding: 12px; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 10px;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">
+                                <strong>Instrucciones:</strong> Después de pagar en PayPal, copia el código de transacción y pégalo abajo para verificar tu pago.
+                            </p>
+                        </div>
+                        
+                        <div style="margin-top: 16px;">
+                            <label class="form-label">Código de transacción PayPal *</label>
+                            <input type="text" id="payPalRef" class="form-input" placeholder="Ej: 5XJ12345ABC67890">
+                            <p class="form-hint">Ingresa el código de transacción que aparece en tu recibo de PayPal</p>
+                        </div>
+                        
+                        <div id="paymentStatus" class="payment-status" style="margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 0.85rem; display: none;">
+                            Estado del pago: <span id="paymentStatusText">Pendiente</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3 class="form-section__title">🏢 Información básica</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre del establecimiento <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="venueName" class="form-input" placeholder="Ej: La Taberna del Jazz" required>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Este será el nombre público de tu establecimiento.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de establecimiento <span style="color: #ef4444;">*</span></label>
+                        <select id="venueType" class="form-select" required>
+                            <option value="">Selecciona un tipo</option>
+                            <option value="bar">🍺 Bar</option>
+                            <option value="restaurant">🍽️ Restaurante</option>
+                            <option value="taberna_mariachi">🎺 Taberna de Mariachi</option>
+                            <option value="peña">🎵 Peña</option>
+                            <option value="foro_cultural">🎭 Foro Cultural</option>
+                            <option value="espacio_artistico">🎨 Espacio Artístico</option>
+                            <option value="discoteca">💃 Discoteca</option>
+                            <option value="sala_conciertos">🎸 Sala de Conciertos</option>
+                            <option value="otro">📍 Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Capacidad aproximada</label>
+                        <input type="number" id="capacity" class="form-input" placeholder="Ej: 150" min="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción corta <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="shortDescription" class="form-input" placeholder="Breve descripción para mostrar en listados (máx. 150 caracteres)" maxlength="150" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción completa</label>
+                    <textarea id="description" class="form-textarea" placeholder="Describe tu establecimiento, ambiente, historia, público habitual..."></textarea>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-section">
+                <h3 class="form-section__title">📍 Ubicación</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">País <span style="color: #ef4444;">*</span></label>
+                        <select id="country" class="form-select" required>
+                            <option value="">Selecciona</option>
+                            <option value="Colombia" selected>🇨🇴 Colombia</option>
+                            <option value="México">🇲🇽 México</option>
+                            <option value="Argentina">🇦🇷 Argentina</option>
+                            <option value="España">🇪🇸 España</option>
+                            <option value="Chile">🇨🇱 Chile</option>
+                            <option value="Perú">🇵🇪 Perú</option>
+                            <option value="Otro">🌍 Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ciudad <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="city" class="form-input" placeholder="Ej: Bogotá" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Barrio/Zona</label>
+                        <input type="text" id="neighborhood" class="form-input" placeholder="Ej: Zona T">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="address" class="form-input" placeholder="Ej: Calle 123 # 45-67" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Music & Genres -->
+            <div class="form-section">
+                <h3 class="form-section__title">🎵 Música y géneros</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Géneros musicales que manejas</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="rock"> <span>🎸 Rock</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="pop"> <span>🎤 Pop</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="jazz"> <span>🎷 Jazz</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="blues"> <span>🎺 Blues</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="salsa"> <span>💃 Salsa</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="mariachi"> <span>🎺 Mariachi</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="vallenato"> <span>🪗 Vallenato</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="reggaeton"> <span>🎧 Reggaetón</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="electronica"> <span>🎛️ Electrónica</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="trova"> <span>🎸 Trova</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="fusion"> <span>🎭 Fusión</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="genres" value="acustico"> <span>🎻 Acústico</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Space & Equipment -->
+            <div class="form-section">
+                <h3 class="form-section__title">🎭 Espacio y equipamiento</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">¿Cuentan con escenario?</label>
+                        <select id="hasStage" class="form-select">
+                            <option value="">Selecciona</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tamaño del escenario</label>
+                        <select id="stageSize" class="form-select">
+                            <option value="">Selecciona</option>
+                            <option value="pequeño">Pequeño</option>
+                            <option value="mediano">Mediano</option>
+                            <option value="grande">Grande</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">¿Tienen sistema de sonido propio?</label>
+                        <select id="hasSoundSystem" class="form-select">
+                            <option value="">Selecciona</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">¿Tienen iluminación?</label>
+                        <select id="hasLighting" class="form-select">
+                            <option value="">Selecciona</option>
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            <div class="form-section">
+                <h3 class="form-section__title">🕐 Horarios de operación</h3>
+                
+                <div class="schedule-selector">
+                    <div class="schedule-day" data-day="monday">
+                        <span class="schedule-day__name">Lunes</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active">
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times" style="opacity: 0.5; pointer-events: none;">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="02:00">
+                        </div>
+                        <label class="schedule-day__live" style="opacity: 0.5; pointer-events: none;">
+                            <input type="checkbox" class="day-live-music">
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="tuesday">
+                        <span class="schedule-day__name">Martes</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active">
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times" style="opacity: 0.5; pointer-events: none;">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="02:00">
+                        </div>
+                        <label class="schedule-day__live" style="opacity: 0.5; pointer-events: none;">
+                            <input type="checkbox" class="day-live-music">
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="wednesday">
+                        <span class="schedule-day__name">Miércoles</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active">
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times" style="opacity: 0.5; pointer-events: none;">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="02:00">
+                        </div>
+                        <label class="schedule-day__live" style="opacity: 0.5; pointer-events: none;">
+                            <input type="checkbox" class="day-live-music">
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="thursday">
+                        <span class="schedule-day__name">Jueves</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active">
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times" style="opacity: 0.5; pointer-events: none;">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="02:00">
+                        </div>
+                        <label class="schedule-day__live" style="opacity: 0.5; pointer-events: none;">
+                            <input type="checkbox" class="day-live-music">
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="friday">
+                        <span class="schedule-day__name">Viernes</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active" checked>
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="03:00">
+                        </div>
+                        <label class="schedule-day__live">
+                            <input type="checkbox" class="day-live-music" checked>
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="saturday">
+                        <span class="schedule-day__name">Sábado</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active" checked>
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times">
+                            <input type="time" class="day-open" value="18:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="03:00">
+                        </div>
+                        <label class="schedule-day__live">
+                            <input type="checkbox" class="day-live-music" checked>
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+
+                    <div class="schedule-day" data-day="sunday">
+                        <span class="schedule-day__name">Domingo</span>
+                        <label class="schedule-day__toggle">
+                            <input type="checkbox" class="day-active">
+                            <span>Abierto</span>
+                        </label>
+                        <div class="schedule-day__times" style="opacity: 0.5; pointer-events: none;">
+                            <input type="time" class="day-open" value="12:00">
+                            <span>a</span>
+                            <input type="time" class="day-close" value="20:00">
+                        </div>
+                        <label class="schedule-day__live" style="opacity: 0.5; pointer-events: none;">
+                            <input type="checkbox" class="day-live-music">
+                            <span>🎵 Música en vivo</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="form-section">
+                <h3 class="form-section__title">📞 Información de contacto</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono <span style="color: #ef4444;">*</span></label>
+                        <input type="tel" id="phone" class="form-input" placeholder="Ej: +57 312 345 6789" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp</label>
+                        <input type="tel" id="whatsapp" class="form-input" placeholder="Ej: +57 312 345 6789">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email <span style="color: #ef4444;">*</span></label>
+                        <input type="email" id="email" class="form-input" placeholder="contacto@tuestablecimiento.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sitio web</label>
+                        <input type="url" id="website" class="form-input" placeholder="https://www.tuestablecimiento.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Instagram</label>
+                        <input type="text" id="instagram" class="form-input" placeholder="@usuario">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Facebook</label>
+                        <input type="text" id="facebook" class="form-input" placeholder="nombre de página">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-submit">
+                <button type="button" class="btn btn--secondary" onclick="window.location.href='venues-explore.html'">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn--primary" id="submitBtn">
+                    🚀 Crear mi establecimiento
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-content__icon">🎉</div>
+            <h2 class="modal-content__title">¡Registro exitoso!</h2>
+            <p class="modal-content__text">
+                Tu establecimiento ha sido registrado exitosamente. Nuestro equipo lo revisará 
+                y lo activará en las próximas 24 horas.
+            </p>
+            <a href="venue-dashboard.html" class="btn btn--primary">
+                Ir a mi panel de control
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { createVenue } from './js/venues/venue-api.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        let selectedPlan = 'free';
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const loginRequired = document.getElementById('loginRequired');
+            const registrationForm = document.getElementById('registrationForm');
+            
+            if (user) {
+                // Usuario logueado - mostrar formulario de registro
+                loginRequired.style.display = 'none';
+                registrationForm.style.display = 'block';
+            } else {
+                // Usuario NO logueado - mostrar mensaje de inicio de sesión
+                loginRequired.style.display = 'block';
+                registrationForm.style.display = 'none';
+            }
+        });
+
+        window.selectPlan = function(plan) {
+            selectedPlan = plan;
+            const planNames = { 'free': 'Gratuito', 'pro': 'PRO', 'atlas': 'Atlas' };
+            const planPrices = { 'free': '$0/mes', 'pro': '$49.900/mes', 'atlas': '$149.900/mes' };
+            const planAmounts = { 'free': 0, 'pro': 49900, 'atlas': 149900 };
+            
+            document.getElementById('selectedPlanName').textContent = planNames[plan];
+            document.getElementById('selectedPlanPrice').textContent = planPrices[plan];
+            
+            // Show/hide payment section
+            const paymentSection = document.getElementById('paymentSection');
+            const payPalBtn = document.getElementById('payPalBtn');
+            
+            if (plan === 'free') {
+                paymentSection.style.display = 'none';
+            } else {
+                paymentSection.style.display = 'block';
+                // Update PayPal link with amount (convert to USD ~4000 COP per USD)
+                const amountUSD = (planAmounts[plan] / 4000).toFixed(2);
+                payPalBtn.href = `https://paypal.me/proviweb/${amountUSD}`;
+            }
+            
+            document.getElementById('registrationForm').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // Check URL params for PayPal return
+        function checkPayPalReturn() {
+            const params = new URLSearchParams(window.location.search);
+            const paidPlan = params.get('paid_plan');
+            const paypalRef = params.get('paypal_ref');
+            
+            if (paidPlan && paypalRef) {
+                selectedPlan = paidPlan;
+                document.getElementById('payPalRef').value = paypalRef;
+                verifyPayment();
+            }
+        }
+
+        function verifyPayment() {
+            const payPalRef = document.getElementById('payPalRef').value.trim();
+            const statusEl = document.getElementById('paymentStatus');
+            const statusText = document.getElementById('paymentStatusText');
+            
+            if (payPalRef.length > 5) {
+                statusEl.style.display = 'block';
+                statusEl.style.background = 'rgba(34, 197, 94, 0.1)';
+                statusEl.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+                statusEl.style.color = '#22c55e';
+                statusText.textContent = 'Verificado - ' + payPalRef;
+                return true;
+            }
+            return false;
+        }
+
+        window.scrollToPlans = function() {
+            document.querySelector('.pricing-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        document.querySelectorAll('.schedule-day').forEach(day => {
+            const checkbox = day.querySelector('.day-active');
+            const times = day.querySelector('.schedule-day__times');
+            const liveMusic = day.querySelector('.schedule-day__live');
+            checkbox.addEventListener('change', () => {
+                const enabled = checkbox.checked;
+                times.style.opacity = enabled ? '1' : '0.5';
+                times.style.pointerEvents = enabled ? 'auto' : 'none';
+                liveMusic.style.opacity = enabled ? '1' : '0.5';
+                liveMusic.style.pointerEvents = enabled ? 'auto' : 'none';
+            });
+        });
+
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                showError('Debes iniciar sesión para registrar un establecimiento. Redirigiendo...');
+                setTimeout(() => {
+                    window.location.href = 'index.html?redirect=venue-register.html';
+                }, 2000);
+                return;
+            }
+
+            // Validate payment for paid plans
+            if (selectedPlan !== 'free') {
+                const payPalRef = document.getElementById('payPalRef').value.trim();
+                if (!payPalRef || payPalRef.length < 5) {
+                    showError('Debes ingresar el código de transacción de PayPal para continuar.');
+                    document.getElementById('payPalRef').focus();
+                    return;
+                }
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Creando...';
+
+            try {
+                const payPalRef = document.getElementById('payPalRef').value.trim();
+                
+                const venueData = {
+                    name: document.getElementById('venueName').value.trim(),
+                    venueType: document.getElementById('venueType').value,
+                    shortDescription: document.getElementById('shortDescription').value.trim(),
+                    description: document.getElementById('description').value.trim(),
+                    capacity: parseInt(document.getElementById('capacity').value) || null,
+                    location: {
+                        country: document.getElementById('country').value,
+                        city: document.getElementById('city').value.trim(),
+                        neighborhood: document.getElementById('neighborhood').value.trim(),
+                        address: document.getElementById('address').value.trim()
+                    },
+                    musicGenres: Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(cb => cb.value),
+                    hasStage: document.getElementById('hasStage').value === 'true',
+                    hasSoundSystem: document.getElementById('hasSoundSystem').value === 'true',
+                    hasLighting: document.getElementById('hasLighting').value === 'true',
+                    stageSize: document.getElementById('stageSize').value || null,
+                    schedule: getScheduleData(),
+                    contact: {
+                        phone: document.getElementById('phone').value.trim(),
+                        whatsapp: document.getElementById('whatsapp').value.trim(),
+                        email: document.getElementById('email').value.trim(),
+                        website: document.getElementById('website').value.trim(),
+                        instagram: document.getElementById('instagram').value.trim(),
+                        facebook: document.getElementById('facebook').value.trim()
+                    },
+                    plan: {
+                        type: selectedPlan,
+                        startDate: Date.now(),
+                        endDate: selectedPlan === 'free' ? null : null,
+                        autoRenew: false
+                    },
+                    payment: selectedPlan !== 'free' ? {
+                        provider: 'paypal',
+                        reference: payPalRef,
+                        amount: selectedPlan === 'pro' ? 49900 : 149900,
+                        currency: 'COP',
+                        status: 'approved',
+                        paidAt: Date.now()
+                    } : null
+                };
+
+                await createVenue(venueData);
+                document.getElementById('successModal').classList.add('show');
+            } catch (error) {
+                showError(error.message || 'Error al crear el establecimiento.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Crear mi establecimiento';
+            }
+        });
+
+        // Check PayPal return on load
+        checkPayPalReturn();
+
+        function getScheduleData() {
+            const schedule = {};
+            document.querySelectorAll('.schedule-day').forEach(day => {
+                const dayKey = day.dataset.day;
+                if (day.querySelector('.day-active').checked) {
+                    schedule[dayKey] = {
+                        open: day.querySelector('.day-open').value,
+                        close: day.querySelector('.day-close').value,
+                        hasLiveMusic: day.querySelector('.day-live-music').checked
+                    };
+                }
+            });
+            return schedule;
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+            setTimeout(() => errorEl.classList.remove('show'), 5000);
+        }
+
+        // Manejar click en el logo
+        document.getElementById('venueBrand').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const userId = localStorage.getItem('id');
+            const hasAuth = Object.keys(localStorage).some(key => key.startsWith('firebase:authUser:'));
+            
+            if (userId || hasAuth) {
+                window.location.href = 'home.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

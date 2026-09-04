@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB Archivo - Biblioteca Digital de Partituras, Métodos & Salas de Ensayo">
+    <title>Archivo de Partituras - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- PDF.js for crisp sheet music rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(22, 22, 32, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-gold: #fbbf24;
+            --accent-rose: #f43f5e;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --radius-lg: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top Header */
+        .archive-navbar {
+            width: 100%;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .archive-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Main Container */
+        .archive-main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        /* Hero & Search Banner */
+        .archive-hero-banner {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(56, 189, 248, 0.08));
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn-upload-score {
+            background: var(--gradient-primary);
+            border: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+        }
+
+        .btn-upload-score:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Search Input */
+        .search-box-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input-field {
+            width: 100%;
+            padding: 14px 20px 14px 46px;
+            background: rgba(10, 10, 15, 0.7);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 16px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input-field:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+        }
+
+        .search-icon-pos {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Category Filter Chips */
+        .category-chips-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+
+        .category-chips-bar::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 9px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-chip.active, .cat-chip:hover {
+            background: var(--gradient-primary);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+        }
+
+        /* Sub-Instrument Chips Bar */
+        .sub-instruments-bar {
+            display: none;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .sub-instruments-bar::-webkit-scrollbar { display: none; }
+
+        .sub-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sub-chip.active, .sub-chip:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+        /* Live Practice / Ensayo Rooms Section */
+        .live-practice-section {
+            margin-bottom: 28px;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-rooms-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 4px 0 10px;
+        }
+
+        .live-rooms-scroll::-webkit-scrollbar { display: none; }
+
+        .live-room-card {
+            min-width: 240px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .live-room-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+        }
+
+        .live-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: fit-content;
+        }
+
+        /* Sheet Music Cards Grid */
+        .scores-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .score-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            position: relative;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 16px 36px rgba(168, 85, 247, 0.25);
+        }
+
+        .score-cover-box {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #0d0d14;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .score-card:hover .score-cover-img {
+            transform: scale(1.05);
+        }
+
+        .score-cat-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(18, 18, 26, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        .score-fav-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(18, 18, 26, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .score-fav-btn.is-fav {
+            color: #fbbf24;
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .score-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .score-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .score-instrument-tag {
+            font-size: 12px;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .score-uploader-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .score-uploader-img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .score-footer-actions {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-view-score {
+            flex: 1;
+            background: var(--gradient-primary);
+            border: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-view-score:hover {
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-icon-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .btn-icon-action:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        
+        /* ======================================================== */
+        /* FLAWLESS & HIGH-COMFORT SHEET MUSIC VIEWER STUDIO */
+        /* ======================================================== */
+        .score-viewer-studio-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0d0d12;
+            z-index: 9999;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .score-viewer-studio-modal.open {
+            display: flex;
+            animation: fadeInViewer 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInViewer {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Top Toolbar */
+        .viewer-header-toolbar {
+            height: 52px;
+            padding: 0 14px;
+            background: rgba(18, 18, 26, 0.98);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .viewer-score-info-cluster {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            max-width: 320px;
+        }
+
+        .viewer-page-nav-cluster {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .viewer-controls-cluster {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+
+        .viewer-ctrl-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .viewer-ctrl-btn:hover {
+            background: rgba(168, 85, 247, 0.25);
+            border-color: #a855f7;
+            transform: translateY(-1px);
+        }
+
+        .viewer-ctrl-btn.active {
+            background: var(--gradient-primary) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Canvas Scroll View Area */
+        .viewer-canvas-scroll-wrap {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background: #12121a;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+
+        .pdf-page-canvas {
+            max-width: 100%;
+            height: auto !important;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            transition: filter 0.3s ease;
+        }
+
+        /* Reading Modes */
+        .pdf-page-canvas.night-mode {
+            filter: invert(0.92) hue-rotate(180deg) contrast(1.15) brightness(0.95);
+            background: #111111;
+        }
+
+        .pdf-page-canvas.sepia-mode {
+            filter: sepia(0.45) contrast(0.95) brightness(0.98);
+        }
+
+        /* Floating Toolbelt (Metronome & Tuner) */
+        .viewer-floating-toolbelt {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(18, 18, 28, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 20px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        @media (max-width: 640px) {
+            .viewer-header-toolbar {
+                padding: 0 8px;
+                gap: 4px;
+            }
+            .viewer-score-info-cluster {
+                max-width: 140px;
+            }
+            .viewer-ctrl-btn span.btn-label {
+                display: none;
+            }
+            .viewer-floating-toolbelt {
+                bottom: 10px;
+                padding: 4px 10px;
+                gap: 8px;
+                max-width: 95%;
+            }
+        }
+
+
+        /* UPLOAD SCORE MODAL */
+        .upload-score-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(14px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .upload-score-modal.open { display: flex; }
+
+        .upload-score-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .form-group-wrap {
+            margin-bottom: 16px;
+        }
+
+        .form-label-title {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input-ctrl {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(10, 10, 15, 0.7);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input-ctrl:focus {
+            border-color: var(--accent-purple);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="archive-navbar">
+        <a href="home.html" class="archive-brand">
+            <img src="assets/logotransparente.png" alt="PROVIWEB" style="width: 32px; height: 32px; filter:none!important; background:transparent!important;">
+            <span>PROVIWEB ARCHIVO</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="btn-upload-score" id="openUploadScoreBtn">
+                <span>➕</span>
+                <span>Subir Partitura</span>
+            </button>
+            <a href="home.html" style="color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 600;">Inicio</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="archive-main-container">
+
+        <!-- Hero & Filter Section -->
+        <section class="archive-hero-banner">
+            <div class="hero-title-row">
+                <div>
+                    <h1 style="font-size: 24px; font-weight: 900; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Biblioteca Digital de Partituras & Métodos</h1>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Accede a repertorios, guiones orquestales y salas de ensayo para músicos.</p>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-box-wrap">
+                <span class="search-icon-pos">🔍</span>
+                <input type="text" id="scoreSearchInput" class="search-input-field" placeholder="Buscar por obra, compositor, instrumento o arreglista...">
+            </div>
+
+            <!-- Main Categories Chips Bar (Matching Android PROVIWEBAPP) -->
+            <div class="category-chips-bar" id="categoryChipsBar">
+                <button type="button" class="cat-chip active" data-cat="all">📚 Todas</button>
+                <button type="button" class="cat-chip" data-cat="favorites">⭐ Favoritos</button>
+                <button type="button" class="cat-chip" data-cat="my_scores">📁 Mis Partituras</button>
+                <button type="button" class="cat-chip" data-cat="classical">🎻 Clásica</button>
+                <button type="button" class="cat-chip" data-cat="mariachi">🎺 Mariachi</button>
+                <button type="button" class="cat-chip" data-cat="banda">🪗 Banda</button>
+                <button type="button" class="cat-chip" data-cat="jazz">🎷 Jazz</button>
+                <button type="button" class="cat-chip" data-cat="voz">🎤 Voz</button>
+            </div>
+
+            <!-- Dynamic Sub-Instrument Chips Bar -->
+            <div class="sub-instruments-bar" id="subInstrumentsBar"></div>
+        </section>
+
+        <!-- Live Practice Sessions (Salas de Ensayo en Vivo) -->
+        <section class="live-practice-section" id="livePracticeSection">
+            <div class="section-header-row">
+                <div class="section-title">
+                    <span>🔴</span>
+                    <span>Salas de Ensayo & Práctica en Vivo</span>
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted);" id="liveCountText">3 sesiones activas</span>
+            </div>
+
+            <div class="live-rooms-scroll" id="liveRoomsScroll">
+                <div class="live-room-card" onclick="alert('Conectando a la Sala de Ensayo Orquestal...')">
+                    <span class="live-badge">● EN VIVO</span>
+                    <div style="font-weight: 800; font-size: 14px; color: #fff;">Concierto en Re Mayor (Tchaikovsky)</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">🎻 Violines & Chelos · 4 participantes</div>
+                </div>
+
+                <div class="live-room-card" onclick="alert('Conectando al Ensayo de Mariachi...')">
+                    <span class="live-badge">● EN VIVO</span>
+                    <div style="font-weight: 800; font-size: 14px; color: #fff;">El Son de la Negra (Ensayo General)</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">🎺 Trompetas & Vihuelas · 6 participantes</div>
+                </div>
+
+                <div class="live-room-card" onclick="alert('Conectando al Jam Session...')">
+                    <span class="live-badge">● EN VIVO</span>
+                    <div style="font-weight: 800; font-size: 14px; color: #fff;">Autumn Leaves (Improvisación Jazz)</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">🎷 Saxo & Piano · 3 participantes</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sheet Music Catalog Section -->
+        <section>
+            <div class="section-header-row">
+                <div class="section-title">
+                    <span>🎼</span>
+                    <span id="catalogTitleText">Catálogo de Partituras</span>
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted);" id="scoresCountText">Cargando...</span>
+            </div>
+
+            <!-- Scores Grid -->
+            <div class="scores-catalog-grid" id="scoresGrid">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary); grid-column: 1 / -1;">Cargando catálogo musical...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FULLSCREEN INTERACTIVE PDF SCORE VIEWER STUDIO -->
+    <div class="score-viewer-studio-modal" id="scoreViewerStudio">
+        <div class="viewer-header-toolbar">
+            <!-- Score Title & Info -->
+            <div class="viewer-score-info-cluster">
+                <button type="button" class="btn-icon-action" id="closeViewerBtn" title="Cerrar Visualizador (Esc)">✕</button>
+                <div style="overflow: hidden;">
+                    <div style="font-weight: 800; font-size: 13px; color: #fff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" id="viewerScoreTitle">Partitura</div>
+                    <div style="font-size: 10px; color: var(--text-secondary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" id="viewerScoreMeta">Compositor · Instrumento</div>
+                </div>
+            </div>
+
+            <!-- Page Navigation -->
+            <div class="viewer-page-nav-cluster">
+                <button type="button" class="viewer-ctrl-btn" id="prevPageBtn" title="Página anterior" style="padding: 2px 6px; font-size: 11px;">◀</button>
+                <span id="pageCountDisplay" style="font-size: 11px; font-weight: 700; color: #fff; padding: 0 4px;">Pág. 1 / 1</span>
+                <button type="button" class="viewer-ctrl-btn" id="nextPageBtn" title="Página siguiente" style="padding: 2px 6px; font-size: 11px;">▶</button>
+            </div>
+
+            <!-- View Controls -->
+            <div class="viewer-controls-cluster">
+                <button type="button" class="viewer-ctrl-btn" id="zoomOutBtn" title="Reducir zoom">🔍−</button>
+                <button type="button" class="viewer-ctrl-btn" id="zoomInBtn" title="Aumentar zoom">🔍+</button>
+                <button type="button" class="viewer-ctrl-btn" id="toggleNightModeBtn" title="Modo Atril Nocturno">🌓 <span class="btn-label">Nocturno</span></button>
+                <button type="button" class="viewer-ctrl-btn" id="toggleSepiaModeBtn" title="Modo Cálido Sepia">📜 <span class="btn-label">Cálido</span></button>
+                <button type="button" class="viewer-ctrl-btn" id="toggleFullscreenBtn" title="Pantalla Completa">⛶ <span class="btn-label">Completa</span></button>
+                <a id="viewerDownloadBtn" href="#" download class="viewer-ctrl-btn" style="text-decoration:none;" title="Descargar PDF">📥 <span class="btn-label">PDF</span></a>
+            </div>
+        </div>
+
+        <!-- Canvas Reading Container -->
+        <div class="viewer-canvas-scroll-wrap" id="viewerCanvasWrap">
+            <!-- Dynamic PDF Canvas Rendered Here -->
+        </div>
+
+        <!-- Floating Toolbelt: Metronome & Reference Tone for Performers -->
+        <div class="viewer-floating-toolbelt">
+            <!-- Metronome Control -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 12px; font-weight: 800; color: #a855f7;" id="metronomeBeatLed">⏱️</span>
+                <span id="floatingBpmText" style="font-size: 11px; font-weight: 800; color: #fff; min-width: 50px;">120 BPM</span>
+                <input type="range" id="floatingBpmSlider" min="40" max="220" value="120" style="width: 70px; height: 4px; accent-color: #a855f7; cursor: pointer;">
+                <button type="button" id="floatingMetronomePlayBtn" class="viewer-ctrl-btn" style="padding: 2px 8px; font-size: 11px;">▶</button>
+            </div>
+
+            <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></div>
+
+            <!-- Pitch Reference Tone -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 12px; font-weight: 800; color: #38bdf8;">🎵</span>
+                <button type="button" class="viewer-ctrl-btn" id="floatingToneBtn" style="padding: 2px 8px; font-size: 11px;">La 440 Hz</button>
+            </div>
+        </div>
+    </div>
+
+            <div class="viewer-controls-cluster">
+                <button type="button" class="viewer-ctrl-btn" id="toggleNightModeBtn">🌓 Modo Atril Nocturno</button>
+                <button type="button" class="viewer-ctrl-btn" id="toggleFullscreenBtn">⛶ Pantalla Completa</button>
+                <a id="viewerDownloadBtn" href="#" download class="viewer-ctrl-btn" style="text-decoration:none;">📥 Descargar</a>
+            </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="viewer-canvas-scroll-wrap" id="viewerCanvasWrap">
+            <!-- Dynamic PDF Canvas Rendered Here -->
+        </div>
+
+        <!-- Floating Toolbelt: Metronome & Reference Tone for Performers -->
+        <div class="viewer-floating-toolbelt">
+            <!-- Metronome Control -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; font-weight: 800; color: #a855f7;">⏱️</span>
+                <span id="floatingBpmText" style="font-size: 12px; font-weight: 800;">120 BPM</span>
+                <input type="range" id="floatingBpmSlider" min="40" max="220" value="120" style="width: 80px; accent-color: #a855f7;">
+                <button type="button" id="floatingMetronomePlayBtn" class="viewer-ctrl-btn" style="padding: 4px 10px; font-size: 11px;">▶</button>
+            </div>
+
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2);"></div>
+
+            <!-- Pitch Reference Tone -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; font-weight: 800; color: #38bdf8;">🎵</span>
+                <button type="button" class="viewer-ctrl-btn" id="floatingToneBtn" style="padding: 4px 10px; font-size: 11px;">La 440 Hz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD SCORE MODAL -->
+    <div class="upload-score-modal" id="uploadScoreModal">
+        <div class="upload-score-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 900; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📤 Subir Partitura al Archivo</h2>
+                <button type="button" id="closeUploadModalBtn" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+
+            <form id="uploadScoreForm">
+                <div class="form-group-wrap">
+                    <label class="form-label-title">Título de la Obra *</label>
+                    <input type="text" id="upTitle" class="form-input-ctrl" placeholder="Ej: Concierto en La menor BWV 1041" required>
+                </div>
+
+                <div class="form-group-wrap">
+                    <label class="form-label-title">Compositor / Arreglista *</label>
+                    <input type="text" id="upComposer" class="form-input-ctrl" placeholder="Ej: J.S. Bach" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group-wrap">
+                        <label class="form-label-title">Categoría Principal *</label>
+                        <select id="upCategory" class="form-input-ctrl" required>
+                            <option value="classical">🎻 Clásica</option>
+                            <option value="mariachi">🎺 Mariachi</option>
+                            <option value="banda">🪗 Banda</option>
+                            <option value="jazz">🎷 Jazz</option>
+                            <option value="voz">🎤 Voz</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-wrap">
+                        <label class="form-label-title">Instrumento / Voz *</label>
+                        <input type="text" id="upInstrument" class="form-input-ctrl" placeholder="Ej: Violín Solo, Trompeta 1" required>
+                    </div>
+                </div>
+
+                <div class="form-group-wrap">
+                    <label class="form-label-title">Archivo PDF de la Partitura *</label>
+                    <input type="file" id="upPdfFile" class="form-input-ctrl" accept="application/pdf" required>
+                </div>
+
+                <div class="form-group-wrap">
+                    <label class="form-label-title">Carátula o Portada Opcional (JPG/PNG)</label>
+                    <input type="file" id="upCoverFile" class="form-input-ctrl" accept="image/*">
+                </div>
+
+                <button type="submit" id="submitScoreBtn" class="btn-upload-score" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px; margin-top: 10px;">
+                    <span>📤 Publicar Partitura</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" aria-label="Navegación Móvil">
+        <a href="home.html" class="mobile-nav-tab" id="mobileNavHome"><span class="tab-icon">🏠</span><span>Inicio</span></a>
+        <a href="reels.html" class="mobile-nav-tab" id="mobileNavReels"><span class="tab-icon">🎬</span><span>Reels</span></a>
+        <a href="createpost.html" class="mobile-nav-tab tab-create-btn" id="mobileNavCreate"><div class="tab-create-circle">➕</div></a>
+        <a href="opportunities.html" class="mobile-nav-tab" id="mobileNavOpp"><span class="tab-icon">💼</span><span>Empleos</span></a>
+        <a href="createchat.html" class="mobile-nav-tab" id="mobileNavChat"><span class="tab-icon">💬</span><span>Chats</span></a>
+        <a href="myprofile.html" class="mobile-nav-tab" id="mobileNavProfile"><span class="tab-icon">👤</span><span>Perfil</span></a>
+    </nav>
+
+    <!-- FIREBASE & ARCHIVE LOGIC SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, update, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        let currentUser = null;
+        let allScores = [];
+        let userFavorites = new Set();
+        let currentFilter = 'all';
+        let currentSubFilter = 'all';
+
+        const SUB_INSTRUMENTS_MAP = {
+            classical: ['Violín', 'Viola', 'Cello', 'Contrabajo', 'Piano', 'Flauta', 'Clarinete', 'Oboe', 'Fagot', 'Trompeta', 'Orquesta Completa'],
+            mariachi: ['Violín 1', 'Violín 2', 'Trompeta 1', 'Trompeta 2', 'Vihuela', 'Guitarrón', 'Guitarra', 'Voz', 'Score Completo'],
+            banda: ['Clarinete 1/2', 'Trompeta 1/2', 'Trombón', 'Tuba / Sousafón', 'Tambora', 'Tarola', 'Saxor'],
+            jazz: ['Saxofón Alto', 'Saxofón Tenor', 'Trompeta Jazz', 'Piano Jazz', 'Bajo / Contrabajo', 'Batería', 'Guitarra Jazz'],
+            voz: ['Soprano', 'Contralto', 'Tenor', 'Barítono', 'Bajo', 'Coro SATB']
+        };
+
+        // Fallback curated starter scores for immediate delight if DB is initial
+        const STARTER_SCORES = [
+            {
+                id: 'starter_1',
+                title: 'Concierto para Violín en Mi menor Op. 64',
+                composer: 'Felix Mendelssohn',
+                category: 'classical',
+                instrument: 'Violín Solo',
+                uploaderName: 'IsraViolink',
+                uploaderPhoto: 'assets/israphoto.jpeg',
+                cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80',
+                pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+            },
+            {
+                id: 'starter_2',
+                title: 'El Son de la Negra (Partitura Completa)',
+                composer: 'Tradicional Mexicano',
+                category: 'mariachi',
+                instrument: 'Score Completo',
+                uploaderName: 'Mariachi PROVIWEB',
+                uploaderPhoto: 'assets/avatar.png',
+                cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80',
+                pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+            },
+            {
+                id: 'starter_3',
+                title: 'Autumn Leaves (Lead Sheet & Chords)',
+                composer: 'Joseph Kosma',
+                category: 'jazz',
+                instrument: 'Saxofón Alto',
+                uploaderName: 'Jazz Club',
+                uploaderPhoto: 'assets/avatar.png',
+                cover: 'https://images.unsplash.com/photo-1520523839898-507121287950?w=400&q=80',
+                pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+            },
+            {
+                id: 'starter_4',
+                title: 'El Sinaloense (Versión Banda Sinaloense)',
+                composer: 'Severiano Briseño',
+                category: 'banda',
+                instrument: 'Clarinete 1/2',
+                uploaderName: 'Banda Maestro',
+                uploaderPhoto: 'assets/avatar.png',
+                cover: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&q=80',
+                pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+            },
+            {
+                id: 'starter_5',
+                title: 'Ave María (D.839)',
+                composer: 'Franz Schubert',
+                category: 'voz',
+                instrument: 'Soprano & Piano',
+                uploaderName: 'Canto Lírico',
+                uploaderPhoto: 'assets/avatar.png',
+                cover: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80',
+                pdfUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+            }
+        ];
+
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                // Load favorites
+                onValue(ref(db, `Favorites/${user.uid}`), (snap) => {
+                    userFavorites.clear();
+                    if (snap.exists()) {
+                        Object.keys(snap.val()).forEach(k => userFavorites.add(k));
+                    }
+                    renderScores();
+                });
+            }
+            loadScoresFromDatabase();
+        });
+
+        // Load scores from Firebase (books + booksmariachi)
+        function loadScoresFromDatabase() {
+            const booksRef = ref(db, 'books');
+            onValue(booksRef, (snap) => {
+                const list = [];
+                if (snap.exists()) {
+                    const data = snap.val();
+                    Object.keys(data).forEach(k => {
+                        const item = data[k];
+                        list.push({
+                            id: k,
+                            title: item.title || 'Partitura Sin Título',
+                            composer: item.composer || item.author || 'Tradicional',
+                            category: (item.category || item.genre || 'classical').toLowerCase(),
+                            instrument: item.instrument || item.type || 'General',
+                            uploaderName: item.uploaderName || 'Músico PROVIWEB',
+                            uploaderPhoto: item.uploaderPhoto || 'assets/avatar.png',
+                            uploaderId: item.uploaderId || '',
+                            cover: item.cover || item.coverUrl || 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&q=80',
+                            pdfUrl: item.pdfUrl || item.content || item.url || ''
+                        });
+                    });
+                }
+
+                // Combine with starter scores
+                const combined = [...list];
+                STARTER_SCORES.forEach(s => {
+                    if (!combined.some(c => c.title.toLowerCase() === s.title.toLowerCase())) {
+                        combined.push(s);
+                    }
+                });
+
+                allScores = combined;
+                renderScores();
+            });
+        }
+
+        // Render Scores Catalog with Filter
+        function renderScores() {
+            const grid = document.getElementById('scoresGrid');
+            const countText = document.getElementById('scoresCountText');
+            const searchVal = document.getElementById('scoreSearchInput').value.trim().toLowerCase();
+
+            let filtered = allScores.filter(score => {
+                // Category filter
+                if (currentFilter === 'favorites') {
+                    if (!userFavorites.has(score.id)) return false;
+                } else if (currentFilter === 'my_scores') {
+                    if (!currentUser || score.uploaderId !== currentUser.uid) return false;
+                } else if (currentFilter !== 'all') {
+                    if (score.category !== currentFilter) return false;
+                }
+
+                // Sub-instrument filter
+                if (currentSubFilter !== 'all') {
+                    if (!score.instrument.toLowerCase().includes(currentSubFilter.toLowerCase())) return false;
+                }
+
+                // Search query
+                if (searchVal) {
+                    const titleMatch = score.title.toLowerCase().includes(searchVal);
+                    const compMatch = score.composer.toLowerCase().includes(searchVal);
+                    const instMatch = score.instrument.toLowerCase().includes(searchVal);
+                    if (!titleMatch && !compMatch && !instMatch) return false;
+                }
+
+                return true;
+            });
+
+            countText.textContent = `${filtered.length} partituras encontradas`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px; color:var(--text-secondary); grid-column:1 / -1;">
+                        <div style="font-size:48px; margin-bottom:12px;">📁</div>
+                        <div style="font-size:16px; font-weight:800; color:#fff;">No se encontraron partituras en esta categoría</div>
+                        <p style="font-size:13px; margin-top:4px;">Sé el primero en subir un guion o partitura con el botón superior.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.forEach(score => {
+                const isFav = userFavorites.has(score.id);
+                const card = document.createElement('div');
+                card.className = 'score-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="score-cover-box">
+                            <img src="${score.cover}" alt="${score.title}" class="score-cover-img" onerror="this.src='https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&q=80'">
+                            <span class="score-cat-badge">${score.category.toUpperCase()}</span>
+                            <button type="button" class="score-fav-btn ${isFav ? 'is-fav' : ''}" title="Guardar en Favoritos">⭐</button>
+                        </div>
+                        <div class="score-body">
+                            <h3 class="score-title" title="${score.title}">${score.title}</h3>
+                            <div class="score-instrument-tag">🎼 ${score.instrument} · ${score.composer}</div>
+                            <div class="score-uploader-row">
+                                <img src="${score.uploaderPhoto}" alt="Uploader" class="score-uploader-img" onerror="this.src='assets/avatar.png'">
+                                <span>${score.uploaderName}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="score-footer-actions">
+                        <button type="button" class="btn-view-score">
+                            <span>👁️</span>
+                            <span>Ver Partitura</span>
+                        </button>
+                        <a href="${score.pdfUrl || '#'}" target="_blank" download class="btn-icon-action" title="Descargar PDF">📥</a>
+                    </div>
+                `;
+
+                // Event Listeners
+                card.querySelector('.btn-view-score').onclick = () => openScoreViewer(score);
+                card.querySelector('.score-fav-btn').onclick = (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(score.id);
+                };
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle Favorite
+        async function toggleFavorite(scoreId) {
+            if (!currentUser) {
+                alert('Inicia sesión para guardar partituras en tus favoritos.');
+                return;
+            }
+            const favRef = ref(db, `Favorites/${currentUser.uid}/${scoreId}`);
+            if (userFavorites.has(scoreId)) {
+                await set(favRef, null);
+                userFavorites.delete(scoreId);
+            } else {
+                await set(favRef, { timestamp: Date.now() });
+                userFavorites.add(scoreId);
+            }
+            renderScores();
+        }
+
+        // Category Filter Handling
+        document.querySelectorAll('.cat-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.cat;
+                currentSubFilter = 'all';
+
+                // Populate sub-instruments if applicable
+                const subBar = document.getElementById('subInstrumentsBar');
+                if (SUB_INSTRUMENTS_MAP[currentFilter]) {
+                    subBar.style.display = 'flex';
+                    subBar.innerHTML = `<button type="button" class="sub-chip active" data-sub="all">Todos los Instrumentos</button>` +
+                        SUB_INSTRUMENTS_MAP[currentFilter].map(inst => `<button type="button" class="sub-chip" data-sub="${inst}">${inst}</button>`).join('');
+
+                    subBar.querySelectorAll('.sub-chip').forEach(sBtn => {
+                        sBtn.addEventListener('click', () => {
+                            subBar.querySelectorAll('.sub-chip').forEach(sb => sb.classList.remove('active'));
+                            sBtn.classList.add('active');
+                            currentSubFilter = sBtn.dataset.sub;
+                            renderScores();
+                        });
+                    });
+                } else {
+                    subBar.style.display = 'none';
+                }
+
+                renderScores();
+            });
+        });
+
+        // Search Input Debounce
+        document.getElementById('scoreSearchInput').addEventListener('input', () => {
+            renderScores();
+        });
+
+        // ========================================================
+        // INTERACTIVE PDF SCORE VIEWER STUDIO (PDF.js Canvas Renderer)
+        // ========================================================
+        const viewerModal = document.getElementById('scoreViewerStudio');
+        const canvasWrap = document.getElementById('viewerCanvasWrap');
+        let currentPdfDoc = null;
+
+        async function openScoreViewer(score) {
+            document.getElementById('viewerScoreTitle').textContent = score.title;
+            document.getElementById('viewerScoreMeta').textContent = `${score.composer} · ${score.instrument} (${score.category.toUpperCase()})`;
+            document.getElementById('viewerDownloadBtn').href = score.pdfUrl || '#';
+            canvasWrap.innerHTML = '<div style="color:#fff; font-weight:700; padding:40px;">Cargando partitura en alta definición...</div>';
+            viewerModal.classList.add('open');
+
+            if (!score.pdfUrl || score.pdfUrl === '#') {
+                canvasWrap.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px; color:var(--text-secondary);">
+                        <div style="font-size:48px; margin-bottom:12px;">🎼</div>
+                        <div style="font-size:18px; font-weight:800; color:#fff;">${score.title}</div>
+                        <p style="font-size:14px; margin-top:8px;">Vista previa interactiva del guion musical para ${score.instrument}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const loadingTask = pdfjsLib.getDocument(score.pdfUrl);
+                currentPdfDoc = await loadingTask.promise;
+                canvasWrap.innerHTML = '';
+
+                // Render all pages
+                for (let num = 1; num <= currentPdfDoc.numPages; num++) {
+                    const page = await currentPdfDoc.getPage(num);
+                    const viewport = page.getViewport({ scale: 1.5 });
+
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'pdf-page-canvas';
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    const renderContext = {
+                        canvasContext: canvas.getContext('2d'),
+                        viewport: viewport
+                    };
+
+                    await page.render(renderContext).promise;
+                    canvasWrap.appendChild(canvas);
+                }
+            } catch(e) {
+                console.warn('PDF load warning:', e);
+                canvasWrap.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px; color:var(--text-secondary);">
+                        <div style="font-size:48px; margin-bottom:12px;">📄</div>
+                        <div style="font-size:16px; font-weight:800; color:#fff;">Visualizador Directo de Partituras</div>
+                        <p style="font-size:13px; margin:8px 0 16px;">Puedes abrir el documento en una pestaña de alta resolución o descargarlo.</p>
+                        <a href="${score.pdfUrl}" target="_blank" class="btn-upload-score" style="display:inline-flex; text-decoration:none;">Abrir en Pantalla Completa ➜</a>
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('closeViewerBtn').onclick = () => {
+            viewerModal.classList.remove('open');
+            stopFloatingMetronome();
+            stopFloatingTone();
+        };
+
+        // Night Mode Toggle
+        const nightBtn = document.getElementById('toggleNightModeBtn');
+        nightBtn.onclick = () => {
+            document.querySelectorAll('.pdf-page-canvas').forEach(c => c.classList.toggle('night-mode'));
+            nightBtn.classList.toggle('active');
+        };
+
+        // Fullscreen Toggle
+        document.getElementById('toggleFullscreenBtn').onclick = () => {
+            if (!document.fullscreenElement) {
+                viewerModal.requestFullscreen().catch(err => alert(err.message));
+            } else {
+                document.exitFullscreen();
+            }
+        };
+
+        // Floating Metronome Engine
+        let floatingMetroInterval = null;
+        let floatingMetroPlaying = false;
+        const bpmSlider = document.getElementById('floatingBpmSlider');
+        const bpmText = document.getElementById('floatingBpmText');
+        const metroPlayBtn = document.getElementById('floatingMetronomePlayBtn');
+
+        bpmSlider.oninput = () => {
+            bpmText.textContent = `${bpmSlider.value} BPM`;
+            if (floatingMetroPlaying) {
+                stopFloatingMetronome();
+                startFloatingMetronome();
+            }
+        };
+
+        metroPlayBtn.onclick = () => {
+            if (floatingMetroPlaying) {
+                stopFloatingMetronome();
+            } else {
+                startFloatingMetronome();
+            }
+        };
+
+        function startFloatingMetronome() {
+            floatingMetroPlaying = true;
+            metroPlayBtn.textContent = '⏹';
+            metroPlayBtn.classList.add('active');
+            const bpm = parseInt(bpmSlider.value);
+            const intervalMs = (60 / bpm) * 1000;
+
+            floatingMetroInterval = setInterval(() => {
+                playClickTone();
+            }, intervalMs);
+        }
+
+        function stopFloatingMetronome() {
+            floatingMetroPlaying = false;
+            metroPlayBtn.textContent = '▶';
+            metroPlayBtn.classList.remove('active');
+            if (floatingMetroInterval) clearInterval(floatingMetroInterval);
+        }
+
+        function playClickTone() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+        }
+
+        // Floating Reference Tone (A4 440 Hz)
+        let toneOsc = null;
+        let tonePlaying = false;
+        const toneBtn = document.getElementById('floatingToneBtn');
+
+        toneBtn.onclick = () => {
+            if (tonePlaying) {
+                stopFloatingTone();
+            } else {
+                startFloatingTone();
+            }
+        };
+
+        function startFloatingTone() {
+            tonePlaying = true;
+            toneBtn.classList.add('active');
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            toneOsc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            toneOsc.frequency.setValueAtTime(440.00, ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            toneOsc.connect(gain);
+            gain.connect(ctx.destination);
+            toneOsc.start();
+        }
+
+        function stopFloatingTone() {
+            tonePlaying = false;
+            toneBtn.classList.remove('active');
+            if (toneOsc) {
+                try { toneOsc.stop(); } catch(e) {}
+                toneOsc = null;
+            }
+        }
+
+        // ========================================================
+        // UPLOAD SCORE LOGIC
+        // ========================================================
+        const uploadModal = document.getElementById('uploadScoreModal');
+        document.getElementById('openUploadScoreBtn').onclick = () => {
+            if (!currentUser) {
+                alert('Por favor inicia sesión para subir partituras al archivo.');
+                return;
+            }
+            uploadModal.classList.add('open');
+        };
+
+        document.getElementById('closeUploadModalBtn').onclick = () => {
+            uploadModal.classList.remove('open');
+        };
+
+        document.getElementById('uploadScoreForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitScoreBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subiendo partitura...';
+
+            try {
+                const title = document.getElementById('upTitle').value.trim();
+                const composer = document.getElementById('upComposer').value.trim();
+                const category = document.getElementById('upCategory').value;
+                const instrument = document.getElementById('upInstrument').value.trim();
+                const pdfFile = document.getElementById('upPdfFile').files[0];
+                const coverFile = document.getElementById('upCoverFile').files[0];
+
+                let pdfUrl = '';
+                let coverUrl = 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=400&q=80';
+
+                // Upload PDF to Firebase Storage
+                if (pdfFile) {
+                    const pdfStorageRef = sRef(storage, `PDFUploaded/${Date.now()}_${pdfFile.name}`);
+                    const snap = await uploadBytes(pdfStorageRef, pdfFile);
+                    pdfUrl = await getDownloadURL(snap.ref);
+                }
+
+                // Upload Cover image if selected
+                if (coverFile) {
+                    const coverStorageRef = sRef(storage, `CoverUploaded/${Date.now()}_${coverFile.name}`);
+                    const cSnap = await uploadBytes(coverStorageRef, coverFile);
+                    coverUrl = await getDownloadURL(cSnap.ref);
+                }
+
+                // Push score to Firebase RTDB books
+                await push(ref(db, 'books'), {
+                    title,
+                    composer,
+                    category,
+                    instrument,
+                    pdfUrl,
+                    cover: coverUrl,
+                    uploaderId: currentUser.uid,
+                    uploaderName: currentUser.displayName || 'Músico PROVIWEB',
+                    uploaderPhoto: currentUser.photoURL || 'assets/avatar.png',
+                    timestamp: Date.now()
+                });
+
+                alert('🎉 ¡Partitura subida y publicada con éxito en el Archivo!');
+                uploadModal.classList.remove('open');
+                document.getElementById('uploadScoreForm').reset();
+            } catch(err) {
+                alert('Error al subir la partitura: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 Publicar Partitura';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Registra tu establecimiento de música en vivo en PROVIWEB. Conecta con músicos talentosos y haz crecer tu negocio.">
+    <title>Ser Establecimiento - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-dark: #0f0f13;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-purple: #a855f7;
+            --accent-pink: #007BFF;
+            --accent-blue: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+            --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-dark);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            animation: aurora 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes aurora {
+            0%, 100% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+            25% { transform: translateX(5%) translateY(-2%) scale(1.05); opacity: 0.9; }
+            50% { transform: translateX(-3%) translateY(3%) scale(1.02); opacity: 1; }
+            75% { transform: translateX(2%) translateY(-1%) scale(1.03); opacity: 0.95; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 4px;
+        }
+
+        .venue-page-tint {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 22% 18%, rgba(168, 85, 247, 0.2), transparent 46%),
+                radial-gradient(circle at 78% 72%, rgba(0, 123, 255, 0.15), transparent 50%);
+        }
+
+        #particlesCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .venue-noise {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.02) 0.5px, transparent 0.5px);
+            background-size: 4px 4px;
+            opacity: 0.3;
+        }
+
+        .venue-orb {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            width: 290px; height: 290px;
+            border-radius: 50%;
+            filter: blur(8px);
+            opacity: 0.3;
+            animation: orbFloat 11s ease-in-out infinite;
+        }
+        .venue-orb.one {
+            top: 70px; left: -80px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.25), transparent 68%);
+        }
+        .venue-orb.two {
+            right: -90px; bottom: 90px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.22), transparent 70%);
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+
+        .venue-wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 16px 60px;
+        }
+
+        .venue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .venue-brand {
+            text-decoration: none;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .venue-back {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .venue-hero {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .venue-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+            margin-bottom: 24px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
+        }
+
+        .venue-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-purple) 50%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .venue-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .venue-cta-row {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-gold {
+            background: var(--gold-gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Stats */
+        .venue-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .stat-box {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Benefits */
+        .venue-section {
+            margin-bottom: 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-label {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-purple);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .benefit-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .benefit-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .benefit-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .benefit-card p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* How it works */
+        .steps-timeline {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .step-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .step-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .step-card p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 968px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3), 0 20px 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .pricing-card.atlas {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3), 0 20px 40px rgba(245, 158, 11, 0.15);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gradient);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .pricing-badge.atlas {
+            background: var(--gold-gradient);
+        }
+
+        .pricing-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .pricing-period {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9375rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features .check {
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .pricing-features .cross {
+            color: #ef4444;
+            opacity: 0.5;
+        }
+
+        /* FAQ */
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 24px 20px;
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: var(--accent-gradient);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .final-cta p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .final-cta .btn {
+            background: white;
+            color: #0f0f13;
+            position: relative;
+        }
+
+        .final-cta .btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .venue-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-timeline {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="venue-page-tint"></div>
+    <canvas id="particlesCanvas"></canvas>
+    <div class="venue-noise"></div>
+    <div class="venue-orb one"></div>
+    <div class="venue-orb two"></div>
+
+    <div class="venue-wrap">
+        <!-- Header -->
+        <header class="venue-header">
+            <a href="home.html" class="venue-brand">PROVIWEB</a>
+            <a href="index.html" class="venue-back">← Volver al inicio</a>
+        </header>
+
+        <!-- Hero -->
+        <section class="venue-hero">
+            <div class="venue-badge">
+                <span>🎵</span>
+                <span>Nueva sección disponible</span>
+            </div>
+            <h1 class="venue-title">Establecimientos de Música en Vivo</h1>
+            <p class="venue-subtitle">
+                Conecta tu bar, restaurante o espacio cultural con miles de músicos talentosos. 
+                Gestiona tu agenda, publica convocatorias y haz crecer tu negocio con PROVIWEB.
+            </p>
+            <div class="venue-cta-row">
+                <a href="#" id="registerVenueBtn" class="btn btn-primary">🚀 Registrar mi establecimiento</a>
+                <a href="venues-explore.html" class="btn btn-secondary">🔍 Explorar establecimientos</a>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <!-- Stats con Skeleton Loading -->
+        <div class="venue-stats" id="venue-stats-container">
+            <div class="stat-box">
+                <div class="stat-number" id="stat-musicians">
+                    <span class="skeleton-number" style="display:inline-block;width:40px;height:24px;background:linear-gradient(90deg, rgba(168,85,247,0.2), rgba(168,85,247,0.1));border-radius:4px;animation:pulse 1.5s infinite;"></span>
+                </div>
+                <div class="stat-label">Músicos activos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="stat-venues">
+                    <span class="skeleton-number" style="display:inline-block;width:40px;height:24px;background:linear-gradient(90deg, rgba(0,123,255,0.2), rgba(0,123,255,0.1));border-radius:4px;animation:pulse 1.5s infinite;"></span>
+                </div>
+                <div class="stat-label">Establecimientos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="stat-events">
+                    <span class="skeleton-number" style="display:inline-block;width:40px;height:24px;background:linear-gradient(90deg, rgba(0,123,255,0.2), rgba(236,72,153,0.1));border-radius:4px;animation:pulse 1.5s infinite;"></span>
+                </div>
+                <div class="stat-label">Eventos realizados</div>
+            </div>
+        </div>
+        
+        <style>
+            @keyframes pulse {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 1; }
+            }
+        </style>
+        
+        <!-- Mensaje cuando no hay datos -->
+        <div id="venues-pioneer-message" style="display:none; margin:30px 0; padding:30px; background:linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,123,255,0.1)); border:2px dashed rgba(168,85,247,0.5); border-radius:20px; text-align:center;">
+            <div style="font-size:48px; margin-bottom:12px;">🚀</div>
+            <h3 style="color:var(--text-primary); margin-bottom:8px; font-size:1.5rem;">¡Sé pionero en PROVIWEB!</h3>
+            <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 20px; line-height:1.6;">
+                Aún no hay establecimientos registrados en nuestra plataforma. ¿Tienes un bar, restaurante o espacio cultural? 
+                <strong style="color:var(--accent-purple);">Sé el primero</strong> en conectar con talento musical verificado.
+            </p>
+            <a href="venue-register.html" class="btn btn-primary" style="display:inline-block;">
+                🏠 Registrar mi establecimiento ahora
+            </a>
+        </div>
+
+        <!-- Benefits -->
+        <section class="venue-section">
+            <div class="section-header">
+                <span class="section-label">Beneficios</span>
+                <h2 class="section-title">¿Por qué unirte como establecimiento?</h2>
+                <p class="section-desc">Descubre todas las ventajas de formar parte del ecosistema musical de PROVIWEB</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎤</div>
+                    <h3>Encuentra talento fácilmente</h3>
+                    <p>Accede a una base de datos de músicos verificados con filtros por género, instrumento, nivel y ubicación.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📅</div>
+                    <h3>Gestión de agenda</h3>
+                    <p>Organiza tus eventos, confirma fechas y mantén a tus clientes informados sobre tu programación musical.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📢</div>
+                    <h3>Publica convocatorias</h3>
+                    <p>Crea llamados abiertos para músicos con requisitos específicos y recibe postulaciones directamente.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⭐</div>
+                    <h3>Sistema de reputación</h3>
+                    <p>Construye tu reputación con reseñas verificadas y destaca como un espacio confiable para artistas.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Estadísticas avanzadas</h3>
+                    <p>Conoce quién visita tu perfil, mide el engagement y optimiza tu presencia en la plataforma.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌟</div>
+                    <h3>Visibilidad prioritaria</h3>
+                    <p>Con los planes PRO y Atlas, aparece en los primeros resultados y destaca sobre la competencia.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section class="venue-section">
+            <div class="section-header">
+                <span class="section-label">Cómo funciona</span>
+                <h2 class="section-title">Empieza en 3 simples pasos</h2>
+            </div>
+            <div class="steps-timeline">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Crea tu perfil</h3>
+                    <p>Registra tu establecimiento con fotos, descripción, horarios y toda la información que los músicos necesitan.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Publica oportunidades</h3>
+                    <p>Crea convocatorias para músicos o programa eventos directamente desde tu panel de control.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Conecta y crece</h3>
+                    <p>Recibe postulaciones, selecciona talento y construye relaciones duraderas con artistas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="venue-section">
+            <div class="section-header">
+                <span class="section-label">Planes</span>
+                <h2 class="section-title">Elige el plan perfecto para tu negocio</h2>
+                <p class="section-desc">Desde pequeños bares hasta grandes salas de conciertos, tenemos un plan para ti</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-icon">🆓</div>
+                    <h3 class="pricing-name">Gratuito</h3>
+                    <div class="pricing-price">$0<span>/mes</span></div>
+                    <p class="pricing-period">Para empezar</p>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Perfil público básico</li>
+                        <li><span class="check">✓</span> Hasta 5 eventos activos</li>
+                        <li><span class="check">✓</span> 3 convocatorias mensuales</li>
+                        <li><span class="check">✓</span> Búsqueda estándar de músicos</li>
+                        <li><span class="cross">✗</span> Estadísticas avanzadas</li>
+                        <li><span class="cross">✗</span> Perfil destacado</li>
+                    </ul>
+                    <a href="venue-register.html?plan=free" class="btn btn-secondary" style="width: 100%;">Comenzar gratis</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Recomendado</div>
+                    <div class="pricing-icon">⭐</div>
+                    <h3 class="pricing-name">PRO</h3>
+                    <div class="pricing-price" style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$49.900<span>/mes</span></div>
+                    <p class="pricing-period">Para crecer</p>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Todo lo del plan Gratuito</li>
+                        <li><span class="check">✓</span> Perfil destacado con sello PRO</li>
+                        <li><span class="check">✓</span> Eventos ilimitados</li>
+                        <li><span class="check">✓</span> Convocatorias ilimitadas</li>
+                        <li><span class="check">✓</span> Estadísticas avanzadas</li>
+                        <li><span class="check">✓</span> Filtros avanzados de búsqueda</li>
+                    </ul>
+                    <a href="venue-register.html?plan=pro" class="btn btn-primary" style="width: 100%;">Elegir PRO</a>
+                </div>
+                <div class="pricing-card atlas">
+                    <div class="pricing-badge atlas">👑 Premium</div>
+                    <div class="pricing-icon">👑</div>
+                    <h3 class="pricing-name">Atlas</h3>
+                    <div class="pricing-price" style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$149.900<span>/mes</span></div>
+                    <p class="pricing-period">Para escalar</p>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Todo lo del plan PRO</li>
+                        <li><span class="check">✓</span> Posicionamiento prioritario</li>
+                        <li><span class="check">✓</span> Múltiples administradores</li>
+                        <li><span class="check">✓</span> Promoción prioritaria</li>
+                        <li><span class="check">✓</span> Reportes comerciales</li>
+                        <li><span class="check">✓</span> Soporte prioritario 24/7</li>
+                    </ul>
+                    <a href="venue-register.html?plan=atlas" class="btn btn-gold" style="width: 100%;">Elegir Atlas</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="venue-section">
+            <div class="section-header">
+                <span class="section-label">FAQ</span>
+                <h2 class="section-title">Preguntas frecuentes</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Qué tipo de establecimientos pueden registrarse?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Bares, restaurantes, tabernas de mariachi, peñas, foros culturales, espacios artísticos, discotecas, salas de conciertos, hoteles con música en vivo y cualquier espacio que ofrezca entretenimiento musical.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Cómo funciona el sistema de postulaciones?</span>
+                        <span class="faq-question">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Los músicos pueden postularse a tus convocatorias enviando su perfil, demos y una propuesta. Tú recibes todas las postulaciones en tu panel y puedes filtrar, evaluar y contactar directamente a los candidatos que más te interesen.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Puedo cambiar de plan en cualquier momento?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sí, puedes actualizar o cambiar tu plan en cualquier momento. Los cambios se aplican inmediatamente y la facturación se ajusta prorrateadamente.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>¿Qué garantías tengo sobre los músicos?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>PROVIWEB cuenta con un sistema de verificación de identidad y reputación. Los músicos acumulan reseñas y calificaciones de otros establecimientos, lo que te permite tomar decisiones informadas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="venue-section">
+            <div class="final-cta">
+                <h2>¿Listo para hacer crecer tu negocio?</h2>
+                <p>Únete a la red de establecimientos que están transformando la escena musical. Regístrate gratis y empieza a conectar con talento.</p>
+                <a href="#" id="registerVenueBtn3" class="btn">Registrar mi establecimiento gratis →</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Particles
+        const canvas = document.getElementById('particlesCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0, mouseY = 0;
+        let isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }, { passive: true });
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+                if (!isTouch) {
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 150) {
+                        this.x -= dx * 0.01;
+                        this.y -= dy * 0.01;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(168, 85, 247, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+
+        let frameCount = 0;
+        function animate() {
+            frameCount++;
+            if (frameCount % 2 === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Open clicked if wasn't active
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+    </script>
+
+    <!-- Firebase Real-time Stats -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Función para contar músicos (usuarios con generoMusic o instrument)
+        async function getMusiciansCount() {
+            try {
+                const snapshot = await get(ref(db, 'Users'));
+                if (!snapshot.exists()) return 0;
+                let count = 0;
+                const users = snapshot.val();
+                for (const userId in users) {
+                    const user = users[userId];
+                    // Contar usuarios que tienen generoMusic o instrument (son músicos)
+                    if (user && (user.generoMusic || user.instrument)) {
+                        count++;
+                    }
+                }
+                return count;
+            } catch (error) {
+                console.error('Error contando músicos:', error);
+                return 0;
+            }
+        }
+
+        async function getVenuesCount() {
+            try {
+                const snapshot = await get(ref(db, 'LiveMusicVenue'));
+                if (!snapshot.exists()) return 0;
+                let count = 0;
+                const venues = snapshot.val();
+                for (const venueId in venues) {
+                    const venue = venues[venueId];
+                    if (venue && (venue.isVerified || venue.status === 'active' || venue.planType)) {
+                        count++;
+                    }
+                }
+                return count;
+            } catch (error) {
+                console.error('Error contando establecimientos:', error);
+                return 0;
+            }
+        }
+
+        async function getEventsCount() {
+            try {
+                const snapshot = await get(ref(db, 'VenueEvents'));
+                if (!snapshot.exists()) return 0;
+                let count = 0;
+                const venues = snapshot.val();
+                for (const venueId in venues) {
+                    const venueEvents = venues[venueId];
+                    if (typeof venueEvents === 'object') {
+                        count += Object.keys(venueEvents).length;
+                    }
+                }
+                return count;
+            } catch (error) {
+                console.error('Error contando eventos:', error);
+                return 0;
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        // Mostrar error de carga
+        function showErrorState() {
+            const musiciansEl = document.getElementById('stat-musicians');
+            const venuesEl = document.getElementById('stat-venues');
+            const eventsEl = document.getElementById('stat-events');
+            
+            if (musiciansEl) musiciansEl.innerHTML = '<span style="font-size:0.8rem;color:var(--text-muted);">Error</span>';
+            if (venuesEl) venuesEl.innerHTML = '<span style="font-size:0.8rem;color:var(--text-muted);">Error</span>';
+            if (eventsEl) eventsEl.innerHTML = '<span style="font-size:0.8rem;color:var(--text-muted);">Error</span>';
+        }
+
+        async function updateStats() {
+            const musiciansEl = document.getElementById('stat-musicians');
+            const venuesEl = document.getElementById('stat-venues');
+            const eventsEl = document.getElementById('stat-events');
+            const statsContainer = document.getElementById('venue-stats-container');
+            const pioneerMsg = document.getElementById('venues-pioneer-message');
+
+            if (!musiciansEl || !venuesEl || !eventsEl) return;
+
+            try {
+                // Timeout de 10 segundos
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Timeout')), 10000);
+                });
+
+                const [musicians, venues, events] = await Promise.race([
+                    Promise.all([
+                        getMusiciansCount(),
+                        getVenuesCount(),
+                        getEventsCount()
+                    ]),
+                    timeoutPromise
+                ]);
+
+                // Animación de fade-in para los números
+                const animateValue = (element, value) => {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(10px)';
+                    element.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        element.textContent = formatNumber(value) + '+';
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, 100);
+                };
+
+                animateValue(musiciansEl, musicians);
+                animateValue(venuesEl, venues);
+                animateValue(eventsEl, events);
+
+                // Si no hay actividad, mostrar mensaje pionero con delay para suavidad
+                const totalActivity = musicians + venues + events;
+                if (totalActivity === 0 && pioneerMsg && statsContainer) {
+                    setTimeout(() => {
+                        statsContainer.style.transition = 'opacity 0.5s ease';
+                        statsContainer.style.opacity = '0';
+                        setTimeout(() => {
+                            statsContainer.style.display = 'none';
+                            pioneerMsg.style.display = 'block';
+                            pioneerMsg.style.opacity = '0';
+                            pioneerMsg.style.transform = 'translateY(20px)';
+                            pioneerMsg.style.transition = 'all 0.5s ease';
+                            setTimeout(() => {
+                                pioneerMsg.style.opacity = '1';
+                                pioneerMsg.style.transform = 'translateY(0)';
+                            }, 50);
+                        }, 500);
+                    }, 600);
+                }
+
+            } catch (error) {
+                console.error('Error actualizando estadísticas:', error);
+                // Mostrar mensaje de error y luego el estado vacío
+                showErrorState();
+                
+                // Después de un momento, mostrar el estado vacío
+                setTimeout(() => {
+                    if (statsContainer && pioneerMsg) {
+                        statsContainer.style.display = 'none';
+                        pioneerMsg.style.display = 'block';
+                    }
+                }, 2000);
+            }
+        }
+
+        updateStats();
+
+        // Manejar clicks en botones de registro de venue
+        function handleVenueRegistration(e) {
+            e.preventDefault();
+            
+            // Verificar si hay sesión iniciada
+            const userId = localStorage.getItem('id');
+            const hasAuth = Object.keys(localStorage).some(key => key.startsWith('firebase:authUser:'));
+            
+            if (userId || hasAuth) {
+                // Si hay sesión, ir a venue-register.html (registro con usuario logueado)
+                window.location.href = 'venue-register.html';
+            } else {
+                // Si no hay sesión, ir a index.html para login
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Agregar event listeners a los botones de registro
+        const registerBtn1 = document.getElementById('registerVenueBtn');
+        const registerBtn2 = document.getElementById('registerVenueBtn2');
+        const registerBtn3 = document.getElementById('registerVenueBtn3');
+
+        if (registerBtn1) registerBtn1.addEventListener('click', handleVenueRegistration);
+        if (registerBtn2) registerBtn2.addEventListener('click', handleVenueRegistration);
+        if (registerBtn3) registerBtn3.addEventListener('click', handleVenueRegistration);
+
+        // Manejar click en el logo
+        const venueBrand = document.querySelector('.venue-brand');
+        if (venueBrand) {
+            venueBrand.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const userId = localStorage.getItem('id');
+                const hasAuth = Object.keys(localStorage).some(key => key.startsWith('firebase:authUser:'));
+                
+                if (userId || hasAuth) {
+                    window.location.href = 'home.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

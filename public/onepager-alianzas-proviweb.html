@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One-Pager Alianzas - PROVIWEB</title>
+  <link rel="icon" href="assets/logotransparente.png">
+  <style>
+    :root {
+      --bg-primary: #0f0f13;
+      --bg-card: rgba(28, 28, 36, 0.7);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --accent-purple: #a855f7;
+      --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    }
+    body { 
+      font-family: Arial, sans-serif; 
+      color: var(--text-primary); 
+      margin: 0; 
+      background: var(--bg-primary); 
+    }
+    .wrap { 
+      max-width: 860px; 
+      margin: 0 auto; 
+      padding: 28px 18px 40px; 
+      background: var(--bg-card); 
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    h1 { 
+      margin: 0 0 8px; 
+      font-size: 30px; 
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h2 { 
+      margin: 20px 0 8px; 
+      font-size: 18px; 
+      color: var(--accent-purple);
+    }
+    p, li { 
+      line-height: 1.6; 
+      font-size: 14px; 
+      color: var(--text-secondary); 
+    }
+    .kpi { 
+      display: grid; 
+      grid-template-columns: repeat(4, minmax(0,1fr)); 
+      gap: 10px; 
+      margin-top: 10px; 
+    }
+    .kpi div { 
+      border: 1px solid var(--border-glass); 
+      border-radius: 10px; 
+      padding: 10px; 
+      background: var(--bg-card); 
+      backdrop-filter: blur(8px);
+      text-align: center; 
+    }
+    .kpi strong { 
+      display: block; 
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 16px; 
+    }
+    .meta { 
+      font-size: 12px; 
+      color: var(--text-secondary); 
+      margin-top: 18px; 
+      opacity: 0.7;
+    }
+    ul li, ol li {
+      color: var(--text-secondary);
+    }
+    @media (max-width:700px){ 
+      .kpi { grid-template-columns: repeat(2, minmax(0,1fr)); } 
+      .wrap { margin: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>PROVIWEB · One-Pager de Alianzas</h1>
+    <p>Plataforma especializada para artistas y ecosistema cultural. Conecta talento, empleabilidad, formación y visibilidad con un modelo de alianzas estratégicas medibles.</p>
+
+    <h2>Problema</h2>
+    <p>El mercado artístico está fragmentado en canales dispersos. Esto reduce eficiencia de convocatoria, contratación y posicionamiento de marca en audiencias creativas.</p>
+
+    <h2>Solución</h2>
+    <p>PROVIWEB centraliza comunidad, convocatorias, contenido y networking sectorial con un enfoque vertical para cultura y artes.</p>
+
+    <h2>Propuesta de valor para aliados</h2>
+    <ul>
+      <li>Acceso a audiencia cultural segmentada y activa.</li>
+      <li>Activaciones de marca con narrativa de impacto.</li>
+      <li>Campañas medibles con KPIs y optimización continua.</li>
+      <li>Modelos flexibles: branding, formación, empleabilidad y co-marketing.</li>
+    </ul>
+
+    <h2>KPI de referencia (campaña tipo)</h2>
+    <div class="kpi">
+      <div><strong>5.8k</strong>Alcance segmentado</div>
+      <div><strong>96</strong>Postulaciones útiles</div>
+      <div><strong>7.4%</strong>Conversión</div>
+      <div><strong>3 días</strong>Cierre</div>
+    </div>
+
+    <h2>Proceso de alianza</h2>
+    <ol>
+      <li>Diagnóstico de objetivo y audiencia.</li>
+      <li>Activación conjunta en PROVIWEB.</li>
+      <li>Reporte de impacto y escalamiento.</li>
+    </ol>
+
+    <h2>Siguiente paso</h2>
+    <p>Registro del aliado y agendamiento de reunión online. SLA de contacto: menos de 48 horas.</p>
+
+    <p class="meta">Documento generado para presentación ejecutiva de alianzas · PROVIWEB</p>
+  </main>
+</body>
+</html>

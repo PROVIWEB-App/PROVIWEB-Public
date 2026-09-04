@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control Comercial - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/venues-theme.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(22, 22, 32, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --border-radius: 16px;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: none;
+            }
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .sidebar-brand-logo {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar-brand-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .venue-profile-badge-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .venue-badge-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-item-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item-btn:hover, .nav-item-btn.active {
+            background: rgba(168, 85, 247, 0.15);
+            color: #ffffff;
+        }
+
+        /* Main Content */
+        .dashboard-main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .dash-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .balance-chip-box {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 24px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        /* Stats Row */
+        .dash-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .dash-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-card-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Tabs Section */
+        .dash-tab-section {
+            display: none;
+        }
+
+        .dash-tab-section.active {
+            display: block;
+        }
+
+        /* Cards and Lists */
+        .dash-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+        }
+
+        .dash-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dash-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .btn-primary-action {
+            background: var(--gradient-primary);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(168,85,247,0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-primary-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168,85,247,0.5);
+        }
+
+        /* Opportunity Call Card */
+        .call-item-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .call-item-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .call-item-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .badge-tag {
+            background: rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Candidate / Application Card */
+        .applicant-row-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .applicant-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-purple);
+        }
+
+        /* Modal */
+        .dash-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .dash-modal.open {
+            display: flex;
+        }
+
+        .dash-modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .form-group-dash {
+            margin-bottom: 18px;
+        }
+
+        .form-group-dash label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input-dash {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-input-dash:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- SIDEBAR -->
+        <aside class="dashboard-sidebar">
+            <a href="home.html" class="sidebar-brand-box">
+                <img src="assets/logotransparente.png" alt="PROVIWEB" class="sidebar-brand-logo">
+                <span class="sidebar-brand-text">PROVIWEB VENUES</span>
+            </a>
+
+            <div class="venue-profile-badge-card" id="sidebarVenueCard">
+                <img src="assets/venue-default.png" alt="Venue" class="venue-badge-img" id="sidebarVenueImg">
+                <div style="overflow: hidden;">
+                    <div style="font-weight: 700; color: #fff; font-size: 14px; white-space: nowrap; text-overflow: ellipsis;" id="sidebarVenueName">Cargando...</div>
+                    <span class="badge-tag" id="sidebarVenuePlanBadge">FREE</span>
+                </div>
+            </div>
+
+            <nav style="display: flex; flex-direction: column; gap: 6px;">
+                <button type="button" class="nav-item-btn active" data-tab="tab-overview">📊 Resumen General</button>
+                <button type="button" class="nav-item-btn" data-tab="tab-opportunities">📢 Oportunidades y Gigs</button>
+                <button type="button" class="nav-item-btn" data-tab="tab-applications">📥 Postulaciones de Artistas</button>
+                <button type="button" class="nav-item-btn" data-tab="tab-billing">💳 Plan y Facturación</button>
+                <button type="button" class="nav-item-btn" data-tab="tab-profile">🏢 Datos del Establecimiento</button>
+                <a href="venue-employees.html" class="nav-item-btn">👥 Empleados & Credenciales</a>
+                <a href="opportunities.html" class="nav-item-btn" target="_blank">🌐 Ver Portal de Convocatorias ↗</a>
+                <a href="home.html" class="nav-item-btn">🏠 Ir al Feed Principal</a>
+            </nav>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="dashboard-main-content">
+            <div class="dash-topbar">
+                <div>
+                    <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 6px 0;" id="topbarGreeting">Panel de Control Comercial</h1>
+                    <div style="font-size: 14px; color: var(--text-secondary);" id="topbarSubtitle">Gestiona tus convocatorias, artistas y plan comercial.</div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div class="balance-chip-box" title="Saldo disponible en tu monedero">
+                        <span>💰 Saldo:</span>
+                        <span id="headerBalanceDisplay" style="color: #4ade80;">$0.00 USD</span>
+                    </div>
+                    <button type="button" class="btn-primary-action" id="openNewOpportunityBtn">➕ Publicar Oportunidad</button>
+                </div>
+            </div>
+
+            <!-- METRICAS STATS -->
+            <div class="dash-stats-grid">
+                <div class="dash-stat-card">
+                    <div class="stat-card-title">Visitas al Perfil</div>
+                    <div class="stat-card-number" id="statViews">0</div>
+                </div>
+                <div class="dash-stat-card">
+                    <div class="stat-card-title">Convocatorias Activas</div>
+                    <div class="stat-card-number" id="statCalls">0</div>
+                </div>
+                <div class="dash-stat-card">
+                    <div class="stat-card-title">Artistas Postulados</div>
+                    <div class="stat-card-number" id="statApplications">0</div>
+                </div>
+                <div class="dash-stat-card">
+                    <div class="stat-card-title">Plan Actual</div>
+                    <div class="stat-card-number" id="statPlanName" style="font-size: 22px; color: #a855f7;">BÁSICO</div>
+                </div>
+            </div>
+
+            <!-- TAB 1: RESUMEN -->
+            <section class="dash-tab-section active" id="tab-overview">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h2 class="dash-card-title">📢 Convocatorias y Empleos Recientes</h2>
+                        <a href="#" class="nav-item-btn" style="width: auto; padding: 6px 12px; font-size: 13px;" onclick="document.querySelector('[data-tab=tab-opportunities]').click();">Ver todas →</a>
+                    </div>
+                    <div id="overviewCallsList">
+                        <div style="text-align: center; color: var(--text-muted); padding: 30px;">Cargando convocatorias...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: OPORTUNIDADES -->
+            <section class="dash-tab-section" id="tab-opportunities">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div>
+                            <h2 class="dash-card-title">Gestión de Oportunidades y Pautas</h2>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Publica vacantes para músicos en vivo, grabaciones, castings y eventos.</div>
+                        </div>
+                        <button type="button" class="btn-primary-action" id="openNewOpportunityBtn2">➕ Nueva Convocatoria</button>
+                    </div>
+
+                    <div id="allCallsList">
+                        <div style="text-align: center; color: var(--text-muted); padding: 30px;">Cargando oportunidades...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: POSTULACIONES -->
+            <section class="dash-tab-section" id="tab-applications">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div>
+                            <h2 class="dash-card-title">Candidatos y Artistas Postulados</h2>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Revisa las propuestas de los artistas para tus eventos y contrataciones.</div>
+                        </div>
+                    </div>
+
+                    <div id="applicationsList">
+                        <div style="text-align: center; color: var(--text-muted); padding: 30px;">Cargando postulaciones...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: FACTURACIÓN Y PLANES -->
+            <section class="dash-tab-section" id="tab-billing">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div>
+                            <h2 class="dash-card-title">💳 Plan Comercial y Facturación</h2>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Selecciona el plan adecuado para potenciar la contratación artística en tu establecimiento.</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <!-- Plan Free -->
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0 0 10px 0; font-size: 20px;">Básico / Free</h3>
+                                <div style="font-size: 32px; font-weight: 800; margin-bottom: 16px;">$0 <span style="font-size: 14px; font-weight: normal; color: var(--text-secondary);">/ mes</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+                                    <li>✓ 1 Convocatoria activa</li>
+                                    <li>✓ Perfil en el mapa de establecimientos</li>
+                                    <li>✓ Recepción de postulaciones</li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn-plan-select" data-plan="free" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.1); color: #fff; font-weight: 700; cursor: pointer;">Plan Actual</button>
+                        </div>
+
+                        <!-- Plan PRO -->
+                        <div style="background: rgba(168,85,247,0.08); border: 2px solid var(--accent-purple); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                            <span style="position: absolute; top: -12px; right: 20px; background: var(--gradient-primary); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800;">RECOMENDADO</span>
+                            <div>
+                                <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #d8b4fe;">PRO Ally</h3>
+                                <div style="font-size: 32px; font-weight: 800; margin-bottom: 16px;">$30 <span style="font-size: 14px; font-weight: normal; color: var(--text-secondary);">USD / mes</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+                                    <li>✓ Hasta 5 convocatorias simultáneas</li>
+                                    <li>✓ Insignia oficial de Aliado Verificado</li>
+                                    <li>✓ Destacado en el feed principal y mapa</li>
+                                    <li>✓ Acceso a analíticas avanzadas</li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn-primary-action btn-plan-select" data-plan="pro" style="width: 100%; justify-content: center;">⭐ Activar Plan PRO ($30)</button>
+                        </div>
+
+                        <!-- Plan ATLAS -->
+                        <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.4); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #fbbf24;">ATLAS Enterprise</h3>
+                                <div style="font-size: 32px; font-weight: 800; margin-bottom: 16px;">$60 <span style="font-size: 14px; font-weight: normal; color: var(--text-secondary);">USD / mes</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; font-size: 14px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+                                    <li>✓ Convocatorias ilimitadas</li>
+                                    <li>✓ Multi-empleados y credenciales de staff</li>
+                                    <li>✓ Máxima prioridad en búsquedas y castings</li>
+                                    <li>✓ Asesoría personalizada y soporte VIP</li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn-plan-select" data-plan="atlas" style="width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--gradient-gold); color: #000; font-weight: 800; cursor: pointer;">👑 Activar ATLAS ($60)</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: PERFIL -->
+            <section class="dash-tab-section" id="tab-profile">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h2 class="dash-card-title">🏢 Información del Establecimiento</h2>
+                    </div>
+
+                    <form id="editVenueProfileForm">
+                        <div class="form-group-dash">
+                            <label>Nombre del Establecimiento / Comercio</label>
+                            <input type="text" id="editVenueName" class="form-input-dash" required>
+                        </div>
+                        <div class="form-group-dash">
+                            <label>Descripción corta</label>
+                            <input type="text" id="editVenueShortDesc" class="form-input-dash">
+                        </div>
+                        <div class="form-group-dash">
+                            <label>Dirección / Ubicación</label>
+                            <input type="text" id="editVenueAddress" class="form-input-dash">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                            <div class="form-group-dash">
+                                <label>Teléfono / WhatsApp</label>
+                                <input type="text" id="editVenuePhone" class="form-input-dash">
+                            </div>
+                            <div class="form-group-dash">
+                                <label>Email de Contacto</label>
+                                <input type="email" id="editVenueEmail" class="form-input-dash">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary-action" style="margin-top: 10px;">💾 Guardar Cambios</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL CREAR OPORTUNIDAD -->
+    <div class="dash-modal" id="opportunityModal">
+        <div class="dash-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 20px; font-weight: 800;">📢 Publicar Nueva Oportunidad Artística</h3>
+                <button type="button" id="closeOppModalBtn" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+
+            <form id="createOpportunityForm">
+                <div class="form-group-dash">
+                    <label>Título de la Convocatoria / Oportunidad *</label>
+                    <input type="text" id="oppTitle" class="form-input-dash" placeholder="Ej: Se busca Mariachi / Cantante para fin de semana" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div class="form-group-dash">
+                        <label>Género / Especialidad Musical *</label>
+                        <select id="oppGenre" class="form-input-dash" required>
+                            <option value="Música en Vivo">Música en Vivo (General)</option>
+                            <option value="Mariachi">Mariachi</option>
+                            <option value="Banda / Regional">Banda / Regional</option>
+                            <option value="Voz / Cantante">Voz / Cantante</option>
+                            <option value="Clásica / Cuerdas">Clásica / Cuerdas</option>
+                            <option value="Jazz / Blues">Jazz / Blues</option>
+                            <option value="Rock / Pop">Rock / Pop</option>
+                            <option value="Producción Musical">Producción Musical</option>
+                            <option value="Docente / Clases">Docente / Clases</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-dash">
+                        <label>Tipo de Vacante *</label>
+                        <select id="oppPosition" class="form-input-dash" required>
+                            <option value="Músico Solista / Grupo">Músico Solista / Grupo</option>
+                            <option value="Toque en Vivo">Toque en Vivo / Evento</option>
+                            <option value="Casting / Audición">Casting / Audición</option>
+                            <option value="Residencia Semanal">Residencia Semanal</option>
+                            <option value="Profesor">Profesor / Instructor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div class="form-group-dash">
+                        <label>Remuneración / Pago *</label>
+                        <input type="text" id="oppSalary" class="form-input-dash" placeholder="Ej: $150 USD por show" required>
+                    </div>
+
+                    <div class="form-group-dash">
+                        <label>Fecha del Evento / Período</label>
+                        <input type="text" id="oppPeriod" class="form-input-dash" placeholder="Ej: Sábado 28 de Octubre, 8:00 PM">
+                    </div>
+                </div>
+
+                <div class="form-group-dash">
+                    <label>Ubicación / Ciudad</label>
+                    <input type="text" id="oppLocation" class="form-input-dash" placeholder="Ej: Bogotá / CDMX / En el local">
+                </div>
+
+                <div class="form-group-dash">
+                    <label>Descripción y Requisitos</label>
+                    <textarea id="oppDescription" class="form-input-dash" rows="4" placeholder="Indica el repertorio esperado, duración del evento y requisitos técnicos..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                    <button type="button" id="cancelOppBtn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-glass); color:#fff; padding:10px 20px; border-radius:10px; cursor:pointer;">Cancelar</button>
+                    <button type="submit" class="btn-primary-action" id="submitOppBtn">🚀 Publicar Oportunidad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+        import { createCall, upgradeVenuePlan, VENUE_PLANS } from "./js/venues/venue-api.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let activeVenueId = null;
+        let activeVenueData = null;
+
+        // Navigation Tabs
+        document.querySelectorAll('.nav-item-btn[data-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.dash-tab-section').forEach(s => s.classList.remove('active'));
+
+                btn.classList.add('active');
+                const targetTab = document.getElementById(btn.dataset.tab);
+                if (targetTab) targetTab.classList.add('active');
+            });
+        });
+
+        // Auth Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html?redirect=venue-dashboard.html';
+                return;
+            }
+
+            currentUser = user;
+            listenBalance(user.uid);
+            await resolveAndLoadVenue(user.uid);
+        });
+
+        // 1. Escuchar Balance en tiempo real
+        function listenBalance(uid) {
+            onValue(ref(db, `Balance/${uid}/balance`), (snap) => {
+                const bal = snap.exists() ? (parseFloat(snap.val()) || 0) : 0;
+                document.getElementById('headerBalanceDisplay').textContent = `$${bal.toFixed(2)} USD`;
+            });
+        }
+
+        // 2. Resolver el venue del usuario
+        async function resolveAndLoadVenue(uid) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let vId = urlParams.get('id') || urlParams.get('venueId');
+
+            if (!vId) {
+                // Buscar por ownerUid en LiveMusicVenues
+                const venuesSnap = await get(ref(db, 'LiveMusicVenues'));
+                if (venuesSnap.exists()) {
+                    venuesSnap.forEach(child => {
+                        const v = child.val();
+                        if (v.ownerUid === uid || v.createdBy === uid) {
+                            vId = child.key;
+                        }
+                    });
+                }
+            }
+
+            if (!vId) {
+                // No tiene venue aún
+                document.getElementById('sidebarVenueName').textContent = 'Sin Establecimiento';
+                document.getElementById('overviewCallsList').innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <h3 style="margin-bottom: 10px;">¡Aún no has registrado tu Establecimiento o Comercio!</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">Registra tu bar, estudio, festival o academia para publicar convocatorias y contratar artistas.</p>
+                        <a href="venue-register.html" class="btn-primary-action">🚀 Registrar mi Establecimiento</a>
+                    </div>
+                `;
+                return;
+            }
+
+            activeVenueId = vId;
+
+            // Escuchar datos del venue
+            onValue(ref(db, `LiveMusicVenues/${vId}`), (snap) => {
+                if (!snap.exists()) return;
+                activeVenueData = snap.val();
+                renderVenueUI(activeVenueData);
+            });
+
+            loadVenueCalls(vId);
+            loadVenueApplications(vId);
+        }
+
+        function renderVenueUI(venue) {
+            document.getElementById('sidebarVenueName').textContent = venue.name || 'Mi Establecimiento';
+            document.getElementById('sidebarVenueImg').src = venue.profileImage || 'assets/venue-default.png';
+
+            const planType = venue.plan?.type || 'free';
+            const planBadge = document.getElementById('sidebarVenuePlanBadge');
+            planBadge.textContent = planType.toUpperCase();
+            document.getElementById('statPlanName').textContent = planType.toUpperCase();
+
+            document.getElementById('statViews').textContent = venue.stats?.profileViews || 0;
+
+            // Edit Profile Form initial values
+            document.getElementById('editVenueName').value = venue.name || '';
+            document.getElementById('editVenueShortDesc').value = venue.shortDescription || '';
+            document.getElementById('editVenueAddress').value = venue.location?.address || '';
+            document.getElementById('editVenuePhone').value = venue.contact?.phone || venue.contact?.whatsapp || '';
+            document.getElementById('editVenueEmail').value = venue.contact?.email || '';
+        }
+
+        // 3. Cargar Convocatorias / Oportunidades del Venue
+        function loadVenueCalls(venueId) {
+            onValue(ref(db, `VenueCalls/${venueId}`), (snapshot) => {
+                const overviewList = document.getElementById('overviewCallsList');
+                const allList = document.getElementById('allCallsList');
+
+                if (!snapshot.exists()) {
+                    const emptyHtml = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">No has publicado convocatorias aún.</div>';
+                    overviewList.innerHTML = emptyHtml;
+                    allList.innerHTML = emptyHtml;
+                    document.getElementById('statCalls').textContent = '0';
+                    return;
+                }
+
+                const calls = [];
+                snapshot.forEach(child => {
+                    calls.push({ id: child.key, ...child.val() });
+                });
+
+                document.getElementById('statCalls').textContent = calls.length;
+
+                let html = '';
+                calls.forEach(call => {
+                    html += `
+                        <div class="call-item-card">
+                            <div>
+                                <div class="call-item-title">${call.title}</div>
+                                <div class="call-item-meta">
+                                    <span class="badge-tag">${call.genre || 'Música'}</span>
+                                    <span>💼 ${call.position || 'Puesto'}</span>
+                                    <span>💰 ${call.salary || call.paymentAmount || 'A convenir'}</span>
+                                    <span>📅 ${call.period || 'Fecha evento'}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" class="btn-delete-call" data-id="${call.id}" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer;">Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                overviewList.innerHTML = html;
+                allList.innerHTML = html;
+
+                // Eventos de eliminar
+                document.querySelectorAll('.btn-delete-call').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('¿Eliminar esta oportunidad?')) {
+                            const cId = btn.dataset.id;
+                            await remove(ref(db, `VenueCalls/${venueId}/${cId}`));
+                            await remove(ref(db, `ads/${cId}`));
+                        }
+                    });
+                });
+            });
+        }
+
+        // 4. Cargar Postulaciones de Artistas
+        function loadVenueApplications(venueId) {
+            onValue(ref(db, 'CallApplications'), (snapshot) => {
+                const appsList = document.getElementById('applicationsList');
+                if (!snapshot.exists()) {
+                    appsList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Aún no hay postulaciones de artistas.</div>';
+                    document.getElementById('statApplications').textContent = '0';
+                    return;
+                }
+
+                let count = 0;
+                let html = '';
+
+                snapshot.forEach(callSnap => {
+                    callSnap.forEach(appSnap => {
+                        const app = appSnap.val();
+                        if (app.venueId === venueId || app.adId) {
+                            count++;
+                            html += `
+                                <div class="applicant-row-card">
+                                    <div style="display: flex; align-items: center; gap: 14px;">
+                                        <img src="${app.artistPhoto || 'assets/avatar.png'}" class="applicant-avatar" alt="Avatar">
+                                        <div>
+                                            <div style="font-weight: 700; color: #fff; font-size: 15px;">${app.artistName || 'Artista'}</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">Propuesta: "${app.message || 'Interesado en la oportunidad'}"</div>
+                                            <div style="font-size: 11px; color: var(--accent-purple); margin-top: 2px;">Convocatoria: ${app.callTitle || 'Convocatoria'}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <a href="userprofile.html?uid=${app.artistId}" target="_blank" class="btn-primary-action" style="padding: 6px 14px; font-size: 12px;">Ver Perfil ↗</a>
+                                        <button type="button" class="btn-accept-app" data-call="${callSnap.key}" data-artist="${app.artistId}" style="background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer;">✓ Aceptar</button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+
+                document.getElementById('statApplications').textContent = count;
+                appsList.innerHTML = count > 0 ? html : '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Aún no hay postulaciones de artistas.</div>';
+
+                document.querySelectorAll('.btn-accept-app').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        alert('¡Has aceptado al artista! Se le notificará y podrán coordinar detalles vía chat.');
+                    });
+                });
+            });
+        }
+
+        // Modal de Nueva Oportunidad
+        const oppModal = document.getElementById('opportunityModal');
+        const openOppBtn = document.getElementById('openNewOpportunityBtn');
+        const openOppBtn2 = document.getElementById('openNewOpportunityBtn2');
+        const closeOppBtn = document.getElementById('closeOppModalBtn');
+        const cancelOppBtn = document.getElementById('cancelOppBtn');
+
+        const toggleOppModal = (open) => {
+            if (open) oppModal.classList.add('open');
+            else oppModal.classList.remove('open');
+        };
+
+        openOppBtn.addEventListener('click', () => toggleOppModal(true));
+        if (openOppBtn2) openOppBtn2.addEventListener('click', () => toggleOppModal(true));
+        closeOppBtn.addEventListener('click', () => toggleOppModal(false));
+        cancelOppBtn.addEventListener('click', () => toggleOppModal(false));
+
+        // Formulario Publicar Oportunidad
+        document.getElementById('createOpportunityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeVenueId) {
+                alert('Debes registrar tu establecimiento primero.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitOppBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Publicando...';
+
+            try {
+                const callData = {
+                    title: document.getElementById('oppTitle').value.trim(),
+                    genre: document.getElementById('oppGenre').value,
+                    position: document.getElementById('oppPosition').value,
+                    salary: document.getElementById('oppSalary').value.trim(),
+                    paymentAmount: document.getElementById('oppSalary').value.trim(),
+                    period: document.getElementById('oppPeriod').value.trim(),
+                    location: document.getElementById('oppLocation').value.trim(),
+                    description: document.getElementById('oppDescription').value.trim()
+                };
+
+                await createCall(activeVenueId, callData);
+                alert('¡Oportunidad publicada con éxito en PROVIWEB y Android!');
+                document.getElementById('createOpportunityForm').reset();
+                toggleOppModal(false);
+            } catch(err) {
+                alert('Error al publicar: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Publicar Oportunidad';
+            }
+        });
+
+        // Cambio / Renovación de Planes
+        document.querySelectorAll('.btn-plan-select').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const plan = btn.dataset.plan;
+                if (!activeVenueId) return;
+
+                if (confirm(`¿Confirmas activar o renovar el plan ${plan.toUpperCase()} para tu establecimiento?`)) {
+                    try {
+                        btn.disabled = true;
+                        btn.textContent = '⏳ Procesando cobro...';
+                        await upgradeVenuePlan(activeVenueId, plan, 'balance');
+                        alert(`¡Plan ${plan.toUpperCase()} activado con éxito! Los beneficios ya están disponibles.`);
+                    } catch(err) {
+                        alert(err.message);
+                    } finally {
+                        btn.disabled = false;
+                    }
+                }
+            });
+        });
+
+        // Guardar cambios en el perfil del Venue
+        document.getElementById('editVenueProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeVenueId) return;
+
+            try {
+                await update(ref(db, `LiveMusicVenues/${activeVenueId}`), {
+                    name: document.getElementById('editVenueName').value.trim(),
+                    shortDescription: document.getElementById('editVenueShortDesc').value.trim(),
+                    'location/address': document.getElementById('editVenueAddress').value.trim(),
+                    'contact/phone': document.getElementById('editVenuePhone').value.trim(),
+                    'contact/email': document.getElementById('editVenueEmail').value.trim(),
+                    updatedAt: Date.now()
+                });
+                alert('¡Datos del establecimiento actualizados correctamente!');
+            } catch(err) {
+                alert('Error actualizando: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>

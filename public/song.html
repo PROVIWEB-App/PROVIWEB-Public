@@ -1,0 +1,1232 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Canción">
+    <title>Canción - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+        body { 
+            background: var(--bg-primary);
+            background-attachment: fixed;
+            color: var(--text-primary); 
+        }
+        .song-shell { max-width:900px; margin:90px auto 30px; padding:0 24px; animation: fadeIn 0.5s ease-out; }
+        .header {
+            width:100%;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            position:fixed;
+            top:0;
+            left:0;
+            z-index:1000;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+        }
+        .header .brand { 
+            font-size:22px; 
+            font-weight:800; 
+            letter-spacing:-0.5px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header .search-box { flex:1; display:flex; justify-content:center; margin:0 24px; position:relative; }
+        .header .search-box input {
+            width:100%;
+            max-width:500px;
+            padding:12px 48px 12px 18px;
+            border-radius:16px;
+            border: 1px solid var(--border-glass);
+            background: rgba(20, 20, 28, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size:14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+        }
+        .header .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+        .header .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            background: rgba(25, 25, 35, 0.9);
+        }
+        .header .search-box::after {
+            content:'🔍';
+            position:absolute;
+            right: calc(50% - 250px + 16px);
+            top:50%;
+            transform:translateY(-50%);
+            pointer-events:none;
+            font-size: 16px;
+            opacity: 0.6;
+        }
+        .header .nav-icons { display:flex; gap:10px; align-items: center; }
+        .header .nav-icons img {
+            width:38px;
+            height:38px;
+            cursor:pointer;
+            border-radius:12px;
+            padding:6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header .nav-icons img:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+        .header .nav-icon-games {
+            width:38px; 
+            height:38px; 
+            cursor:pointer; 
+            border-radius:12px; 
+            padding:6px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid var(--border-glass); 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            font-size:24px; 
+            transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .header .nav-icon-games:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+        .header .nav-icon-games:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .song-card { 
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius:24px; 
+            padding:28px; 
+            display:flex; 
+            gap:24px; 
+            align-items:center; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            border: 1px solid var(--border-glass);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .song-card:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            border-color: rgba(168, 85, 247, 0.3);
+            background: rgba(35, 35, 45, 0.8);
+        }
+        .song-card:hover::before {
+            opacity: 1;
+        }
+        .song-cover { 
+            width:180px; 
+            height:180px; 
+            border-radius:20px; 
+            overflow:hidden; 
+            background: linear-gradient(135deg, #1a1a24 0%, #252532 100%);
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            font-size:48px;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 2px 0 rgba(255, 255, 255, 0.05) inset;
+            transition: all 0.3s ease;
+        }
+        .song-cover img { width:100%; height:100%; object-fit:cover; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .song-card:hover .song-cover { 
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 8px 28px rgba(168, 85, 247, 0.25), 0 2px 0 rgba(255, 255, 255, 0.05) inset;
+            transform: scale(1.05) rotate(2deg);
+        }
+        .song-card:hover .song-cover img { transform: scale(1.1); }
+        .song-actions { display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
+        .song-actions button { 
+            padding:10px 16px; 
+            border-radius:14px; 
+            border:none; 
+            cursor:pointer; 
+            background: var(--gradient-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .song-actions button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        .song-actions button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.5);
+            background: linear-gradient(135deg, #9333ea 0%, #0066cc 100%);
+        }
+        .song-actions button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        .song-actions button:active { transform: translateY(0); }
+        .song-actions .profile-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+        .song-meta { display:flex; gap:18px; margin-top:14px; font-size:13px; color: var(--text-secondary); font-weight: 500; }
+        .artist-line { display:flex; align-items:center; gap:8px; margin-top:6px; color: var(--text-secondary); font-weight: 500; }
+        .artist-badge {
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            font-size:11px;
+            color: var(--text-primary);
+            font-weight:800;
+            background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+            box-shadow: 0 2px 8px rgba(29, 161, 242, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .badge-small {
+            width:16px;
+            height:16px;
+            border-radius:50%;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            font-size:10px;
+            color: var(--text-primary);
+            font-weight:800;
+            background: linear-gradient(135deg, #1da1f2, #0d8bd9);
+            box-shadow: 0 2px 6px rgba(29, 161, 242, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .badge-pulse {
+            box-shadow: 0 0 0 0 rgba(29,161,242,0.6);
+            animation: badgePulse 1.6s infinite;
+        }
+        @keyframes badgePulse {
+            0% { box-shadow: 0 0 0 0 rgba(29,161,242,0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(29,161,242,0); }
+            100% { box-shadow: 0 0 0 0 rgba(29,161,242,0); }
+        }
+        .mini-player {
+            margin-top: 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius:20px;
+            padding:18px 22px;
+            display:flex;
+            gap:16px;
+            align-items:center;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mini-player:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            background: rgba(35, 35, 45, 0.8);
+        }
+        .mini-player button {
+            width:48px;
+            height:48px;
+            border-radius:14px;
+            border:none;
+            background: var(--gradient-primary);
+            color: var(--text-primary);
+            cursor:pointer;
+            font-size:18px;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mini-player button:hover { 
+            transform: translateY(-2px) scale(1.05); 
+            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.5);
+            background: linear-gradient(135deg, #9333ea 0%, #0066cc 100%);
+        }
+        .mini-player button:active { transform: translateY(0) scale(1); }
+        .mini-player .player-progress {
+            flex:1;
+        }
+        .mini-player .progress-bar {
+            height:8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius:999px;
+            overflow:hidden;
+            cursor:pointer;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .mini-player .progress-fill {
+            height:100%;
+            width:0%;
+            background: var(--gradient-primary);
+            transition: width 0.2s linear;
+            position: relative;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+        }
+        .mini-player .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .mini-player .time-row {
+            display:flex;
+            justify-content:space-between;
+            font-size:12px;
+            color: var(--text-secondary);
+            margin-top:8px;
+            font-weight: 500;
+        }
+        .mini-player .player-actions {
+            display:flex;
+            gap:12px;
+            align-items:center;
+        }
+        .mini-player input[type="range"] {
+            width:100px;
+            accent-color: var(--accent-purple);
+        }
+        .rec-avatar {
+            width:22px;
+            height:22px;
+            border-radius:50%;
+            object-fit:cover;
+            border:2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        .comments-card { 
+            margin-top:28px; 
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius:20px; 
+            padding:24px; 
+            border: 1px solid var(--border-glass); 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .comments-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            background: rgba(35, 35, 45, 0.8);
+        }
+        .comment-item { 
+            display:flex; 
+            gap:12px; 
+            padding:14px 0; 
+            border-bottom:1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+        .comment-item:hover {
+            padding-left: 8px;
+            background: rgba(168, 85, 247, 0.05);
+            margin: 0 -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: 12px;
+        }
+        .comment-item img { 
+            width:42px; 
+            height:42px; 
+            border-radius:50%; 
+            object-fit:cover;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .leader-list { display:flex; flex-direction:column; gap:12px; }
+        .leader-item { 
+            display:flex; 
+            align-items:center; 
+            gap:12px; 
+            padding:12px 0; 
+            border-bottom:1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+        .leader-item:last-child {
+            border-bottom: none;
+        }
+        .leader-item:hover {
+            padding-left: 8px;
+            background: rgba(168, 85, 247, 0.05);
+            margin: 0 -12px;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: 12px;
+        }
+        .leader-item img { 
+            width:44px; 
+            height:44px; 
+            border-radius:50%; 
+            object-fit:cover;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .leader-meta { font-size:13px; color: var(--text-secondary); font-weight: 500; }
+        .trend-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; }
+        .trend-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            border-radius:16px;
+            padding:16px;
+            font-size:13px;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        .trend-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .trend-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            border-color: rgba(168, 85, 247, 0.3);
+            background: rgba(35, 35, 45, 0.8);
+        }
+        .trend-card:hover::before {
+            opacity: 1;
+        }
+        .trend-card strong { 
+            display:block; 
+            color: var(--text-primary); 
+            margin-bottom:6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">PROVIWEB</div>
+        <div class="search-box">
+            <input type="text" id="headerSearch" placeholder="Buscar música, artistas o perfiles...">
+        </div>
+        <div class="nav-icons">
+            <img src="assets/log.png" alt="logouticon" title="Cerrar Sesión" id="logoutIcon">
+            <img src="assets/archivo.png" alt="archivoicon" title="Archivo" id="archiveIcon">
+            <img src="assets/wallet.png" alt="walleticon" title="Wallet">
+            <img src="assets/notificacion.png" alt="notificacionicon" title="Notificaciones" id="notifIcon">
+            <div class="nav-icon-games" onclick="window.location.href='gamesmusic.html'" title="Juegos Musicales" style="width:38px; height:38px; cursor:pointer; border-radius:12px; padding:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:24px; transition:all 0.3s cubic-bezier(0.4,0,0.2,1);">🎮</div>
+            <img src="assets/perfilblue.png" alt="ajustesicon" title="Ajustes" onclick="window.location.href='myprofile.html'">
+        </div>
+    </div>
+
+    <div class="song-shell">
+        <div class="song-card">
+            <div class="song-cover" id="songCover">🎵</div>
+            <div style="flex:1;min-width:0;">
+                <h1 id="songTitle" style="margin:0;font-size:24px;color: var(--text-primary);">Cargando...</h1>
+                <div class="artist-line">
+                    <span id="songArtist">--</span>
+                    <span id="artistBadge" class="artist-badge"></span>
+                </div>
+                <div id="artistStats" style="margin-top:10px;font-size:12px;color: var(--text-secondary);">Cargando estadísticas...</div>
+                <div class="song-meta">
+                    <span id="songPlays">▶ 0</span>
+                    <span id="songLikes">❤️ 0</span>
+                    <span id="songComments">💬 0</span>
+                </div>
+                <div class="song-actions">
+                    <button id="playBtn">▶ Reproducir</button>
+                    <button id="likeBtn">🤍 Me gusta</button>
+                    <button id="shareBtn">📤 Compartir</button>
+                    <button id="followBtn" style="background: linear-gradient(135deg, #10b981, #059669);">Seguir artista</button>
+                    <button id="viewArtistBtn" class="profile-btn">👤 Ver perfil</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mini-player">
+            <button id="miniPlayBtn">▶</button>
+            <div class="player-progress">
+                <div class="progress-bar" id="playerSeek">
+                    <div class="progress-fill" id="playerFill"></div>
+                </div>
+                <div class="time-row">
+                    <span id="playerCurrent">0:00</span>
+                    <span id="playerTotal">0:00</span>
+                </div>
+            </div>
+            <div class="player-actions">
+                <input id="volumeControl" type="range" min="0" max="1" step="0.01" value="0.8">
+                <a id="downloadBtn" href="#" target="_blank" style="font-size:12px;color: var(--text-secondary);text-decoration:none;">⬇ Descargar</a>
+            </div>
+        </div>
+
+        <div class="comments-card">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Comentarios</h3>
+            <div id="commentsList"></div>
+            <div style="display:flex;gap:10px;margin-top:12px;">
+                <input id="commentInput" type="text" placeholder="Escribe un comentario..." style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border-glass);background: rgba(20, 20, 28, 0.6);color: var(--text-primary);">
+                <button id="sendComment" style="padding:10px 14px;border-radius:8px;border:none;background: var(--gradient-primary);color: var(--text-primary);cursor:pointer;">Enviar</button>
+            </div>
+        </div>
+
+        <div class="comments-card" style="margin-top:18px;">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Top fans de esta canción</h3>
+            <div id="topFansList" class="leader-list"></div>
+        </div>
+
+        <div class="comments-card" style="margin-top:18px;">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Ranking de comentarios</h3>
+            <div id="commentLeadersList" class="leader-list"></div>
+        </div>
+
+        <div class="comments-card" style="margin-top:18px;">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Otras canciones del artista</h3>
+            <div id="artistSongsList"></div>
+        </div>
+
+        <div class="comments-card" style="margin-top:18px;">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Recomendado para ti</h3>
+            <div id="songRecommendations"></div>
+        </div>
+
+        <div class="comments-card" style="margin-top:18px;">
+            <h3 style="margin:0 0 12px;color: var(--text-primary);">Tendencias de la canción</h3>
+            <div id="trendPanel" class="trend-grid"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, push, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+            measurementId: "G-TCH23FGP8D"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const uid = params.get('uid');
+        const id = params.get('id');
+        const songKey = uid && id ? `${uid}_${id}` : null;
+
+        const headerSearch = document.getElementById('headerSearch');
+        const logoutIcon = document.getElementById('logoutIcon');
+        const archiveIcon = document.getElementById('archiveIcon');
+        const notifIcon = document.getElementById('notifIcon');
+        const songCover = document.getElementById('songCover');
+        const songTitle = document.getElementById('songTitle');
+        const songArtist = document.getElementById('songArtist');
+        const artistBadge = document.getElementById('artistBadge');
+        const songPlays = document.getElementById('songPlays');
+        const songLikes = document.getElementById('songLikes');
+        const songComments = document.getElementById('songComments');
+        const artistStats = document.getElementById('artistStats');
+        const playBtn = document.getElementById('playBtn');
+        const miniPlayBtn = document.getElementById('miniPlayBtn');
+        const likeBtn = document.getElementById('likeBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const followBtn = document.getElementById('followBtn');
+        const viewArtistBtn = document.getElementById('viewArtistBtn');
+        const playerSeek = document.getElementById('playerSeek');
+        const playerFill = document.getElementById('playerFill');
+        const playerCurrent = document.getElementById('playerCurrent');
+        const playerTotal = document.getElementById('playerTotal');
+        const volumeControl = document.getElementById('volumeControl');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const commentsList = document.getElementById('commentsList');
+        const commentInput = document.getElementById('commentInput');
+        const sendComment = document.getElementById('sendComment');
+        const artistSongsList = document.getElementById('artistSongsList');
+        const songRecommendations = document.getElementById('songRecommendations');
+        const topFansList = document.getElementById('topFansList');
+        const commentLeadersList = document.getElementById('commentLeadersList');
+        const trendPanel = document.getElementById('trendPanel');
+        const audio = new Audio();
+        let currentUser = null;
+        let songData = null;
+        let artistUserData = null;
+
+        onAuthStateChanged(auth, user => {
+            currentUser = user;
+        });
+
+        if (logoutIcon) {
+            logoutIcon.addEventListener('click', async () => {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            });
+        }
+        if (archiveIcon) {
+            archiveIcon.addEventListener('click', () => {
+                window.location.href = 'archive.html';
+            });
+        }
+        if (notifIcon) {
+            notifIcon.addEventListener('click', () => {
+                window.location.href = 'home.html';
+            });
+        }
+        if (headerSearch) {
+            headerSearch.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    window.location.href = 'home.html';
+                }
+            });
+        }
+
+        if (viewArtistBtn) {
+            if (!uid) {
+                viewArtistBtn.style.display = 'none';
+            } else {
+                viewArtistBtn.addEventListener('click', () => {
+                    window.location.href = `userprofile.html?uid=${encodeURIComponent(uid)}`;
+                });
+            }
+        }
+
+        if (!uid || !id) {
+            songTitle.textContent = 'Canción no encontrada';
+            songArtist.textContent = 'Verifica el enlace y vuelve a intentar.';
+            if (artistStats) {
+                artistStats.textContent = 'No hay información para mostrar.';
+            }
+            [playBtn, miniPlayBtn, likeBtn, shareBtn, followBtn, viewArtistBtn, sendComment].forEach((btn) => {
+                if (!btn) return;
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+                btn.style.cursor = 'not-allowed';
+            });
+            if (volumeControl) {
+                volumeControl.disabled = true;
+            }
+            if (commentsList) {
+                commentsList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">No hay comentarios disponibles.</div>';
+            }
+            if (artistSongsList) {
+                artistSongsList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">No hay canciones disponibles.</div>';
+            }
+            if (songRecommendations) {
+                songRecommendations.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">No hay recomendaciones disponibles.</div>';
+            }
+        }
+
+        function renderSong(data) {
+            songData = data;
+            songTitle.textContent = data.title || 'Sin título';
+            if (songArtist) {
+                songArtist.textContent = data.artist || 'Artista';
+            }
+            songPlays.textContent = `▶ ${data.stats?.plays || 0}`;
+            if (data.coverUrl) {
+                songCover.innerHTML = `<img src="${data.coverUrl}" alt="Cover">`;
+            } else {
+                songCover.textContent = '🎵';
+            }
+            if (downloadBtn) {
+                downloadBtn.href = data.url || '#';
+                downloadBtn.style.opacity = data.url ? '1' : '0.5';
+                downloadBtn.style.pointerEvents = data.url ? 'auto' : 'none';
+            }
+        }
+
+        function getVerificationBadgeInfo(userData) {
+            if (userData?.verified === 'yes') {
+                return { text: '✓', title: 'Artista verificado', color: '#1DA1F2' };
+            }
+            if (userData?.verifiedprofesor === 'yes') {
+                return { text: '🎓', title: 'Profesor de música verificado', color: '#FF6B6B' };
+            }
+            if (userData?.verifiedstudent === 'yes') {
+                return { text: '📚', title: 'Estudiante verificado', color: '#4ECDC4' };
+            }
+            if (userData?.verifiedentidad === 'yes') {
+                return { text: '🏢', title: 'Entidad verificada', color: '#8B5CF6' };
+            }
+            return null;
+        }
+
+        function applyVerificationBadge(badgeEl, userData) {
+            if (!badgeEl) return;
+            const info = getVerificationBadgeInfo(userData);
+            if (!info) {
+                badgeEl.style.display = 'none';
+                badgeEl.classList.remove('badge-pulse');
+                return;
+            }
+            badgeEl.textContent = info.text;
+            badgeEl.title = info.title;
+            badgeEl.style.background = info.color;
+            badgeEl.style.display = 'inline-flex';
+            badgeEl.classList.add('badge-pulse');
+        }
+
+        function formatTime(seconds = 0) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function listenStats() {
+            const likesRef = ref(db, `MusicLikes/${songKey}`);
+            const commentsRef = ref(db, `MusicComments/${songKey}`);
+            onValue(likesRef, snap => {
+                const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+                songLikes.textContent = `❤️ ${count}`;
+                const liked = currentUser && snap.exists() && snap.hasChild(currentUser.uid);
+                likeBtn.textContent = liked ? '❤️ Me gusta' : '🤍 Me gusta';
+                updateTrendPanel();
+            });
+            onValue(commentsRef, snap => {
+                const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+                songComments.textContent = `💬 ${count}`;
+                updateTrendPanel();
+            });
+        }
+
+        function listenTopFans() {
+            if (!topFansList) return;
+            const likesRef = ref(db, `MusicLikes/${songKey}`);
+            onValue(likesRef, (snap) => {
+                if (!snap.exists()) {
+                    topFansList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin fans aún.</div>';
+                    return;
+                }
+                const userIds = Object.keys(snap.val() || {}).slice(0, 8);
+                if (!userIds.length) {
+                    topFansList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin fans aún.</div>';
+                    return;
+                }
+                topFansList.innerHTML = '';
+                userIds.forEach((userId, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'leader-item';
+                    const userRef = ref(db, `Users/${userId}`);
+                    onValue(userRef, (userSnap) => {
+                        const userData = userSnap.exists() ? userSnap.val() : {};
+                        row.innerHTML = `
+                            <img src="${userData.photo || 'assets/avatar.png'}" alt="fan">
+                            <div style="flex:1;">
+                                <div style="font-weight:600;font-size:12px;display:flex;align-items:center;gap:6px;color: var(--text-primary);">
+                                    <span>${index + 1}. ${userData.name || 'Usuario'}</span>
+                                    <span class="badge-small fan-badge"></span>
+                                </div>
+                                <div class="leader-meta">@${userData.username || 'usuario'}</div>
+                            </div>
+                        `;
+                        const badge = row.querySelector('.fan-badge');
+                        applyVerificationBadge(badge, userData);
+                    }, { onlyOnce: true });
+                    topFansList.appendChild(row);
+                });
+            });
+        }
+
+        function updateTrendPanel(allSongs) {
+            if (!trendPanel || !songData) return;
+            const likes = Number((songLikes.textContent || '').replace(/\D/g, '')) || 0;
+            const comments = Number((songComments.textContent || '').replace(/\D/g, '')) || 0;
+            const plays = songData.stats?.plays || 0;
+            const score = plays + likes * 2 + comments * 3;
+
+            let rank = '-';
+            if (Array.isArray(allSongs) && allSongs.length) {
+                const ranked = [...allSongs].sort((a, b) => {
+                    const aScore = (a.stats?.plays || 0) + (a.likes || 0) * 2 + (a.comments || 0) * 3;
+                    const bScore = (b.stats?.plays || 0) + (b.likes || 0) * 2 + (b.comments || 0) * 3;
+                    return bScore - aScore;
+                });
+                const idx = ranked.findIndex((s) => s.ownerId === uid && s.id === id);
+                if (idx >= 0) rank = `#${idx + 1}`;
+            }
+
+            trendPanel.innerHTML = `
+                <div class="trend-card"><strong>Score tendencia</strong>${score} pts</div>
+                <div class="trend-card"><strong>Ranking general</strong>${rank}</div>
+                <div class="trend-card"><strong>Plays</strong>${plays}</div>
+                <div class="trend-card"><strong>Likes</strong>${likes}</div>
+                <div class="trend-card"><strong>Comentarios</strong>${comments}</div>
+            `;
+        }
+
+        function listenComments() {
+            const commentsRef = ref(db, `MusicComments/${songKey}`);
+            onValue(commentsRef, snap => {
+                commentsList.innerHTML = '';
+                if (!snap.exists()) {
+                    commentsList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin comentarios aún.</div>';
+                    if (commentLeadersList) {
+                        commentLeadersList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin ranking aún.</div>';
+                    }
+                    return;
+                }
+                const counter = {};
+                snap.forEach(commentSnap => {
+                    const commentData = commentSnap.val();
+                    if (commentData.userId) {
+                        counter[commentData.userId] = (counter[commentData.userId] || 0) + 1;
+                    }
+                    const item = document.createElement('div');
+                    item.className = 'comment-item';
+                    const userRef = ref(db, `Users/${commentData.userId}`);
+                    onValue(userRef, userSnap => {
+                        const userData = userSnap.exists() ? userSnap.val() : {};
+                        item.innerHTML = `
+                            <img src="${userData.photo || 'assets/avatar.png'}" alt="user">
+                            <div>
+                                <div style="font-weight:600;font-size:12px;display:flex;align-items:center;gap:6px;color: var(--text-primary);">
+                                    <span>${userData.name || 'Usuario'}</span>
+                                    <span class="badge-small comment-badge"></span>
+                                </div>
+                                <div style="font-size:11px;color: var(--text-secondary);">@${userData.username || 'usuario'}</div>
+                                <div style="font-size:12px;color: var(--text-secondary);">${commentData.text || ''}</div>
+                            </div>
+                        `;
+                        const commentBadge = item.querySelector('.comment-badge');
+                        applyVerificationBadge(commentBadge, userData);
+                    }, { onlyOnce: true });
+                    commentsList.appendChild(item);
+                });
+
+                if (commentLeadersList) {
+                    const leaders = Object.entries(counter)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 6);
+                    if (!leaders.length) {
+                        commentLeadersList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin ranking aún.</div>';
+                        return;
+                    }
+                    commentLeadersList.innerHTML = '';
+                    leaders.forEach(([userId, count], index) => {
+                        const row = document.createElement('div');
+                        row.className = 'leader-item';
+                        const userRef = ref(db, `Users/${userId}`);
+                        onValue(userRef, (userSnap) => {
+                            const userData = userSnap.exists() ? userSnap.val() : {};
+                            row.innerHTML = `
+                                <img src="${userData.photo || 'assets/avatar.png'}" alt="user">
+                                <div style="flex:1;">
+                                    <div style="font-weight:600;font-size:12px;display:flex;align-items:center;gap:6px;color: var(--text-primary);">
+                                        <span>${index + 1}. ${userData.name || 'Usuario'}</span>
+                                        <span class="badge-small leader-badge"></span>
+                                    </div>
+                                    <div class="leader-meta">@${userData.username || 'usuario'} • ${count} comentarios</div>
+                                </div>
+                            `;
+                            const badge = row.querySelector('.leader-badge');
+                            applyVerificationBadge(badge, userData);
+                        }, { onlyOnce: true });
+                        commentLeadersList.appendChild(row);
+                    });
+                }
+            });
+        }
+
+        function renderArtistSongs(songs) {
+            if (!artistSongsList) return;
+            if (!songs.length) {
+                artistSongsList.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin otras canciones.</div>';
+                return;
+            }
+            artistSongsList.innerHTML = '';
+            songs.forEach((song) => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.innerHTML = `
+                    <div class="song-cover" style="width:48px;height:48px;border-radius:10px;">${song.coverUrl ? `<img src="${song.coverUrl}" alt="cover">` : '🎵'}</div>
+                    <div>
+                        <div style="font-weight:600;font-size:12px;color: var(--text-primary);">${song.title || 'Sin título'}</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color: var(--text-secondary);">
+                            <span>${artistUserData?.name || song.artist || 'Artista'}</span>
+                            <span class="badge-small artist-song-badge"></span>
+                        </div>
+                        <div style="font-size:12px;color: var(--text-secondary);">▶ ${song.stats?.plays || 0}</div>
+                    </div>
+                `;
+                const artistSongBadge = item.querySelector('.artist-song-badge');
+                applyVerificationBadge(artistSongBadge, artistUserData);
+                item.addEventListener('click', () => {
+                    window.location.href = `song.html?uid=${encodeURIComponent(uid)}&id=${encodeURIComponent(song.id)}`;
+                });
+                artistSongsList.appendChild(item);
+            });
+        }
+
+        function renderRecommendations(songs) {
+            if (!songRecommendations) return;
+            if (!songs.length) {
+                songRecommendations.innerHTML = '<div style="color: var(--text-secondary);font-size:12px;">Sin recomendaciones aún.</div>';
+                return;
+            }
+            songRecommendations.innerHTML = '';
+            songs.forEach((song) => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.innerHTML = `
+                    <div class="song-cover" style="width:48px;height:48px;border-radius:10px;">${song.coverUrl ? `<img src="${song.coverUrl}" alt="cover">` : '🎵'}</div>
+                    <div>
+                        <div style="font-weight:600;font-size:12px;color: var(--text-primary);">${song.title || 'Sin título'}</div>
+                        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color: var(--text-secondary);">
+                            <img class="rec-avatar" src="assets/avatar.png" alt="Artista">
+                            <span class="rec-artist-name">${song.artist || 'Artista'}</span>
+                            <span class="badge-small rec-badge"></span>
+                        </div>
+                        <div class="rec-username" style="font-size:11px;color: var(--text-secondary);">@artista</div>
+                    </div>
+                `;
+                const recBadge = item.querySelector('.rec-badge');
+                const recUsername = item.querySelector('.rec-username');
+                const recArtistName = item.querySelector('.rec-artist-name');
+                const recAvatar = item.querySelector('.rec-avatar');
+                const ownerId = song.ownerId || song.userId;
+                if (ownerId) {
+                    const userRef = ref(db, `Users/${ownerId}`);
+                    get(userRef).then((snap) => {
+                        const userData = snap.exists() ? snap.val() : {};
+                        if (recUsername) {
+                            recUsername.textContent = `@${userData.username || 'artista'}`;
+                        }
+                        if (recArtistName && userData.name) {
+                            recArtistName.textContent = userData.name;
+                        }
+                        if (recAvatar) {
+                            recAvatar.src = userData.photo || 'assets/avatar.png';
+                            recAvatar.alt = userData.name || 'Artista';
+                        }
+                        applyVerificationBadge(recBadge, userData);
+                    }).catch(() => {
+                        applyVerificationBadge(recBadge, null);
+                        if (recUsername) {
+                            recUsername.textContent = '@artista';
+                        }
+                        if (recAvatar) {
+                            recAvatar.src = 'assets/avatar.png';
+                            recAvatar.alt = 'Artista';
+                        }
+                    });
+                }
+                item.addEventListener('click', () => {
+                    window.location.href = `song.html?uid=${encodeURIComponent(song.ownerId || song.userId)}&id=${encodeURIComponent(song.id)}`;
+                });
+                songRecommendations.appendChild(item);
+            });
+        }
+
+        async function incrementPlay() {
+            const playsRef = ref(db, `AudiosPlay/${uid}/${id}/stats/plays`);
+            const snap = await get(playsRef);
+            const current = snap.exists() ? snap.val() : 0;
+            await set(playsRef, current + 1);
+        }
+
+        function togglePlayback() {
+            if (!songData) return;
+            if (!audio.src) {
+                audio.src = songData.url;
+            }
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸ Pausar';
+                if (miniPlayBtn) miniPlayBtn.textContent = '⏸';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶ Reproducir';
+                if (miniPlayBtn) miniPlayBtn.textContent = '▶';
+            }
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (!songData) return;
+            const wasPaused = audio.paused || !audio.src;
+            togglePlayback();
+            if (wasPaused) {
+                incrementPlay();
+            }
+        });
+
+        if (miniPlayBtn) {
+            miniPlayBtn.addEventListener('click', () => {
+                if (!songData) return;
+                const wasPaused = audio.paused || !audio.src;
+                togglePlayback();
+                if (wasPaused) {
+                    incrementPlay();
+                }
+            });
+        }
+
+        audio.addEventListener('loadedmetadata', () => {
+            if (playerTotal) playerTotal.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            if (playerFill) {
+                playerFill.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+            }
+            if (playerCurrent) {
+                playerCurrent.textContent = formatTime(audio.currentTime);
+            }
+            if (playerTotal) {
+                playerTotal.textContent = formatTime(audio.duration);
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            playBtn.textContent = '▶ Reproducir';
+            if (miniPlayBtn) miniPlayBtn.textContent = '▶';
+        });
+
+        audio.addEventListener('pause', () => {
+            playBtn.textContent = '▶ Reproducir';
+            if (miniPlayBtn) miniPlayBtn.textContent = '▶';
+        });
+
+        if (volumeControl) {
+            audio.volume = Number(volumeControl.value);
+        }
+
+        if (playerSeek) {
+            playerSeek.addEventListener('click', (event) => {
+                if (!audio.duration) return;
+                const rect = playerSeek.getBoundingClientRect();
+                const percent = (event.clientX - rect.left) / rect.width;
+                audio.currentTime = percent * audio.duration;
+            });
+        }
+
+        if (volumeControl) {
+            volumeControl.addEventListener('input', () => {
+                audio.volume = Number(volumeControl.value);
+            });
+        }
+
+        likeBtn.addEventListener('click', async () => {
+            if (!currentUser) return;
+            const likeRef = ref(db, `MusicLikes/${songKey}/${currentUser.uid}`);
+            const snap = await get(likeRef);
+            if (snap.exists()) {
+                await remove(likeRef);
+            } else {
+                await set(likeRef, true);
+            }
+        });
+
+        shareBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                await navigator.share({ title: songTitle.textContent, url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Enlace copiado');
+            }
+        });
+
+        sendComment.addEventListener('click', async () => {
+            const text = commentInput.value.trim();
+            if (!text || !currentUser) return;
+            const commentRef = push(ref(db, `MusicComments/${songKey}`));
+            await set(commentRef, { userId: currentUser.uid, text, timestamp: Date.now() });
+            commentInput.value = '';
+        });
+
+        if (followBtn) {
+            followBtn.addEventListener('click', async () => {
+                if (!currentUser || !uid || currentUser.uid === uid) return;
+                const followRef = ref(db, `Follow/${currentUser.uid}/Following/${uid}`);
+                const followerRef = ref(db, `Follow/${uid}/Followers/${currentUser.uid}`);
+                const snap = await get(followRef);
+                if (snap.exists()) {
+                    await remove(followRef);
+                    await remove(followerRef);
+                    followBtn.textContent = 'Seguir artista';
+                } else {
+                    await set(followRef, true);
+                    await set(followerRef, true);
+                    followBtn.textContent = 'Siguiendo';
+                }
+            });
+        }
+
+        function updateFollowState() {
+            if (!currentUser || !uid || currentUser.uid === uid) {
+                followBtn.style.display = 'none';
+                return;
+            }
+            const followRef = ref(db, `Follow/${currentUser.uid}/Following/${uid}`);
+            onValue(followRef, (snap) => {
+                followBtn.textContent = snap.exists() ? 'Siguiendo' : 'Seguir artista';
+            });
+        }
+
+        if (uid && id) {
+            const songRef = ref(db, `AudiosPlay/${uid}/${id}`);
+            onValue(songRef, snap => {
+                if (snap.exists()) {
+                    renderSong(snap.val());
+                    listenStats();
+                    listenComments();
+                    listenTopFans();
+                    updateFollowState();
+                }
+            });
+
+            const artistRef = ref(db, `Users/${uid}`);
+            const artistSongsRef = ref(db, `AudiosPlay/${uid}`);
+            const followersRef = ref(db, `Follow/${uid}/Followers`);
+            onValue(artistRef, (snap) => {
+                const data = snap.exists() ? snap.val() : {};
+                artistUserData = data;
+                const name = data.name || 'Artista';
+                if (artistStats) {
+                    artistStats.textContent = `${name} • 0 seguidores • 0 canciones`;
+                }
+                applyVerificationBadge(artistBadge, data);
+            }, { onlyOnce: true });
+
+            onValue(artistSongsRef, (snap) => {
+                const count = snap.exists() ? snap.numChildren() : 0;
+                if (artistStats) {
+                    const currentText = artistStats.textContent || '';
+                    const parts = currentText.split('•');
+                    artistStats.textContent = `${parts[0]?.trim() || 'Artista'} • ${parts[1]?.trim() || '0 seguidores'} • ${count} canciones`;
+                }
+            });
+
+            onValue(followersRef, (snap) => {
+                const followersCount = snap.exists() ? snap.numChildren() : 0;
+                if (artistStats) {
+                    const currentText = artistStats.textContent || '';
+                    const parts = currentText.split('•');
+                    const artistName = parts[0]?.trim() || 'Artista';
+                    const songsPart = parts[2]?.trim() || '0 canciones';
+                    artistStats.textContent = `${artistName} • ${followersCount} seguidores • ${songsPart}`;
+                }
+            });
+
+            onValue(artistSongsRef, (snap) => {
+                const songs = [];
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        if (child.key !== id) {
+                            songs.push({ id: child.key, ...child.val() });
+                        }
+                    });
+                }
+                renderArtistSongs(songs.slice(0, 6));
+            });
+
+            const allMusicRef = ref(db, 'AudiosPlay');
+            onValue(allMusicRef, (snap) => {
+                const songs = [];
+                if (snap.exists()) {
+                    snap.forEach(userSnap => {
+                        userSnap.forEach(songSnap => {
+                            const data = songSnap.val();
+                            songs.push({ id: songSnap.key, ownerId: userSnap.key, ...data });
+                        });
+                    });
+                }
+                const filtered = songs
+                    .filter(song => !(song.ownerId === uid && song.id === id))
+                    .sort((a, b) => (b.stats?.plays || 0) - (a.stats?.plays || 0))
+                    .slice(0, 6);
+                renderRecommendations(filtered);
+                updateTrendPanel(songs);
+            });
+        }
+    </script>
+</body>
+</html>

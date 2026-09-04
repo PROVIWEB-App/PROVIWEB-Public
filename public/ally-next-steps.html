@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siguientes pasos de alianza - PROVIWEB</title>
+  <link rel="icon" href="assets/logotransparente.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg-primary: #0f0f13;
+      --bg-card: rgba(28, 28, 36, 0.7);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --accent-purple: #a855f7;
+      --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .next-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 16px 54px;
+    }
+
+    .next-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 24px;
+    }
+
+    .next-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--accent-purple);
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .next-title {
+      margin: 0;
+      font-size: clamp(1.6rem, 3.8vw, 2.3rem);
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    .next-subtitle {
+      margin: 10px 0 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 72ch;
+    }
+
+    .timeline {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .timeline-item {
+      border-radius: 12px;
+      border: 1px solid var(--border-glass);
+      background: rgba(28, 28, 36, 0.5);
+      padding: 12px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .timeline-item strong {
+      color: var(--accent-purple);
+    }
+
+    .checklist {
+      margin-top: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-glass);
+      background: rgba(28, 28, 36, 0.5);
+      padding: 14px;
+    }
+
+    .checklist h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--accent-purple);
+      font-weight: 800;
+    }
+
+    .checklist ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+      color: var(--text-secondary);
+      font-size: 0.87rem;
+      line-height: 1.7;
+    }
+
+    .next-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--gradient-primary);
+      box-shadow: 0 10px 24px rgba(168, 85, 247, 0.3);
+    }
+
+    .btn-secondary {
+      color: var(--text-primary);
+      border: 1px solid var(--border-glass);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .next-foot {
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 700px) {
+      .next-card { padding: 16px; }
+      .next-actions { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-secondary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="next-wrap">
+    <section class="next-card">
+      <span class="next-kicker">Registro completado</span>
+      <h1 class="next-title">Gracias por postular tu alianza con PROVIWEB</h1>
+      <p class="next-subtitle">Tu registro fue recibido correctamente. En menos de <strong>48 horas</strong> nuestro equipo validará la información y te contactará para coordinar una reunión online.</p>
+
+      <div class="timeline" aria-label="Próximos pasos">
+        <div class="timeline-item"><strong>Paso 1:</strong> Validación inicial de datos y tipo de alianza solicitada.</div>
+        <div class="timeline-item"><strong>Paso 2:</strong> Contacto directo por correo y/o WhatsApp para confirmar disponibilidad.</div>
+        <div class="timeline-item"><strong>Paso 3:</strong> Reunión online de diagnóstico para definir alcance, objetivos y plan de activación.</div>
+      </div>
+
+      <div class="checklist">
+        <h2>Checklist recomendado para tu reunión</h2>
+        <ul>
+          <li>Objetivo principal de la alianza (branding, empleabilidad, formación o co-marketing).</li>
+          <li>Capacidad de aporte (financiero, difusión, espacios, movilidad, hospedaje o tecnología).</li>
+          <li>Público objetivo y alcance esperado.</li>
+          <li>Ventana de tiempo para ejecutar una primera campaña piloto (ideal 30-90 días).</li>
+          <li>Persona responsable de decisión dentro de tu entidad.</li>
+        </ul>
+      </div>
+
+      <div class="next-actions">
+        <a class="btn-primary" href="edirmyprofile.html?firstTime=1&ally=1">Completar perfil de aliado</a>
+        <a class="btn-secondary" id="allyAdminLink" href="ally-admin.html">Ir al panel admin aliado</a>
+        <a class="btn-secondary" href="ser-aliado.html">Volver al pitch de alianzas</a>
+        <a class="btn-secondary" href="mailto:proviwebapp@proviweb.com?subject=Seguimiento%20de%20alianza%20PROVIWEB">Escribir al equipo</a>
+      </div>
+
+      <p class="next-foot">Si necesitas acelerar la reunión, responde directamente al correo: <strong>proviwebapp@proviweb.com</strong>.</p>
+    </section>
+  </main>
+  <script>
+    (function() {
+      var link = document.getElementById('allyAdminLink');
+      if (!link) return;
+      var params = new URLSearchParams(window.location.search);
+      var plan = (params.get('plan') || '').toLowerCase();
+      if (!plan) {
+        try { plan = (localStorage.getItem('proviweb_selected_ally_plan') || '').toLowerCase(); } catch (error) {}
+      }
+      if (plan) {
+        link.href = 'ally-admin.html?plan=' + encodeURIComponent(plan);
+      }
+    })();
+  </script>
+</body>
+</html>

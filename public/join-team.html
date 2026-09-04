@@ -1,0 +1,616 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Únete al equipo como voluntario">
+    <title>Unirse al equipo - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+    --bg-primary: #0f0f13;
+    --bg-secondary: #16161d;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6b6b7b;
+    --accent-purple: #a855f7;
+    --accent-blue: #007BFF;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --border-radius: 16px;
+    --border-radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Aurora Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+            animation: aurora 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes aurora {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+            25% { transform: translate(2%, 2%) scale(1.05); opacity: 0.9; }
+            50% { transform: translate(-1%, 3%) scale(1.02); opacity: 1; }
+            75% { transform: translate(1%, -2%) scale(1.03); opacity: 0.95; }
+        }
+        
+        /* Fixed Header with Glass Effect */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+            background: rgba(15, 15, 19, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        
+        .header .brand {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        .header .brand:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .header .nav-icons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .header .nav-icons img {
+            width: 38px;
+            height: 38px;
+            cursor: pointer;
+            border-radius: 12px;
+            padding: 6px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+        
+        .header .nav-icons img:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 16px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 2000;
+            transition: top 0.3s ease;
+        }
+        
+        .skip-link:focus {
+            top: 80px;
+        }
+        
+        /* Particles Canvas */
+        #particlesCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Main Content */
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 100px auto 60px;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+            animation: heroIn 0.6s ease-out both;
+        }
+        
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.65;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        
+        /* Glass Card */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            margin-bottom: 24px;
+            animation: heroIn 0.6s ease-out 0.1s both;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-glass);
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a1a1aa'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        .form-group select option {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        
+        .form-group .hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        
+        .radio-group label:hover {
+            color: var(--text-primary);
+        }
+        
+        .radio-group input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+        
+        /* User Link Section */
+        .user-link-section {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 14px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .user-link-section.hidden {
+            display: none;
+        }
+        
+        .user-link-section label {
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+        
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        
+        .btn-submit:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Success Message */
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 28px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 14px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-msg.visible {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            border-top: 1px solid var(--border-glass);
+            margin-top: 40px;
+        }
+        
+        .footer a {
+            color: var(--accent-purple);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--accent-pink), var(--accent-purple));
+        }
+        
+        /* Focus Visible */
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible,
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-wrap {
+                margin-top: 90px;
+            }
+            
+            .hero h1 {
+                font-size: 26px;
+            }
+            
+            .card {
+                padding: 24px 20px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+    <canvas id="particlesCanvas"></canvas>
+    
+    <!-- Fixed Header -->
+    <header class="header">
+        <a href="index.html" class="brand">PROVIWEB</a>
+        <div class="nav-icons">
+            <img src="assets/logotransparente.png" alt="Inicio" title="Inicio" onclick="window.location.href='index.html'">
+            <img src="assets/ajustes.png" alt="Mi perfil" title="Mi perfil" onclick="window.location.href='myprofile.html'">
+        </div>
+    </header>
+
+    <main class="page-wrap" id="mainContent">
+        <div class="hero">
+            <h1>🤝 Unirse al equipo</h1>
+            <p>PROVIWEB está abierto a personas que quieran aportar su conocimiento como voluntarios. Si deseas sumarte al proyecto, envíanos tu solicitud con la información siguiente.</p>
+        </div>
+
+        <div class="card">
+            <div id="successMsg" class="success-msg">
+                <div style="font-size: 48px; margin-bottom: 16px;">✨</div>
+                ¡Gracias! Hemos recibido tu solicitud y nos pondremos en contacto contigo pronto.
+            </div>
+            <form id="joinTeamForm" style="display:block;">
+                <div class="form-group">
+                    <label for="fullName">Nombre completo *</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Tu nombre y apellidos">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo electrónico *</label>
+                    <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="area">Área o conocimiento que te gustaría ofrecer *</label>
+                    <select id="area" name="area" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="desarrollo">Desarrollo (web, móvil, backend)</option>
+                        <option value="diseno">Diseño (UI/UX, gráfico)</option>
+                        <option value="legal">Legal / Compliance</option>
+                        <option value="comunidad">Comunidad / Moderación</option>
+                        <option value="traduccion">Traducción / Idiomas</option>
+                        <option value="musica_arte">Música / Arte / Contenido</option>
+                        <option value="marketing">Marketing / Comunicación</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensaje *</label>
+                    <textarea id="message" name="message" required placeholder="Cuéntanos brevemente tu experiencia y por qué te gustaría unirte al equipo..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>¿Tienes usuario en PROVIWEB?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hasUser" value="no" checked> No</label>
+                        <label><input type="radio" name="hasUser" value="yes"> Sí</label>
+                    </div>
+                    <div id="userLinkSection" class="user-link-section hidden">
+                        <label for="proviwebUsername">Usuario en la plataforma (nombre de usuario @)</label>
+                        <input type="text" id="proviwebUsername" name="proviwebUsername" placeholder="@tu_usuario">
+                        <p class="hint">Así podemos ver tu perfil y vincular tu solicitud.</p>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Enviar solicitud</button>
+            </form>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 PROVIWEB. Conectando talento artístico con el mundo.</p>
+        <p style="margin-top: 8px;">
+            <a href="privacy.html">Privacidad</a> • 
+            <a href="terms.html">Términos</a> • 
+            <a href="seguridad-ayuda.html">Contacto</a>
+        </p>
+    </footer>
+
+    <script>
+    (function() {
+        var form = document.getElementById('joinTeamForm');
+        var successMsg = document.getElementById('successMsg');
+        var hasUserRadios = document.querySelectorAll('input[name="hasUser"]');
+        var userLinkSection = document.getElementById('userLinkSection');
+        var proviwebUsername = document.getElementById('proviwebUsername');
+
+        hasUserRadios.forEach(function(r) {
+            r.addEventListener('change', function() {
+                userLinkSection.classList.toggle('hidden', document.querySelector('input[name="hasUser"]:checked').value !== 'yes');
+            });
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            
+            var payload = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                area: document.getElementById('area').value,
+                message: document.getElementById('message').value.trim(),
+                hasProviwebUser: document.querySelector('input[name="hasUser"]:checked').value === 'yes',
+                proviwebUsername: (proviwebUsername && proviwebUsername.value) ? proviwebUsername.value.trim().replace(/^@/, '') : '',
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (typeof firebase !== 'undefined' && firebase.database) {
+                    var ref = firebase.database().ref('teamApplications').push();
+                    ref.set(payload).then(function() {
+                        form.style.display = 'none';
+                        successMsg.classList.add('visible');
+                    }).catch(function(err) {
+                        alert('No se pudo enviar. Intenta de nuevo o contacta por otro medio.');
+                        btn.disabled = false;
+                        btn.textContent = 'Enviar solicitud';
+                    });
+                } else {
+                    console.log('Team application (no Firebase):', payload);
+                    form.style.display = 'none';
+                    successMsg.classList.add('visible');
+                }
+            } catch (err) {
+                console.error(err);
+                form.style.display = 'none';
+                successMsg.classList.add('visible');
+            }
+        });
+    })();
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+    (function() {
+        try {
+            if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+                firebase.initializeApp({
+                    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+                    authDomain: "proviweb-d8764.firebaseapp.com",
+                    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+                    projectId: "proviweb-d8764",
+                    storageBucket: "proviweb-d8764.appspot.com",
+                    messagingSenderId: "475963980955",
+                    appId: "1:475963980955:web:8444288d8ba13e428e1a3e"
+                });
+            }
+        } catch (e) {}
+    })();
+    </script>
+    <script src="assets/particles.js"></script>
+</body>
+</html>

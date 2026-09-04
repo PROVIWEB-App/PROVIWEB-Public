@@ -1,0 +1,12 @@
+# PROVIWEB: permitir a todos los robots (Googlebot incluido). No se bloquea ninguna URL.
+# La imagen https://www.gstatic.com/recaptcha/api2/logo_48.png está en dominio de Google;
+# robots.txt solo aplica a este sitio (proviweb.com), no a gstatic.com.
+
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /

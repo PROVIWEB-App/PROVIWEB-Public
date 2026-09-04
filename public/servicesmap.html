@@ -1,0 +1,4160 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Mapa de Servicios">
+<meta name="author" content="israviolink - Israel Rodríguez">
+<title>PROVIWEB - Mapa de Servicios</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+// Global callback for Google Maps - must be defined before the script loads
+window.initMap = function() {
+    // This will be called after Google Maps API loads
+    console.log('Google Maps API loaded');
+    // Initialize map when ready (initializeMap lives in module scope, expose it on window)
+    if (typeof window.initializeMap === 'function') {
+        setTimeout(() => window.initializeMap(), 50);
+    } else {
+        console.warn('initializeMap aún no está disponible; el módulo debe cargar primero.');
+    }
+};
+
+// If the API key is restricted / invalid, Google calls this
+window.gm_authFailure = function() {
+    console.error('Google Maps auth failure (API key / referrer restriction)');
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,15,19,0.9);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;font-family:'Inter',sans-serif;";
+    overlay.innerHTML = `
+        <div style="background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);border-radius:14px;max-width:500px;width:100%;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <div style="font-weight:700;font-size:16px;margin-bottom:10px;color:#d32f2f;">⚠️ Error de Autenticación</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:15px;">
+                La API key no pudo autenticarse. Verifica:<br>
+                • Que la key sea de tipo <b>Web (HTTP referrers)</b><br>
+                • Que <b>Maps JavaScript API</b> y <b>Places API</b> estén habilitadas<br>
+                • Que tu URL esté en la lista de referrers permitidos
+            </div>
+            <button onclick="this.parentElement.parentElement.remove();location.reload();" style="width:100%;padding:10px;background:linear-gradient(135deg, #a855f7 0%, #007BFF 100%);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Recargar</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+};
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcE8-9AWMXNVSyIAhDK8ZLwpCigfgZKJM&libraries=places,geometry&callback=initMap" async defer></script>
+<style>
+:root {
+    --bg-primary: #0f0f13;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --accent-purple: #a855f7;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary); 
+    color: var(--text-primary); 
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+/* HEADER */
+.header {
+    width:100%; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:12px 20px;
+    background: var(--gradient-primary);
+    color:white; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    z-index:1000; 
+    box-shadow: var(--shadow-md);
+}
+
+.back-btn {
+    background:rgba(255,255,255,0.15);
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    transition:var(--transition);
+}
+
+.back-btn:hover {
+    background:rgba(255,255,255,0.25);
+}
+
+.brand {
+    font-size:20px;
+    font-weight:700;
+    cursor:pointer;
+}
+a.brand { text-decoration: none; color: inherit; }
+
+/* SEARCH BAR */
+.search-container {
+    position:fixed;
+    top:60px;
+    left:0;
+    right:0;
+    padding:10px 20px;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 2px 8px rgba(0,0,0,0.3);
+    z-index:999;
+}
+
+.search-box {
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.search-input {
+    flex:1;
+    padding:10px 15px;
+    border:2px solid var(--border-glass);
+    border-radius:20px;
+    font-size:14px;
+    outline:none;
+    transition:border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color:var(--accent-purple);
+}
+
+.search-btn {
+    padding:10px 20px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:var(--transition);
+}
+
+.search-btn:hover {
+    opacity: 0.9;
+}
+
+/* OPTIONS FILTER */
+.options-container {
+    position:fixed;
+    top:120px;
+    left:0;
+    right:0;
+    padding:10px 20px;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 2px 8px rgba(0,0,0,0.3);
+    z-index:998;
+    overflow-x:auto;
+    white-space:nowrap;
+}
+
+.options-container::-webkit-scrollbar {
+    height:4px;
+}
+
+.options-container::-webkit-scrollbar-thumb {
+    background:var(--border-glass);
+    border-radius:2px;
+}
+
+.option-item {
+    display:inline-block;
+    padding:8px 16px;
+    margin-right:10px;
+    background:rgba(15, 15, 19, 0.5);
+    border:2px solid var(--border-glass);
+    border-radius:20px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:500;
+    transition:var(--transition);
+    white-space:nowrap;
+}
+
+.option-item:hover {
+    background: var(--gradient-primary);
+    color:white;
+    border-color:var(--accent-purple);
+}
+
+.option-item.active {
+    background: var(--gradient-primary);
+    color:white;
+    border-color:var(--accent-purple);
+}
+
+/* MAP CONTAINER */
+#map {
+    width:100%;
+    height:calc(100vh - 120px);
+    margin-top:120px;
+}
+
+/* BOTTOM SHEET */
+.bottom-sheet {
+    position:fixed;
+    bottom:-100%;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    border-radius:20px 20px 0 0;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.5);
+    z-index:1001;
+    transition:bottom 0.3s ease-out;
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+.bottom-sheet.show {
+    bottom:0;
+}
+
+.bottom-sheet-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 20px;
+    border-bottom:1px solid var(--border-glass);
+}
+
+.bottom-sheet-title {
+    font-size:18px;
+    font-weight:600;
+}
+
+.close-sheet {
+    background:none;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:var(--text-secondary);
+}
+
+.bottom-sheet-content {
+    padding:20px;
+}
+
+.user-info-card {
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.user-photo {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid var(--accent-purple);
+}
+
+.user-details {
+    flex:1;
+}
+
+.user-name {
+    font-size:16px;
+    font-weight:600;
+    color: var(--text-primary);
+    margin-bottom:4px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.user-username {
+    font-size:13px;
+    color:var(--text-secondary);
+}
+
+.user-info-item {
+    padding:8px 0;
+    border-bottom:1px solid var(--border-glass);
+    font-size:14px;
+}
+
+.user-info-item strong {
+    color: var(--text-primary);
+    margin-right:8px;
+}
+
+/* SERVICES SECTION */
+.services-section {
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid var(--border-glass);
+}
+
+.service-title {
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:15px;
+    color: var(--text-primary);
+}
+
+.service-info {
+    background:rgba(15, 15, 19, 0.5);
+    padding:15px;
+    border-radius:var(--border-radius);
+    margin-bottom:15px;
+}
+
+.service-info-item {
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    font-size:14px;
+}
+
+.service-info-item strong {
+    color: var(--text-primary);
+}
+
+.cotizar-btn {
+    width:100%;
+    padding:12px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:var(--border-radius);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transition);
+    margin-top:15px;
+}
+
+.cotizar-btn:hover {
+    opacity: 0.9;
+}
+
+/* USERS LIST */
+.users-list-container {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+    z-index:997;
+    max-height:200px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:15px;
+    display:none;
+}
+
+.users-list-container.show {
+    display:block;
+}
+
+.mariachi-groups-container {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+    z-index:997;
+    max-height:220px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:12px 15px;
+    display:none;
+}
+
+.mariachi-groups-container.show {
+    display:block;
+}
+
+.mariachi-groups {
+    display:flex;
+    gap:12px;
+    padding:5px;
+}
+
+.mariachi-card {
+    min-width:220px;
+    max-width:260px;
+    background:rgba(15, 15, 19, 0.5);
+    border:1px solid var(--border-glass);
+    border-radius:16px;
+    padding:12px;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+
+.mariachi-card:hover {
+    transform:scale(1.02);
+}
+
+.mariachi-card-head {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.mariachi-card-photo {
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+}
+
+.mariachi-card-title {
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.mariachi-card-username {
+    font-size:12px;
+    color:var(--text-secondary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.mariachi-card-name {
+    font-size:13px;
+    font-weight:700;
+    color: var(--text-primary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.mariachi-card-meta {
+    font-size:12px;
+    color: var(--text-primary);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+/* SERVICIOS BANDA (Pendientes y Confirmadas) */
+.servicios-banda-container {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+    z-index:996;
+    max-height:200px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:12px 15px;
+    display:none;
+}
+
+.servicios-banda-container.show {
+    display:block;
+}
+
+.servicios-banda-list {
+    display:flex;
+    gap:12px;
+    padding:5px;
+}
+
+.cotizacion-card {
+    min-width:200px;
+    max-width:240px;
+    background:rgba(15, 15, 19, 0.5);
+    border:1px solid var(--border-glass);
+    border-radius:12px;
+    padding:10px;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+
+.cotizacion-card:hover {
+    transform:scale(1.02);
+    border-color:var(--accent-purple);
+}
+
+.cotizacion-card-header {
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.cotizacion-card-photo {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+}
+
+.cotizacion-card-info {
+    flex:1;
+    min-width:0;
+}
+
+.cotizacion-card-name {
+    font-size:13px;
+    font-weight:600;
+    color: var(--text-primary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.cotizacion-card-precio {
+    font-size:12px;
+    color:var(--text-secondary);
+}
+
+.cotizacion-card-direccion {
+    font-size:11px;
+    color:var(--text-secondary);
+    margin-top:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* TOP BANDS (Entidades/Mariachis verificados) */
+.top-bands-container {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+    z-index:995;
+    max-height:180px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:10px 15px;
+    display:none;
+}
+
+.top-bands-container.show {
+    display:block;
+}
+
+.top-bands-list {
+    display:flex;
+    gap:10px;
+    padding:5px;
+}
+
+.entidad-card {
+    min-width:80px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+
+.entidad-card:hover {
+    transform:scale(1.1);
+}
+
+.entidad-card-photo {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+    margin:0 auto 5px;
+}
+
+.entidad-card-name {
+    font-size:11px;
+    font-weight:600;
+    color: var(--text-primary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* MY SERENATAS (Mis cotizaciones como comprador) */
+.my-serenatas-container {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    box-shadow:0 -4px 20px rgba(0,0,0,0.5);
+    z-index:998;
+    max-height:400px;
+    overflow-y:auto;
+    padding:15px;
+    display:none;
+    border-radius:20px 20px 0 0;
+}
+
+.my-serenatas-container.show {
+    display:block;
+}
+
+.see-serenatas-btn {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:50%;
+    width:56px;
+    height:56px;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:var(--shadow-lg);
+    z-index:994;
+    display:none;
+    align-items:center;
+    justify-content:center;
+}
+
+.see-serenatas-btn.show {
+    display:flex;
+}
+
+.serenata-item {
+    background:rgba(15, 15, 19, 0.5);
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    border:1px solid var(--border-glass);
+}
+
+.serenata-item-header {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.serenata-item-photo {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+}
+
+.serenata-item-info {
+    flex:1;
+}
+
+.serenata-item-name {
+    font-size:14px;
+    font-weight:600;
+    color: var(--text-primary);
+    margin-bottom:2px;
+}
+
+.serenata-item-precio {
+    font-size:13px;
+    color:var(--text-secondary);
+}
+
+.serenata-item-details {
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-top:6px;
+}
+
+.serenata-item-estado {
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:8px;
+    font-size:11px;
+    font-weight:600;
+    margin-top:6px;
+}
+
+.serenata-item-estado.pending {
+    background:rgba(255,255,255,0.1);
+    color:var(--text-secondary);
+}
+
+.serenata-item-estado.accepted {
+    background:rgba(76,175,80,0.2);
+    color:#4CAF50;
+}
+
+.serenata-item-estado.in_progress {
+    background:rgba(168,85,247,0.2);
+    color:var(--accent-purple);
+}
+
+.serenata-item-estado.arrived {
+    background:rgba(255,152,0,0.2);
+    color:#ff9800;
+}
+
+.serenata-item-estado.completed {
+    background:rgba(76,175,80,0.2);
+    color:#4CAF50;
+}
+
+.serenata-item-estado.cancelled {
+    background:rgba(244,67,54,0.2);
+    color:#f44336;
+}
+
+/* PROGRESS BAR */
+.progress-bar-container {
+    position:fixed;
+    top:120px;
+    left:0;
+    right:0;
+    height:4px;
+    background:transparent;
+    z-index:999;
+    display:none;
+}
+
+.progress-bar-container.show {
+    display:block;
+}
+
+.progress-bar {
+    height:100%;
+    background: var(--gradient-primary);
+    width:0%;
+    transition:width 0.3s;
+    animation:progress 1.5s infinite;
+}
+
+@keyframes progress {
+    0% { width:0%; }
+    50% { width:70%; }
+    100% { width:100%; }
+}
+
+/* SEE AGAIN BUTTON */
+.see-again-btn {
+    position:fixed;
+    bottom:80px;
+    right:20px;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    color:var(--accent-purple);
+    border:2px solid var(--accent-purple);
+    border-radius:20px;
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:var(--shadow-md);
+    z-index:993;
+    display:none;
+}
+
+.see-again-btn.show {
+    display:block;
+}
+
+/* EARTH VIEW TOGGLE BUTTON */
+.earth-view-btn {
+    position:fixed;
+    top:140px;
+    right:20px;
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    border:2px solid var(--border-glass);
+    border-radius:50%;
+    width:48px;
+    height:48px;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:var(--shadow-md);
+    z-index:992;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:var(--transition);
+}
+
+.earth-view-btn:hover {
+    background:rgba(15, 15, 19, 0.5);
+    border-color:var(--accent-purple);
+    transform:scale(1.1);
+}
+
+.earth-view-btn.active {
+    background: var(--gradient-primary);
+    color:white;
+    border-color:var(--accent-purple);
+}
+
+.users-list {
+    display:flex;
+    gap:15px;
+    padding:5px;
+}
+
+.user-list-item {
+    min-width:120px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+
+.user-list-item:hover {
+    transform:scale(1.05);
+}
+
+.user-list-photo {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+    margin:0 auto 8px;
+}
+
+.user-list-name {
+    font-size:12px;
+    font-weight:600;
+    color: var(--text-primary);
+    margin-bottom:2px;
+}
+
+.user-list-username {
+    font-size:11px;
+    color:var(--text-secondary);
+}
+
+.follow-btn {
+    margin-top:5px;
+    padding:4px 12px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:15px;
+    font-size:11px;
+    cursor:pointer;
+}
+
+.follow-btn:hover {
+    opacity: 0.9;
+}
+
+/* LOADING */
+.loading {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    padding:20px 30px;
+    border-radius:var(--border-radius);
+    box-shadow:var(--shadow-lg);
+    z-index:1002;
+    display:none;
+}
+
+.loading.show {
+    display:block;
+}
+
+/* COTIZACION MODAL */
+.cotizacion-modal {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgba(15,15,19,0.8);
+    backdrop-filter: blur(10px);
+    z-index:1003;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.cotizacion-modal.show {
+    display:flex;
+}
+
+.cotizacion-content {
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    border-radius:var(--border-radius);
+    padding:25px;
+    max-width:500px;
+    width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.cotizacion-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.cotizacion-title {
+    font-size:20px;
+    font-weight:600;
+}
+
+.close-modal {
+    background:none;
+    border:none;
+    font-size:28px;
+    cursor:pointer;
+    color:var(--text-secondary);
+}
+
+.form-group {
+    margin-bottom:15px;
+}
+
+.form-label {
+    display:block;
+    font-size:14px;
+    font-weight:500;
+    margin-bottom:5px;
+    color: var(--text-primary);
+}
+
+.form-input {
+    width:100%;
+    padding:10px 15px;
+    border:2px solid var(--border-glass);
+    border-radius:8px;
+    font-size:14px;
+    outline:none;
+    transition:border-color 0.3s;
+    background: rgba(15, 15, 19, 0.5);
+    color: var(--text-primary);
+}
+
+.form-input:focus {
+    border-color:var(--accent-purple);
+}
+
+.form-input option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.form-textarea {
+    min-height:80px;
+    resize:vertical;
+}
+
+.date-time-group {
+    display:flex;
+    gap:10px;
+}
+
+.date-time-group .form-group {
+    flex:1;
+}
+
+.submit-btn {
+    width:100%;
+    padding:12px;
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:var(--border-radius);
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transition);
+    margin-top:20px;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+/* ROUTE INFO */
+.route-info {
+    position:fixed;
+    top:50%;
+    right:20px;
+    transform:translateY(-50%);
+    background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);
+    padding:15px;
+    border-radius:var(--border-radius);
+    box-shadow:var(--shadow-md);
+    z-index:996;
+    display:none;
+    min-width:200px;
+}
+
+.route-info.show {
+    display:block;
+}
+
+.route-title {
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.route-item {
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-bottom:5px;
+}
+
+.confirm-btn, .cancel-btn {
+    width:100%;
+    padding:8px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transition);
+}
+
+.confirm-btn {
+    background:#4CAF50;
+    color:white;
+}
+
+.confirm-btn:hover {
+    background:#45a049;
+}
+
+.cancel-btn {
+    background:#f44336;
+    color:white;
+}
+
+.cancel-btn:hover {
+    background:#da190b;
+}
+
+@media(max-width:600px) {
+    .header {
+        padding:10px 15px;
+    }
+    .search-container, .options-container {
+        padding:8px 15px;
+    }
+    #map {
+        height:calc(100vh - 140px);
+        margin-top:140px;
+    }
+    .bottom-sheet {
+        max-height:80vh;
+    }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<!-- HEADER -->
+<div class="header">
+    <button class="back-btn" onclick="window.location.href='home.html'">← Volver</button>
+    <a href="home.html" class="brand">PROVIWEB</a>
+    <div style="width:80px;"></div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-container" id="mainContent">
+    <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar ciudad o servicio...">
+        <button class="search-btn" id="searchBtn">Buscar</button>
+    </div>
+</div>
+
+<!-- OPTIONS FILTER -->
+<div class="options-container" id="optionsContainer">
+    <!-- Options will be loaded dynamically -->
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- EARTH VIEW TOGGLE BUTTON -->
+<button class="earth-view-btn" id="earthViewBtn" title="Vista Google Earth (3D)">
+    🌍
+</button>
+
+<!-- USERS LIST -->
+<div class="users-list-container" id="usersListContainer">
+    <div class="users-list" id="usersList"></div>
+</div>
+
+<!-- MARIACHI GROUPS LIST -->
+<div class="mariachi-groups-container" id="mariachiGroupsContainer">
+    <div class="mariachi-groups" id="mariachiGroups"></div>
+</div>
+
+<!-- SERVICIOS BANDA (Pendientes) -->
+<div class="servicios-banda-container" id="serviciosBanda">
+    <div class="servicios-banda-list" id="serviciosBandaList"></div>
+</div>
+
+<!-- SERVICIOS CONFIRMADOS (rvSPendientes) -->
+<div class="servicios-banda-container" id="rvSPendientes" style="max-height:180px;">
+    <div class="servicios-banda-list" id="rvSPendientesList"></div>
+</div>
+
+<!-- TOP BANDS (Entidades/Mariachis verificados - rvBanda) -->
+<div class="top-bands-container" id="topBands">
+    <div class="top-bands-list" id="rvBanda"></div>
+</div>
+
+<!-- SEE AGAIN BUTTON -->
+<button class="see-again-btn" id="seeAgain">🔄 Ver de nuevo</button>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-container" id="progressBarContainer">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- MY SERENATAS (Mis cotizaciones como comprador) -->
+<button class="see-serenatas-btn" id="seeSerenatas">📋</button>
+<div class="my-serenatas-container" id="mySerenatas">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+        <div style="font-size:18px;font-weight:700;">Mis Cotizaciones</div>
+        <button onclick="document.getElementById('mySerenatas').classList.remove('show');document.getElementById('seeSerenatas').classList.add('show');" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-secondary);">×</button>
+    </div>
+    <div id="mySerenatasList"></div>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="bottom-sheet" id="bottomSheet">
+    <div class="bottom-sheet-header">
+        <div class="bottom-sheet-title">Información del Usuario</div>
+        <button class="close-sheet" id="closeSheet">×</button>
+    </div>
+    <div class="bottom-sheet-content" id="bottomSheetContent">
+        <!-- Content will be loaded dynamically -->
+    </div>
+</div>
+
+<!-- COTIZACION MODAL -->
+<div class="cotizacion-modal" id="cotizacionModal">
+    <div class="cotizacion-content">
+        <div class="cotizacion-header">
+            <div class="cotizacion-title">Enviar Cotización</div>
+            <button class="close-modal" id="closeModal">×</button>
+        </div>
+        <div id="cotizacionForm">
+            <!-- Form will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- ROUTE INFO -->
+<div class="route-info" id="routeInfo">
+    <div class="route-title">Información de Ruta</div>
+    <div class="route-item" id="routeTime">Tiempo: Calculando...</div>
+    <div class="route-item" id="routeDistance">Distancia: -</div>
+    <button class="confirm-btn" id="confirmRoute">Confirmar</button>
+    <button class="cancel-btn" id="cancelRoute">Cancelar</button>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+    <div>Cargando...</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, update, remove, push, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+    authDomain: "proviweb-d8764.firebaseapp.com",
+    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+    projectId: "proviweb-d8764",
+    storageBucket: "proviweb-d8764.appspot.com",
+    messagingSenderId: "475963980955",
+    appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+    measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let map;
+let currentUID = null;
+let markers = [];
+let currentRoutePolyline = null;
+let currentUserMarker = null;
+let selectedUserId = null;
+let currentFilter = 'Usuarios';
+let boundsBuilder = null;
+let bandLocationListener = null;
+let bandLocationRef = null;
+let bandMarker = null;
+let startMarker = null;
+let destinationMarker = null;
+let ubicacionListener = null;
+let selectedDestinoLat = null;
+let selectedDestinoLng = null;
+let selectedNombreLugar = null;
+
+// Options for filter
+const mapOptions = [
+    { name: 'Usuarios', icon: '👤' },
+    { name: 'Mariachis', icon: '🎺' },
+    { name: 'Orquesta', icon: '🎼' },
+    { name: 'Profesores', icon: '🎓' },
+    { name: 'Tienda', icon: '🏪' },
+    { name: 'Escuela de Música', icon: '🎵' },
+    { name: 'Centro Cultural', icon: '🏛️' },
+    { name: 'Academia', icon: '📚' },
+    { name: 'Teatro', icon: '🎭' },
+    { name: 'Sala de Ensayo', icon: '🎸' },
+    { name: 'Fundación', icon: '💼' },
+    { name: 'Tabernas', icon: '🍺' }
+];
+
+// Initialize map
+function initializeMap() {
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        console.error('Google Maps API not loaded, retrying...');
+        setTimeout(initializeMap, 500);
+        return;
+    }
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 4.6097, lng: -74.0817 }, // Bogotá default
+        zoom: 12,
+        // Vista estilo Google Earth (satelital/3D)
+        mapTypeId: 'satellite', // 'satellite', 'hybrid', 'terrain', 'roadmap'
+        mapTypeControl: true, // Permite cambiar entre tipos de mapa
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: google.maps.ControlPosition.TOP_RIGHT,
+            mapTypeIds: [
+                google.maps.MapTypeId.ROADMAP,
+                google.maps.MapTypeId.SATELLITE,
+                google.maps.MapTypeId.HYBRID,
+                google.maps.MapTypeId.TERRAIN
+            ]
+        },
+        streetViewControl: true, // Control de Street View
+        streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        fullscreenControl: true, // Control de pantalla completa
+        fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        // Opciones para vista 3D estilo Google Earth
+        tilt: 0, // Inclinación (0-45 grados) - se puede ajustar con gestos
+        heading: 0, // Rotación (0-360 grados)
+        // Habilitar gestos 3D (usa 'greedy' para zoom normal con scroll, o 'cooperative' para Ctrl+scroll)
+        gestureHandling: 'greedy',
+        // Configuración de UI
+        zoomControl: true,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+        // Estilos adicionales para mejor visualización
+        disableDefaultUI: false
+    });
+    
+    // Configurar vista 3D cuando el zoom sea alto (estilo Google Earth)
+    map.addListener('zoom_changed', () => {
+        const currentZoom = map.getZoom();
+        // A mayor zoom, más inclinación para efecto 3D (solo en vista satelital/híbrida)
+        if (map.getMapTypeId() === 'satellite' || map.getMapTypeId() === 'hybrid') {
+            if (currentZoom >= 18) {
+                // Vista 3D con inclinación (estilo Google Earth)
+                map.setTilt(45);
+            } else if (currentZoom >= 15) {
+                map.setTilt(30);
+            } else if (currentZoom >= 12) {
+                map.setTilt(15);
+            } else {
+                map.setTilt(0);
+            }
+        }
+    });
+    
+    // Cambiar a vista híbrida cuando se cambia el tipo de mapa (mejor para ver calles + satélite)
+    map.addListener('maptypeid_changed', () => {
+        const mapType = map.getMapTypeId();
+        console.log('Map type changed to:', mapType);
+        // Si cambia a roadmap o terrain, resetear tilt
+        if (mapType === 'roadmap' || mapType === 'terrain') {
+            map.setTilt(0);
+        }
+        // Actualizar estado del botón
+        updateEarthViewButton();
+    });
+    
+    // Botón para alternar vista Google Earth (3D)
+    const earthViewBtn = document.getElementById('earthViewBtn');
+    let earthViewActive = false;
+    
+    function updateEarthViewButton() {
+        const mapType = map.getMapTypeId();
+        const isSatellite = mapType === 'satellite' || mapType === 'hybrid';
+        earthViewActive = isSatellite;
+        
+        if (earthViewBtn) {
+            if (earthViewActive) {
+                earthViewBtn.classList.add('active');
+                earthViewBtn.title = 'Cambiar a vista normal';
+            } else {
+                earthViewBtn.classList.remove('active');
+                earthViewBtn.title = 'Vista Google Earth (3D)';
+            }
+        }
+    }
+    
+    if (earthViewBtn) {
+        earthViewBtn.addEventListener('click', () => {
+            const currentMapType = map.getMapTypeId();
+            
+            if (currentMapType === 'satellite' || currentMapType === 'hybrid') {
+                // Cambiar a vista normal (roadmap)
+                map.setMapTypeId('roadmap');
+                map.setTilt(0);
+                map.setHeading(0);
+                earthViewActive = false;
+                earthViewBtn.classList.remove('active');
+                earthViewBtn.title = 'Vista Google Earth (3D)';
+                console.log('Cambiado a vista normal');
+            } else {
+                // Cambiar a vista Google Earth (satelital/híbrida con 3D)
+                map.setMapTypeId('hybrid'); // 'hybrid' muestra satélite + calles
+                // Aplicar vista 3D si el zoom es alto
+                const currentZoom = map.getZoom();
+                if (currentZoom >= 15) {
+                    map.setTilt(45);
+                } else if (currentZoom >= 12) {
+                    map.setTilt(30);
+                }
+                earthViewActive = true;
+                earthViewBtn.classList.add('active');
+                earthViewBtn.title = 'Cambiar a vista normal';
+                console.log('Cambiado a vista Google Earth (3D)');
+            }
+        });
+        
+        // Inicializar estado del botón
+        updateEarthViewButton();
+    }
+
+    boundsBuilder = new google.maps.LatLngBounds();
+
+    // Load options
+    loadOptions();
+    
+    // Get current location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const currentLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            map.setCenter(currentLocation);
+            map.setZoom(15);
+            
+            // Add current user marker
+            currentUserMarker = new google.maps.Marker({
+                position: currentLocation,
+                map: map,
+                title: 'Tu ubicación',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" fill="#007BFF" stroke="white" stroke-width="2"/>
+                            <circle cx="20" cy="20" r="8" fill="white"/>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40)
+                }
+            });
+        });
+    }
+
+    // Load initial data
+    onAuthStateChanged(auth, user => {
+        if (!user) {
+            window.location.href = 'index.html';
+            return;
+        }
+        currentUID = user.uid;
+        loadUserLocations();
+        // Precarga lista de grupos (se muestra al filtrar "Mariachis")
+        loadMariachisGroups();
+        cargarCotizaciones();
+        leerSerenataComprador();
+    });
+}
+
+// Expose for the global Google callback (initMap)
+window.initializeMap = initializeMap;
+
+// Wait for Google Maps to load
+// Check if Google Maps is already loaded (in case script loads before module)
+if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+    initializeMap();
+} else {
+    // Wait for the callback or check periodically
+    const checkInterval = setInterval(() => {
+        if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+            clearInterval(checkInterval);
+            initializeMap();
+        }
+    }, 100);
+    
+    // Timeout after 10 seconds
+    setTimeout(() => {
+        clearInterval(checkInterval);
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+            console.error('Google Maps API failed to load');
+            alert('Error cargando Google Maps. Por favor, recarga la página.');
+        }
+    }, 10000);
+}
+
+// Load filter options
+function loadOptions() {
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    
+    mapOptions.forEach(option => {
+        const item = document.createElement('div');
+        item.className = 'option-item';
+        if (option.name === currentFilter) item.classList.add('active');
+        item.innerHTML = `${option.icon} ${option.name}`;
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('active'));
+            item.classList.add('active');
+            currentFilter = option.name;
+            filterMapOption(option.name);
+        });
+        container.appendChild(item);
+    });
+}
+
+// Filter map by option
+function filterMapOption(option) {
+    clearMarkers();
+    boundsBuilder = new google.maps.LatLngBounds();
+
+    // toggle bottom lists - ocultar todos primero
+    document.getElementById('usersListContainer').classList.remove('show');
+    document.getElementById('mariachiGroupsContainer').classList.remove('show');
+    document.getElementById('serviciosBanda').classList.remove('show');
+    document.getElementById('rvSPendientes').classList.remove('show');
+    document.getElementById('topBands').classList.remove('show');
+    
+    switch(option) {
+        case 'Usuarios':
+            loadUserLocations();
+            break;
+        case 'Mariachis':
+            loadFilteredUsersAndPlaces(['M.Mariachi', 'mariachi', 'Mariachi']);
+            loadMariachisGroups();
+            document.getElementById('mariachiGroupsContainer').classList.add('show');
+            break;
+        case 'Orquesta':
+            loadPlacesFromFirebase('Orquesta');
+            break;
+        case 'Profesores':
+            loadVerifiedProfessors();
+            break;
+        case 'Tienda':
+        case 'Escuela de Música':
+        case 'Centro Cultural':
+        case 'Academia':
+        case 'Teatro':
+        case 'Sala de Ensayo':
+        case 'Fundación':
+        case 'Tabernas':
+            loadPlacesFromFirebase(option);
+            break;
+    }
+}
+
+// Load user locations
+function loadUserLocations() {
+    showLoading();
+    const userLocationsRef = ref(db, 'UserLocation');
+    const usersListContainer = document.getElementById('usersListContainer');
+    const usersList = document.getElementById('usersList');
+    usersList.innerHTML = '';
+    
+    onValue(userLocationsRef, (snapshot) => {
+        hideLoading();
+        clearMarkers();
+        boundsBuilder = new google.maps.LatLngBounds();
+        const usersArray = [];
+        
+        if (!snapshot.exists()) {
+            usersListContainer.classList.remove('show');
+            return;
+        }
+        
+        snapshot.forEach((userSnap) => {
+            const userId = userSnap.key;
+            if (userId === currentUID) return;
+            
+            const lat = userSnap.child('latitude').val();
+            const lng = userSnap.child('longitude').val();
+            
+            if (lat && lng) {
+                const location = { lat, lng };
+                boundsBuilder.extend(location);
+                usersArray.push({ userId, location });
+                loadUserDataAndAddMarker(location, userId);
+            }
+        });
+        
+        // Load users list
+        if (usersArray.length > 0) {
+            loadUsersList(usersArray);
+            usersListContainer.classList.add('show');
+        } else {
+            usersListContainer.classList.remove('show');
+        }
+        
+        if (boundsBuilder.getNorthEast()) {
+            map.fitBounds(boundsBuilder);
+        }
+    });
+}
+
+// MariachiAdapter (web): carga grupos desde GrupMusicRegis y User (foto/username)
+async function loadMariachisGroups() {
+    if (!currentUID) return;
+
+    const container = document.getElementById('mariachiGroups');
+    container.innerHTML = '';
+
+    // Intentamos soportar ambas estructuras:
+    // A) GrupMusicRegis/{uid}/{groupId}/{...}
+    // B) GrupMusicRegis/{pk}/{uid}/{...}  (como tu loop pkSnapshot->userSnapshot en Android)
+    const rootSnap = await get(ref(db, 'GrupMusicRegis'));
+    if (!rootSnap.exists()) {
+        document.getElementById('mariachiGroupsContainer').classList.remove('show');
+        return;
+    }
+
+    const groups = [];
+
+    // Caso A: si existe hijo currentUID, puede ser estructura A; pero aquí queremos TODOS los grupos (mariachis).
+    // Recorremos 2 niveles máximo y detectamos nodos que parezcan "grupo" (tengan name/precio/ubicacion/cantidad).
+    rootSnap.forEach((level1) => {
+        const v1 = level1.val();
+        if (!v1) return;
+
+        // Si level1 es uid directo y su valor es un objeto de grupos
+        if (typeof v1 === 'object' && (v1.name || v1.precio || v1.ubicacion || v1.cantidad)) {
+            // Nodo directo tipo grupo (raro, pero lo aceptamos)
+            groups.push({ uid: level1.key, ...v1 });
+            return;
+        }
+
+        // Si v1 parece ser {groupId: {...}} o {uid: {...}} (caso A o B)
+        if (typeof v1 === 'object') {
+            level1.forEach?.((level2) => {
+                const v2 = level2.val();
+                if (!v2 || typeof v2 !== 'object') return;
+
+                // Caso A: level1.key = uid, level2 = group
+                const looksLikeGroup = !!(v2.name || v2.precio || v2.ubicacion || v2.cantidad || v2.description);
+                if (looksLikeGroup) {
+                    groups.push({ uid: level1.key, ...v2 });
+                    return;
+                }
+
+                // Caso B: level1.key = pk, level2.key = uid, level2 = {groupId: {...}}
+                level2.forEach?.((level3) => {
+                    const v3 = level3.val();
+                    if (!v3 || typeof v3 !== 'object') return;
+                    const looksLikeGroup3 = !!(v3.name || v3.precio || v3.ubicacion || v3.cantidad || v3.description);
+                    if (looksLikeGroup3) {
+                        groups.push({ uid: level2.key, ...v3 });
+                    }
+                });
+            });
+        }
+    });
+
+    // Filtramos duplicados por uid+name+precio+ubicacion (para no mostrar repetidos si detectamos por dos rutas)
+    const seen = new Set();
+    const uniqueGroups = groups.filter(g => {
+        const k = `${g.uid}|${g.name || ''}|${g.precio || ''}|${g.ubicacion || ''}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+    });
+
+    // Render tipo MariachiAdapter
+    for (const g of uniqueGroups) {
+        if (!g.uid || g.uid === currentUID) continue;
+
+        const userSnap = await get(ref(db, `Users/${g.uid}`));
+        const user = userSnap.exists() ? userSnap.val() : {};
+        const username = user?.username || 'Sin nombre';
+        const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+        const photoUrl = (user?.photo && user.photo.trim()) ? user.photo : defaultAvatar;
+
+        const card = document.createElement('div');
+        card.className = 'mariachi-card';
+        card.innerHTML = `
+            <div class="mariachi-card-head">
+                <img class="mariachi-card-photo" src="${photoUrl}" alt="${username}" />
+                <div class="mariachi-card-title">
+                    <div class="mariachi-card-name">${(g.name || 'Grupo')}</div>
+                    <div class="mariachi-card-username">@${username}</div>
+                </div>
+            </div>
+            <div class="mariachi-card-meta">
+                <div><strong>Precio:</strong> ${getCurrencyPrefix(g.ubicacion)}${g.precio || '0'}</div>
+                <div><strong>Ubicación:</strong> ${g.ubicacion || 'N/A'}</div>
+                <div><strong>Músicos:</strong> ${g.cantidad || '0'}</div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            // En Android al hacer click puedes abrir detalles / interactuar con mapa.
+            // Aquí: centramos el mapa a la ubicación del uid y abrimos el bottom sheet.
+            const locRef = ref(db, `UserLocation/${g.uid}`);
+            onValue(locRef, (locSnap) => {
+                if (locSnap.exists()) {
+                    const lat = locSnap.child('latitude').val();
+                    const lng = locSnap.child('longitude').val();
+                    if (lat && lng && map) {
+                        map.panTo({ lat, lng });
+                        map.setZoom(15);
+                    }
+                }
+            }, { onlyOnce: true });
+
+            showBottomSheet({
+                photoUrl,
+                username,
+                name: user?.name || g.name || 'Grupo',
+                instrument: user?.instrument || '',
+                generoMusic: user?.generoMusic || '',
+                status: user?.status || '',
+                userId: g.uid
+            });
+        });
+
+        container.appendChild(card);
+    }
+}
+
+// Load users list
+function loadUsersList(usersArray) {
+    const usersList = document.getElementById('usersList');
+    usersList.innerHTML = '';
+    
+    usersArray.forEach(({ userId, location }) => {
+        const userRef = ref(db, `Users/${userId}`);
+        onValue(userRef, (userSnap) => {
+            if (!userSnap.exists()) return;
+            
+            const userData = userSnap.val();
+            const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+            const photoUrl = (userData.photo && userData.photo.trim()) ? userData.photo : defaultAvatar;
+            const name = userData.name || 'Usuario';
+            const username = userData.username || 'username';
+            const verified = userData.verified === 'yes';
+            
+            const userItem = document.createElement('div');
+            userItem.className = 'user-list-item';
+            userItem.innerHTML = `
+                <img src="${photoUrl}" alt="${name}" class="user-list-photo" onclick="window.location.href='userprofile.html?uid=${userId}'">
+                <div class="user-list-name">${name} ${verified ? '✓' : ''}</div>
+                <div class="user-list-username">@${username}</div>
+                <button class="follow-btn" id="followBtn_${userId}" onclick="followUser('${userId}', this)">Seguir</button>
+            `;
+            
+            usersList.appendChild(userItem);
+            
+            // Check if already following
+            checkFollowing(userId, `followBtn_${userId}`);
+        }, { onlyOnce: true });
+    });
+}
+
+// Check if following
+function checkFollowing(userId, btnId) {
+    const followRef = ref(db, `Follow/${currentUID}/Following/${userId}`);
+    onValue(followRef, (snap) => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            if (snap.exists()) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+            }
+        }
+    });
+}
+
+// Follow user
+async function followUser(userId, btn) {
+    if (!currentUID) return;
+    
+    await set(ref(db, `Follow/${currentUID}/Following/${userId}`), true);
+    await set(ref(db, `Follow/${userId}/Followers/${currentUID}`), true);
+    
+    // Notify user
+    const userRef = ref(db, `Users/${currentUID}`);
+    onValue(userRef, (userSnap) => {
+        if (userSnap.exists()) {
+            const userName = userSnap.val().name || 'Usuario';
+            const timestamp = Date.now().toString();
+            const notificationRef = ref(db, `Users/${userId}/Notifications/${timestamp}`);
+            set(notificationRef, {
+                pId: userId,
+                timestamp: timestamp,
+                pUid: userId,
+                notification: 'Empezó a seguirte',
+                type: 'follow',
+                sUid: currentUID
+            });
+            set(ref(db, `Users/${userId}/Count/${timestamp}`), true);
+        }
+    }, { onlyOnce: true });
+    
+    if (btn) btn.style.display = 'none';
+}
+
+// Load user data and add marker
+function loadUserDataAndAddMarker(location, userId) {
+    const userRef = ref(db, `Users/${userId}`);
+    
+    onValue(userRef, (userSnap) => {
+        if (!userSnap.exists()) {
+            console.warn('User data not found for:', userId);
+            return;
+        }
+        
+        const userData = userSnap.val();
+        // Use Firebase Storage default avatar if no photo (same as Android)
+        const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+        
+        // Get photo from userData.photo (path: Users/{userId}/photo)
+        let photoUrl = userData.photo;
+        
+        console.log('📥 User data loaded for:', userId);
+        console.log('   - Name:', userData.name || 'N/A');
+        console.log('   - Photo field:', photoUrl ? 'EXISTS' : 'MISSING');
+        console.log('   - Photo URL value:', photoUrl);
+        
+        // Validate and clean photo URL
+        if (!photoUrl || typeof photoUrl !== 'string' || !photoUrl.trim()) {
+            photoUrl = defaultAvatar;
+            console.log('⚠️ No photo URL for user', userId, ', using default avatar');
+        } else {
+            photoUrl = photoUrl.trim();
+            // Ensure it's a valid URL
+            if (!photoUrl.startsWith('http://') && !photoUrl.startsWith('https://')) {
+                console.warn('❌ Invalid photo URL format for user', userId, ':', photoUrl, '- using default');
+                photoUrl = defaultAvatar;
+            } else {
+                console.log('✅ Valid photo URL for user', userId, ':', photoUrl.substring(0, 80) + '...');
+            }
+        }
+        
+        const username = userData.username || 'Usuario';
+        const name = userData.name || 'Usuario';
+        const instrument = userData.instrument || '';
+        const generoMusic = userData.generoMusic || '';
+        const status = userData.status || '';
+        
+        addUserMarker(location, photoUrl, username, name, instrument, generoMusic, status, userId);
+    }, { onlyOnce: true });
+}
+
+// Add user marker with circular profile photo (like Android)
+function addUserMarker(location, photoUrl, username, name, instrument, generoMusic, status, userId) {
+    // Default avatar if no photo
+    const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    
+    // Validate photo URL
+    let finalPhotoUrl = photoUrl;
+    if (!finalPhotoUrl || typeof finalPhotoUrl !== 'string' || !finalPhotoUrl.trim()) {
+        finalPhotoUrl = defaultAvatar;
+    } else {
+        finalPhotoUrl = finalPhotoUrl.trim();
+        if (!finalPhotoUrl.startsWith('http://') && !finalPhotoUrl.startsWith('https://')) {
+            console.warn('Invalid photo URL for marker:', finalPhotoUrl);
+            finalPhotoUrl = defaultAvatar;
+        }
+    }
+    
+    console.log('Creating marker for user:', name || username, 'Photo URL:', finalPhotoUrl);
+    
+    const size = 60;
+    const badgeSize = 18;
+    const radius = size / 2 - 2;
+    
+    // Helper function to create marker icon from loaded image
+    function createMarkerIconFromImage(imgElement) {
+        console.log('Creating marker icon from image. Image state:', {
+            complete: imgElement.complete,
+            naturalWidth: imgElement.naturalWidth,
+            naturalHeight: imgElement.naturalHeight,
+            width: imgElement.width,
+            height: imgElement.height
+        });
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = size;
+        canvas.height = size;
+        
+        // Draw white background circle
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Draw circular photo - ensure image is loaded and has valid dimensions
+        const hasValidImage = imgElement.complete && 
+                              imgElement.naturalWidth > 0 && 
+                              imgElement.naturalHeight > 0;
+        
+        if (hasValidImage) {
+            console.log('Drawing image on canvas. Image dimensions:', imgElement.naturalWidth, 'x', imgElement.naturalHeight);
+            
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+            ctx.clip();
+            
+            // Calculate scaling to fill circle while maintaining aspect ratio
+            const imgAspect = imgElement.naturalWidth / imgElement.naturalHeight;
+            let drawWidth, drawHeight, drawX, drawY;
+            
+            if (imgAspect > 1) {
+                // Image is wider - fit to height
+                drawHeight = size - 4;
+                drawWidth = drawHeight * imgAspect;
+                drawX = (size - drawWidth) / 2;
+                drawY = 2;
+            } else {
+                // Image is taller - fit to width
+                drawWidth = size - 4;
+                drawHeight = drawWidth / imgAspect;
+                drawX = 2;
+                drawY = (size - drawHeight) / 2;
+            }
+            
+            console.log('Drawing image at:', { drawX, drawY, drawWidth, drawHeight });
+            
+            // Draw the image
+            try {
+                ctx.drawImage(imgElement, drawX, drawY, drawWidth, drawHeight);
+                console.log('✅ Image drawn successfully on canvas');
+            } catch (e) {
+                console.error('❌ Error drawing image on canvas:', e);
+                // Fill with a color as fallback
+                ctx.fillStyle = '#E0E0E0';
+                ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
+            }
+            ctx.restore();
+        } else {
+            console.warn('Image not ready or invalid, filling with gray');
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+            ctx.clip();
+            ctx.fillStyle = '#E0E0E0';
+            ctx.fillRect(2, 2, size - 4, size - 4);
+            ctx.restore();
+        }
+        
+        // Add blue border
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#007BFF';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        const dataUrl = canvas.toDataURL('image/png');
+        console.log('Canvas created, data URL length:', dataUrl.length);
+        
+        return {
+            url: dataUrl,
+            scaledSize: new google.maps.Size(size, size),
+            anchor: new google.maps.Point(size / 2, size / 2)
+        };
+    }
+    
+    // Function to create marker with icon
+    function createMarkerWithIcon(iconConfig) {
+        const marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            title: name || username || 'Usuario',
+            icon: iconConfig,
+            animation: google.maps.Animation.DROP,
+            optimized: false
+        });
+        
+        // Store user info in marker
+        marker.userInfo = {
+            photoUrl: finalPhotoUrl,
+            username,
+            name,
+            instrument,
+            generoMusic,
+            status,
+            userId
+        };
+        
+        markers.push(marker);
+        
+        // Click listener
+        marker.addListener('click', () => {
+            showBottomSheet(marker.userInfo);
+        });
+        
+        // Add badge overlay if user is verified (load async)
+        addUserTypeBadge(marker, userId, size, badgeSize);
+    }
+    
+    // Create default marker with initial (fallback)
+    function createDefaultMarkerWithInitial() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = size;
+        canvas.height = size;
+        
+        // White background circle
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Blue circle for initial
+        ctx.fillStyle = '#007BFF';
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius - 2, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // White text with first letter
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 24px Roboto, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const initial = (name || username || 'U').charAt(0).toUpperCase();
+        ctx.fillText(initial, size / 2, size / 2);
+        
+        // Blue border
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#007BFF';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        const markerIcon = {
+            url: canvas.toDataURL('image/png'),
+            scaledSize: new google.maps.Size(size, size),
+            anchor: new google.maps.Point(size / 2, size / 2)
+        };
+        
+        createMarkerWithIcon(markerIcon);
+    }
+    
+    // Load user photo and create marker
+    // Firebase Storage URLs usually work without CORS issues
+    const img = new Image();
+    let markerCreated = false;
+    let loadingAttempted = false;
+    
+    function createMarkerFromImage(imageElement) {
+        if (markerCreated) {
+            console.log('Marker already created, skipping duplicate');
+            return; // Prevent duplicate markers
+        }
+        
+        // Double check image is ready
+        if (!imageElement.complete) {
+            console.warn('Image not complete yet, waiting...');
+            imageElement.onload = function() {
+                createMarkerFromImage(imageElement);
+            };
+            return;
+        }
+        
+        console.log('✅ Image loaded successfully for marker:', finalPhotoUrl);
+        console.log('Image state:', {
+            complete: imageElement.complete,
+            naturalWidth: imageElement.naturalWidth,
+            naturalHeight: imageElement.naturalHeight,
+            width: imageElement.width,
+            height: imageElement.height
+        });
+        
+        // Verify image actually loaded with valid dimensions
+        if (imageElement.naturalWidth === 0 || imageElement.naturalHeight === 0) {
+            console.warn('⚠️ Image has zero dimensions, using default');
+            if (!markerCreated) {
+                createDefaultMarkerWithInitial();
+                markerCreated = true;
+            }
+            return;
+        }
+        
+        try {
+            const markerIcon = createMarkerIconFromImage(imageElement);
+            createMarkerWithIcon(markerIcon);
+            markerCreated = true;
+            console.log('✅ Marker created with photo for user:', name || username);
+        } catch (e) {
+            console.error('❌ Error creating marker icon from image:', e);
+            console.error('Error details:', e.message, e.stack);
+            if (!markerCreated) {
+                createDefaultMarkerWithInitial();
+                markerCreated = true;
+            }
+        }
+    }
+    
+    // Try loading image - Firebase Storage URLs usually work directly
+    img.onload = function() {
+        console.log('📸 Image onload event fired for:', finalPhotoUrl);
+        // Small delay to ensure image is fully decoded
+        setTimeout(() => {
+            createMarkerFromImage(img);
+        }, 100);
+    };
+    
+    img.onerror = function(e) {
+        console.warn('⚠️ Image load error for:', finalPhotoUrl);
+        console.warn('Error event:', e);
+        
+        if (markerCreated) return;
+        
+        // Try with CORS as fallback
+        console.log('Retrying with CORS...');
+        const imgCORS = new Image();
+        imgCORS.crossOrigin = 'anonymous';
+        
+        imgCORS.onload = function() {
+            console.log('✅ Image loaded with CORS:', finalPhotoUrl);
+            setTimeout(() => {
+                createMarkerFromImage(imgCORS);
+            }, 100);
+        };
+        
+        imgCORS.onerror = function() {
+            console.error('❌ Failed even with CORS, using default marker with initial');
+            if (!markerCreated) {
+                createDefaultMarkerWithInitial();
+                markerCreated = true;
+            }
+        };
+        
+        // Try with CORS
+        imgCORS.src = finalPhotoUrl;
+    };
+    
+    // Start loading image - Firebase Storage URLs should work without CORS
+    console.log('🔄 Loading image for marker - User:', name || username, 'URL:', finalPhotoUrl);
+    loadingAttempted = true;
+    img.src = finalPhotoUrl;
+    
+    // Timeout fallback - if nothing loads in 10 seconds, use default
+    setTimeout(() => {
+        if (!markerCreated && loadingAttempted) {
+            console.warn('⏱️ Timeout (10s): Image took too long to load, using default marker');
+            console.warn('URL that failed:', finalPhotoUrl);
+            console.warn('Image state:', {
+                complete: img.complete,
+                naturalWidth: img.naturalWidth,
+                naturalHeight: img.naturalHeight
+            });
+            createDefaultMarkerWithInitial();
+            markerCreated = true;
+        }
+    }, 10000);
+}
+
+// Add user type badge to marker (like setTypeUser in Android)
+function addUserTypeBadge(marker, userId, markerSize, badgeSize) {
+    if (!userId || !marker) return;
+    
+    const userRef = ref(db, `Users/${userId}`);
+    onValue(userRef, (snapshot) => {
+        if (!snapshot.exists() || !marker.getMap()) return;
+        
+        const userData = snapshot.val();
+        let badgeEmoji = '';
+        let badgeColor = '#a855f7';
+        
+        if (userData.verified === 'yes') {
+            badgeEmoji = '✓';
+            badgeColor = '#1DA1F2';
+        } else if (userData.verifiedprofesor === 'yes') {
+            badgeEmoji = '🎓';
+            badgeColor = '#4CAF50';
+        } else if (userData.verifiedstudent === 'yes') {
+            badgeEmoji = '📚';
+            badgeColor = '#4ECDC4';
+        } else if (userData.verifiedentidad === 'yes') {
+            badgeEmoji = '🎭';
+            badgeColor = '#95E1D3';
+        } else if (userData.verifiedprofesorart === 'yes') {
+            badgeEmoji = '🎨';
+            badgeColor = '#F38181';
+        } else if (userData.musicservice === 'yes') {
+            badgeEmoji = '🎵';
+            badgeColor = '#AA96DA';
+        }
+        
+        if (badgeEmoji) {
+            // Create badge overlay on marker icon
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = markerSize;
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Get current marker icon and draw it
+            const currentIcon = marker.getIcon();
+            if (currentIcon && currentIcon.url) {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, size, size);
+                    
+                    // Draw badge circle at bottom-right
+                    const badgeX = size - badgeSize / 2 - 2;
+                    const badgeY = size - badgeSize / 2 - 2;
+                    ctx.fillStyle = badgeColor;
+                    ctx.beginPath();
+                    ctx.arc(badgeX, badgeY, badgeSize / 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Draw emoji/text in badge
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = `${badgeSize * 0.6}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(badgeEmoji, badgeX, badgeY);
+                    
+                    marker.setIcon({
+                        url: canvas.toDataURL(),
+                        scaledSize: new google.maps.Size(size, size),
+                        anchor: new google.maps.Point(size / 2, size / 2)
+                    });
+                };
+                img.src = currentIcon.url;
+            }
+        }
+    }, { onlyOnce: true });
+}
+
+// Show bottom sheet
+function showBottomSheet(userInfo) {
+    selectedUserId = userInfo.userId;
+    const bottomSheet = document.getElementById('bottomSheet');
+    const content = document.getElementById('bottomSheetContent');
+    
+    // Get verified badge
+    const userRef = ref(db, `Users/${userInfo.userId}`);
+    onValue(userRef, (userSnap) => {
+        if (!userSnap.exists()) return;
+        
+        const userData = userSnap.val();
+        let verifiedBadge = '';
+        
+        if (userData.verified === 'yes') {
+            verifiedBadge = '<span style="color:#a855f7;font-size:16px;" title="Artista Verificado">✓</span>';
+        } else if (userData.verifiedprofesor === 'yes') {
+            verifiedBadge = '<span style="color:#4CAF50;font-size:16px;" title="Profesor Verificado">🎓</span>';
+        } else if (userData.verifiedstudent === 'yes') {
+            verifiedBadge = '<span style="color:#4ECDC4;font-size:16px;" title="Estudiante Verificado">📚</span>';
+        } else if (userData.verifiedentidad === 'yes') {
+            verifiedBadge = '<span style="color:#95E1D3;font-size:16px;" title="Entidad Verificada">🎭</span>';
+        } else if (userData.verifiedprofesorart === 'yes') {
+            verifiedBadge = '<span style="color:#F38181;font-size:16px;" title="Profesor de Arte Verificado">🎨</span>';
+        } else if (userData.musicservice === 'yes') {
+            verifiedBadge = '<span style="color:#AA96DA;font-size:16px;" title="Servicio de Música en Vivo">🎵</span>';
+        }
+        
+        const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+        const finalPhotoUrl = (userInfo.photoUrl && userInfo.photoUrl.trim()) ? userInfo.photoUrl : defaultAvatar;
+        
+        content.innerHTML = `
+            <div class="user-info-card">
+                <img src="${finalPhotoUrl}" alt="${userInfo.name}" class="user-photo" 
+                     onerror="this.src='${defaultAvatar}'" 
+                     onclick="window.location.href='userprofile.html?uid=${userInfo.userId}'" 
+                     style="cursor:pointer;">
+                <div class="user-details">
+                    <div class="user-name" onclick="window.location.href='userprofile.html?uid=${userInfo.userId}'" style="cursor:pointer;">
+                        ${userInfo.name} ${verifiedBadge}
+                    </div>
+                    <div class="user-username">@${userInfo.username}</div>
+                </div>
+            </div>
+            
+            <div class="user-info-item">
+                <strong>Instrumento:</strong> ${userInfo.instrument || 'N/A'}
+            </div>
+            <div class="user-info-item">
+                <strong>Categoría:</strong> ${userInfo.generoMusic || 'N/A'}
+            </div>
+            <div class="user-info-item">
+                <strong>Estado:</strong> ${userInfo.status === 'online' ? '🟢 En línea' : '⚫ Desconectado'}
+            </div>
+            
+            <div style="margin-top:15px;">
+                <button onclick="obtenerYReproducirAudio('${userInfo.userId}')" style="width:100%;padding:10px;background:rgba(15, 15, 19, 0.5);border:2px solid var(--accent-purple);border-radius:8px;cursor:pointer;font-size:14px;color:var(--accent-purple);">
+                    🎤 Escuchar Audio
+                </button>
+            </div>
+            
+            <div class="services-section" id="servicesSection">
+                <div class="service-title">Servicios de Música</div>
+                <div id="serviceInfo"></div>
+            </div>
+        `;
+        
+        bottomSheet.classList.add('show');
+        
+        // Load service info
+        loadServiceInfo(userInfo.userId);
+    }, { onlyOnce: true });
+}
+
+// Obtener y reproducir audio
+function obtenerYReproducirAudio(userId) {
+    const userVoiceRef = ref(db, `UserVoice/${userId}/audioUrl`);
+    
+    onValue(userVoiceRef, (snap) => {
+        if (!snap.exists()) {
+            alert('Sin relato disponible');
+            return;
+        }
+        
+        const audioUrl = snap.val();
+        if (audioUrl) {
+            reproducirAudio(audioUrl);
+        } else {
+            alert('No se encontró el audio');
+        }
+    }, { onlyOnce: true });
+}
+
+// Reproducir audio
+function reproducirAudio(audioUrl) {
+    const audio = new Audio(audioUrl);
+    
+    audio.play().then(() => {
+        alert('Reproduciendo audio... ¡Sube el volumen!');
+        
+        audio.onended = () => {
+            alert('¡Eso fue todo!');
+        };
+        
+        audio.onerror = () => {
+            alert('Error al reproducir el audio');
+        };
+    }).catch((error) => {
+        console.error('Error reproduciendo audio:', error);
+        alert('Error al reproducir el audio');
+    });
+}
+
+// Load service info
+function loadServiceInfo(userId) {
+    const grupMusicRef = ref(db, `GrupMusicRegis/${userId}`);
+    
+    onValue(grupMusicRef, (snapshot) => {
+        const serviceInfo = document.getElementById('serviceInfo');
+        const servicesSection = document.getElementById('servicesSection');
+        
+        if (!snapshot.exists()) {
+            servicesSection.style.display = 'none';
+            return;
+        }
+        
+        servicesSection.style.display = 'block';
+        serviceInfo.innerHTML = '';
+        
+        snapshot.forEach((groupSnap) => {
+            const groupData = groupSnap.val();
+            const name = groupData.name || 'N/A';
+            const precio = groupData.precio || '0';
+            const ubicacion = groupData.ubicacion || 'N/A';
+            const cantidad = groupData.cantidad || '0';
+            const description = groupData.description || '';
+            
+            const serviceDiv = document.createElement('div');
+            serviceDiv.innerHTML = `
+                <div class="service-info">
+                    <div class="service-info-item">
+                        <strong>Nombre del Grupo:</strong> ${name}
+                    </div>
+                    <div class="service-info-item">
+                        <strong>Precio:</strong> ${getCurrencyPrefix(ubicacion)}${precio}
+                    </div>
+                    <div class="service-info-item">
+                        <strong>Ubicación:</strong> ${ubicacion}
+                    </div>
+                    <div class="service-info-item">
+                        <strong>Integrantes:</strong> ${cantidad}
+                    </div>
+                    <div class="service-info-item" id="description_${userId}">
+                        <strong>Descripción:</strong> <span id="descText_${userId}">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</span>
+                        ${description.length > 100 ? `<span id="readMore_${userId}" style="color:var(--accent-purple);cursor:pointer;margin-left:5px;">Leer más</span>` : ''}
+                    </div>
+                </div>
+                <button class="cotizar-btn" onclick="showCotizacionModal('${userId}')">Cotizar Servicio</button>
+            `;
+            
+            serviceInfo.appendChild(serviceDiv);
+            
+            // Handle read more
+            if (description.length > 100) {
+                let expanded = false;
+                const readMoreBtn = document.getElementById(`readMore_${userId}`);
+                const descText = document.getElementById(`descText_${userId}`);
+                
+                if (readMoreBtn) {
+                    readMoreBtn.addEventListener('click', () => {
+                        if (!expanded) {
+                            descText.textContent = description;
+                            readMoreBtn.textContent = 'Leer menos';
+                            expanded = true;
+                        } else {
+                            descText.textContent = description.substring(0, 100) + '...';
+                            readMoreBtn.textContent = 'Leer más';
+                            expanded = false;
+                        }
+                    });
+                }
+            }
+            
+            // Calculate time and price conversion if needed
+            calculateServiceDetails(userId, ubicacion, precio);
+        });
+    }, { onlyOnce: true });
+}
+
+// Calculate service details
+function calculateServiceDetails(userId, ubicacion, precio) {
+    // Get current user location
+    const currentUserLocRef = ref(db, `UserLocation/${currentUID}`);
+    const selectedUserLocRef = ref(db, `UserLocation/${userId}`);
+    
+    onValue(currentUserLocRef, (currentSnap) => {
+        if (!currentSnap.exists()) return;
+        
+        const currentLat = currentSnap.child('latitude').val();
+        const currentLng = currentSnap.child('longitude').val();
+        
+        onValue(selectedUserLocRef, (selectedSnap) => {
+            if (!selectedSnap.exists()) return;
+            
+            const selectedLat = selectedSnap.child('latitude').val();
+            const selectedLng = selectedSnap.child('longitude').val();
+            
+            if (currentLat && currentLng && selectedLat && selectedLng) {
+                const origin = `${currentLat},${currentLng}`;
+                const destination = `${selectedLat},${selectedLng}`;
+                
+                fetchDrivingTime(origin, destination, userId);
+            }
+        }, { onlyOnce: true });
+    }, { onlyOnce: true });
+}
+
+// Fetch driving time
+function fetchDrivingTime(origin, destination, userId) {
+    const directionsService = new google.maps.DirectionsService();
+    
+    directionsService.route({
+        origin: origin,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING
+    }, (result, status) => {
+        if (status === 'OK' && result.routes[0]) {
+            const leg = result.routes[0].legs[0];
+            const duration = leg.duration.text;
+            
+            // Update service info with time
+            const serviceInfo = document.getElementById('serviceInfo');
+            if (serviceInfo) {
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'service-info-item';
+                timeDiv.innerHTML = `<strong>Tiempo Estimado:</strong> ${duration}`;
+                serviceInfo.querySelector('.service-info').appendChild(timeDiv);
+            }
+        }
+    });
+}
+
+// Show cotizacion modal (con ubicaciones recientes como Android)
+function showCotizacionModal(bandaUserId) {
+    const modal = document.getElementById('cotizacionModal');
+    const form = document.getElementById('cotizacionForm');
+
+    // Reset selection for destino
+    selectedDestinoLat = null;
+    selectedDestinoLng = null;
+    selectedNombreLugar = null;
+    
+    // Cargar ubicaciones recientes
+    const ubicacionesRecientes = cargarUbicacionesRecientes();
+    let ubicacionesHTML = '';
+    
+    if (ubicacionesRecientes.length > 0) {
+        ubicacionesHTML = `
+            <div class="form-group" style="margin-top:15px;">
+                <label class="form-label">Ubicaciones Recientes</label>
+                <div id="ubicacionesRecientesList" style="display:flex;flex-direction:column;gap:8px;max-height:150px;overflow-y:auto;margin-top:8px;">
+                    ${ubicacionesRecientes.map((ubic, idx) => `
+                        <div onclick="seleccionarUbicacionReciente('${ubic.direccion}', ${ubic.latitud}, ${ubic.longitud}, '${(ubic.nombreLugar || '').replace(/'/g, "\\'")}')" 
+                             style="padding:10px;background:rgba(15, 15, 19, 0.5);border-radius:8px;cursor:pointer;border:1px solid var(--border-glass);transition:var(--transition);">
+                            <div style="font-weight:600;font-size:13px;color: var(--text-primary);">${ubic.nombreLugar || ubic.direccion}</div>
+                            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${ubic.direccion}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        ubicacionesHTML = `
+            <div class="form-group" style="margin-top:15px;">
+                <div style="padding:10px;text-align:center;color:var(--text-secondary);font-size:12px;">No hay ubicaciones recientes</div>
+            </div>
+        `;
+    }
+    
+    form.innerHTML = `
+        <div class="form-group">
+            <label class="form-label">Dirección del Servicio</label>
+            <input type="text" class="form-input" id="direccionSerenata" placeholder="Ingresa la dirección..." autocomplete="off">
+            <div style="margin-top:8px;font-size:12px;color:var(--text-secondary);">Tip: escribe y elige una sugerencia del mapa para guardar coordenadas.</div>
+        </div>
+        ${ubicacionesHTML}
+        <div class="form-group">
+            <label class="form-label">Lista de Canciones</label>
+            <textarea class="form-input form-textarea" id="listaCanciones" placeholder="Ingresa las canciones..."></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Plan de la Serenata</label>
+            <textarea class="form-input form-textarea" id="planSerenata" placeholder="Detalla el plan..."></textarea>
+        </div>
+        <div class="date-time-group">
+            <div class="form-group">
+                <label class="form-label">Fecha</label>
+                <input type="date" class="form-input" id="fechaSerenata">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hora</label>
+                <input type="time" class="form-input" id="horaSerenata">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Método de Pago</label>
+            <select class="form-input" id="tipoPago">
+                <option value="qav">QAV</option>
+                <option value="efectivo">Efectivo</option>
+            </select>
+        </div>
+        <button class="submit-btn" onclick="enviarCotizacion('${bandaUserId}')">Enviar Cotización</button>
+    `;
+    
+    modal.classList.add('show');
+
+    // Places Autocomplete (equivalente a tu Autocomplete FULLSCREEN)
+    try {
+        if (typeof google !== 'undefined' && google.maps?.places?.Autocomplete) {
+            const input = document.getElementById('direccionSerenata');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                fields: ['place_id', 'name', 'formatted_address', 'geometry']
+            });
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                const direccion = place?.formatted_address || place?.name || '';
+                if (direccion) input.value = direccion;
+
+                const loc = place?.geometry?.location;
+                if (loc) {
+                    selectedDestinoLat = loc.lat();
+                    selectedDestinoLng = loc.lng();
+                    selectedNombreLugar = place?.name || place?.formatted_address || '';
+                    
+                    // Guardar ubicación reciente
+                    obtenerUbicacionUsuarioDesdeFirebase((userLat, userLng) => {
+                        guardarUbicacionReciente(direccion, selectedDestinoLat, selectedDestinoLng, selectedNombreLugar);
+                        
+                        if (userLat != null && userLng != null) {
+                            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                                new google.maps.LatLng(userLat, userLng),
+                                new google.maps.LatLng(selectedDestinoLat, selectedDestinoLng)
+                            );
+                            const distanciaKm = distance / 1000.0;
+                            console.log('Distancia inicial usuario-destino:', distanciaKm.toFixed(2), 'km');
+                        }
+                    });
+                }
+            });
+        }
+    } catch (e) {
+        console.warn('Autocomplete no disponible:', e);
+    }
+}
+
+// Seleccionar ubicación reciente
+function seleccionarUbicacionReciente(direccion, latitud, longitud, nombreLugar) {
+    const input = document.getElementById('direccionSerenata');
+    if (input) {
+        input.value = direccion;
+        selectedDestinoLat = latitud;
+        selectedDestinoLng = longitud;
+        selectedNombreLugar = nombreLugar || direccion;
+        
+        obtenerUbicacionUsuarioDesdeFirebase((userLat, userLng) => {
+            if (userLat != null && userLng != null) {
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(userLat, userLng),
+                    new google.maps.LatLng(latitud, longitud)
+                );
+                const distanciaKm = distance / 1000.0;
+                
+                if (distanciaKm > 50) {
+                    alert(`La ubicación seleccionada está a ${distanciaKm.toFixed(1)} km de tu ubicación actual`);
+                }
+            }
+        });
+    }
+}
+
+// Enviar cotizacion
+async function enviarCotizacion(bandaUserId) {
+    const direccion = document.getElementById('direccionSerenata').value.trim();
+    const listaCanciones = document.getElementById('listaCanciones').value.trim();
+    const planSerenata = document.getElementById('planSerenata').value.trim();
+    const fecha = document.getElementById('fechaSerenata').value;
+    const hora = document.getElementById('horaSerenata').value;
+    const tipoPago = document.getElementById('tipoPago').value;
+    
+    if (!direccion || !listaCanciones || !planSerenata || !fecha || !hora) {
+        alert('Por favor, completa todos los campos');
+        return;
+    }
+    
+    // Get group info (DE LA BANDA, no del cliente)
+    const grupMusicRef = ref(db, `GrupMusicRegis/${bandaUserId}`);
+    const grupSnap = await get(grupMusicRef);
+    
+    if (!grupSnap.exists()) {
+        alert('La banda no tiene un grupo registrado');
+        return;
+    }
+    
+    let groupData = null;
+    grupSnap.forEach((groupSnap) => {
+        groupData = groupSnap.val();
+    });
+
+    // Cliente lat/lng (como obtenerUbicacionUsuarioDesdeFirebase)
+    const clienteLocSnap = await get(ref(db, `UserLocation/${currentUID}`));
+    const clienteLat = clienteLocSnap.exists() ? clienteLocSnap.child('latitude').val() : null;
+    const clienteLng = clienteLocSnap.exists() ? clienteLocSnap.child('longitude').val() : null;
+
+    // Calcular distancia inicial si hay coordenadas
+    let distanciaInicialKm = null;
+    if (clienteLat != null && clienteLng != null && selectedDestinoLat != null && selectedDestinoLng != null) {
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(clienteLat, clienteLng),
+            new google.maps.LatLng(selectedDestinoLat, selectedDestinoLng)
+        );
+        distanciaInicialKm = distance / 1000.0;
+        console.log('Distancia inicial guardada:', distanciaInicialKm.toFixed(2), 'km');
+    }
+    
+    // Guardar ubicación reciente si hay coordenadas
+    if (selectedDestinoLat != null && selectedDestinoLng != null) {
+        guardarUbicacionReciente(direccion, selectedDestinoLat, selectedDestinoLng, selectedNombreLugar);
+    }
+    
+    // Estructura alineada a tu getStringObjectMap + extras del tracking
+    const cotizacionData = {
+        nameGrupo: groupData?.name || 'N/A',
+        id: currentUID,              // cliente
+        para: bandaUserId,           // banda
+        hora: hora,
+        fecha: fecha,
+        precio: (groupData?.precio ?? '0').toString(),
+        ubicacion: groupData?.ubicacion || 'N/A',
+        direccion: direccion,
+        lista: listaCanciones,
+        plan: planSerenata,
+        aceptada: '',
+        confirmada: '',
+        finalizada: '',
+        canceladauser: '',
+        canceladabanda: '',
+        adelanto: '',
+        pagocon: tipoPago,
+        rate: '0',
+        status: 'pending',
+        destinoLat: selectedDestinoLat ?? null,
+        destinoLng: selectedDestinoLng ?? null,
+        clienteLat: clienteLat ?? null,
+        clienteLng: clienteLng ?? null,
+        distanciaInicialKm: distanciaInicialKm,
+        mariachiLat: null,
+        mariachiLng: null,
+        tiempoEstimadoLlegada: null,
+        tiempoEstimadoTexto: '',
+        timestampInicioRuta: null,
+        timestampLlegada: null,
+        timestampInicioServicio: null,
+        timestampFinServicio: null,
+        distanciaRecorridaKm: null,
+        tiempoTotalServicio: null,
+        calificacion: null,
+        comentarioCalificacion: ''
+    };
+    
+    const cotizacionRef = ref(db, `CotizacionBanda/${bandaUserId}`);
+    const newKey = push(cotizacionRef).key;
+    
+    if (!newKey) {
+        alert('Error al generar ID de cotización');
+        return;
+    }
+    
+    // Guardar en ambas rutas (como Android)
+    await set(ref(db, `CotizacionBanda/${bandaUserId}/${newKey}`), cotizacionData);
+    await set(ref(db, `CotizacionComprador/${currentUID}/${newKey}`), cotizacionData);
+    
+    // Enviar notificación (simplificado - en web no tenemos FCM completo)
+    const tokenRef = ref(db, `Tokens/${bandaUserId}/token`);
+    onValue(tokenRef, (tokenSnap) => {
+        const token = tokenSnap.val();
+        if (token) {
+            console.log('Notificación enviada a banda:', bandaUserId);
+            // En web, las notificaciones push requieren Service Worker
+            // Por ahora solo logueamos
+        }
+    }, { onlyOnce: true });
+    
+    // Mostrar UI de cotizaciones
+    const seeSerenatas = document.getElementById('seeSerenatas');
+    const mySerenatas = document.getElementById('mySerenatas');
+    if (seeSerenatas) seeSerenatas.classList.add('show');
+    if (mySerenatas) mySerenatas.classList.remove('show');
+    
+    alert('Cotización enviada exitosamente');
+    document.getElementById('cotizacionModal').classList.remove('show');
+}
+
+// Load filtered users and places (como Android - loadFilteredUsersAndPlaces)
+function loadFilteredUsersAndPlaces(acceptedValues) {
+    if (!acceptedValues || acceptedValues.length === 0) {
+        showAllUsersWithToast();
+        return;
+    }
+    
+    showLoading();
+    const usersRef = ref(db, 'Users');
+    const locationRef = ref(db, 'UserLocation');
+    const rvBanda = document.getElementById('rvBanda');
+    const topBands = document.getElementById('topBands');
+    
+    onValue(usersRef, (usersSnap) => {
+        clearMarkers();
+        boundsBuilder = new google.maps.LatLngBounds();
+        const matchingUserIds = [currentUID];
+        
+        usersSnap.forEach((userSnap) => {
+            const userId = userSnap.key;
+            if (userId === currentUID) return;
+            
+            const generoMusic = userSnap.child('generoMusic').val();
+            if (!generoMusic) return;
+            
+            const genres = generoMusic.split(/[/.\-_(),;:\[\]{}|]/);
+            for (const genre of genres) {
+                if (acceptedValues.includes(genre.trim())) {
+                    matchingUserIds.push(userId);
+                    break;
+                }
+            }
+        });
+        
+        onValue(locationRef, (locSnap) => {
+            hideLoading();
+            locSnap.forEach((locChild) => {
+                const userId = locChild.key;
+                if (matchingUserIds.includes(userId)) {
+                    const lat = locChild.child('latitude').val();
+                    const lng = locChild.child('longitude').val();
+                    if (lat && lng) {
+                        const location = { lat, lng };
+                        boundsBuilder.extend(location);
+                        loadUserDataAndAddMarker(location, userId);
+                    }
+                }
+            });
+            
+            if (boundsBuilder.getNorthEast()) {
+                map.fitBounds(boundsBuilder);
+            }
+        }, { onlyOnce: true });
+        
+        // Cargar entidades (getEntidades)
+        getEntidades();
+    }, { onlyOnce: true });
+}
+
+// Get entidades (como Android - carga mariachis verificados en rvBanda/topBands)
+function getEntidades() {
+    const topBands = document.getElementById('topBands');
+    const rvBanda = document.getElementById('rvBanda');
+    const progressBar = document.getElementById('progressBarContainer');
+    const seeAgain = document.getElementById('seeAgain');
+    
+    if (!topBands || !rvBanda) return;
+    
+    rvBanda.innerHTML = '';
+    topBands.classList.remove('show');
+    if (progressBar) progressBar.classList.add('show');
+    if (seeAgain) seeAgain.classList.remove('show');
+    
+    // Cargar mariachis (loadMariachis)
+    loadMariachis();
+    
+    // Cargar usuarios verificados con generoMusic = mariachi
+    const usersRef = ref(db, 'Users');
+    onValue(usersRef, (usersSnap) => {
+        if (progressBar) progressBar.classList.remove('show');
+        topBands.classList.add('show');
+        
+        const userListS = [];
+        
+        usersSnap.forEach((userSnap) => {
+            if (!userSnap.hasChild('name') || !userSnap.hasChild('verified') || 
+                !userSnap.hasChild('generoMusic') || !userSnap.hasChild('photo')) {
+                return;
+            }
+            
+            const verified = userSnap.child('verified').val();
+            const generoMusic = userSnap.child('generoMusic').val();
+            const photo = userSnap.child('photo').val();
+            
+            if (verified && generoMusic && photo && photo.trim() !== '') {
+                const generoLower = generoMusic.toLowerCase().trim();
+                if (generoLower === 'm.mariachi' || generoLower === 'mariachi') {
+                    const userId = userSnap.key;
+                    if (userId !== currentUID) {
+                        const userData = userSnap.val();
+                        userListS.push({ id: userId, ...userData });
+                    }
+                }
+            }
+        });
+        
+        // Render entidades (AdapterEntidades web)
+        userListS.forEach(user => {
+            renderEntidadCard(user, rvBanda);
+        });
+    }, { onlyOnce: true });
+}
+
+// Render entidad card (AdapterEntidades web)
+function renderEntidadCard(user, container) {
+    const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    const photoUrl = (user.photo && user.photo.trim()) ? user.photo : defaultAvatar;
+    
+    const card = document.createElement('div');
+    card.className = 'entidad-card';
+    card.innerHTML = `
+        <img src="${photoUrl}" alt="${user.name || 'Usuario'}" class="entidad-card-photo" 
+             onerror="this.src='${defaultAvatar}'">
+        <div class="entidad-card-name">${user.name || 'Usuario'}</div>
+    `;
+    
+    card.onclick = () => {
+        // Centrar en mapa y mostrar bottom sheet
+        const locRef = ref(db, `UserLocation/${user.id}`);
+        onValue(locRef, (locSnap) => {
+            if (locSnap.exists()) {
+                const lat = locSnap.child('latitude').val();
+                const lng = locSnap.child('longitude').val();
+                if (lat && lng && map) {
+                    map.panTo({ lat, lng });
+                    map.setZoom(15);
+                }
+            }
+        }, { onlyOnce: true });
+        
+        showBottomSheet({
+            photoUrl,
+            username: user.username || 'username',
+            name: user.name || 'Usuario',
+            instrument: user.instrument || '',
+            generoMusic: user.generoMusic || '',
+            status: user.status || '',
+            userId: user.id
+        });
+    };
+    
+    container.appendChild(card);
+}
+
+// Load mariachis (como Android - carga desde GrupMusicRegis)
+function loadMariachis() {
+    const grupMusicRef = ref(db, 'GrupMusicRegis');
+    
+    onValue(grupMusicRef, (snapshot) => {
+        if (!snapshot.exists()) return;
+        
+        snapshot.forEach((pkSnapshot) => {
+            pkSnapshot.forEach((userSnapshot) => {
+                const uid = userSnapshot.key;
+                if (!uid || uid === currentUID) return;
+                
+                const name = userSnapshot.child('name').val();
+                const precio = userSnapshot.child('precio').val();
+                const ubicacion = userSnapshot.child('ubicacion').val();
+                const cantidad = userSnapshot.child('cantidad').val();
+                const description = userSnapshot.child('description').val();
+                
+                // Agregar a mariachiList (ya se renderiza en loadMariachisGroups)
+                // Esta función se usa principalmente para precargar datos
+            });
+        });
+    }, { onlyOnce: true });
+}
+
+// Show all users with toast
+function showAllUsersWithToast() {
+    alert('No hay Mariachis registrados');
+    loadUserLocations();
+}
+
+// Load places from Firebase
+function loadPlacesFromFirebase(type) {
+    showLoading();
+    const placesRef = ref(db, 'Places');
+    
+    onValue(placesRef, (snapshot) => {
+        hideLoading();
+        clearMarkers();
+        boundsBuilder = new google.maps.LatLngBounds();
+        
+        if (!snapshot.exists()) {
+            alert(`No hay ${type} registrados`);
+            return;
+        }
+        
+        snapshot.forEach((placeSnap) => {
+            const placeData = placeSnap.val();
+            if (placeData.type === type) {
+                const location = { lat: placeData.latitude, lng: placeData.longitude };
+                boundsBuilder.extend(location);
+                
+                const marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: placeData.name || type,
+                    icon: {
+                        url: placeData.photoUrl || 'assets/point.png',
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+                
+                markers.push(marker);
+            }
+        });
+        
+        if (boundsBuilder.getNorthEast()) {
+            map.fitBounds(boundsBuilder);
+        }
+    }, { onlyOnce: true });
+}
+
+// Load verified professors
+function loadVerifiedProfessors() {
+    showLoading();
+    const usersRef = ref(db, 'Users');
+    const locationRef = ref(db, 'UserLocation');
+    
+    onValue(usersRef, (usersSnap) => {
+        clearMarkers();
+        boundsBuilder = new google.maps.LatLngBounds();
+        const verifiedUserIds = [];
+        
+        usersSnap.forEach((userSnap) => {
+            const userId = userSnap.key;
+            if (userId === currentUID) return;
+            
+            const verifiedProf = userSnap.child('verifiedprofesor').val();
+            if (verifiedProf === 'yes') {
+                verifiedUserIds.push(userId);
+            }
+        });
+        
+        onValue(locationRef, (locSnap) => {
+            hideLoading();
+            locSnap.forEach((locChild) => {
+                const userId = locChild.key;
+                if (verifiedUserIds.includes(userId)) {
+                    const lat = locChild.child('latitude').val();
+                    const lng = locChild.child('longitude').val();
+                    if (lat && lng) {
+                        const location = { lat, lng };
+                        boundsBuilder.extend(location);
+                        loadUserDataAndAddMarker(location, userId);
+                    }
+                }
+            });
+            
+            if (boundsBuilder.getNorthEast()) {
+                map.fitBounds(boundsBuilder);
+            }
+        }, { onlyOnce: true });
+    }, { onlyOnce: true });
+}
+
+// Search location
+document.getElementById('searchBtn').addEventListener('click', () => {
+    const searchText = document.getElementById('searchInput').value.trim();
+    if (searchText) {
+        searchLocation(searchText);
+    }
+});
+
+function searchLocation(locationName) {
+    const geocoder = new google.maps.Geocoder();
+    
+    geocoder.geocode({ address: locationName }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+            const location = results[0].geometry.location;
+            map.setCenter(location);
+            map.setZoom(15);
+            
+            // Add marker
+            const marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: locationName
+            });
+            
+            // Load users near this location
+            loadUserLocations();
+        } else {
+            alert('Ubicación no encontrada. Intenta con otro nombre.');
+        }
+    });
+}
+
+// Clear markers
+function clearMarkers() {
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+    if (currentRoutePolyline) {
+        currentRoutePolyline.setMap(null);
+        currentRoutePolyline = null;
+    }
+}
+
+// Show/hide loading
+function showLoading() {
+    document.getElementById('loading').classList.add('show');
+}
+
+function hideLoading() {
+    document.getElementById('loading').classList.remove('show');
+}
+
+// Get currency prefix (completo como Android)
+function getCurrencyPrefix(pais) {
+    if (!pais) return '';
+    const paisLower = pais.trim().toLowerCase();
+    
+    const currencyMap = {
+        'afganistán': 'AFN ؋',
+        'albania': 'ALL L',
+        'argelia': 'DZD دج',
+        'andorra': 'EUR €',
+        'angola': 'AOA Kz',
+        'antigua y barbuda': 'XCD $',
+        'argentina': 'ARS $',
+        'armenia': 'AMD ֏',
+        'australia': 'AUD $',
+        'austria': 'EUR €',
+        'azerbaiyán': 'AZN ₼',
+        'bahamas': 'BSD $',
+        'baréin': 'BHD .د.ب',
+        'bangladesh': 'BDT ৳',
+        'barbados': 'BBD $',
+        'bielorrusia': 'BYN Br',
+        'bélgica': 'EUR €',
+        'belice': 'BZD $',
+        'benín': 'XOF CFA',
+        'bután': 'BTN Nu.',
+        'bolivia': 'BOB Bs.',
+        'bosnia y herzegovina': 'BAM KM',
+        'botsuana': 'BWP P',
+        'brasil': 'BRL R$',
+        'brunéi': 'BND $',
+        'bulgaria': 'BGN лв',
+        'burkina faso': 'XOF CFA',
+        'burundi': 'BIF FBu',
+        'cabo verde': 'CVE $',
+        'camboya': 'KHR ៛',
+        'camerún': 'XAF CFA',
+        'canadá': 'CAD $',
+        'república centroafricana': 'XAF CFA',
+        'chad': 'XAF CFA',
+        'chile': 'CLP $',
+        'china': 'CNY ¥',
+        'colombia': 'COP $ ',
+        'comoras': 'KMF CF',
+        'república del congo': 'XAF CFA',
+        'república democrática del congo': 'CDF FC',
+        'costa rica': 'CRC ₡',
+        'croacia': 'HRK kn',
+        'cuba': 'CUP $',
+        'chipre': 'EUR €',
+        'chequia': 'CZK Kč',
+        'dinamarca': 'DKK kr',
+        'yibuti': 'DJF Fdj',
+        'dominica': 'XCD $',
+        'república dominicana': 'DOP $',
+        'ecuador': 'USD $',
+        'egipto': 'EGP ج.م',
+        'el salvador': 'USD $',
+        'guinea ecuatorial': 'XAF CFA',
+        'eritrea': 'ERN Nfk',
+        'estonia': 'EUR €',
+        'eswatini': 'SZL L',
+        'etiopía': 'ETB Br',
+        'fiyi': 'FJD $',
+        'finlandia': 'EUR €',
+        'francia': 'EUR €',
+        'gabón': 'XAF CFA',
+        'gambia': 'GMD D',
+        'georgia': 'GEL ₾',
+        'alemania': 'EUR €',
+        'ghana': 'GHS ₵',
+        'grecia': 'EUR €',
+        'granada': 'XCD $',
+        'guatemala': 'GTQ Q',
+        'guinea': 'GNF FG',
+        'guinea-bisáu': 'XOF CFA',
+        'guyana': 'GYD $',
+        'haití': 'HTG G',
+        'honduras': 'HNL L',
+        'hungría': 'HUF Ft',
+        'islandia': 'ISK kr',
+        'india': 'INR ₹',
+        'indonesia': 'IDR Rp',
+        'irán': 'IRR ﷼',
+        'iraq': 'IQD ع.د',
+        'irlanda': 'EUR €',
+        'israel': 'ILS ₪',
+        'italia': 'EUR €',
+        'jamaica': 'JMD $',
+        'japón': 'JPY ¥',
+        'japón': 'JPY ¥',
+        'jordania': 'JOD د.أ',
+        'kazajistán': 'KZT ₸',
+        'kenia': 'KES KSh',
+        'kiribati': 'AUD $',
+        'kuwait': 'KWD د.ك',
+        'kirguistán': 'KGS сом',
+        'laos': 'LAK ₭',
+        'letonia': 'EUR €',
+        'líbano': 'LBP ل.ل',
+        'lesoto': 'LSL L',
+        'liberia': 'LRD $',
+        'libia': 'LYD ل.د',
+        'liechtenstein': 'CHF Fr',
+        'lituania': 'EUR €',
+        'luxemburgo': 'EUR €',
+        'madagascar': 'MGA Ar',
+        'malawi': 'MWK K',
+        'malasia': 'MYR RM',
+        'maldivas': 'MVR .ރ',
+        'malí': 'XOF CFA',
+        'malta': 'EUR €',
+        'islas marshall': 'USD $',
+        'mauritania': 'MRU UM',
+        'mauricio': 'MUR ₨',
+        'méxico': 'MXN $',
+        'mexico': 'MXN $',
+        'micronesia': 'USD $',
+        'moldavia': 'MDL L',
+        'mónaco': 'EUR €',
+        'mongolia': 'MNT ₮',
+        'montenegro': 'EUR €',
+        'marruecos': 'MAD د.م.',
+        'mozambique': 'MZN MTn',
+        'myanmar': 'MMK K',
+        'namibia': 'NAD $',
+        'nauru': 'AUD $',
+        'nepal': 'NPR ₨',
+        'países bajos': 'EUR €',
+        'nueva zelanda': 'NZD $',
+        'nicaragua': 'NIO C$',
+        'níger': 'XOF CFA',
+        'nigeria': 'NGN ₦',
+        'corea del norte': 'KPW ₩',
+        'noruega': 'NOK kr',
+        'omán': 'OMR ر.ع.',
+        'pakistán': 'PKR ₨',
+        'palau': 'USD $',
+        'palestina': 'ILS ₪',
+        'panamá': 'PAB B/.',
+        'panama': 'PAB B/.',
+        'papúa nueva guinea': 'PGK K',
+        'paraguay': 'PYG ₲',
+        'perú': 'PEN S/.',
+        'peru': 'PEN S/.',
+        'filipinas': 'PHP ₱',
+        'polonia': 'PLN zł',
+        'portugal': 'EUR €',
+        'qatar': 'QAR ر.ق',
+        'rumania': 'RON lei',
+        'rusia': 'RUB ₽',
+        'ruanda': 'RWF FRw',
+        'san cristóbal y nieves': 'XCD $',
+        'santa lucía': 'XCD $',
+        'san vicente y las granadinas': 'XCD $',
+        'samoa': 'WST T',
+        'santo tomé y príncipe': 'STN Db',
+        'arabia saudita': 'SAR ر.س',
+        'senegal': 'XOF CFA',
+        'serbia': 'RSD РСД',
+        'seychelles': 'SCR ₨',
+        'sierra leona': 'SLL Le',
+        'singapur': 'SGD $',
+        'eslovaquia': 'EUR €',
+        'eslovenia': 'EUR €',
+        'islas salomón': 'SBD $',
+        'somalia': 'SOS S',
+        'sudáfrica': 'ZAR R',
+        'corea del sur': 'KRW ₩',
+        'sudán': 'SDG ج.س.',
+        'sudán del sur': 'SSP £',
+        'españa': 'EUR €',
+        'sri lanka': 'LKR Rs',
+        'surinam': 'SRD $',
+        'suecia': 'SEK kr',
+        'suiza': 'CHF Fr',
+        'siria': 'SYP £',
+        'taiwán': 'TWD $',
+        'tayikistán': 'TJS ЅМ',
+        'tanzania': 'TZS TSh',
+        'tailandia': 'THB ฿',
+        'timor oriental': 'USD $',
+        'togo': 'XOF CFA',
+        'tonga': 'TOP T$',
+        'trinidad y tobago': 'TTD $',
+        'túnez': 'TND د.ت',
+        'turquía': 'TRY ₺',
+        'turkmenistán': 'TMT m',
+        'tuvalu': 'AUD $',
+        'uganda': 'UGX USh',
+        'ucrania': 'UAH ₴',
+        'emiratos árabes unidos': 'AED د.إ',
+        'reino unido': 'GBP £',
+        'estados unidos': 'USD $',
+        'usa': 'USD $',
+        'united states': 'USD $',
+        'uruguay': 'UYU $',
+        'uzbekistán': 'UZS so\'m',
+        'vanuatu': 'VUV $',
+        'ciudad del vaticano': 'EUR €',
+        'venezuela': 'VEF Bs.',
+        'vietnam': 'VND ₫',
+        'yemen': 'YER ﷼',
+        'zambia': 'ZMW ZK',
+        'zimbabue': 'ZWL $'
+    };
+    
+    return currencyMap[paisLower] || '';
+}
+
+// Close bottom sheet
+document.getElementById('closeSheet').addEventListener('click', () => {
+    document.getElementById('bottomSheet').classList.remove('show');
+});
+
+// Close modal
+document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('cotizacionModal').classList.remove('show');
+});
+
+// Close modal on outside click
+document.getElementById('cotizacionModal').addEventListener('click', (e) => {
+    if (e.target.id === 'cotizacionModal') {
+        document.getElementById('cotizacionModal').classList.remove('show');
+    }
+});
+
+// Cargar cotizaciones (como Android - serviciosBanda pendientes, rvSPendientes confirmadas)
+function cargarCotizaciones() {
+    if (!currentUID) return;
+    
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}`);
+    const serviciosBanda = document.getElementById('serviciosBanda');
+    const serviciosBandaList = document.getElementById('serviciosBandaList');
+    const rvSPendientes = document.getElementById('rvSPendientes');
+    const rvSPendientesList = document.getElementById('rvSPendientesList');
+    const seePendientes = document.getElementById('seePendientes');
+    
+    onValue(cotizacionRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            serviciosBanda.classList.remove('show');
+            rvSPendientes.classList.remove('show');
+            if (seePendientes) seePendientes.style.display = 'none';
+            return;
+        }
+        
+        const pendientesList = [];
+        const confirmadasList = [];
+        
+        snapshot.forEach((cotSnap) => {
+            const cotData = cotSnap.val();
+            const cotKey = cotSnap.key;
+            
+            // Fix idCotizante si falta (como Android)
+            if (!cotData.idCotizante || cotData.idCotizante === '') {
+                const idCliente = cotData.id;
+                if (idCliente) cotData.idCotizante = idCliente;
+            }
+            
+            // Fix destinoLat/destinoLng si faltan
+            if ((!cotData.destinoLat || !cotData.destinoLng) && cotSnap.hasChild('destinoLat')) {
+                const destinoLat = cotSnap.child('destinoLat').val();
+                const destinoLng = cotSnap.child('destinoLng').val();
+                if (destinoLat != null && destinoLng != null) {
+                    cotData.destinoLat = destinoLat;
+                    cotData.destinoLng = destinoLng;
+                }
+            }
+            
+            // Pendientes: aceptada vacía/null o "cancel"
+            if (!cotData.aceptada || cotData.aceptada === '' || cotData.aceptada.toLowerCase() === 'cancel') {
+                pendientesList.push({ ...cotData, key: cotKey });
+            }
+            
+            // Confirmadas: confirmada === "yes"
+            if (cotData.confirmada === 'yes') {
+                confirmadasList.push({ ...cotData, key: cotKey });
+            }
+        });
+        
+        // Render pendientes (serviciosBanda)
+        if (pendientesList.length > 0) {
+            serviciosBandaList.innerHTML = '';
+            pendientesList.forEach(cot => {
+                renderCotizacionCard(cot, serviciosBandaList, 'pendiente');
+            });
+            serviciosBanda.classList.add('show');
+            if (seePendientes) seePendientes.style.display = 'none';
+        } else {
+            serviciosBanda.classList.remove('show');
+        }
+        
+        // Render confirmadas (rvSPendientes) con toggle
+        if (confirmadasList.length > 0) {
+            if (seePendientes) {
+                seePendientes.style.display = 'block';
+                seePendientes.onclick = () => {
+                    if (rvSPendientes.classList.contains('show')) {
+                        rvSPendientes.classList.remove('show');
+                    } else {
+                        rvSPendientesList.innerHTML = '';
+                        confirmadasList.forEach(cot => {
+                            renderCotizacionCard(cot, rvSPendientesList, 'confirmada');
+                        });
+                        rvSPendientes.classList.add('show');
+                    }
+                };
+            }
+        } else {
+            rvSPendientes.classList.remove('show');
+            if (seePendientes) seePendientes.style.display = 'none';
+        }
+    });
+}
+
+// Render cotizacion card (AdapterCotizacionBanda web)
+async function renderCotizacionCard(cotData, container, type) {
+    const card = document.createElement('div');
+    card.className = 'cotizacion-card';
+    
+    // Get cliente photo
+    const clienteId = cotData.idCotizante || cotData.id;
+    let clientePhoto = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    let clienteName = 'Cliente';
+    
+    if (clienteId) {
+        const clienteSnap = await get(ref(db, `Users/${clienteId}`));
+        if (clienteSnap.exists()) {
+            const cliente = clienteSnap.val();
+            clientePhoto = (cliente.photo && cliente.photo.trim()) ? cliente.photo : clientePhoto;
+            clienteName = cliente.name || cliente.username || 'Cliente';
+        }
+    }
+    
+    card.innerHTML = `
+        <div class="cotizacion-card-header">
+            <img src="${clientePhoto}" alt="${clienteName}" class="cotizacion-card-photo" 
+                 onerror="this.src='https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media'">
+            <div class="cotizacion-card-info">
+                <div class="cotizacion-card-name">${cotData.nameGrupo || 'Grupo'}</div>
+                <div class="cotizacion-card-precio">${getCurrencyPrefix(cotData.ubicacion)}${cotData.precio || '0'}</div>
+            </div>
+        </div>
+        <div class="cotizacion-card-direccion">${cotData.direccion || 'Sin dirección'}</div>
+    `;
+    
+    card.onclick = () => {
+        // Abrir detalles o centrar en mapa
+        if (cotData.destinoLat && cotData.destinoLng && map) {
+            map.panTo({ lat: cotData.destinoLat, lng: cotData.destinoLng });
+            map.setZoom(15);
+        }
+    };
+    
+    container.appendChild(card);
+}
+
+// Leer serenata comprador (como Android - mySerenatas/seeSerenatas)
+let cotizacionCompradorListener = null;
+let activeTrackingListeners = new Map();
+
+function leerSerenataComprador() {
+    if (!currentUID) return;
+    
+    // Limpiar listener anterior si existe
+    if (cotizacionCompradorListener) {
+        const oldRef = ref(db, `CotizacionComprador/${currentUID}`);
+        oldRef.off('value', cotizacionCompradorListener);
+    }
+    
+    const cotizacionCompradorRef = ref(db, `CotizacionComprador/${currentUID}`);
+    const mySerenatas = document.getElementById('mySerenatas');
+    const seeSerenatas = document.getElementById('seeSerenatas');
+    const mySerenatasList = document.getElementById('mySerenatasList');
+    
+    cotizacionCompradorListener = onValue(cotizacionCompradorRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            mySerenatas.classList.remove('show');
+            seeSerenatas.classList.remove('show');
+            return;
+        }
+        
+        seeSerenatas.classList.add('show');
+        let isSelected = false;
+        
+        seeSerenatas.onclick = () => {
+            isSelected = !isSelected;
+            const topBands = document.getElementById('topBands');
+            
+            if (isSelected) {
+                mySerenatas.classList.add('show');
+                if (topBands) topBands.classList.remove('show');
+                renderMySerenatas(snapshot, mySerenatasList);
+            } else {
+                mySerenatas.classList.remove('show');
+                if (topBands) topBands.classList.add('show');
+            }
+        };
+    });
+}
+
+// Render mis serenatas (como Android - leerSerenataComprador completo)
+function renderMySerenatas(snapshot, container) {
+    container.innerHTML = '';
+    
+    snapshot.forEach((cotSnap) => {
+        const cotData = cotSnap.val();
+        const cotKey = cotSnap.key;
+        const nameGrupo = cotData.nameGrupo || 'Desconocido';
+        const precio = cotData.precio || '0';
+        const ubicacion = cotData.ubicacion || 'Sin ubicación';
+        const direccion = cotData.direccion || cotData.plan || '';
+        const bandaId = cotData.id || '';
+        const aprovacion = cotData.aceptada || '';
+        const txtTimeC = cotData.hora || '00:00 pm?';
+        const fecha = cotData.fecha || '00/00/0000?';
+        const status = cotData.status || '';
+        const destinoLat = cotData.destinoLat;
+        const destinoLng = cotData.destinoLng;
+        const mariachiLat = cotData.mariachiLat;
+        const mariachiLng = cotData.mariachiLng;
+        const tiempoEstimadoTexto = cotData.tiempoEstimadoTexto || '';
+        
+        const serenataItem = document.createElement('div');
+        serenataItem.className = 'serenata-item';
+        
+        // Determinar estado y texto del botón
+        let estadoTexto = 'Pendiente';
+        let estadoClass = 'pending';
+        let btnTexto = 'Esperando respuesta';
+        
+        if (status && status !== '') {
+            switch (status) {
+                case 'pending':
+                    estadoTexto = 'Pendiente';
+                    estadoClass = 'pending';
+                    btnTexto = 'Esperando respuesta';
+                    break;
+                case 'accepted':
+                    estadoTexto = 'Aceptada';
+                    estadoClass = 'accepted';
+                    btnTexto = 'Ver';
+                    break;
+                case 'in_progress':
+                    estadoTexto = 'En camino' + (tiempoEstimadoTexto ? ' - ' + tiempoEstimadoTexto : '');
+                    estadoClass = 'in_progress';
+                    btnTexto = 'Ver ubicación';
+                    // Iniciar tracking si no está activo
+                    if (!activeTrackingListeners.has(cotKey)) {
+                        iniciarTrackingCliente(bandaId, cotKey, mariachiLat, mariachiLng, 
+                                             destinoLat, destinoLng, direccion, ubicacion, nameGrupo);
+                    }
+                    break;
+                case 'arrived':
+                    estadoTexto = 'El mariachi llegó. Confirma su llegada';
+                    estadoClass = 'arrived';
+                    btnTexto = 'Confirmar llegada';
+                    break;
+                case 'service_started':
+                    estadoTexto = 'Servicio en curso';
+                    estadoClass = 'in_progress';
+                    btnTexto = 'Ver servicio';
+                    break;
+                case 'completed':
+                    estadoTexto = 'Completado';
+                    estadoClass = 'completed';
+                    btnTexto = 'Ver detalles';
+                    detenerTrackingCliente(cotKey);
+                    break;
+                case 'cancelled':
+                    estadoTexto = 'Cancelado';
+                    estadoClass = 'cancelled';
+                    btnTexto = 'Ver detalles';
+                    detenerTrackingCliente(cotKey);
+                    break;
+                default:
+                    if (aprovacion === 'yes') {
+                        estadoTexto = 'Aprobada';
+                        estadoClass = 'accepted';
+                        btnTexto = 'Ver';
+                    } else if (aprovacion === 'no') {
+                        estadoTexto = 'Declinada';
+                        estadoClass = 'cancelled';
+                        btnTexto = 'No disponible';
+                    }
+            }
+        } else {
+            if (aprovacion === 'yes') {
+                estadoTexto = 'Aprobada';
+                estadoClass = 'accepted';
+                btnTexto = 'Ver';
+            } else if (aprovacion === 'no') {
+                estadoTexto = 'Declinada';
+                estadoClass = 'cancelled';
+                btnTexto = 'No disponible';
+            }
+        }
+        
+        // Get photos
+        const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+        
+        serenataItem.innerHTML = `
+            <div class="serenata-item-header">
+                <img id="myPic_${cotKey}" src="${defaultAvatar}" alt="Yo" class="serenata-item-photo">
+                <img id="youPic_${cotKey}" src="${defaultAvatar}" alt="Banda" class="serenata-item-photo">
+            </div>
+            <div class="serenata-item-info">
+                <div class="serenata-item-name">${nameGrupo}</div>
+                <div class="serenata-item-precio">${getCurrencyPrefix(ubicacion)}${precio}</div>
+                <div class="serenata-item-details">${direccion}</div>
+                <div class="serenata-item-details">${fecha} - ${txtTimeC}</div>
+                <div class="serenata-item-estado ${estadoClass}">${estadoTexto}</div>
+                <button class="cotizar-btn" id="btnView_${cotKey}" style="margin-top:10px;">${btnTexto}</button>
+            </div>
+        `;
+        
+        container.appendChild(serenataItem);
+        
+        // Load photos
+        loadUserPhoto(currentUID, `myPic_${cotKey}`);
+        if (bandaId) loadUserPhoto(bandaId, `youPic_${cotKey}`);
+        
+        // Button click handler
+        const btnView = document.getElementById(`btnView_${cotKey}`);
+        if (btnView) {
+            btnView.onclick = () => {
+                mySerenatas.classList.remove('show');
+                
+                if (bandaId && (status === 'in_progress' || status === 'arrived' || status === 'service_started')) {
+                    // Mostrar ruta y tracking
+                    mostrarRutaYCotizacion(cotData, cotKey, bandaId);
+                } else if (bandaId && status === 'arrived') {
+                    // Confirmar llegada
+                    confirmarServicio(bandaId, cotKey, currentUID);
+                } else {
+                    // Ver detalles básicos
+                    mostrarDetallesCotizacion(cotData);
+                }
+            };
+        }
+    });
+}
+
+// Load user photo helper
+function loadUserPhoto(userId, imgId) {
+    const userRef = ref(db, `Users/${userId}/photo`);
+    onValue(userRef, (snap) => {
+        const img = document.getElementById(imgId);
+        if (img) {
+            const photoUrl = snap.val();
+            const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+            img.src = (photoUrl && photoUrl.trim()) ? photoUrl : defaultAvatar;
+            img.onerror = () => { img.src = defaultAvatar; };
+        }
+    }, { onlyOnce: true });
+}
+
+// Mostrar ruta y cotización (equivalente a drawRoute en Android)
+function mostrarRutaYCotizacion(cotData, cotizacionId, bandaId) {
+    const clienteLat = cotData.clienteLat;
+    const clienteLng = cotData.clienteLng;
+    const destinoLat = cotData.destinoLat;
+    const destinoLng = cotData.destinoLng;
+    const mariachiLat = cotData.mariachiLat;
+    const mariachiLng = cotData.mariachiLng;
+    const direccion = cotData.direccion || '';
+    const ubicacion = cotData.ubicacion || '';
+    
+    // Si hay mariachiLat/Lng, usar esos; sino obtener de UserLocation
+    if (mariachiLat != null && mariachiLng != null) {
+        const bandLatLng = { lat: mariachiLat, lng: mariachiLng };
+        if (map) {
+            if (bandMarker) bandMarker.setMap(null);
+            bandMarker = new google.maps.Marker({
+                position: bandLatLng,
+                map: map,
+                title: 'Ubicación del Grupo',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" fill="#4CAF50" rx="5"/>
+                            <text x="20" y="25" font-size="20" text-anchor="middle">🚐</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40)
+                }
+            });
+        }
+        
+        const origin = `${mariachiLat},${mariachiLng}`;
+        const fullDestination = direccion + (ubicacion ? ', ' + ubicacion : '');
+        if (direccion) {
+            drawRoute(origin, fullDestination, currentUID, bandaId, cotizacionId, 
+                     cotData.nameGrupo, cotData.precio, direccion, cotData.hora);
+        }
+    } else {
+        // Obtener de UserLocation en tiempo real
+        const bandLocationRef = ref(db, `UserLocation/${bandaId}`);
+        const bandLocationListener = onValue(bandLocationRef, (bandSnap) => {
+            if (bandSnap.exists()) {
+                const lat = bandSnap.child('latitude').val();
+                const lng = bandSnap.child('longitude').val();
+                
+                if (lat != null && lng != null) {
+                    const bandLatLng = { lat, lng };
+                    if (map) {
+                        if (bandMarker) bandMarker.setMap(null);
+                        bandMarker = new google.maps.Marker({
+                            position: bandLatLng,
+                            map: map,
+                            title: 'Ubicación del Grupo',
+                            icon: {
+                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                    <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" fill="#4CAF50" rx="5"/>
+                                        <text x="20" y="25" font-size="20" text-anchor="middle">🚐</text>
+                                    </svg>
+                                `),
+                                scaledSize: new google.maps.Size(40, 40)
+                            }
+                        });
+                    }
+                    
+                    const origin = `${lat},${lng}`;
+                    const fullDestination = direccion + (ubicacion ? ', ' + ubicacion : '');
+                    if (direccion) {
+                        drawRoute(origin, fullDestination, currentUID, bandaId, cotizacionId, 
+                                 cotData.nameGrupo, cotData.precio, direccion, cotData.hora);
+                    }
+                }
+            }
+        });
+        
+        // Guardar listener para limpiarlo después
+        activeTrackingListeners.set('band_' + cotizacionId, bandLocationListener);
+    }
+}
+
+// Mostrar detalles básicos de cotización
+function mostrarDetallesCotizacion(cotData) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,15,19,0.8);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass);border-radius:14px;max-width:400px;width:100%;padding:20px;">
+            <div style="font-weight:700;font-size:18px;margin-bottom:15px;">${cotData.nameGrupo || 'Cotización'}</div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;"><strong>Precio:</strong> ${getCurrencyPrefix(cotData.ubicacion)}${cotData.precio || '0'}</div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;"><strong>Dirección:</strong> ${cotData.direccion || 'N/A'}</div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;"><strong>Fecha:</strong> ${cotData.fecha || 'N/A'}</div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:15px;"><strong>Hora:</strong> ${cotData.hora || 'N/A'}</div>
+            <button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:10px;background:linear-gradient(135deg, #a855f7 0%, #007BFF 100%);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Cerrar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
+
+// Show route option
+function showRouteOption(cotData, cotizacionId, bandaId) {
+    const routeInfo = document.getElementById('routeInfo');
+    routeInfo.classList.add('show');
+    
+    // Update route info display
+    routeInfo.innerHTML = `
+        <div class="route-title">${cotData.nameGrupo || 'Servicio'}</div>
+        <div class="route-item">Precio: ${getCurrencyPrefix(cotData.ubicacion)}${cotData.precio || '0'}</div>
+        <div class="route-item">Dirección: ${cotData.direccion || 'N/A'}</div>
+        <div class="route-item" id="routeTime">Tiempo: Calculando...</div>
+        <div class="route-item" id="routeDistance">Distancia: -</div>
+        <button class="confirm-btn" id="confirmRoute">Confirmar</button>
+        <button class="cancel-btn" id="cancelRoute">Cancelar</button>
+    `;
+    
+    // Load band location and draw route
+    bandLocationRef = ref(db, `UserLocation/${bandaId}`);
+    
+    onValue(bandLocationRef, (bandSnap) => {
+        if (!bandSnap.exists()) {
+            alert('La banda no tiene ubicación registrada');
+            return;
+        }
+        
+        const lat = bandSnap.child('latitude').val();
+        const lng = bandSnap.child('longitude').val();
+        
+        if (lat && lng) {
+            const bandLocation = { lat, lng };
+            
+            // Get current user location
+            const currentUserLocRef = ref(db, `UserLocation/${currentUID}`);
+            onValue(currentUserLocRef, (currentSnap) => {
+                if (!currentSnap.exists()) {
+                    // Use geolocation as fallback
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((position) => {
+                            const currentLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            const destination = cotData.direccion || '';
+                            if (destination) {
+                                drawRoute(currentLocation, destination, bandaId, cotizacionId, cotData);
+                            }
+                        });
+                    }
+                    return;
+                }
+                
+                const currentLat = currentSnap.child('latitude').val();
+                const currentLng = currentSnap.child('longitude').val();
+                
+                if (currentLat && currentLng) {
+                    const currentLocation = { lat: currentLat, lng: currentLng };
+                    const destination = cotData.direccion || '';
+                    
+                    if (destination) {
+                        drawRoute(bandLocation, destination, bandaId, cotizacionId, cotData);
+                    } else {
+                        alert('No hay dirección de destino');
+                    }
+                }
+            }, { onlyOnce: true });
+        }
+    }, { onlyOnce: true });
+}
+
+// Draw route
+function drawRoute(origin, destination, bandaId, cotizacionId, cotData) {
+    if (!map) return;
+    
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({
+        suppressMarkers: true,
+        polylineOptions: {
+            strokeColor: '#007BFF',
+            strokeWeight: 5
+        }
+    });
+    
+    directionsRenderer.setMap(map);
+    
+    // Convert origin object to string if needed
+    const originStr = typeof origin === 'object' ? `${origin.lat},${origin.lng}` : origin;
+    
+    directionsService.route({
+        origin: originStr,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING
+    }, (result, status) => {
+        if (status === 'OK') {
+            directionsRenderer.setDirections(result);
+            currentRoutePolyline = directionsRenderer;
+            
+            // Get route info
+            const route = result.routes[0];
+            const leg = route.legs[0];
+            const duration = leg.duration.text;
+            const distance = leg.distance.text;
+            
+            document.getElementById('routeTime').textContent = `Tiempo: ${duration}`;
+            document.getElementById('routeDistance').textContent = `Distancia: ${distance}`;
+            
+            // Add markers
+            if (startMarker) startMarker.setMap(null);
+            if (destinationMarker) destinationMarker.setMap(null);
+            
+            startMarker = new google.maps.Marker({
+                position: leg.start_location,
+                map: map,
+                title: 'Van',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" fill="#4CAF50" rx="5"/>
+                            <text x="20" y="25" font-size="20" text-anchor="middle">🚐</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40)
+                }
+            });
+            
+            destinationMarker = new google.maps.Marker({
+                position: leg.end_location,
+                map: map,
+                title: 'Destino',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" fill="#FF6B6B" stroke="white" stroke-width="2"/>
+                            <text x="20" y="25" font-size="20" text-anchor="middle">📍</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40)
+                }
+            });
+            
+            // Fit bounds to show entire route
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(leg.start_location);
+            bounds.extend(leg.end_location);
+            map.fitBounds(bounds);
+            
+            // Update route info
+            document.getElementById('confirmRoute').onclick = () => {
+                confirmarServicio(bandaId, cotizacionId);
+            };
+            
+            document.getElementById('cancelRoute').onclick = () => {
+                cancelarServicio(bandaId, cotizacionId);
+            };
+            
+            // Track band location in real time
+            trackBandLocation(bandaId);
+        } else {
+            alert('No se pudo calcular la ruta: ' + status);
+        }
+    });
+}
+
+// Track band location
+function trackBandLocation(bandaId) {
+    const vanLocationRef = ref(db, `UserLocation/${bandaId}`);
+    
+    // Remove old listener if exists
+    if (ubicacionListener) {
+        // Note: In Firebase v9+, we need to store the unsubscribe function
+        // For now, we'll just overwrite it
+    }
+    
+    ubicacionListener = onValue(vanLocationRef, (snap) => {
+        if (!snap.exists() || !startMarker) return;
+        
+        const lat = snap.child('latitude').val();
+        const lng = snap.child('longitude').val();
+        
+        if (lat && lng) {
+            const newPosition = { lat, lng };
+            startMarker.setPosition(newPosition);
+            
+            // Smoothly center map on van
+            map.panTo(newPosition);
+        }
+    });
+}
+
+// Iniciar tracking cliente (como Android - tracking en tiempo real con actualización de ruta)
+function iniciarTrackingCliente(bandaId, cotizacionId, mariachiLatInicial, mariachiLngInicial, 
+                                destinoLat, destinoLng, direccion, ubicacion, nameGrupo) {
+    if (!bandaId || !cotizacionId) return;
+    
+    const listenerKey = 'tracking_' + cotizacionId;
+    
+    // Limpiar listener anterior si existe
+    if (activeTrackingListeners.has(listenerKey)) {
+        const oldListener = activeTrackingListeners.get(listenerKey);
+        const oldRef = ref(db, `CotizacionComprador/${currentUID}/${cotizacionId}`);
+        oldRef.off('value', oldListener);
+        activeTrackingListeners.delete(listenerKey);
+    }
+    
+    const cotizacionRef = ref(db, `CotizacionComprador/${currentUID}/${cotizacionId}`);
+    let lastMariachiPosition = null;
+    let lastRouteUpdateTime = 0;
+    const ROUTE_UPDATE_INTERVAL = 30000; // 30 segundos
+    
+    const trackingListener = onValue(cotizacionRef, (snapshot) => {
+        if (!snapshot.exists()) return;
+        
+        const status = snapshot.child('status').val();
+        const mariachiLat = snapshot.child('mariachiLat').val();
+        const mariachiLng = snapshot.child('mariachiLng').val();
+        const tiempoEstimadoTexto = snapshot.child('tiempoEstimadoTexto').val() || '';
+        
+        if (status === 'in_progress' && mariachiLat != null && mariachiLng != null) {
+            const mariachiLatLng = { lat: mariachiLat, lng: mariachiLng };
+            
+            if (map) {
+                if (!bandMarker) {
+                    bandMarker = new google.maps.Marker({
+                        position: mariachiLatLng,
+                        map: map,
+                        title: 'Mariachi en camino' + (tiempoEstimadoTexto ? ' - ' + tiempoEstimadoTexto : ''),
+                        icon: {
+                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="40" height="40" fill="#4CAF50" rx="5"/>
+                                    <text x="20" y="25" font-size="20" text-anchor="middle">🚐</text>
+                                </svg>
+                            `),
+                            scaledSize: new google.maps.Size(40, 40)
+                        }
+                    });
+                } else {
+                    bandMarker.setPosition(mariachiLatLng);
+                    bandMarker.setTitle('Mariachi en camino' + (tiempoEstimadoTexto ? ' - ' + tiempoEstimadoTexto : ''));
+                }
+                
+                // Centrar mapa en mariachi
+                map.panTo(mariachiLatLng);
+                
+                // Actualizar ruta si es necesario
+                if (destinoLat != null && destinoLng != null) {
+                    const currentTime = Date.now();
+                    let shouldUpdateRoute = false;
+                    
+                    if (lastMariachiPosition == null) {
+                        shouldUpdateRoute = true;
+                    } else {
+                        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                            new google.maps.LatLng(lastMariachiPosition.lat, lastMariachiPosition.lng),
+                            new google.maps.LatLng(mariachiLat, mariachiLng)
+                        );
+                        
+                        if ((currentTime - lastRouteUpdateTime) > ROUTE_UPDATE_INTERVAL || distance > 100) {
+                            shouldUpdateRoute = true;
+                        }
+                    }
+                    
+                    if (shouldUpdateRoute) {
+                        const origin = `${mariachiLat},${mariachiLng}`;
+                        const destination = `${destinoLat},${destinoLng}`;
+                        
+                        if (!currentRoutePolyline) {
+                            drawRoute(origin, destination, currentUID, bandaId, cotizacionId, nameGrupo, '', direccion, '');
+                        } else {
+                            currentRoutePolyline.setMap(null);
+                            currentRoutePolyline = null;
+                            if (startMarker) {
+                                startMarker.setMap(null);
+                                startMarker = null;
+                            }
+                            drawRoute(origin, destination, currentUID, bandaId, cotizacionId, nameGrupo, '', direccion, '');
+                        }
+                        
+                        lastMariachiPosition = mariachiLatLng;
+                        lastRouteUpdateTime = currentTime;
+                    } else {
+                        // Solo actualizar posición del marcador
+                        if (startMarker) {
+                            startMarker.setPosition(mariachiLatLng);
+                        } else if (map) {
+                            startMarker = new google.maps.Marker({
+                                position: mariachiLatLng,
+                                map: map,
+                                title: 'Van',
+                                icon: {
+                                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="40" height="40" fill="#4CAF50" rx="5"/>
+                                            <text x="20" y="25" font-size="20" text-anchor="middle">🚐</text>
+                                        </svg>
+                                    `),
+                                    scaledSize: new google.maps.Size(40, 40)
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        } else if (status === 'arrived') {
+            if (bandMarker && mariachiLat != null && mariachiLng != null) {
+                bandMarker.setPosition({ lat: mariachiLat, lng: mariachiLng });
+                bandMarker.setTitle('Mariachi llegó al destino');
+            }
+        } else if (status === 'service_started') {
+            if (bandMarker) bandMarker.setTitle('Servicio en curso');
+        } else if (status === 'completed') {
+            if (bandMarker) bandMarker.setTitle('Servicio completado');
+        }
+    });
+    
+    activeTrackingListeners.set(listenerKey, trackingListener);
+}
+
+// Detener tracking cliente
+function detenerTrackingCliente(cotizacionId) {
+    if (!cotizacionId) return;
+    
+    const listenerKey = 'tracking_' + cotizacionId;
+    
+    if (activeTrackingListeners.has(listenerKey)) {
+        const listener = activeTrackingListeners.get(listenerKey);
+        const cotizacionRef = ref(db, `CotizacionComprador/${currentUID}/${cotizacionId}`);
+        cotizacionRef.off('value', listener);
+        activeTrackingListeners.delete(listenerKey);
+    }
+}
+
+// Ubicaciones recientes (localStorage + Firebase)
+function guardarUbicacionReciente(direccion, latitud, longitud, nombreLugar) {
+    if (!direccion || !direccion.trim() || latitud == null || longitud == null) return;
+    if (!currentUID) return;
+    
+    try {
+        const key = 'ubicaciones_' + currentUID;
+        let ubicacionesJson = localStorage.getItem(key) || '[]';
+        let ubicacionesArray = JSON.parse(ubicacionesJson);
+        
+        // Remover duplicados
+        ubicacionesArray = ubicacionesArray.filter(u => u.direccion !== direccion);
+        
+        // Agregar al inicio
+        const nuevaUbicacion = {
+            direccion: direccion,
+            latitud: latitud,
+            longitud: longitud,
+            nombreLugar: nombreLugar || '',
+            timestamp: Date.now()
+        };
+        ubicacionesArray.unshift(nuevaUbicacion);
+        
+        // Limitar a 5
+        while (ubicacionesArray.length > 5) {
+            ubicacionesArray.pop();
+        }
+        
+        localStorage.setItem(key, JSON.stringify(ubicacionesArray));
+        
+        // Guardar también en Firebase
+        const ubicacionesRef = ref(db, `UserLocationsHistory/${currentUID}`);
+        push(ubicacionesRef, nuevaUbicacion);
+        
+    } catch (e) {
+        console.error('Error guardando ubicación reciente:', e);
+    }
+}
+
+function cargarUbicacionesRecientes() {
+    if (!currentUID) return [];
+    
+    try {
+        const key = 'ubicaciones_' + currentUID;
+        const ubicacionesJson = localStorage.getItem(key) || '[]';
+        return JSON.parse(ubicacionesJson);
+    } catch (e) {
+        console.error('Error cargando ubicaciones recientes:', e);
+        return [];
+    }
+}
+
+// Obtener ubicación usuario desde Firebase (callback)
+function obtenerUbicacionUsuarioDesdeFirebase(callback) {
+    if (!currentUID) {
+        callback(null, null);
+        return;
+    }
+    
+    const userLocationRef = ref(db, `UserLocation/${currentUID}`);
+    onValue(userLocationRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const lat = snapshot.child('latitude').val();
+            const lng = snapshot.child('longitude').val();
+            callback(lat, lng);
+        } else {
+            callback(null, null);
+        }
+    }, { onlyOnce: true });
+}
+
+// Confirmar servicio
+async function confirmarServicio(bandaUid, cotizacionId) {
+    if (!bandaUid || !cotizacionId) {
+        alert('Datos incompletos');
+        return;
+    }
+    
+    const timeConfirmed = new Date().toISOString();
+    
+    const updates = {};
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/confirmada`] = 'yes';
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/timeConfirmed`] = timeConfirmed;
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/deleteAfterHours`] = 4;
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/confirmada`] = 'yes';
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/timeConfirmed`] = timeConfirmed;
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/deleteAfterHours`] = 4;
+    
+    try {
+        const rootRef = ref(db);
+        await update(rootRef, updates);
+        alert('Servicio confirmado correctamente');
+        document.getElementById('routeInfo').classList.remove('show');
+    } catch (error) {
+        console.error('Error confirmando servicio:', error);
+        alert('Error al confirmar el servicio');
+    }
+}
+
+// Cancelar servicio
+async function cancelarServicio(bandaUid, cotizacionId) {
+    if (!bandaUid || !cotizacionId) {
+        alert('Datos incompletos');
+        return;
+    }
+    
+    if (!confirm('¿Estás seguro de cancelar este servicio?')) {
+        return;
+    }
+    
+    const timeNow = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    
+    const updates = {};
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/confirmada`] = 'cancel';
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/canceladabanda`] = 'no';
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/canceladauser`] = currentUID;
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/finalizada`] = 'yes';
+    updates[`CotizacionBanda/${bandaUid}/${cotizacionId}/timecancelation`] = timeNow;
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/confirmada`] = 'cancel';
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/canceladabanda`] = 'no';
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/canceladauser`] = currentUID;
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/finalizada`] = 'yes';
+    updates[`CotizacionComprador/${currentUID}/${cotizacionId}/timecancelation`] = timeNow;
+    
+    try {
+        const rootRef = ref(db);
+        await update(rootRef, updates);
+        alert('Servicio cancelado correctamente');
+        document.getElementById('routeInfo').classList.remove('show');
+        if (currentRoutePolyline) {
+            currentRoutePolyline.setMap(null);
+        }
+        if (startMarker) startMarker.setMap(null);
+        if (destinationMarker) destinationMarker.setMap(null);
+    } catch (error) {
+        console.error('Error cancelando servicio:', error);
+        alert('Error al cancelar el servicio');
+    }
+}
+
+// Handler botón "seeAgain" (recargar entidades)
+document.addEventListener('DOMContentLoaded', () => {
+    const seeAgain = document.getElementById('seeAgain');
+    if (seeAgain) {
+        seeAgain.onclick = () => {
+            const progressBar = document.getElementById('progressBarContainer');
+            if (progressBar) progressBar.classList.add('show');
+            seeAgain.classList.remove('show');
+            getEntidades();
+        };
+    }
+});
+
+// Make functions global
+window.showCotizacionModal = showCotizacionModal;
+window.enviarCotizacion = enviarCotizacion;
+window.confirmarServicio = confirmarServicio;
+window.cancelarServicio = cancelarServicio;
+window.followUser = followUser;
+window.obtenerYReproducirAudio = obtenerYReproducirAudio;
+window.seleccionarUbicacionReciente = seleccionarUbicacionReciente;
+
+</script>
+</body>
+</html>

@@ -1,0 +1,4585 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://proviweb.com">
+    <title>FUNDAR - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .team-story-page {
+            min-height: 100vh;
+            padding: 24px;
+            background: var(--bg-primary);
+        }
+
+        .team-story-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .team-story-back {
+            display: inline-block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .team-story-back:hover {
+            color: var(--accent-purple);
+        }
+
+        .team-story-hero {
+            margin-bottom: 32px;
+        }
+
+        .team-story-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .team-story-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid var(--border-glass);
+            background: var(--bg-card);
+        }
+
+        .team-story-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 8px 0;
+        }
+
+        .team-story-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .team-story-lead {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .fundar-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .fundar-kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .fundar-kpi-card strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .team-story-section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 32px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .team-story-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .team-story-text strong {
+            color: var(--text-primary);
+        }
+
+        .story-visuals {
+            margin: 24px 0;
+        }
+
+        .story-icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .story-icon-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .story-icon-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .story-icon-card img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .story-location {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .story-location img {
+            width: 48px;
+            height: 48px;
+            opacity: 0.9;
+        }
+
+        .story-location strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .story-location div {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .team-story-quote {
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            font-style: italic;
+            line-height: 1.6;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .team-story-quote::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            opacity: 0.3;
+            font-style: normal;
+        }
+
+        .story-highlight {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .story-highlight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 20px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .story-highlight-card strong {
+            display: block;
+            color: var(--accent-purple);
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .fundar-pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .fundar-pillar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .fundar-pillar:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.15);
+        }
+
+        .fundar-pillar img {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .fundar-pillar h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin: 0 0 12px 0;
+        }
+
+        .fundar-pillar p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .story-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .story-timeline-item {
+            display: flex;
+            gap: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .story-timeline-year {
+            min-width: 120px;
+            color: var(--accent-purple);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .story-timeline-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .fundar-gallery-wrap {
+            position: relative;
+            margin: 24px 0;
+        }
+
+        .fundar-gallery {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 8px 0;
+        }
+
+        .fundar-gallery::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fundar-gallery-item {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            margin: 0;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .fundar-gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: -130% -45%;
+            background: linear-gradient(
+                110deg,
+                rgba(255, 255, 255, 0) 38%,
+                rgba(255, 255, 255, 0.06) 45%,
+                rgba(255, 255, 255, 0.58) 50%,
+                rgba(255, 255, 255, 0.06) 55%,
+                rgba(255, 255, 255, 0) 62%
+            );
+            transform: translate3d(-112%, -6%, 0) rotate(14deg);
+            opacity: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .fundar-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .fundar-gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .fundar-gallery-item:focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 2px;
+        }
+
+        .fundar-gallery-item.is-active {
+            transform: scale(1.04);
+            border-color: rgba(168, 85, 247, 0.85);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+        }
+
+        .fundar-gallery-item.is-active::after {
+            animation: fundarGalleryShineSweep 4.9s cubic-bezier(0.25, 0.2, 0.2, 1) infinite;
+        }
+
+        .fundar-gallery-item.is-active img {
+            transform: scale(1.09);
+            filter: saturate(1.05);
+        }
+
+        .fundar-gallery-caption {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            padding: 12px;
+            color: #ffffff !important;
+            font-size: 12px;
+            line-height: 1.4;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.88) 72%);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: none;
+        }
+
+        .fundar-gallery-item.is-active .fundar-gallery-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fundar-gallery-next {
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .fundar-gallery-next:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+        }
+
+        .fundar-gallery-next.is-end {
+            opacity: 0.6;
+        }
+
+        .fundar-gallery-help {
+            margin: 8px 0 0 0;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .fundar-video-showcase {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .fundar-video-intro {
+            margin: 0 0 14px 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .fundar-video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .fundar-video-item {
+            background: rgba(10, 10, 14, 0.65);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .fundar-video-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .fundar-video-frame iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .fundar-video-label {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            text-align: center;
+        }
+
+        .fundar-video-actions {
+            margin-top: 14px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .fundar-map-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .fundar-map {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .fundar-faq {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .fundar-faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .fundar-faq-item h3 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin: 0 0 12px 0;
+        }
+
+        .fundar-faq-item p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .fundar-source-list {
+            list-style: none;
+            padding: 0;
+            margin: 24px 0;
+        }
+
+        .fundar-source-list li {
+            margin-bottom: 12px;
+        }
+
+        .fundar-source-list a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .fundar-source-list a::before {
+            content: '→';
+            opacity: 0.7;
+        }
+
+        .fundar-source-list a:hover {
+            border-color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .fundar-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .fundar-cta-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .fundar-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+        }
+
+        .fundar-top-cta {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .fundar-cta-btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+        }
+
+        .fundar-cta-btn-secondary:hover {
+            border-color: var(--accent-purple);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .fundar-carnet-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(330px, 420px);
+            gap: 26px;
+            margin: 24px 0 32px 0;
+            align-items: start;
+        }
+
+        .fundar-carnet-panel,
+        .fundar-carnet-preview {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .fundar-carnet-preview {
+            --fundar-card-max: 380px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 48%),
+                var(--bg-card);
+        }
+
+        .fundar-payment-panel {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            background: rgba(13, 13, 18, 0.75);
+            margin-bottom: 18px;
+        }
+
+        .fundar-payment-title {
+            font-size: 15px;
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .fundar-step-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            font-weight: 600;
+        }
+
+        .fundar-step-badge {
+            min-width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .fundar-step-badge.step-1 {
+            background: #ffd200;
+            color: #1a1a1a;
+        }
+
+        .fundar-step-badge.step-2 {
+            background: #0057b8;
+            color: #ffffff;
+        }
+
+        .fundar-step-badge.step-3 {
+            background: #d62828;
+            color: #ffffff;
+        }
+
+        .fundar-payment-copy {
+            margin: 0 0 14px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .fundar-nequi-qr-wrap {
+            margin: 0 0 14px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .fundar-nequi-qr-wrap img {
+            width: min(260px, 100%);
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .fundar-nequi-key-text {
+            margin: -2px 0 14px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .fundar-nequi-key-text strong {
+            color: #ffffff;
+            letter-spacing: 0.4px;
+        }
+
+        .fundar-code-check label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .fundar-code-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .fundar-code-row input {
+            flex: 1;
+        }
+
+        .fundar-payment-status {
+            margin: 12px 0 0 0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            border: 1px solid transparent;
+        }
+
+        .fundar-payment-status.ok {
+            color: #43dd9a;
+            border-color: rgba(67, 221, 154, 0.3);
+            background: rgba(67, 221, 154, 0.12);
+        }
+
+        .fundar-payment-status.warn {
+            color: #f8c46a;
+            border-color: rgba(248, 196, 106, 0.32);
+            background: rgba(248, 196, 106, 0.14);
+        }
+
+        .fundar-carnet-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .fundar-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .fundar-form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+        }
+
+        .fundar-form-field.is-span-2 {
+            grid-column: 1 / -1;
+        }
+
+        .fundar-form-field input,
+        .fundar-form-field select {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            background: rgba(6, 6, 9, 0.65);
+            padding: 10px 11px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .fundar-form-field input:focus,
+        .fundar-form-field select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+        }
+
+        .fundar-form-field-help {
+            margin-top: -1px;
+            font-size: 10px;
+            letter-spacing: 0.28px;
+            text-transform: none;
+            color: rgba(232, 237, 255, 0.78);
+            line-height: 1.25;
+        }
+
+        .fundar-file-input {
+            padding: 8px 10px !important;
+        }
+
+        .fundar-file-input::file-selector-button {
+            border: none;
+            border-radius: 7px;
+            background: rgba(168, 85, 247, 0.25);
+            color: #fff;
+            font-size: 12px;
+            padding: 6px 10px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .fundar-readonly {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #d8d8e4 !important;
+        }
+
+        .fundar-form-actions {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fundar-carnet-access-shell {
+            margin: 8px 0 30px 0;
+        }
+
+        .fundar-carnet-access {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            background: rgba(11, 11, 16, 0.72);
+            padding: 18px;
+            max-width: 740px;
+        }
+
+        .fundar-carnet-access.is-separated {
+            margin: 0 auto;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+                rgba(11, 11, 16, 0.72);
+        }
+
+        .fundar-carnet-message {
+            margin: 0;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            padding: 10px 12px;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .fundar-carnet-message.info {
+            color: #b9c8ff;
+            background: rgba(115, 150, 255, 0.12);
+            border-color: rgba(115, 150, 255, 0.25);
+        }
+
+        .fundar-carnet-message.success {
+            color: #49e2a1;
+            background: rgba(73, 226, 161, 0.14);
+            border-color: rgba(73, 226, 161, 0.26);
+        }
+
+        .fundar-carnet-message.error {
+            color: #ffb0b7;
+            background: rgba(255, 95, 109, 0.13);
+            border-color: rgba(255, 95, 109, 0.28);
+        }
+
+        .fundar-preview-help {
+            margin: 0 0 12px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .fundar-preview-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .fundar-preview-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 999px;
+            padding: 5px 10px;
+            color: #ffffff;
+            font-size: 11px;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+        }
+
+        .fundar-preview-chip::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.62);
+        }
+
+        .fundar-id-wrapper {
+            width: min(100%, var(--fundar-card-max));
+            margin: 0 auto;
+            position: relative;
+            perspective: 1600px;
+            -webkit-perspective: 1600px;
+            perspective-origin: center center;
+        }
+
+        .fundar-id-wrapper::before {
+            content: '';
+            display: block;
+            padding-top: 170.6667%;
+        }
+
+        .fundar-carnet-preview .fundar-preview-meta,
+        .fundar-carnet-preview .fundar-preview-help,
+        .fundar-carnet-preview .fundar-result-panel {
+            width: min(100%, var(--fundar-card-max));
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .fundar-result-panel {
+            margin-top: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            background:
+                linear-gradient(155deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+                rgba(9, 9, 13, 0.68);
+            padding: 12px;
+        }
+
+        .fundar-result-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .fundar-result-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .fundar-result-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .fundar-result-pill {
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 5px 9px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            white-space: nowrap;
+        }
+
+        .fundar-result-pill.is-pending {
+            color: #f8c46a;
+            border-color: rgba(248, 196, 106, 0.44);
+            background: rgba(248, 196, 106, 0.14);
+        }
+
+        .fundar-result-pill.is-ready {
+            color: #8ec6ff;
+            border-color: rgba(142, 198, 255, 0.42);
+            background: rgba(142, 198, 255, 0.12);
+        }
+
+        .fundar-result-pill.is-found {
+            color: #a3e0ff;
+            border-color: rgba(163, 224, 255, 0.42);
+            background: rgba(163, 224, 255, 0.12);
+        }
+
+        .fundar-result-pill.is-saved {
+            color: #49e2a1;
+            border-color: rgba(73, 226, 161, 0.42);
+            background: rgba(73, 226, 161, 0.12);
+        }
+
+        .fundar-result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .fundar-result-item {
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px;
+        }
+
+        .fundar-result-item span {
+            display: block;
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.44px;
+            margin-bottom: 4px;
+        }
+
+        .fundar-result-item strong {
+            display: block;
+            font-size: 11px;
+            color: #ffffff;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+
+        .fundar-result-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .fundar-result-btn {
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 10px;
+            padding: 7px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fundar-result-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .fundar-id-card {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            cursor: pointer;
+            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.28));
+        }
+
+        .fundar-id-flip {
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transition: transform 0.62s cubic-bezier(0.25, 0.85, 0.32, 1.08);
+            transform-origin: center center;
+            will-change: transform;
+            transform: rotateY(0deg);
+            -webkit-transform: rotateY(0deg);
+        }
+
+        .fundar-id-card.is-flipped .fundar-id-flip {
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+        }
+
+        .fundar-id-card:focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 4px;
+            border-radius: 22px;
+        }
+
+        .fundar-id-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.36);
+            border: 2px solid rgba(0, 0, 0, 0.18);
+        }
+
+        .fundar-id-front {
+            transform: rotateY(0deg);
+            -webkit-transform: rotateY(0deg);
+            z-index: 2;
+            color: #0f2d5a;
+            font-family: 'Oswald', sans-serif;
+            background:
+                radial-gradient(circle at 14% 20%, rgba(255, 255, 255, 0.28) 0 10%, transparent 36%),
+                radial-gradient(circle at 84% 76%, rgba(255, 170, 20, 0.34) 0 13%, transparent 42%),
+                linear-gradient(148deg, transparent 0 39%, rgba(255, 255, 255, 0.92) 39% 51%, transparent 51%),
+                linear-gradient(28deg, #ffb300 0 46%, #ffca1a 46% 73%, #f7be0d 73% 100%);
+            background-size: 160% 160%, 180% 180%, 100% 100%, 100% 100%;
+            background-position: 2% 3%, 96% 96%, center center, center center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 16px;
+            position: absolute;
+            isolation: isolate;
+            will-change: background-position, background-size;
+            animation: fundarFrontShapesFloat 12.8s cubic-bezier(0.42, 0, 0.2, 1) infinite alternate;
+        }
+
+        .fundar-front-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 126px;
+            height: 26px;
+            border-radius: 0 0 13px 13px;
+            background: #0f0f12;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+            z-index: 5;
+        }
+
+        .fundar-id-front::before {
+            content: '';
+            position: absolute;
+            left: -86px;
+            bottom: -116px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 2px solid rgba(16, 52, 96, 0.23);
+            box-shadow:
+                18px 0 0 rgba(16, 52, 96, 0.14),
+                36px 0 0 rgba(16, 52, 96, 0.1),
+                54px 0 0 rgba(16, 52, 96, 0.08);
+            pointer-events: none;
+            animation: fundarOrbitDrift 11.8s ease-in-out infinite;
+        }
+
+        .fundar-id-front::after {
+            content: '';
+            position: absolute;
+            right: 24px;
+            bottom: 44px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #fff 0 12%, rgba(255, 255, 255, 0.5) 40%, transparent 100%);
+            animation: fundarSparkPulse 3.9s ease-in-out infinite;
+        }
+
+        .fundar-front-icon-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .fundar-front-icon-particles span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: var(--size, 16px);
+            color: rgba(16, 58, 106, 0.34);
+            text-shadow:
+                0 0 8px rgba(255, 255, 255, 0.22),
+                0 0 14px rgba(18, 74, 130, 0.18);
+            opacity: 0;
+            user-select: none;
+            will-change: transform, opacity;
+            animation: fundarMusicParticleTravel var(--dur, 9s) linear infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        .fundar-card-shine {
+            position: absolute;
+            inset: -132% -46%;
+            background: linear-gradient(
+                110deg,
+                rgba(255, 255, 255, 0) 38%,
+                rgba(255, 255, 255, 0.05) 45%,
+                rgba(255, 255, 255, 0.52) 50%,
+                rgba(255, 255, 255, 0.05) 55%,
+                rgba(255, 255, 255, 0) 62%
+            );
+            transform: translate3d(-112%, -8%, 0) rotate(14deg);
+            opacity: 0;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            z-index: 4;
+            animation: fundarGalleryShineSweep 6.3s cubic-bezier(0.25, 0.2, 0.2, 1) infinite;
+        }
+
+        .fundar-id-back .fundar-card-shine {
+            animation-duration: 6.9s;
+            animation-delay: 0.9s;
+            opacity: 0;
+        }
+
+        .fundar-front-top {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .fundar-front-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            margin-top: 7px;
+            max-width: 132px;
+        }
+
+        .fundar-front-barcode {
+            width: 116px;
+            height: 28px;
+            padding: 4px 6px 3px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(19, 33, 54, 0.18);
+            box-shadow: 0 2px 6px rgba(9, 23, 44, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .fundar-front-barcode-bars {
+            width: 100%;
+            height: 16px;
+            border-radius: 3px;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    #0f131b 0 1px,
+                    transparent 1px 2px,
+                    #0f131b 2px 4px,
+                    transparent 4px 5px,
+                    #0f131b 5px 6px,
+                    transparent 6px 8px,
+                    #0f131b 8px 12px,
+                    transparent 12px 13px,
+                    #0f131b 13px 15px,
+                    transparent 15px 17px,
+                    #0f131b 17px 20px,
+                    transparent 20px 21px
+                );
+            background-size: 64px 100%;
+            opacity: 0.96;
+        }
+
+        .fundar-front-barcode-digits {
+            width: 100%;
+            text-align: center;
+            color: #0d1522;
+            font-size: 8px;
+            line-height: 1;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            font-family: "Roboto Mono", "Consolas", "Courier New", monospace;
+            text-indent: 0.2em;
+        }
+
+        .fundar-front-logo-wrap {
+            width: 104px;
+            height: 104px;
+            aspect-ratio: 1 / 1;
+            border-radius: 9999px;
+            background: #ffcf3f;
+            border: 2px solid rgba(16, 52, 96, 0.5);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            clip-path: circle(50%);
+            animation: fundarGoldGlow 4.8s ease-in-out infinite;
+        }
+
+        .fundar-front-logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(1.05) contrast(1.03);
+        }
+
+        .fundar-front-number {
+            color: #0f0f12;
+            font-size: 12px;
+            line-height: 1.04;
+            font-weight: 700;
+            letter-spacing: 0.015em;
+            margin-top: 0;
+            max-width: 100%;
+            text-align: right;
+        }
+
+        .fundar-front-active-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1px solid rgba(19, 25, 35, 0.26);
+            background: #808793;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
+        }
+
+        .fundar-front-active-dot.is-active {
+            background: #33d971;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.55),
+                0 0 9px rgba(61, 232, 123, 0.95),
+                0 0 16px rgba(61, 232, 123, 0.6);
+        }
+
+        .fundar-front-active-dot.is-inactive {
+            background: #8a8f98;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .fundar-front-slogan {
+            margin-top: 40px;
+            color: #112f60;
+            font-size: 12px;
+            transform: translate(-40px, 0) rotate(-31deg);
+            line-height: 1.1;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            z-index: 2;
+            max-width: calc(100% - 24px);
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transform-origin: center center;
+        }
+
+        .fundar-front-photo-wrap {
+            margin-top: 5px;
+            width: 172px;
+            height: 172px;
+            aspect-ratio: 1 / 1;
+            border-radius: 9999px;
+            border: 4px solid rgba(255, 255, 255, 0.88);
+            outline: 2px solid rgba(21, 58, 102, 0.28);
+            outline-offset: 3px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            z-index: 2;
+            background: #f0f0f0;
+            flex: 0 0 auto;
+            clip-path: circle(50%);
+            transform-style: preserve-3d;
+            animation: fundarCoinRoll 10s cubic-bezier(0.28, 0.05, 0.2, 1) infinite;
+        }
+
+        .fundar-front-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fundar-front-name {
+            margin-top: 19px;
+            color: #0d2f64;
+            text-align: center;
+            text-transform: uppercase;
+            font-family: 'Bebas Neue', 'Oswald', sans-serif;
+            letter-spacing: 0.95px;
+            line-height: 1.05;
+            font-size: clamp(28px, 7vw, 43px);
+            z-index: 2;
+            width: 100%;
+            max-width: calc(100% - 14px);
+            animation: fundarGoldTextGlow 4.8s ease-in-out infinite;
+        }
+
+        .fundar-front-name span {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-front-cc {
+            margin-top: 12px;
+            color: #0e2f61;
+            font-family: 'Bebas Neue', 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            font-size: clamp(21px, 5.4vw, 31px);
+            line-height: 1;
+            z-index: 2;
+            max-width: calc(100% - 14px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-front-role {
+            margin-top: 9px;
+            color: #103665;
+            font-size: 16px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            font-weight: 700;
+            z-index: 2;
+            max-width: calc(100% - 16px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-front-rh {
+            margin-top: 12px;
+            font-size: 17px;
+            color: #24466c;
+            z-index: 2;
+            max-width: calc(100% - 14px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-front-code {
+            margin-top: auto;
+            font-size: 8.4px;
+            color: rgba(16, 51, 94, 0.84);
+            letter-spacing: 0.3px;
+            z-index: 2;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-front-expiry {
+            margin-top: 6px;
+            font-size: 8.4px;
+            color: rgba(16, 51, 94, 0.84);
+            letter-spacing: 0.3px;
+            z-index: 2;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes fundarFrontShapesFloat {
+            0% {
+                background-position: 2% 3%, 96% 96%, center center, center center;
+                background-size: 160% 160%, 180% 180%, 100% 100%, 100% 100%;
+            }
+            25% {
+                background-position: 20% 12%, 78% 84%, center center, center center;
+                background-size: 176% 176%, 194% 194%, 100% 100%, 100% 100%;
+            }
+            50% {
+                background-position: 38% 20%, 61% 70%, center center, center center;
+                background-size: 191% 191%, 206% 206%, 100% 100%, 100% 100%;
+            }
+            75% {
+                background-position: 18% 30%, 80% 48%, center center, center center;
+                background-size: 174% 174%, 188% 188%, 100% 100%, 100% 100%;
+            }
+            100% {
+                background-position: 46% 38%, 52% 38%, center center, center center;
+                background-size: 200% 200%, 220% 220%, 100% 100%, 100% 100%;
+            }
+        }
+
+        @keyframes fundarOrbitDrift {
+            0%, 100% {
+                transform: translate3d(-2px, 2px, 0) rotate(-2deg) scale(0.98);
+                opacity: 0.88;
+            }
+            25% {
+                transform: translate3d(8px, -4px, 0) rotate(2deg) scale(1);
+                opacity: 0.96;
+            }
+            50% {
+                transform: translate3d(18px, -13px, 0) rotate(7deg) scale(1.03);
+                opacity: 1;
+            }
+            75% {
+                transform: translate3d(7px, -3px, 0) rotate(2deg) scale(1);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes fundarSparkPulse {
+            0%, 100% {
+                transform: translate3d(0, 0, 0) scale(0.82);
+                opacity: 0.48;
+            }
+            25% {
+                transform: translate3d(-4px, -2px, 0) scale(1.08);
+                opacity: 0.74;
+            }
+            50% {
+                transform: translate3d(-8px, -5px, 0) scale(1.36);
+                opacity: 1;
+            }
+            75% {
+                transform: translate3d(-3px, -1px, 0) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes fundarMusicParticleTravel {
+            0% {
+                transform: translate3d(calc(var(--x-start, 50) * 1%), calc(var(--y-start, 50) * 1%), 0) rotate(0deg) scale(var(--scale-start, 0.72));
+                opacity: 0;
+            }
+            12% {
+                opacity: var(--opacity-mid, 0.24);
+            }
+            50% {
+                opacity: var(--opacity-peak, 0.44);
+            }
+            100% {
+                transform: translate3d(calc((var(--x-start, 50) + var(--x-drift, 0)) * 1%), calc((var(--y-start, 50) + var(--y-drift, -18)) * 1%), 0) rotate(var(--rot, 24deg)) scale(var(--scale-end, 1.08));
+                opacity: 0;
+            }
+        }
+
+        @keyframes fundarGalleryShineSweep {
+            0%, 16% {
+                transform: translate3d(-112%, -8%, 0) rotate(14deg);
+                opacity: 0;
+            }
+            22% {
+                opacity: 0.42;
+            }
+            34% {
+                transform: translate3d(108%, 8%, 0) rotate(14deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translate3d(108%, 8%, 0) rotate(14deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fundarGoldGlow {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 0 rgba(255, 212, 93, 0),
+                    0 0 0 0 rgba(255, 170, 28, 0);
+                filter: brightness(0.98) saturate(1);
+            }
+            50% {
+                box-shadow:
+                    0 0 14px 2px rgba(255, 232, 142, 0.58),
+                    0 0 24px 3px rgba(255, 180, 54, 0.45);
+                filter: brightness(1.08) saturate(1.12);
+            }
+        }
+
+        @keyframes fundarGoldTextGlow {
+            0%, 100% {
+                text-shadow:
+                    0 0 0 rgba(255, 224, 130, 0),
+                    0 0 0 rgba(255, 175, 48, 0);
+            }
+            50% {
+                text-shadow:
+                    0 0 9px rgba(255, 228, 132, 0.78),
+                    0 0 18px rgba(255, 168, 46, 0.55);
+            }
+        }
+
+        @keyframes fundarCoinRoll {
+            0%, 9% {
+                transform: rotateX(7deg) rotateY(0deg) translateY(0);
+            }
+            22% {
+                transform: rotateX(7deg) rotateY(90deg) translateY(1px);
+            }
+            34% {
+                transform: rotateX(7deg) rotateY(180deg) translateY(0);
+            }
+            47% {
+                transform: rotateX(7deg) rotateY(270deg) translateY(1px);
+            }
+            58% {
+                transform: rotateX(7deg) rotateY(360deg) translateY(0);
+            }
+            100% {
+                transform: rotateX(7deg) rotateY(360deg) translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fundar-id-front,
+            .fundar-id-front::before,
+            .fundar-id-front::after,
+            .fundar-front-icon-particles span,
+            .fundar-card-shine,
+            .fundar-front-logo-wrap,
+            .fundar-front-name,
+            .fundar-front-photo-wrap {
+                animation: none !important;
+            }
+        }
+
+        .fundar-id-back {
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+            z-index: 1;
+            position: absolute;
+            background:
+                linear-gradient(150deg, transparent 0 41%, rgba(255, 255, 255, 0.74) 41% 51%, transparent 51%),
+                linear-gradient(22deg, #f28c00 0 58%, #ffb521 58% 100%);
+            color: #321a14;
+            font-family: 'Oswald', sans-serif;
+            padding: 16px 11px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .fundar-id-back::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(164deg, rgba(255, 255, 255, 0.12) 0%, transparent 56%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .fundar-back-header {
+            position: relative;
+            z-index: 1;
+            font-size: clamp(15px, 3vw, 20px);
+            color: #2b1a14;
+            font-weight: 700;
+            line-height: 1.08;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+
+        .fundar-back-subheader {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            font-size: 10.5px;
+            color: #3c2019;
+            line-height: 1.16;
+            margin-top: -1px;
+        }
+
+        .fundar-back-nit {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1;
+            color: #27110f;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .fundar-back-ribbon {
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(182, 62, 18, 0.86);
+            border-radius: 10px;
+            background: rgba(255, 170, 38, 0.46);
+            text-align: center;
+            color: #31140f;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            padding: 4px 7px;
+            text-transform: uppercase;
+        }
+
+        .fundar-back-notice {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 14px;
+            border: 2px solid rgba(76, 41, 31, 0.32);
+            padding: 12px 10px 10px;
+            font-size: 13.5px;
+            color: #3a2125;
+            line-height: 1.22;
+            text-align: center;
+        }
+
+        .fundar-back-notice p {
+            margin: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .fundar-back-notice-main + .fundar-back-notice-main {
+            margin-top: 4px;
+        }
+
+        .fundar-back-alert {
+            margin-top: 7px;
+            font-size: 12.5px;
+            color: #2f191c;
+            line-height: 1.2;
+        }
+
+        .fundar-back-city {
+            margin-top: 2px;
+            font-size: 12px;
+            color: #2f1b1e;
+            font-weight: 600;
+        }
+
+        .fundar-back-email {
+            margin-top: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #0f4db5;
+            line-height: 1.05;
+            letter-spacing: 0.2px;
+        }
+
+        .fundar-back-holder-data {
+            margin-top: 7px;
+            border-top: 1px dashed rgba(58, 34, 26, 0.3);
+            padding-top: 5px;
+            display: grid;
+            gap: 3px;
+            text-align: left;
+            font-size: 9.5px;
+            color: #321b16;
+            line-height: 1.15;
+        }
+
+        .fundar-back-holder-data div,
+        .fundar-back-holder-data span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .fundar-back-holder-data strong {
+            color: #2c1510;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .fundar-back-qr-area {
+            position: relative;
+            z-index: 1;
+            margin-top: 7px;
+            border: 2px solid rgba(76, 41, 31, 0.28);
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 6px;
+            display: grid;
+            grid-template-columns: 62px minmax(0, 1fr);
+            gap: 6px;
+            align-items: center;
+        }
+
+        .fundar-back-qr-box {
+            width: 62px;
+            height: 62px;
+            border: 1px solid rgba(50, 33, 27, 0.25);
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .fundar-back-qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fundar-back-qr-copy {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            line-height: 1.15;
+            color: #2f1b17;
+            font-size: 8.6px;
+            text-transform: uppercase;
+            letter-spacing: 0.16px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .fundar-back-qr-copy strong {
+            color: #281310;
+            font-size: 9px;
+            letter-spacing: 0.22px;
+        }
+
+        .fundar-back-qr-link {
+            color: #0f4db5;
+            font-size: 8.2px;
+            text-decoration: none;
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .fundar-back-qr-link:hover {
+            text-decoration: underline;
+        }
+
+        .fundar-back-address-strip {
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(182, 62, 18, 0.85);
+            border-radius: 10px;
+            background: rgba(255, 184, 68, 0.45);
+            padding: 4px 7px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 10.5px;
+            color: #2f1911;
+            line-height: 1.08;
+        }
+
+        .fundar-back-address-strip strong {
+            text-transform: uppercase;
+            flex: none;
+        }
+
+        .fundar-back-address-strip span {
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fundar-back-sign-row {
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            display: grid;
+            grid-template-columns: 24px minmax(0, 1fr) 52px;
+            align-items: end;
+            gap: 7px;
+            min-height: 74px;
+        }
+
+        .fundar-back-flag {
+            width: 24px;
+            height: 42px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 1px;
+        }
+
+        .fundar-back-flag img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+        }
+
+        .fundar-back-sign {
+            text-align: center;
+            color: #321a15;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            line-height: 1;
+            min-width: 0;
+            isolation: isolate;
+        }
+
+        .fundar-back-signature-img {
+            width: min(100%, 176px);
+            height: 36px;
+            display: block;
+            object-fit: contain;
+            object-position: center;
+            mix-blend-mode: multiply;
+            opacity: 0.97;
+            background: transparent;
+        }
+
+        .fundar-back-sign-name {
+            margin-top: 2px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .fundar-back-sign-title {
+            margin-top: 2px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.35px;
+            text-transform: uppercase;
+            line-height: 1;
+            color: #321a15;
+            font-weight: 700;
+        }
+
+        .fundar-back-seal {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #b52821;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            justify-self: end;
+            margin-bottom: 1px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fundar-back-seal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fundar-back-site {
+            position: relative;
+            z-index: 1;
+            margin-top: 1px;
+            border: 2px solid rgba(182, 62, 18, 0.85);
+            border-radius: 10px;
+            background: rgba(255, 184, 68, 0.45);
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 4px 7px;
+            color: #2a1511;
+            text-align: center;
+            line-height: 1.08;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #fundarPreviewPhone {
+            font-weight: 700;
+            color: #2f1513;
+        }
+
+        #fundarPreviewBirthDate {
+            font-weight: 700;
+            color: #2f1513;
+        }
+
+        #fundarResultUniqueCode {
+            font-size: 10px;
+            letter-spacing: 0.3px;
+            text-transform: none;
+        }
+
+        @media (max-width: 768px) {
+            .team-story-page {
+                padding: 16px;
+            }
+
+            .team-story-card {
+                padding: 24px;
+            }
+
+            .team-story-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .team-story-title {
+                font-size: 1.8rem;
+            }
+
+            .story-timeline-item {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .story-timeline-year {
+                min-width: auto;
+            }
+
+            .fundar-gallery-item {
+                width: 240px;
+                height: 170px;
+            }
+
+            .fundar-gallery-next {
+                right: 8px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .fundar-video-showcase {
+                padding: 16px;
+            }
+
+            .fundar-carnet-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .fundar-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fundar-code-row {
+                flex-direction: column;
+            }
+
+            .fundar-nequi-qr-wrap img {
+                width: min(230px, 100%);
+            }
+
+            .fundar-carnet-preview {
+                --fundar-card-max: 320px;
+            }
+
+            .fundar-id-wrapper {
+                width: min(100%, var(--fundar-card-max));
+            }
+
+            .fundar-front-number {
+                font-size: 11px;
+                letter-spacing: 0.01em;
+            }
+
+            .fundar-front-logo-wrap {
+                width: 94px;
+                height: 94px;
+            }
+
+            .fundar-front-meta {
+                max-width: 118px;
+                gap: 6px;
+            }
+
+            .fundar-front-barcode {
+                width: 104px;
+            }
+
+            .fundar-front-slogan {
+                font-size: 12.5px;
+                margin-top: 23px;
+            }
+
+            .fundar-front-photo-wrap {
+                width: 146px;
+                height: 146px;
+                margin-top: 5px;
+            }
+
+            .fundar-result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fundar-back-header {
+                font-size: 14px;
+            }
+
+            .fundar-back-subheader {
+                font-size: 10px;
+            }
+
+            .fundar-back-nit {
+                font-size: 12px;
+            }
+
+            .fundar-back-ribbon {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+
+            .fundar-back-notice {
+                font-size: 12px;
+                padding: 10px 8px 8px;
+            }
+
+            .fundar-back-alert {
+                font-size: 12px;
+            }
+
+            .fundar-back-email {
+                font-size: 9px;
+            }
+
+            .fundar-back-holder-data {
+                font-size: 9px;
+            }
+
+            .fundar-back-qr-area {
+                grid-template-columns: 54px minmax(0, 1fr);
+                padding: 4px 5px;
+                gap: 5px;
+            }
+
+            .fundar-back-qr-box {
+                width: 54px;
+                height: 54px;
+            }
+
+            .fundar-back-qr-copy {
+                font-size: 7.7px;
+            }
+
+            .fundar-back-qr-copy strong {
+                font-size: 8.1px;
+            }
+
+            .fundar-back-qr-link {
+                font-size: 7.4px;
+            }
+
+            .fundar-back-address-strip,
+            .fundar-back-site {
+                font-size: 10px;
+            }
+
+            .fundar-back-sign-row {
+                grid-template-columns: 19px minmax(0, 1fr) 42px;
+                min-height: 60px;
+            }
+
+            .fundar-back-flag {
+                width: 19px;
+                height: 34px;
+            }
+
+            .fundar-back-signature-img {
+                height: 29px;
+            }
+
+            .fundar-back-sign-name {
+                font-size: 9.5px;
+            }
+
+            .fundar-back-sign-title {
+                font-size: 8.6px;
+            }
+
+            .fundar-back-seal {
+                width: 42px;
+                height: 42px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .fundar-carnet-preview {
+                --fundar-card-max: 300px;
+            }
+
+            .fundar-front-logo-wrap {
+                width: 86px;
+                height: 86px;
+            }
+
+            .fundar-front-meta {
+                max-width: 112px;
+                gap: 6px;
+            }
+
+            .fundar-front-barcode {
+                width: 98px;
+            }
+
+            .fundar-front-slogan {
+                font-size: 11px;
+                margin-top: 22px;
+            }
+
+            .fundar-front-photo-wrap {
+                width: 130px;
+                height: 130px;
+                margin-top: 5px;
+            }
+
+            .fundar-front-name {
+                margin-top: 14px;
+                font-size: clamp(24px, 7.1vw, 36px);
+            }
+
+            .fundar-front-cc {
+                font-size: clamp(19px, 5.3vw, 28px);
+            }
+
+            .fundar-front-role {
+                font-size: 14px;
+            }
+
+            .fundar-front-rh {
+                margin-top: 8px;
+                font-size: 15px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 430px) {
+            .fundar-front-slogan {
+                margin-top: 35px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 1120px) {
+            .fundar-front-slogan {
+                margin-top: 30px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 932px) {
+            .fundar-front-slogan {
+                margin-top: 33px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="team-story-page">
+        <div class="team-story-card">
+            <a class="team-story-back" href="index.html">&larr; Volver</a>
+
+            <div class="team-story-hero">
+                <div class="team-story-header">
+                    <img class="team-story-avatar" src="assets/logofundar.jpeg" alt="Logo de la Fundación FUNDAR">
+                    <div>
+                        <h1 class="team-story-title">FUNDAR</h1>
+                        <div class="team-story-subtitle">Fundación del Artista Reconocido de Colombia</div>
+                    </div>
+                </div>
+                <p class="team-story-lead">
+                    FUNDAR impulsa la dignificación del trabajo artístico, la circulación cultural y el fortalecimiento
+                    de la memoria musical en Bogotá, especialmente en la escena popular y mariachera.
+                </p>
+                <div class="fundar-top-cta">
+                    <a class="fundar-cta-btn" href="#fundarCarnetSection">Obtener Carnet FUNDAR</a>
+                    <a class="fundar-cta-btn fundar-cta-btn-secondary" href="fundar-carnet.html">Ver mi Carnet</a>
+                    <a class="fundar-cta-btn fundar-cta-btn-secondary fundar-admin-access-btn" href="fundar-carnet.html">Admin Panel</a>
+                </div>
+            </div>
+
+            <div class="fundar-kpi-grid" aria-label="Resumen de FUNDAR">
+                <div class="fundar-kpi-card">
+                    <strong>Enfoque</strong>
+                    Gestión cultural y representación del artista
+                </div>
+                <div class="fundar-kpi-card">
+                    <strong>Territorio</strong>
+                    Bogotá, Colombia
+                </div>
+                <div class="fundar-kpi-card">
+                    <strong>Sector</strong>
+                    Música popular y cultura viva
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title">Identidad de la fundación</h2>
+            <p class="team-story-text">
+                La organización aparece públicamente como <strong>Fundación del Artista Reconocido de Colombia FUNDAR</strong>,
+                con trabajo orientado a la visibilidad del artista y al reconocimiento de prácticas culturales de ciudad,
+                incluyendo procesos de música en vivo, serenata y patrimonio local.
+            </p>
+
+            <div class="story-visuals">
+                <div class="story-icon-grid">
+                    <div class="story-icon-card">
+                        <img src="assets/mariachi.png" alt="Mariachi">
+                        Música popular
+                    </div>
+                    <div class="story-icon-card">
+                        <img src="assets/centro_cultural.png" alt="Cultura">
+                        Gestión cultural
+                    </div>
+                    <div class="story-icon-card">
+                        <img src="assets/organizacion.png" alt="Organización">
+                        Trabajo colectivo
+                    </div>
+                    <div class="story-icon-card">
+                        <img src="assets/fundacion.png" alt="Fundación">
+                        Acción comunitaria
+                    </div>
+                    <div class="story-icon-card">
+                        <img src="assets/musicaenvivo.png" alt="Escena en vivo">
+                        Escena en vivo
+                    </div>
+                    <div class="story-icon-card">
+                        <img src="assets/rutamusical.png" alt="Ruta musical">
+                        Memoria de La Playa Vive
+                    </div>
+                </div>
+
+                <div class="story-location">
+                    <img src="assets/colombiapais.png" alt="Colombia">
+                    <div>
+                        <strong>Bogotá, Colombia</strong>
+                        <div>Trabajo artístico con identidad local</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title">Fundadora y representación cultural</h2>
+            <p class="team-story-text">
+                En registros públicos del sector cultural distrital, <strong>Lucy Ruiz Olarte</strong> aparece vinculada a FUNDAR
+                y a espacios de participación del campo musical de Bogotá. Su perfil se asocia a procesos de organización,
+                incidencia y gestión para fortalecer el reconocimiento del artista en la ciudad.
+            </p>
+            <div class="team-story-quote">
+                FUNDAR se proyecta como plataforma de apoyo para artistas reconocidos y emergentes, promoviendo
+                articulación institucional, acceso a circulación cultural y defensa del trabajo artístico digno.
+            </div>
+
+            <h2 class="team-story-section-title">Misión, visión y valores</h2>
+            <div class="story-highlight">
+                <div class="story-highlight-card">
+                    <strong>Misión</strong>
+                    Impulsar procesos culturales que fortalezcan la dignidad, visibilidad y sostenibilidad del artista
+                    en Colombia.
+                </div>
+                <div class="story-highlight-card">
+                    <strong>Visión</strong>
+                    Consolidar una red cultural referente en música popular y trabajo comunitario con impacto nacional.
+                </div>
+                <div class="story-highlight-card">
+                    <strong>Valores</strong>
+                    Respeto por el artista, memoria territorial, colaboración, transparencia y compromiso social.
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title">Líneas programáticas</h2>
+            <div class="fundar-pillars">
+                <article class="fundar-pillar">
+                    <img src="assets/teatro.png" alt="Formación artística">
+                    <h3>Formación y profesionalización</h3>
+                    <p>Procesos pedagógicos y acompañamiento para artistas, agrupaciones y gestores culturales.</p>
+                </article>
+                <article class="fundar-pillar">
+                    <img src="assets/musicaenvivo.png" alt="Circulación musical">
+                    <h3>Circulación artística</h3>
+                    <p>Activaciones, presentaciones y visibilidad de repertorios en escenarios comunitarios y culturales.</p>
+                </article>
+                <article class="fundar-pillar">
+                    <img src="assets/archivo.png" alt="Memoria cultural">
+                    <h3>Memoria e identidad</h3>
+                    <p>Acciones para documentar la historia musical de territorios emblemáticos como La Playa Vive.</p>
+                </article>
+                <article class="fundar-pillar">
+                    <img src="assets/organizacion.png" alt="Gestión e incidencia">
+                    <h3>Gestión e incidencia</h3>
+                    <p>Participación en escenarios institucionales para la defensa de derechos culturales del sector.</p>
+                </article>
+            </div>
+
+            <h2 class="team-story-section-title">Trayectoria en fuentes públicas</h2>
+            <div class="story-timeline">
+                <div class="story-timeline-item">
+                    <div class="story-timeline-year">Participación</div>
+                    <div class="story-timeline-text">
+                        Referencias en espacios de participación del campo musical de Bogotá (IDARTES y procesos distritales).
+                    </div>
+                </div>
+                <div class="story-timeline-item">
+                    <div class="story-timeline-year">FUNDAR</div>
+                    <div class="story-timeline-text">
+                        Identificación pública de la organización como "Fundación del Artista Reconocido de Colombia FUNDAR".
+                    </div>
+                </div>
+                <div class="story-timeline-item">
+                    <div class="story-timeline-year">Memoria</div>
+                    <div class="story-timeline-text">
+                        Mención de iniciativas asociadas a la memoria cultural de "La Playa" y la serenata en Bogotá.
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title">Galería FUNDAR</h2>
+            <div class="fundar-gallery-wrap">
+                <div class="fundar-gallery" aria-label="Galería visual de FUNDAR" id="fundarGallery">
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption1" data-description="El Señor Edil de la Alcandía, Un representante de los grupos de Vallenato y la Fundadora, se encuentran sonrientes abrazados en una actividad cultural de FUNDAR.">
+                        <img src="assets/imagefundar1.jpg" alt="El Señor Edil de la Alcandía, Un representante de los grupos de Vallenato y la Fundadora, se encuentran sonrientes abrazados en una actividad cultural de FUNDAR.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption1">Comunidad representada en una imagen; Se habló de la importancia de preservar la cultura local y acuerdos en beneficio de la comunidad. Se encuentran en la imagen un representante de la comunidad Vallenatera, el senador de la Alcaldía local de Chapinero y la Fundadora.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption2" data-description="El Edil plantenado y hablando a micrófono, frente a la fundadora con traje charro y varios asistentes alrededor.">
+                        <img src="assets/imagefundar2.jpg" alt="El Edil plantenado y hablando a micrófono, frente a la fundadora con traje charro y varios asistentes alrededor.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption2">Bogotá acompaña a la cultura, el senador planteó importantes acuerdos para preservar la identidad local.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption3" data-description="Primer plano de un trompetista tocando, acompañado por otros musicos de viento en segundo plano.">
+                        <img src="assets/imagefundar3.jpg" alt="Primer plano de un trompetista tocando junto a otros musicos.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption3">Primer plano de un trompetista tocando, acompañado por otros musicos de viento en segundo plano.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption4" data-description="Escena en espacio publico con varias personas reunidas; una guitarra aparece en primer plano mientras se desarrolla la actividad.">
+                        <img src="assets/imagefundar4.jpg" alt="Grupo de personas reunidas en la calle durante un encuentro musical.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption4">Escuchar es parte del planteamiento; en la actividad se escuchó a la comunidad de La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption5" data-description="Retrato de la fundadora con traje charro claro y sombrero blanco, sobre fondo azul.">
+                        <img src="assets/imagefundar5.jpg" alt="Retrato de la fundadora con traje charro claro y sombrero blanco, sobre fondo azul.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption5">Lucy Ortiz, Fundadora de FUNDAR.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption6" data-description="El presidente Gustavo Petro y la Fundadora en una foto de interior; la fundadora sostiene una libreta mientras abraza al presidente. ambos con postura amistosa.">
+                        <img src="assets/imagefundar6.jpg" alt="El presidente Gustavo Petro y la Fundadora en una foto de interior; la fundadora sostiene una libreta mientras abraza al presidente. ambos con postura amistosa.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption6">Reunion con el Presidente Gustavo Petro; se planteó el compromiso de apoyar a la comunidad atrística en Bogotá.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption7" data-description="Cinco guitarristas cantan en la Playa Vive durante la reunion de FUNDAR.">
+                        <img src="assets/imagefundar7.jpg" alt="Cinco guitarristas cantan en la Playa Vive durante la reunion de FUNDAR.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption7">Una de las cosas que encontrarás en la PLaya Vive son sus músicos en accion. En ésta imagen encontramos e los mienbros de los Tríos de Música de antaño(Boleros de Trío).</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption8" data-description="Grupo de músicos de la Playa posa cerca de un escenario al aire libre, con estructura tecnica y luces al fondo.">
+                        <img src="assets/imagefundar8.jpg" alt="Grupo de músicos de la Playa posa cerca de un escenario al aire libre, con estructura tecnica y luces al fondo.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption8">Conciertos en vivo y participación cultural.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption9" data-description="La fundadora se presenta en una tarima grande durante un evento musical al aire libre.">
+                        <img src="assets/imagefundar9.jpg" alt="La fundadora se presenta en una tarima grande durante un evento musical al aire libre.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption9">Lucy Ortiz en una de sus presentaciones musicales de La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption10" data-description="Dos musicos con guitarras cantan y tocan muy cerca entre ellos antes de la reunion de FUNDAR en La Playa Vive.">
+                        <img src="assets/imagefundar10.jpg" alt="Dos musicos con guitarras cantan y tocan muy cerca entre ellos antes de la reunion de FUNDAR en La Playa Vive.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption10">La música se vive con intensidad en La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption11" data-description="Un representante de los grupos de Vallenato y el Edil representante de la alcaldía, sonrien posando rodeados de asistentes en la reunion de FUNDAR en La Playa Vive.">
+                        <img src="assets/imagefundar11.jpg" alt="Un representante de los grupos de Vallenato y el Edil representante de la alcaldía, sonrien posando rodeados de asistentes en la reunion de FUNDAR en La Playa Vive.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption11">Compañerismo y cultura musical en La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption12" data-description="Conjunto numeroso de guitarristas toca en plena calle, con publico y comercio alrededor.">
+                        <img src="assets/imagefundar12.jpg" alt="Conjunto numeroso de guitarristas toca en plena calle, con publico y comercio alrededor.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption12">Todo el grupo de Tríos de La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption13" data-description="Grupo de guitarristas de trío posa y tocan en la avenida, con estuches e instrumentos visibles. Mienbros de La Playa Vive.">
+                        <img src="assets/imagefundar13.jpg" alt="Grupo de guitarristas de trío posa y tocan en la avenida, con estuches e instrumentos visibles. Mienbros de La Playa Vive.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption13">Union Guitarristica de los Tríos de La Playa Vive.</figcaption>
+                    </figure>
+                    <figure class="fundar-gallery-item" role="button" tabindex="0" aria-pressed="false" aria-describedby="fundarCaption14" data-description="Vista general de una actividad musical en la calle: musicos en primer plano y publico reunido al fondo.">
+                        <img src="assets/imagefundar14.jpg" alt="Vista general de una actividad musical en la calle: musicos en primer plano y publico reunido al fondo.">
+                        <figcaption class="fundar-gallery-caption" id="fundarCaption14">Todos unidos en La Playa Vive.</figcaption>
+                    </figure>
+                </div>
+                <button class="fundar-gallery-next" id="fundarGalleryNext" type="button" aria-label="Siguiente imagen">›</button>
+            </div>
+            <p class="fundar-gallery-help">Haz clic en una imagen para ampliarla y leer su descripcion. Haz doble clic para escuchar la descripcion en voz alta.</p>
+
+            <h2 class="team-story-section-title">Canal FUNDAR TV</h2>
+            <div class="fundar-video-showcase">
+                <p class="fundar-video-intro">
+                    Revive entrevistas, presentaciones y actividades de la comunidad en el canal oficial
+                    <strong>Fundar CANAL TV</strong>.
+                </p>
+                <div class="fundar-video-grid" aria-label="Videos del canal de YouTube de FUNDAR">
+                    <article class="fundar-video-item">
+                        <div class="fundar-video-frame">
+                            <iframe
+                                src="https://www.youtube.com/embed/nqg9teYlXhY"
+                                title="Video 1 del canal Fundar CANAL TV"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="fundar-video-label">Fundar TV · Video destacado</p>
+                    </article>
+                    <article class="fundar-video-item">
+                        <div class="fundar-video-frame">
+                            <iframe
+                                src="https://www.youtube.com/embed/gHpH5-DlGss"
+                                title="Video 2 del canal Fundar CANAL TV"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="fundar-video-label">Fundar TV · Comunidad en acción</p>
+                    </article>
+                    <article class="fundar-video-item">
+                        <div class="fundar-video-frame">
+                            <iframe
+                                src="https://www.youtube.com/embed/oz2Dgr3T4Ic"
+                                title="Video 3 del canal Fundar CANAL TV"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="fundar-video-label">Fundar TV · Música y territorio</p>
+                    </article>
+                </div>
+                <div class="fundar-video-actions">
+                    <a class="fundar-cta-btn fundar-cta-btn-secondary" href="https://www.youtube.com/@FundarCANALTV" target="_blank" rel="noopener">Ver canal completo</a>
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title">Ubicación FUNDAR</h2>
+            <div class="fundar-map-card">
+                <p class="team-story-text">
+                    Dirección de referencia encontrada: <strong>Carrera 14 #56-16, Piso 2, Oficina 18B, Chapinero, Bogotá, Colombia</strong>.
+                </p>
+                <iframe
+                    class="fundar-map"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q=Carrera+14+56-16+Piso+2+Oficina+18B+Chapinero+Bogota+Colombia&output=embed"
+                    title="Ubicación de FUNDAR en Bogotá">
+                </iframe>
+            </div>
+
+            <h2 class="team-story-section-title">Preguntas frecuentes</h2>
+            <div class="fundar-faq">
+                <div class="fundar-faq-item">
+                    <h3>¿Qué tipo de artistas acompaña FUNDAR?</h3>
+                    <p>Artistas y músicos de tradición popular, especialmente en procesos de escena en vivo y gestión cultural.</p>
+                </div>
+                <div class="fundar-faq-item">
+                    <h3>¿Cuál es el principal aporte de FUNDAR?</h3>
+                    <p>Fortalecer la dignidad del oficio artístico y su reconocimiento en el territorio a través de acciones culturales.</p>
+                </div>
+                <div class="fundar-faq-item">
+                    <h3>¿Por qué aparece FUNDAR en PROVIWEB?</h3>
+                    <p>Porque, además de conectar con la misión de PROVIWEB, la plataforma funciona como método de registro y espacio digital para los usuarios de FUNDAR.</p>
+                </div>
+            </div>
+
+            <h2 class="team-story-section-title" id="fundarCarnetSection">Carnet FUNDAR</h2>
+            <p class="team-story-text">
+                <strong>Tu Fundación, Mi Fundación, Nuestra Fundación.</strong> Aquí gestionas tu Carnet FUNDAR en 3 pasos:
+                valida el pago, completa tus datos y revisa la muestra en vivo antes de guardar.
+                Valor único: <strong>$20.000 COP</strong> por Nequi Colombia. Al finalizar, tu carnet queda registrado en la base oficial
+                con <strong>código único</strong> y verificación digital.
+            </p>
+
+            <div class="fundar-carnet-layout">
+                <section class="fundar-carnet-panel">
+                    <div class="fundar-payment-panel">
+                        <div class="fundar-payment-title">
+                            <span class="fundar-step-label">Paso</span>
+                            <span class="fundar-step-badge step-1">1</span>
+                            <span>Validar pago del carnet</span>
+                        </div>
+                        <p class="fundar-payment-copy">
+                            Para habilitar la generación del carnet, paga por Nequi Colombia y registra tu referencia de pago.
+                            Valor fijo: <strong>$20.000 COP</strong>.
+                        </p>
+                        <div class="fundar-nequi-qr-wrap">
+                            <img id="fundarNequiQrImg" src="assets/nequiqr.jpeg" alt="Código QR Nequi para pago del carnet FUNDAR" loading="lazy" decoding="async">
+                        </div>
+                        <p class="fundar-nequi-key-text">ó envía a la llave: <strong>0091692951</strong></p>
+                        <div class="fundar-code-check">
+                            <label for="fundarPaymentRefInput">Referencia de pago</label>
+                            <div class="fundar-code-row">
+                                <input id="fundarPaymentRefInput" type="text" placeholder="Pega tu referencia de pago Nequi" autocomplete="off">
+                                <button id="fundarRegisterPaymentBtn" type="button" class="fundar-cta-btn fundar-cta-btn-secondary">Registrar referencia</button>
+                            </div>
+                        </div>
+                        <p id="fundarPaymentStatus" class="fundar-payment-status warn">Estado de pago: pendiente. Registra la referencia para continuar.</p>
+                    </div>
+
+                    <div class="fundar-payment-title">
+                        <span class="fundar-step-label">Paso</span>
+                        <span class="fundar-step-badge step-2">2</span>
+                        <span>Llenar información del carnet</span>
+                    </div>
+                    <p class="fundar-payment-copy">
+                        Completa los datos del titular exactamente como deben aparecer en el carnet.
+                    </p>
+
+                    <form id="fundarCarnetForm" class="fundar-carnet-form" novalidate>
+                        <div class="fundar-form-grid">
+                            <label class="fundar-form-field" for="fundarName">
+                                Nombre completo
+                                <input id="fundarName" name="fundarName" type="text" maxlength="90" required placeholder="Nombre y apellidos">
+                            </label>
+                            <label class="fundar-form-field" for="fundarCedula">
+                                Cédula de ciudadanía
+                                <input id="fundarCedula" name="fundarCedula" type="text" maxlength="25" required placeholder="Ej. 16619331">
+                            </label>
+                            <label class="fundar-form-field" for="fundarBirthDate">
+                                Fecha de nacimiento
+                                <input id="fundarBirthDate" name="fundarBirthDate" type="date" required>
+                            </label>
+                            <label class="fundar-form-field" for="fundarIpsEps">
+                                IPS / EPS
+                                <input id="fundarIpsEps" name="fundarIpsEps" type="text" maxlength="90" required placeholder="Nombre de IPS o EPS">
+                            </label>
+                            <label class="fundar-form-field" for="fundarFamilySize">
+                                Núcleo familiar
+                                <input id="fundarFamilySize" name="fundarFamilySize" type="number" min="1" max="25" required placeholder="Cuántos viven contigo">
+                            </label>
+                            <label class="fundar-form-field" for="fundarPhone">
+                                Número de teléfono
+                                <input id="fundarPhone" name="fundarPhone" type="tel" maxlength="25" required placeholder="Ej. +57 3144923945">
+                            </label>
+                            <label class="fundar-form-field is-span-2" for="fundarAddress">
+                                Dirección
+                                <input id="fundarAddress" name="fundarAddress" type="text" maxlength="130" required placeholder="Dirección completa">
+                            </label>
+                            <label class="fundar-form-field" for="fundarBloodType">
+                                Tipo de sangre
+                                <input id="fundarBloodType" name="fundarBloodType" type="text" maxlength="8" required placeholder="Ej. O+">
+                            </label>
+                            <label class="fundar-form-field" for="fundarMusicianType">
+                                Músico (rol)
+                                <input id="fundarMusicianType" name="fundarMusicianType" type="text" maxlength="45" required placeholder="Cantante, guitarrista, violinista...">
+                            </label>
+                            <label class="fundar-form-field is-span-2" for="fundarAgrupacion">
+                                Agrupación / Entidad donde trabaja *
+                                <input id="fundarAgrupacion" name="fundarAgrupacion" type="text" maxlength="100" required placeholder="Ej: Orquesta Sinfónica de Bogotá, Mariachi Vargas, etc.">
+                                <span class="fundar-form-field-help">Nombre de la agrupación, banda o entidad con la que trabajas (obligatorio)</span>
+                            </label>
+                            <label class="fundar-form-field is-span-2" for="fundarVenueSelect">
+                                Establecimiento en PROVIWEB (opcional)
+                                <select id="fundarVenueSelect" name="fundarVenueSelect">
+                                    <option value="">-- Selecciona un establecimiento (si está registrado) --</option>
+                                    <!-- Se cargarán dinámicamente desde Firebase -->
+                                </select>
+                                <span class="fundar-form-field-help">Si tu lugar de trabajo está registrado en PROVIWEB, selecciónalo aquí para vincular tu carnet</span>
+                            </label>
+                            <label class="fundar-form-field is-span-2" for="fundarMusicIcon">
+                                Icono musical de tu carnet
+                                <select id="fundarMusicIcon" name="fundarMusicIcon" required>
+                                    <option value="🎵">🎵 Nota musical</option>
+                                    <option value="🎶">🎶 Doble nota</option>
+                                    <option value="🎼">🎼 Partitura</option>
+                                    <option value="🎤">🎤 Micrófono</option>
+                                    <option value="🎧">🎧 Audífonos</option>
+                                    <option value="🎷">🎷 Saxofón</option>
+                                    <option value="🎸">🎸 Guitarra</option>
+                                    <option value="🎹">🎹 Piano</option>
+                                    <option value="🎺">🎺 Trompeta</option>
+                                    <option value="🎻">🎻 Violín</option>
+                                    <option value="🥁">🥁 Tambor</option>
+                                    <option value="🪗">🪗 Acordeón</option>
+                                    <option value="🪕">🪕 Banjo</option>
+                                    <option value="🪘">🪘 Tambor de mano</option>
+                                    <option value="🪇">🪇 Maracas</option>
+                                    <option value="📻">📻 Radio</option>
+                                    <option value="💿">💿 Disco</option>
+                                    <option value="🔊">🔊 Parlante</option>
+                                </select>
+                                <span class="fundar-form-field-help">Este icono se mostrará como partículas animadas en el fondo amarillo del carnet.</span>
+                            </label>
+                            <label class="fundar-form-field" for="fundarCardNumberInput">
+                                Número de carnet
+                                <input id="fundarCardNumberInput" name="fundarCardNumberInput" class="fundar-readonly" type="text" maxlength="40" required readonly aria-readonly="true" placeholder="#FND-AAAA-C01-B-COAB">
+                                <span class="fundar-form-field-help">Se asigna automáticamente. Formato: #FND-AÑO-C01-B-COAB.</span>
+                            </label>
+                            <label class="fundar-form-field" for="fundarUniqueCodeInput">
+                                Código único por usuario
+                                <input id="fundarUniqueCodeInput" name="fundarUniqueCodeInput" class="fundar-readonly" type="text" maxlength="24" readonly>
+                            </label>
+                            <label class="fundar-form-field is-span-2" for="fundarPhoto">
+                                Foto para el carnet
+                                <input id="fundarPhoto" name="fundarPhoto" class="fundar-file-input" type="file" accept="image/*" required>
+                            </label>
+                        </div>
+                    </form>
+
+                    <div class="fundar-form-actions">
+                        <button id="fundarGenerateBtn" form="fundarCarnetForm" type="submit" class="fundar-cta-btn">Generar y guardar carnet</button>
+                        <p id="fundarCarnetMessage" class="fundar-carnet-message info">Completa el formulario y registra tu referencia de pago para guardar el carnet.</p>
+                    </div>
+                </section>
+
+                <section id="fundarLivePreviewSection" class="fundar-carnet-preview">
+                    <div class="fundar-payment-title">
+                        <span class="fundar-step-label">Paso</span>
+                        <span class="fundar-step-badge step-3">3</span>
+                        <span>Ver la muestra en vivo</span>
+                    </div>
+                    <div class="fundar-preview-meta">
+                        <span class="fundar-preview-chip">Muestra en vivo</span>
+                        <span class="fundar-preview-chip">Frente / Reverso</span>
+                    </div>
+                    <p class="fundar-preview-help">Haz click sobre el carnet para ver el reverso.</p>
+                    <div class="fundar-id-wrapper">
+                        <div class="fundar-id-card" id="fundarIdCard" tabindex="0" role="button" aria-label="Carnet FUNDAR, haz click para girar">
+                            <div class="fundar-id-flip">
+                                <article class="fundar-id-face fundar-id-front">
+                                    <div class="fundar-front-notch" aria-hidden="true"></div>
+                                    <div id="fundarFrontIconParticles" class="fundar-front-icon-particles" aria-hidden="true"></div>
+                                    <div class="fundar-card-shine" aria-hidden="true"></div>
+                                    <div class="fundar-front-top">
+                                        <div class="fundar-front-logo-wrap">
+                                            <img src="assets/logofundar.jpeg" alt="Logo FUNDAR">
+                                        </div>
+                                        <div class="fundar-front-meta">
+                                            <div class="fundar-front-barcode" aria-hidden="true">
+                                                <div class="fundar-front-barcode-bars"></div>
+                                                <div class="fundar-front-barcode-digits">4901 7362 58</div>
+                                            </div>
+                                            <div class="fundar-front-number" id="fundarPreviewCardNumber">#FND-AAAA-C01-B-COAA</div>
+                                            <span id="fundarPreviewActiveDot" class="fundar-front-active-dot is-inactive" aria-label="Estado del carnet" title="Estado del carnet"></span>
+                                        </div>
+                                    </div>
+                                    <div class="fundar-front-slogan">Tu Fundación - Mi Fundación - Nuestra Fundación</div>
+                                    <div class="fundar-front-photo-wrap">
+                                        <img id="fundarPreviewPhoto" src="assets/avatar.png" alt="Foto del titular del carnet">
+                                    </div>
+                                    <div class="fundar-front-name">
+                                        <span id="fundarPreviewNameLine1">NOMBRE</span>
+                                        <span id="fundarPreviewNameLine2">APELLIDO</span>
+                                    </div>
+                                    <div class="fundar-front-cc" id="fundarPreviewCedula">CC 0</div>
+                                    <div class="fundar-front-role" id="fundarPreviewMusician">MÚSICO</div>
+                                    <div class="fundar-front-rh" id="fundarPreviewRh">RH: O+</div>
+                                    <div class="fundar-front-expiry">Vence: <span id="fundarPreviewExpiryDate">Se asigna al guardar</span></div>
+                                    <div class="fundar-front-code">Código: <span id="fundarPreviewUniqueCode">CF-XXXXXXXXXX</span></div>
+                                </article>
+
+                                <article class="fundar-id-face fundar-id-back">
+                                    <div class="fundar-card-shine" aria-hidden="true"></div>
+                                    <div class="fundar-back-header">Fundación del Artista Reconocido de Colombia "FUNDAR"</div>
+                                    <div class="fundar-back-subheader">
+                                        La Maestría, el talento y la experiencia al servicio de la música.
+                                        Personería Jurídica "S 0042594" Alcaldía Mayor de Bogotá D.C.
+                                    </div>
+                                    <div class="fundar-back-nit">NIT 900533487-5</div>
+                                    <div class="fundar-back-ribbon">Tu Fundación Mi Fundación Nuestra Fundación</div>
+                                    <div class="fundar-back-notice">
+                                        <p class="fundar-back-notice-main">
+                                            Este carnet es propiedad de FUNDAR, e intransferible y debe ser portado visible por su titular.
+                                        </p>
+                                        <p class="fundar-back-notice-main">
+                                            Agradecemos a las autoridades competentes prestar la debida colaboración y apoyo al portador de este carnet a nivel universal.
+                                        </p>
+                                        <p class="fundar-back-alert">
+                                            En caso de pérdida llamar al cel.
+                                            <span id="fundarPreviewPhone">Sin teléfono</span>
+                                        </p>
+                                        <p class="fundar-back-city">Bogotá Colombia</p>
+                                        <p class="fundar-back-email">Email: fundar2012@hotmail.com</p>
+                                        <div class="fundar-back-holder-data">
+                                            <div><strong>IPS / EPS:</strong> <span id="fundarPreviewIps">IPS/EPS</span></div>
+                                            <div><strong>Fecha de nacimiento:</strong> <span id="fundarPreviewBirthDate">fecha</span></div>
+                                            <div><strong>Núcleo familiar:</strong> <span id="fundarPreviewFamily">0</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="fundar-back-qr-area">
+                                        <div class="fundar-back-qr-box">
+                                            <img id="fundarBackQrImage" src="" alt="Código QR del carnet FUNDAR">
+                                        </div>
+                                        <div class="fundar-back-qr-copy">
+                                            <strong>Escanea para ver el carnet completo</strong>
+                                            <span>Código: <span id="fundarBackQrCodeText">CF-XXXXXXXXXX</span></span>
+                                            <a id="fundarBackQrLink" class="fundar-back-qr-link" href="#" target="_blank" rel="noopener">Abrir ficha verificada</a>
+                                        </div>
+                                    </div>
+                                    <div class="fundar-back-address-strip">
+                                        <strong>Dirección:</strong>
+                                        <span id="fundarPreviewAddress">Sin dirección registrada</span>
+                                    </div>
+                                    <div class="fundar-back-sign-row">
+                                        <div class="fundar-back-flag" aria-hidden="true">
+                                            <img src="assets/colombiabandera.png" alt="">
+                                        </div>
+                                        <div class="fundar-back-sign">
+                                            <img id="fundarBackSignatureImg" class="fundar-back-signature-img" src="assets/firmafundadora.jpeg" alt="Firma de la presidenta de FUNDAR">
+                                            <div class="fundar-back-sign-name">LUCY RUIZ OLARTE</div>
+                                            <div class="fundar-back-sign-title">Presidente</div>
+                                        </div>
+                                        <div class="fundar-back-seal" aria-hidden="true">
+                                            <img src="assets/colombiaescudo.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="fundar-back-site">Visítanos: https://proviweb.com/fundar</div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fundar-result-panel" id="fundarResultPanel">
+                        <div class="fundar-result-top">
+                            <div>
+                                <div class="fundar-result-label">Resultado del carnet</div>
+                                <div class="fundar-result-title" id="fundarResultTitle">Aún no guardado</div>
+                            </div>
+                            <span class="fundar-result-pill is-pending" id="fundarResultState">Pendiente</span>
+                        </div>
+                        <div class="fundar-result-grid">
+                            <div class="fundar-result-item">
+                                <span>Número carnet</span>
+                                <strong id="fundarResultCardNumber">FND-XXXX-XXXX</strong>
+                            </div>
+                            <div class="fundar-result-item">
+                                <span>Código único</span>
+                                <strong id="fundarResultUniqueCode">CF-XXXXXXXXXX</strong>
+                            </div>
+                            <div class="fundar-result-item">
+                                <span>Última actualización</span>
+                                <strong id="fundarResultUpdatedAt">Sin registro</strong>
+                            </div>
+                            <div class="fundar-result-item">
+                                <span>Referencia pago</span>
+                                <strong id="fundarResultPaymentRef">Pendiente</strong>
+                            </div>
+                            <div class="fundar-result-item">
+                                <span>Estado activo</span>
+                                <strong id="fundarResultActiveState">Inactivo</strong>
+                            </div>
+                            <div class="fundar-result-item">
+                                <span>Vencimiento</span>
+                                <strong id="fundarResultExpiryAt">Sin registro</strong>
+                            </div>
+                        </div>
+                        <div class="fundar-result-actions">
+                            <button type="button" class="fundar-result-btn" id="fundarCopyCodeBtn">Copiar código</button>
+                            <button type="button" class="fundar-result-btn" id="fundarCopyCardBtn">Copiar número</button>
+                            <a class="fundar-result-btn" id="fundarOpenPublicBtn" href="#" target="_blank" rel="noopener">Abrir ficha QR</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <h2 class="team-story-section-title">Fuentes públicas consultadas</h2>
+            <ul class="fundar-source-list">
+                <li><a href="https://www.idartes.gov.co/es/areas-artisticas/musica/participacion/instancias-de-participacion" target="_blank" rel="noopener">IDARTES - Instancias de participación (Música)</a></li>
+                <li><a href="https://bogotaabierta.co/processes/gala-de-la-participacion/f/122/proposals/1530" target="_blank" rel="noopener">Bogotá Abierta - Gala de la participación</a></li>
+                <li><a href="https://www.chapinero.gov.co/sites/default/files/2024-02/final-listado-de-convocatorias-26012024.pdf" target="_blank" rel="noopener">Alcaldía Local de Chapinero - Listado de convocatorias (PDF)</a></li>
+                <li><a href="https://www.radiosantafe.com/2021/10/18/serenatas-para-el-alma-la-reapertura-cultura-de-la-playa/" target="_blank" rel="noopener">Radio Santa Fe - Serenatas para el alma</a></li>
+                <li><a href="https://www.compuempresa.com/fundacion-del-artista-reconocido-de-colombia-fundar-en-bogota" target="_blank" rel="noopener">Directorio empresarial - FUNDAR en Bogotá (dirección de referencia)</a></li>
+            </ul>
+
+            <div class="fundar-cta-row">
+                <a class="fundar-cta-btn" href="#fundarCarnetSection">Obtener carnet FUNDAR</a>
+                <a class="fundar-cta-btn fundar-cta-btn-secondary fundar-admin-access-btn" href="fundar-carnet.html">Ver mi Carnet</a>
+                <a class="fundar-cta-btn" href="register.html?from=fundar&org=FUNDAR%28CO%29">Formar parte FUNDAR</a>
+                <a class="fundar-cta-btn" href="ser-aliado.html">Quiero ser Aliado</a>
+                <a class="fundar-cta-btn fundar-cta-btn-secondary" href="index.html">Volver a la página principal</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    (() => {
+        const gallery = document.getElementById('fundarGallery');
+        const nextBtn = document.getElementById('fundarGalleryNext');
+        if (!gallery || !nextBtn) return;
+        const cards = Array.from(gallery.querySelectorAll('.fundar-gallery-item'));
+
+        const step = () => {
+            const card = gallery.querySelector('.fundar-gallery-item');
+            if (!card) return 320;
+            const gap = 12;
+            return card.getBoundingClientRect().width + gap;
+        };
+
+        const setActiveCard = (targetCard) => {
+            cards.forEach((card) => {
+                const isActive = card === targetCard;
+                card.classList.toggle('is-active', isActive);
+                card.setAttribute('aria-pressed', String(isActive));
+            });
+        };
+
+        const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+        let preferredVoice = null;
+
+        const pickBestSpanishVoice = () => {
+            if (!synth) return null;
+            const voices = synth.getVoices();
+            if (!voices || voices.length === 0) return null;
+
+            let best = null;
+            let bestScore = -1;
+
+            voices.forEach((voice) => {
+                const name = (voice.name || '').toLowerCase();
+                const lang = (voice.lang || '').toLowerCase();
+                let score = 0;
+
+                if (lang.startsWith('es-co')) score += 100;
+                else if (lang.startsWith('es')) score += 80;
+                else score -= 100;
+
+                if (/google|microsoft|neural|natural|premium/.test(name)) score += 20;
+                if (/sabina|sofia|helena|laura|dalia|pablo|jorge|carlos/.test(name)) score += 10;
+                if (voice.localService) score += 5;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = voice;
+                }
+            });
+
+            return best;
+        };
+
+        const refreshPreferredVoice = () => {
+            preferredVoice = pickBestSpanishVoice();
+        };
+
+        if (synth) {
+            refreshPreferredVoice();
+            synth.addEventListener('voiceschanged', refreshPreferredVoice);
+        }
+
+        const speakDescription = (description) => {
+            if (!description || !synth) return;
+            synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(description);
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+                utterance.lang = preferredVoice.lang || 'es-CO';
+            } else {
+                utterance.lang = 'es-CO';
+            }
+            utterance.rate = 0.95;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            synth.speak(utterance);
+        };
+
+        cards.forEach((card) => {
+            const description = card.dataset.description || '';
+
+            card.addEventListener('click', () => {
+                setActiveCard(card);
+            });
+
+            card.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+                setActiveCard(card);
+                speakDescription(description);
+            });
+
+            card.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setActiveCard(card);
+                }
+            });
+        });
+
+        const updateArrowState = () => {
+            const nearEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 6;
+            nextBtn.classList.toggle('is-end', nearEnd);
+        };
+
+        nextBtn.addEventListener('click', () => {
+            const atEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 6;
+            if (atEnd) {
+                gallery.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                gallery.scrollBy({ left: step(), behavior: 'smooth' });
+            }
+        });
+
+        gallery.addEventListener('scroll', updateArrowState, { passive: true });
+        window.addEventListener('resize', updateArrowState);
+        window.addEventListener('beforeunload', () => {
+            if (synth) {
+                synth.cancel();
+                synth.removeEventListener('voiceschanged', refreshPreferredVoice);
+            }
+        });
+        updateArrowState();
+    })();
+    </script>
+    <script>
+    (() => {
+        const card = document.getElementById("fundarIdCard");
+        if (!card || card.dataset.flipBound === "1") return;
+
+        const toggleCard = () => {
+            card.classList.toggle("is-flipped");
+        };
+
+        card.dataset.flipBound = "1";
+        card.addEventListener("click", toggleCard);
+        card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleCard();
+            }
+        });
+    })();
+    </script>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getDatabase, ref, set, get, push, query, orderByChild, equalTo, update, runTransaction } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+        authDomain: "proviweb-d8764.firebaseapp.com",
+        databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+        projectId: "proviweb-d8764",
+        storageBucket: "proviweb-d8764.appspot.com",
+        messagingSenderId: "475963980955",
+        appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+        measurementId: "G-TCH23FGP8D"
+    };
+
+    const CARNET_PRICE_COP = 20000;
+    const CARNET_VALID_DAYS = 30;
+    const PAYMENT_PROOF_KEY = "fundar_carnet_payment_proof_v3";
+    const ADMIN_CARNET_PAGE = "fundar-carnet.html";
+    const FUNDAR_PUBLIC_CARNET_FALLBACK_ORIGIN = "https://proviweb.com";
+    const FUNDAR_PUBLIC_CARNET_PATH = "/fundar-carnet.html";
+    const CARD_NUMBER_PREFIX = "FND";
+    const CARD_NUMBER_COUNTRY_BLOCK = "B-CO";
+    const CARD_RANDOM_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const MUSICAL_ICON_CHOICES = ["🎵", "🎶", "🎼", "🎤", "🎧", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "🪗", "🪕", "🪘", "🪇", "📻", "💿", "🔊"];
+    const DEFAULT_MUSIC_ICON = MUSICAL_ICON_CHOICES[0];
+
+    const form = document.getElementById("fundarCarnetForm");
+    if (!form) {
+        throw new Error("No se encontró el formulario de carnet FUNDAR.");
+    }
+
+    // Cargar establecimientos de PROVIWEB en el select
+    async function loadVenues() {
+        // Verificar que elements esté definido y tenga venueSelect
+        if (typeof elements === 'undefined' || !elements || !elements.venueSelect) {
+            console.log("Elements no está listo todavía, reintentando...");
+            setTimeout(loadVenues, 500);
+            return;
+        }
+        if (!db) {
+            console.log("Firebase no está inicializado todavía");
+            return;
+        }
+        try {
+            const venuesRef = ref(db, "LiveMusicVenues");
+            const snap = await get(venuesRef);
+            if (snap.exists()) {
+                elements.venueSelect.innerHTML = '<option value="">-- Selecciona un establecimiento (si está registrado) --</option>';
+                snap.forEach((child) => {
+                    const venue = child.val();
+                    const option = document.createElement("option");
+                    option.value = child.key;
+                    option.textContent = venue.name || "Establecimiento sin nombre";
+                    elements.venueSelect.appendChild(option);
+                });
+            }
+        } catch (err) {
+            console.warn("No se pudieron cargar los establecimientos:", err);
+        }
+    }
+
+    const elements = {
+        nequiQrImg: document.getElementById("fundarNequiQrImg"),
+        paymentRefInput: document.getElementById("fundarPaymentRefInput"),
+        registerPaymentBtn: document.getElementById("fundarRegisterPaymentBtn"),
+        paymentStatus: document.getElementById("fundarPaymentStatus"),
+        submitBtn: document.getElementById("fundarGenerateBtn"),
+        messageBox: document.getElementById("fundarCarnetMessage"),
+        copyCodeBtn: document.getElementById("fundarCopyCodeBtn"),
+        copyCardBtn: document.getElementById("fundarCopyCardBtn"),
+        resultTitle: document.getElementById("fundarResultTitle"),
+        resultState: document.getElementById("fundarResultState"),
+        resultCardNumber: document.getElementById("fundarResultCardNumber"),
+        resultUniqueCode: document.getElementById("fundarResultUniqueCode"),
+        resultUpdatedAt: document.getElementById("fundarResultUpdatedAt"),
+        resultPaymentRef: document.getElementById("fundarResultPaymentRef"),
+        resultActiveState: document.getElementById("fundarResultActiveState"),
+        resultExpiryAt: document.getElementById("fundarResultExpiryAt"),
+        resultOpenPublicBtn: document.getElementById("fundarOpenPublicBtn"),
+        livePreviewSection: document.getElementById("fundarLivePreviewSection"),
+        idCard: document.getElementById("fundarIdCard"),
+        nameInput: document.getElementById("fundarName"),
+        cedulaInput: document.getElementById("fundarCedula"),
+        birthInput: document.getElementById("fundarBirthDate"),
+        ipsInput: document.getElementById("fundarIpsEps"),
+        familyInput: document.getElementById("fundarFamilySize"),
+        phoneInput: document.getElementById("fundarPhone"),
+        addressInput: document.getElementById("fundarAddress"),
+        bloodInput: document.getElementById("fundarBloodType"),
+        musicianInput: document.getElementById("fundarMusicianType"),
+        agrupacionInput: document.getElementById("fundarAgrupacion"),
+        venueSelect: document.getElementById("fundarVenueSelect"),
+        musicIconInput: document.getElementById("fundarMusicIcon"),
+        cardNumberInput: document.getElementById("fundarCardNumberInput"),
+        uniqueCodeInput: document.getElementById("fundarUniqueCodeInput"),
+        photoInput: document.getElementById("fundarPhoto"),
+        previewPhoto: document.getElementById("fundarPreviewPhoto"),
+        previewCardNumber: document.getElementById("fundarPreviewCardNumber"),
+        previewNameLine1: document.getElementById("fundarPreviewNameLine1"),
+        previewNameLine2: document.getElementById("fundarPreviewNameLine2"),
+        previewCedula: document.getElementById("fundarPreviewCedula"),
+        previewMusician: document.getElementById("fundarPreviewMusician"),
+        previewRh: document.getElementById("fundarPreviewRh"),
+        previewActiveDot: document.getElementById("fundarPreviewActiveDot"),
+        previewExpiryDate: document.getElementById("fundarPreviewExpiryDate"),
+        previewUniqueCode: document.getElementById("fundarPreviewUniqueCode"),
+        previewAddress: document.getElementById("fundarPreviewAddress"),
+        previewPhone: document.getElementById("fundarPreviewPhone"),
+        previewIps: document.getElementById("fundarPreviewIps"),
+        previewBirthDate: document.getElementById("fundarPreviewBirthDate"),
+        previewFamily: document.getElementById("fundarPreviewFamily"),
+        frontIconParticles: document.getElementById("fundarFrontIconParticles"),
+        signatureImg: document.getElementById("fundarBackSignatureImg"),
+        qrImage: document.getElementById("fundarBackQrImage"),
+        qrLink: document.getElementById("fundarBackQrLink"),
+        qrCodeText: document.getElementById("fundarBackQrCodeText"),
+        adminAccessButtons: Array.from(document.querySelectorAll(".fundar-admin-access-btn"))
+    };
+
+    // Cargar establecimientos después de definir elements
+    loadVenues();
+
+    let app;
+    let db;
+    let paymentVerified = false;
+    let paymentProvider = "";
+    let paymentReference = "";
+    let currentActive = false;
+    let currentMoroso = false;
+    let currentExpiryAt = "";
+    let currentNote = "";
+    let currentMusicIcon = DEFAULT_MUSIC_ICON;
+    let photoDataUrl = "";
+    let photoObjectUrl = "";
+
+    const sanitizeText = (value) => (value || "").toString().trim();
+    const normalizeName = (value) =>
+        sanitizeText(value)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, " ")
+            .toUpperCase();
+    const normalizeDigits = (value) => (value || "").toString().replace(/\D+/g, "");
+
+    const formatCedula = (value) => {
+        const digits = (value || "").replace(/\D+/g, "");
+        if (!digits) return "0";
+        return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    const formatBirthDate = (value) => {
+        const raw = sanitizeText(value);
+        if (!raw) return "Sin fecha";
+        const parsed = new Date(raw + "T00:00:00");
+        if (Number.isNaN(parsed.getTime())) return raw;
+        return new Intl.DateTimeFormat("es-CO", { dateStyle: "long" }).format(parsed);
+    };
+
+    const splitName = (value) => {
+        const normalized = sanitizeText(value).toUpperCase().replace(/\s+/g, " ");
+        if (!normalized) {
+            return ["NOMBRE", "APELLIDO"];
+        }
+        const pieces = normalized.split(" ");
+        if (pieces.length === 1) {
+            return [pieces[0], ""];
+        }
+        const pivot = Math.ceil(pieces.length / 2);
+        return [pieces.slice(0, pivot).join(" "), pieces.slice(pivot).join(" ")];
+    };
+
+    const formatCardSequence = (value) => String(Math.max(1, Number(value) || 1)).padStart(2, "0");
+
+    const generateRandomLetters = (size = 2) => {
+        let result = "";
+        for (let i = 0; i < size; i += 1) {
+            const index = Math.floor(Math.random() * CARD_RANDOM_LETTERS.length);
+            result += CARD_RANDOM_LETTERS.charAt(index);
+        }
+        return result;
+    };
+
+    const normalizeTwoLetters = (value) => {
+        const clean = sanitizeText(value).toUpperCase().replace(/[^A-Z]/g, "");
+        if (clean.length >= 2) return clean.slice(0, 2);
+        return generateRandomLetters(2);
+    };
+
+    const buildCardNumber = (sequence, yearValue, randomLetters) => {
+        const year = Number(yearValue) || new Date().getFullYear();
+        const seq = formatCardSequence(sequence);
+        const letters = normalizeTwoLetters(randomLetters);
+        return "#" + CARD_NUMBER_PREFIX + "-" + String(year) + "-C" + seq + "-" + CARD_NUMBER_COUNTRY_BLOCK + letters;
+    };
+
+    const formatCardNumberDisplay = (value) => {
+        const raw = sanitizeText(value);
+        if (!raw) return "#FND-AAAA-C01-B-COAA";
+        return raw.startsWith("#") ? raw : ("#" + raw);
+    };
+
+    const extractCardSequence = (cardNumberValue) => {
+        const value = sanitizeText(cardNumberValue).toUpperCase();
+        if (!value) return null;
+        const match = value.match(/-C(\d+)-/);
+        if (match && match[1]) {
+            const parsed = Number(match[1]);
+            return Number.isFinite(parsed) ? parsed : null;
+        }
+        const legacy = value.match(/-(\d+)$/);
+        if (legacy && legacy[1]) {
+            const parsed = Number(legacy[1]);
+            return Number.isFinite(parsed) ? parsed : null;
+        }
+        return null;
+    };
+
+    const isSystemCarnetNodeKey = (keyValue) => {
+        const key = sanitizeText(keyValue);
+        return key.startsWith("_");
+    };
+
+    const getCardCounterRef = () => ref(db, "Carnetfundar/_meta/cardSequenceGlobal");
+
+    const isCardNumberAlreadyUsed = async (cardNumberValue) => {
+        const cardNumber = sanitizeText(cardNumberValue).toUpperCase();
+        if (!db || !cardNumber) return false;
+        try {
+            const snap = await get(query(ref(db, "Carnetfundar"), orderByChild("numeroCarnet"), equalTo(cardNumber)));
+            return snap.exists();
+        } catch (err) {
+            console.warn("No se pudo validar uso de número de carnet:", err);
+            return false;
+        }
+    };
+
+    const getNextCardNumberFromDatabase = async () => {
+        const currentYear = new Date().getFullYear();
+        if (!db) {
+            return buildCardNumber(1, currentYear);
+        }
+
+        try {
+            const [snap, counterSnap] = await Promise.all([
+                get(ref(db, "Carnetfundar")),
+                get(getCardCounterRef())
+            ]);
+            if (!snap.exists()) {
+                return buildCardNumber(1, currentYear);
+            }
+
+            let totalCount = 0;
+            const usedSequences = new Set();
+            snap.forEach((child) => {
+                if (isSystemCarnetNodeKey(child.key)) return;
+                totalCount += 1;
+                const row = child.val() || {};
+                const sequence = extractCardSequence(row.numeroCarnet);
+                if (Number.isFinite(sequence) && sequence > 0) {
+                    usedSequences.add(sequence);
+                }
+            });
+
+            const counterValue = counterSnap.exists() ? Number(counterSnap.val()) : NaN;
+            let sequence = (Number.isFinite(counterValue) && counterValue >= 0)
+                ? Math.floor(counterValue) + 1
+                : totalCount + 1;
+            while (usedSequences.has(sequence)) {
+                sequence += 1;
+            }
+            return buildCardNumber(sequence, currentYear);
+        } catch (err) {
+            console.warn("No se pudo calcular el número consecutivo del carnet:", err);
+            return buildCardNumber(1, currentYear);
+        }
+    };
+
+    const reserveNextCardNumber = async () => {
+        const currentYear = new Date().getFullYear();
+        if (!db) {
+            return buildCardNumber(1, currentYear);
+        }
+
+        const maxAttempts = 5;
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+            let optimisticSequence = 1;
+            const txResult = await runTransaction(getCardCounterRef(), (currentValue) => {
+                const parsed = Number(currentValue);
+                const nextValue = (Number.isFinite(parsed) && parsed > 0)
+                    ? Math.floor(parsed) + 1
+                    : 1;
+                optimisticSequence = nextValue;
+                return nextValue;
+            });
+
+            if (!txResult || !txResult.committed) {
+                continue;
+            }
+
+            const committedValue = Number(txResult.snapshot && txResult.snapshot.val());
+            const sequence = (Number.isFinite(committedValue) && committedValue > 0)
+                ? Math.floor(committedValue)
+                : optimisticSequence;
+            const cardNumber = buildCardNumber(sequence, currentYear);
+            const alreadyUsed = await isCardNumberAlreadyUsed(cardNumber);
+            if (!alreadyUsed) {
+                return cardNumber;
+            }
+        }
+
+        const fallback = await getNextCardNumberFromDatabase();
+        if (fallback) {
+            return fallback;
+        }
+        return buildCardNumber(1, currentYear);
+    };
+
+    const generateUniqueCode = () => {
+        const raw = (typeof crypto !== "undefined" && crypto.randomUUID)
+            ? crypto.randomUUID().replace(/-/g, "").toUpperCase()
+            : (Date.now().toString(36) + Math.random().toString(36).slice(2)).toUpperCase();
+        return "CF-" + raw.slice(0, 10);
+    };
+
+    const normalizeMusicIcon = (value) => {
+        const icon = sanitizeText(value);
+        return MUSICAL_ICON_CHOICES.includes(icon) ? icon : DEFAULT_MUSIC_ICON;
+    };
+
+    const renderFrontMusicParticles = (iconValue) => {
+        if (!elements.frontIconParticles) return;
+        const icon = normalizeMusicIcon(iconValue);
+        currentMusicIcon = icon;
+        elements.frontIconParticles.innerHTML = "";
+
+        const count = 30;
+        for (let i = 0; i < count; i += 1) {
+            const particle = document.createElement("span");
+            particle.textContent = icon;
+
+            const startX = -12 + Math.random() * 124;
+            const startY = -10 + Math.random() * 122;
+            const route = i % 4;
+            let driftX = 0;
+            let driftY = 0;
+            if (route === 0) {
+                driftX = 130 + Math.random() * 72;
+                driftY = -28 + Math.random() * 56;
+            } else if (route === 1) {
+                driftX = -(130 + Math.random() * 72);
+                driftY = -28 + Math.random() * 56;
+            } else if (route === 2) {
+                driftX = -52 + Math.random() * 104;
+                driftY = -(130 + Math.random() * 74);
+            } else {
+                driftX = -52 + Math.random() * 104;
+                driftY = 130 + Math.random() * 74;
+            }
+            const duration = 6 + Math.random() * 6.6;
+            const delay = -(Math.random() * duration);
+            const size = 11 + Math.random() * 17;
+            const rotation = (-50 + Math.random() * 100).toFixed(2) + "deg";
+            const scaleStart = (0.62 + Math.random() * 0.34).toFixed(2);
+            const scaleEnd = (0.92 + Math.random() * 0.42).toFixed(2);
+            const opacityMid = (0.18 + Math.random() * 0.14).toFixed(2);
+            const opacityPeak = (0.32 + Math.random() * 0.22).toFixed(2);
+
+            particle.style.setProperty("--x-start", startX.toFixed(2));
+            particle.style.setProperty("--y-start", startY.toFixed(2));
+            particle.style.setProperty("--x-drift", driftX.toFixed(2));
+            particle.style.setProperty("--y-drift", driftY.toFixed(2));
+            particle.style.setProperty("--rot", rotation);
+            particle.style.setProperty("--scale-start", scaleStart);
+            particle.style.setProperty("--scale-end", scaleEnd);
+            particle.style.setProperty("--opacity-mid", opacityMid);
+            particle.style.setProperty("--opacity-peak", opacityPeak);
+            particle.style.setProperty("--size", size.toFixed(2) + "px");
+            particle.style.setProperty("--dur", duration.toFixed(2) + "s");
+            particle.style.setProperty("--delay", delay.toFixed(2) + "s");
+
+            elements.frontIconParticles.appendChild(particle);
+        }
+    };
+
+    const setMessage = (text, type) => {
+        if (!elements.messageBox) return;
+        elements.messageBox.textContent = text;
+        elements.messageBox.classList.remove("info", "success", "error");
+        elements.messageBox.classList.add(type || "info");
+    };
+
+    const setLookupMessage = (text, type) => {
+        if (!elements.lookupMessage) return;
+        elements.lookupMessage.textContent = text;
+        elements.lookupMessage.classList.remove("info", "success", "error");
+        elements.lookupMessage.classList.add(type || "info");
+    };
+
+    const getAdminPageUrl = () => {
+        return new URL(ADMIN_CARNET_PAGE, window.location.href).toString();
+    };
+
+    const openAdminCarnetPage = () => {
+        setMessage("Redirigiendo a fundar-carnet. El acceso se valida con tu cuenta PROVIWEB.", "info");
+        window.location.href = getAdminPageUrl();
+    };
+
+    const goToLivePreviewSection = () => {
+        const target = elements.livePreviewSection;
+        if (!target) return;
+        const prefersReducedMotion =
+            typeof window !== "undefined" &&
+            typeof window.matchMedia === "function" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        target.scrollIntoView({
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+            block: "start",
+            inline: "nearest"
+        });
+
+        if (typeof history !== "undefined" && typeof history.replaceState === "function") {
+            const url = new URL(window.location.href);
+            url.hash = "fundarLivePreviewSection";
+            history.replaceState({}, "", url.toString());
+        }
+    };
+
+    const formatResultDate = (value) => {
+        if (!value) return "Sin registro";
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return sanitizeText(value);
+        return new Intl.DateTimeFormat("es-CO", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }).format(parsed);
+    };
+
+    const formatResultDateOnly = (value) => {
+        const raw = sanitizeText(value);
+        if (!raw) return "Sin fecha";
+        const parsed = new Date(raw);
+        if (Number.isNaN(parsed.getTime())) return raw;
+        return new Intl.DateTimeFormat("es-CO", { dateStyle: "medium" }).format(parsed);
+    };
+
+    const addDaysToIso = (baseIso, days) => {
+        const base = new Date(baseIso || new Date().toISOString());
+        if (Number.isNaN(base.getTime())) return "";
+        base.setDate(base.getDate() + days);
+        return base.toISOString();
+    };
+
+    const isDateExpired = (isoValue) => {
+        const raw = sanitizeText(isoValue);
+        if (!raw) return false;
+        const parsed = new Date(raw);
+        if (Number.isNaN(parsed.getTime())) return false;
+        return parsed.getTime() <= Date.now();
+    };
+
+    const getLifecycleFromRecord = (record = {}) => {
+        const createdAt = sanitizeText(record.createdAt);
+        const rawExpiry = sanitizeText(record.vencimientoAt) || (createdAt ? addDaysToIso(createdAt, CARNET_VALID_DAYS) : "");
+        const expired = isDateExpired(rawExpiry);
+        const hasActiveFlag = typeof record.activo === "boolean";
+        const activeRaw = hasActiveFlag ? Boolean(record.activo) : true;
+        const morosoRaw = Boolean(record.moroso);
+        const moroso = morosoRaw || expired;
+        const active = activeRaw && !moroso;
+        const note = sanitizeText(record.note);
+        return { active, moroso, expired, expiryAt: rawExpiry, note };
+    };
+
+    const applyCardStatusVisual = () => {
+        const expired = isDateExpired(currentExpiryAt);
+        const effectiveActive = Boolean(currentActive) && !Boolean(currentMoroso) && !expired;
+        if (elements.previewActiveDot) {
+            elements.previewActiveDot.classList.remove("is-active", "is-inactive");
+            elements.previewActiveDot.classList.add(effectiveActive ? "is-active" : "is-inactive");
+            elements.previewActiveDot.title = effectiveActive ? "Carnet activo" : (expired ? "Carnet vencido o inactivo" : "Carnet inactivo");
+        }
+        if (elements.previewExpiryDate) {
+            elements.previewExpiryDate.textContent = currentExpiryAt ? formatResultDateOnly(currentExpiryAt) : "Se asigna al guardar";
+        }
+    };
+
+    const setLifecycleState = (state = {}) => {
+        currentActive = Boolean(state.active);
+        currentMoroso = Boolean(state.moroso);
+        currentExpiryAt = sanitizeText(state.expiryAt);
+        currentNote = sanitizeText(state.note);
+        applyCardStatusVisual();
+    };
+
+    const syncLifecycleWithDatabase = async (record) => {
+        if (!record) return null;
+        const lifecycle = getLifecycleFromRecord(record);
+        const updates = {};
+        const canonicalPublicUrl = buildPublicCarnetUrl(record.codigoUnico);
+
+        if (!sanitizeText(record.vencimientoAt) && lifecycle.expiryAt) {
+            updates.vencimientoAt = lifecycle.expiryAt;
+        }
+        if (canonicalPublicUrl && sanitizeText(record.publicUrl) !== canonicalPublicUrl) {
+            updates.publicUrl = canonicalPublicUrl;
+        }
+
+        if (lifecycle.expired) {
+            if (record.activo !== false) updates.activo = false;
+            if (record.moroso !== true) updates.moroso = true;
+            if (!sanitizeText(record.note)) {
+                updates.note = "Carnet vencido. Debes renovarlo en administración FUNDAR.";
+            }
+        } else if (record.activo === true && record.moroso === true) {
+            updates.moroso = false;
+        }
+
+        if (Object.keys(updates).length > 0 && db && sanitizeText(record.key)) {
+            updates.updatedAt = new Date().toISOString();
+            try {
+                await update(ref(db, "Carnetfundar/" + sanitizeText(record.key)), updates);
+                return { ...record, ...updates };
+            } catch (err) {
+                console.warn("No se pudo sincronizar estado de vigencia del carnet:", err);
+            }
+        }
+
+        return { ...record, vencimientoAt: lifecycle.expiryAt };
+    };
+
+    const resolveFundarPublicOrigin = () => {
+        if (typeof window === "undefined" || !window.location) {
+            return FUNDAR_PUBLIC_CARNET_FALLBACK_ORIGIN;
+        }
+        const host = sanitizeText(window.location.hostname).toLowerCase();
+        const isLocalHost = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+        return isLocalHost ? FUNDAR_PUBLIC_CARNET_FALLBACK_ORIGIN : window.location.origin;
+    };
+
+    const buildPublicCarnetUrl = (codeValue) => {
+        const code = sanitizeText(codeValue).toUpperCase();
+        if (!code) return "";
+        const url = new URL(FUNDAR_PUBLIC_CARNET_PATH, resolveFundarPublicOrigin());
+        url.searchParams.set("code", code);
+        return url.toString();
+    };
+
+    const buildQrImageUrl = (targetUrl) => {
+        const safeUrl = sanitizeText(targetUrl);
+        if (!safeUrl) return "";
+        return "https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=1&ecc=M&format=png&data=" + encodeURIComponent(safeUrl);
+    };
+
+    const syncPublicQr = (codeValue) => {
+        const code = sanitizeText(codeValue || (elements.uniqueCodeInput ? elements.uniqueCodeInput.value : "")).toUpperCase();
+        const publicUrl = buildPublicCarnetUrl(code);
+        const qrImageUrl = buildQrImageUrl(publicUrl);
+
+        if (elements.qrCodeText) {
+            elements.qrCodeText.textContent = code || "CF-0000000000";
+        }
+
+        if (elements.qrLink) {
+            elements.qrLink.href = publicUrl || "#";
+            elements.qrLink.style.pointerEvents = publicUrl ? "auto" : "none";
+            elements.qrLink.style.opacity = publicUrl ? "1" : "0.5";
+        }
+
+        if (elements.qrImage) {
+            if (qrImageUrl) {
+                elements.qrImage.src = qrImageUrl;
+            } else {
+                elements.qrImage.removeAttribute("src");
+            }
+        }
+
+        if (elements.resultOpenPublicBtn) {
+            elements.resultOpenPublicBtn.href = publicUrl || "#";
+            elements.resultOpenPublicBtn.style.pointerEvents = publicUrl ? "auto" : "none";
+            elements.resultOpenPublicBtn.style.opacity = publicUrl ? "1" : "0.5";
+        }
+
+        return publicUrl;
+    };
+
+    const stripSignatureBackground = (imgEl) => {
+        if (!imgEl || imgEl.dataset.bgStripped === "1") return;
+
+        const processSignature = () => {
+            const width = imgEl.naturalWidth || 0;
+            const height = imgEl.naturalHeight || 0;
+            if (!width || !height) return;
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d", { willReadFrequently: true });
+            if (!ctx) return;
+
+            ctx.drawImage(imgEl, 0, 0, width, height);
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const a = data[i + 3];
+                if (a === 0) continue;
+
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                const saturation = max === 0 ? 0 : (max - min) / max;
+                const brightness = (r + g + b) / 3;
+
+                if (brightness > 218 && saturation < 0.24) {
+                    data[i + 3] = 0;
+                    continue;
+                }
+
+                if (brightness > 190 && saturation < 0.16) {
+                    data[i + 3] = Math.max(0, data[i + 3] - 155);
+                }
+
+                if (brightness < 165 || saturation > 0.28) {
+                    data[i] = Math.max(0, r - 30);
+                    data[i + 1] = Math.max(0, g - 40);
+                    data[i + 2] = Math.max(0, b - 46);
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+            imgEl.dataset.bgStripped = "1";
+            imgEl.src = canvas.toDataURL("image/png");
+        };
+
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+            processSignature();
+        } else {
+            imgEl.addEventListener("load", processSignature, { once: true });
+        }
+    };
+
+    const setResultStateClass = (className) => {
+        if (!elements.resultState) return;
+        elements.resultState.classList.remove("is-pending", "is-ready", "is-found", "is-saved");
+        elements.resultState.classList.add(className || "is-pending");
+    };
+
+    const updateResultPanel = (meta = {}) => {
+        const cardNumber = sanitizeText(meta.cardNumber || elements.cardNumberInput.value) || "#FND-AAAA-C01-B-COAA";
+        const uniqueCode = sanitizeText(meta.uniqueCode || elements.uniqueCodeInput.value) || "CF-0000000000";
+        const title = sanitizeText(meta.title) || "Muestra del carnet en vivo";
+        const stateText = sanitizeText(meta.stateText) || "Pendiente";
+        const stateClass = sanitizeText(meta.stateClass) || "is-pending";
+        const updatedAt = formatResultDate(meta.updatedAt || "");
+        const paymentRef = sanitizeText(meta.paymentRef) || "Pendiente";
+        const activeState = sanitizeText(meta.activeState) || (currentActive && !currentMoroso && !isDateExpired(currentExpiryAt) ? "Activo" : "Inactivo");
+        const expiryAt = sanitizeText(meta.expiryAt || currentExpiryAt);
+
+        if (elements.resultTitle) elements.resultTitle.textContent = title;
+        if (elements.resultState) elements.resultState.textContent = stateText;
+        setResultStateClass(stateClass);
+        if (elements.resultCardNumber) elements.resultCardNumber.textContent = cardNumber;
+        if (elements.resultUniqueCode) elements.resultUniqueCode.textContent = uniqueCode;
+        if (elements.resultUpdatedAt) elements.resultUpdatedAt.textContent = updatedAt;
+        if (elements.resultPaymentRef) elements.resultPaymentRef.textContent = paymentRef;
+        if (elements.resultActiveState) elements.resultActiveState.textContent = activeState;
+        if (elements.resultExpiryAt) elements.resultExpiryAt.textContent = expiryAt ? formatResultDateOnly(expiryAt) : "Sin fecha";
+        syncPublicQr(uniqueCode);
+    };
+
+    const findDuplicateCarnet = async (payload) => {
+        if (!db) return null;
+
+        const targetCedulaDigits = normalizeDigits(payload.cedula);
+        if (!targetCedulaDigits) return null;
+
+        try {
+           const carnetRef = ref(db, "Carnetfundar");
+
+           const q = query(
+               carnetRef,
+               orderByChild("cedulaDigits"),
+               equalTo(targetCedulaDigits)
+        );
+
+        const snapshot = await get(q);
+
+        if (!snapshot.exists()) {
+            return null; // ✅ No existe duplicado
+        }
+
+        let latestRecord = null;
+
+        snapshot.forEach((child) => {
+            const row = child.val() || {};
+            const rowKey = sanitizeText(row.key || child.key);
+            if (!rowKey) return;
+
+            const record = { ...row, key: rowKey };
+
+            if (!latestRecord) {
+                latestRecord = record;
+            } else {
+                const currentTime = new Date(record.updatedAt || record.createdAt || 0).getTime() || 0;
+                const latestTime = new Date(latestRecord.updatedAt || latestRecord.createdAt || 0).getTime() || 0;
+
+                if (currentTime > latestTime) {
+                    latestRecord = record;
+                }
+            }
+        });
+
+        return latestRecord;
+
+        } catch (error) {
+           console.error("Error buscando duplicado por cédula:", error);
+           return null;
+        }
+    };
+
+
+    const setPaymentState = (approved, provider, reference) => {
+        paymentVerified = approved;
+        paymentProvider = provider || "nequi";
+        paymentReference = approved ? sanitizeText(reference) : "";
+        if (!elements.paymentStatus) return;
+
+        elements.paymentStatus.classList.remove("ok", "warn");
+        if (approved) {
+            elements.paymentStatus.classList.add("warn");
+            elements.paymentStatus.textContent = "Estado de pago: referencia registrada y pendiente de verificación administrativa (24 horas o menos)." + (paymentReference ? " · Ref: " + paymentReference : "");
+        } else {
+            elements.paymentStatus.classList.add("warn");
+            elements.paymentStatus.textContent = "Estado de pago: pendiente. Registra la referencia para continuar.";
+        }
+
+        if (elements.registerPaymentBtn) {
+            elements.registerPaymentBtn.textContent = approved ? "Pendiente" : "Registrar referencia";
+        }
+        if (approved && elements.paymentRefInput && paymentReference) {
+            elements.paymentRefInput.value = paymentReference;
+        }
+    };
+
+    const clearLegacyPaymentProof = () => {
+        try {
+            localStorage.removeItem(PAYMENT_PROOF_KEY);
+        } catch (err) {
+            // ignore
+        }
+    };
+
+    const syncPreview = () => {
+        const nameValue = sanitizeText(elements.nameInput.value);
+        const cedulaValue = sanitizeText(elements.cedulaInput.value);
+        const musicianValue = sanitizeText(elements.musicianInput.value);
+        const musicIconValue = normalizeMusicIcon(elements.musicIconInput ? elements.musicIconInput.value : currentMusicIcon);
+        const birthValue = sanitizeText(elements.birthInput.value);
+        const bloodValue = sanitizeText(elements.bloodInput.value);
+        const cardNumber = sanitizeText(elements.cardNumberInput.value);
+        const uniqueCode = sanitizeText(elements.uniqueCodeInput.value);
+        const address = sanitizeText(elements.addressInput.value);
+        const phone = sanitizeText(elements.phoneInput.value);
+        const ips = sanitizeText(elements.ipsInput.value);
+        const family = sanitizeText(elements.familyInput.value);
+
+        const [line1, line2] = splitName(nameValue);
+        elements.previewNameLine1.textContent = line1 || "NOMBRE";
+        elements.previewNameLine2.textContent = line2 || "APELLIDO";
+        elements.previewCedula.textContent = "CC " + formatCedula(cedulaValue);
+        elements.previewMusician.textContent = (musicianValue || "MÚSICO").toUpperCase();
+        elements.previewRh.textContent = "RH: " + (bloodValue || "O+").toUpperCase();
+        elements.previewCardNumber.textContent = formatCardNumberDisplay(cardNumber);
+        elements.previewUniqueCode.textContent = uniqueCode || "CF-0000000000";
+        elements.previewAddress.textContent = address || "Sin dirección registrada";
+        elements.previewPhone.textContent = phone || "Sin teléfono";
+        elements.previewIps.textContent = ips || "Sin IPS/EPS";
+        elements.previewBirthDate.textContent = formatBirthDate(birthValue);
+        elements.previewFamily.textContent = family || "0";
+        renderFrontMusicParticles(musicIconValue);
+        if (elements.musicIconInput && elements.musicIconInput.value !== musicIconValue) {
+            elements.musicIconInput.value = musicIconValue;
+        }
+        applyCardStatusVisual();
+        syncPublicQr(uniqueCode);
+
+        if (elements.resultCardNumber) elements.resultCardNumber.textContent = cardNumber || "#FND-AAAA-C01-B-COAA";
+        if (elements.resultUniqueCode) elements.resultUniqueCode.textContent = uniqueCode || "CF-0000000000";
+
+        const stateIsTransient = elements.resultState &&
+            (elements.resultState.classList.contains("is-pending") || elements.resultState.classList.contains("is-ready"));
+        if (stateIsTransient) {
+            if (cardNumber && uniqueCode) {
+                updateResultPanel({
+                    title: "Muestra lista para guardar",
+                    stateText: "Vista previa",
+                    stateClass: "is-ready",
+                    cardNumber: cardNumber,
+                    uniqueCode: uniqueCode,
+                    paymentRef: paymentReference || "Pendiente",
+                    activeState: currentActive ? "Activo" : "Inactivo",
+                    expiryAt: currentExpiryAt
+                });
+            } else {
+                updateResultPanel({
+                    title: "Aún no guardado",
+                    stateText: "Pendiente",
+                    stateClass: "is-pending",
+                    paymentRef: paymentReference || "Pendiente",
+                    activeState: currentActive ? "Activo" : "Inactivo",
+                    expiryAt: currentExpiryAt
+                });
+            }
+        }
+    };
+
+    const applyCarnetToUI = (record) => {
+        if (!record) return;
+        const lifecycle = getLifecycleFromRecord(record);
+        setLifecycleState(lifecycle);
+        elements.nameInput.value = sanitizeText(record.nombre);
+        elements.cedulaInput.value = sanitizeText(record.cedula);
+        elements.birthInput.value = sanitizeText(record.fechaNacimiento);
+        elements.ipsInput.value = sanitizeText(record.ipsEps);
+        elements.familyInput.value = sanitizeText(record.nucleoFamiliar);
+        elements.phoneInput.value = sanitizeText(record.telefono);
+        elements.addressInput.value = sanitizeText(record.direccion);
+        elements.bloodInput.value = sanitizeText(record.tipoSangre);
+        elements.musicianInput.value = sanitizeText(record.musico);
+        if (elements.musicIconInput) {
+            elements.musicIconInput.value = normalizeMusicIcon(record.iconoMusical);
+        }
+        elements.cardNumberInput.value = sanitizeText(record.numeroCarnet);
+        elements.uniqueCodeInput.value = sanitizeText(record.codigoUnico).toUpperCase();
+        if (elements.lookupNameInput) elements.lookupNameInput.value = sanitizeText(record.nombre);
+        if (elements.lookupCodeInput) elements.lookupCodeInput.value = sanitizeText(record.codigoUnico).toUpperCase();
+        if (record.foto) {
+            photoDataUrl = record.foto;
+            elements.previewPhoto.src = record.foto;
+        }
+        if (elements.idCard) {
+            elements.idCard.classList.remove("is-flipped");
+        }
+        syncPreview();
+        updateResultPanel({
+            title: "Carnet cargado desde base de datos",
+            stateText: "Encontrado",
+            stateClass: "is-found",
+            cardNumber: sanitizeText(record.numeroCarnet),
+            uniqueCode: sanitizeText(record.codigoUnico),
+            updatedAt: sanitizeText(record.updatedAt || record.createdAt || ""),
+            paymentRef: sanitizeText(record.paymentReference || "Pendiente"),
+            activeState: lifecycle.active ? "Activo" : "Inactivo",
+            expiryAt: lifecycle.expiryAt
+        });
+    };
+
+    const ensureIdentifiers = async (options = {}) => {
+        const forceRefreshCard = Boolean(options.refreshCardNumber);
+        if (elements.cardNumberInput) {
+            if (forceRefreshCard || !sanitizeText(elements.cardNumberInput.value)) {
+                elements.cardNumberInput.value = await getNextCardNumberFromDatabase();
+            }
+            elements.cardNumberInput.readOnly = true;
+        }
+        if (!sanitizeText(elements.uniqueCodeInput.value)) {
+            elements.uniqueCodeInput.value = generateUniqueCode();
+        }
+    };
+
+    const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("No se pudo leer la foto del carnet."));
+        reader.readAsDataURL(file);
+    });
+
+    const optimizePhoto = async (file) => {
+        const source = await readFileAsDataUrl(file);
+        const image = new Image();
+
+        await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = () => reject(new Error("La imagen no es válida."));
+            image.src = source;
+        });
+
+        const maxEdge = 680;
+        const width = image.width || maxEdge;
+        const height = image.height || maxEdge;
+        const ratio = Math.min(1, maxEdge / Math.max(width, height));
+        const targetWidth = Math.max(220, Math.round(width * ratio));
+        const targetHeight = Math.max(220, Math.round(height * ratio));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            return source;
+        }
+        ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+        return canvas.toDataURL("image/jpeg", 0.84);
+    };
+
+    const toggleCard = () => {
+        if (!elements.idCard) return;
+        elements.idCard.classList.toggle("is-flipped");
+    };
+
+    if (elements.idCard && elements.idCard.dataset.flipBound !== "1") {
+        elements.idCard.dataset.flipBound = "1";
+        elements.idCard.addEventListener("click", toggleCard);
+        elements.idCard.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleCard();
+            }
+        });
+    }
+
+    if (elements.nequiQrImg) {
+        const qrSources = ["assets/nequiqr.jpeg", "assets/nequiqr.png", "assets/nequiqr.jpg", "assets/nequiqr.webp", "assets/qr.png"];
+        elements.nequiQrImg.dataset.qrIndex = "0";
+        elements.nequiQrImg.addEventListener("error", () => {
+            const current = Number(elements.nequiQrImg.dataset.qrIndex || "0");
+            const next = current + 1;
+            if (next >= qrSources.length) return;
+            elements.nequiQrImg.dataset.qrIndex = String(next);
+            elements.nequiQrImg.src = qrSources[next];
+        });
+    }
+
+    if (elements.registerPaymentBtn) {
+        elements.registerPaymentBtn.addEventListener("click", () => {
+            const refValue = sanitizeText(elements.paymentRefInput ? elements.paymentRefInput.value : "");
+            if (!refValue) {
+                setMessage("Debes ingresar una referencia de pago para continuar.", "error");
+                return;
+            }
+            setPaymentState(true, "nequi", refValue);
+            updateResultPanel({
+                stateText: "Pendiente verificación",
+                stateClass: "is-ready",
+                paymentRef: paymentReference || "Pendiente",
+                activeState: "Inactivo",
+                expiryAt: currentExpiryAt
+            });
+            setMessage("Referencia registrada. Tu carnet quedará en espera de verificación por administración (24 horas o menos).", "info");
+        });
+    }
+
+    if (elements.paymentRefInput) {
+        elements.paymentRefInput.addEventListener("input", () => {
+            const inputRef = sanitizeText(elements.paymentRefInput.value);
+            if (!paymentVerified) return;
+            if (inputRef === paymentReference) return;
+            setPaymentState(false, "nequi", "");
+            updateResultPanel({
+                stateText: "Pendiente",
+                stateClass: "is-pending",
+                paymentRef: "Pendiente",
+                activeState: currentActive ? "Activo" : "Inactivo",
+                expiryAt: currentExpiryAt
+            });
+            setMessage("Referencia modificada. Debes registrar nuevamente la referencia de pago.", "info");
+        });
+    }
+
+    if (Array.isArray(elements.adminAccessButtons) && elements.adminAccessButtons.length > 0) {
+        elements.adminAccessButtons.forEach((btn) => {
+            btn.addEventListener("click", (event) => {
+                event.preventDefault();
+                openAdminCarnetPage();
+            });
+        });
+    }
+
+    const previewInputs = [
+        elements.nameInput,
+        elements.cedulaInput,
+        elements.birthInput,
+        elements.ipsInput,
+        elements.familyInput,
+        elements.phoneInput,
+        elements.addressInput,
+        elements.bloodInput,
+        elements.musicianInput,
+        elements.musicIconInput,
+        elements.cardNumberInput,
+        elements.uniqueCodeInput
+    ];
+    previewInputs.forEach((inputEl) => {
+        if (!inputEl) return;
+        inputEl.addEventListener("input", syncPreview);
+        inputEl.addEventListener("change", syncPreview);
+    });
+
+    if (elements.photoInput) {
+        elements.photoInput.addEventListener("change", async () => {
+            const file = elements.photoInput.files && elements.photoInput.files[0];
+            if (!file) return;
+            if (photoObjectUrl) {
+                URL.revokeObjectURL(photoObjectUrl);
+                photoObjectUrl = "";
+            }
+            photoObjectUrl = URL.createObjectURL(file);
+            elements.previewPhoto.src = photoObjectUrl;
+            try {
+                photoDataUrl = await optimizePhoto(file);
+            } catch (err) {
+                photoDataUrl = "";
+                setMessage("No se pudo procesar la foto. Intenta con otra imagen.", "error");
+            }
+        });
+    }
+
+    if (elements.qrImage && elements.qrImage.dataset.fallbackBound !== "1") {
+        elements.qrImage.dataset.fallbackBound = "1";
+        elements.qrImage.addEventListener("error", () => {
+            elements.qrImage.src = "assets/qr.png";
+        });
+    }
+
+    if (elements.cardNumberInput && !sanitizeText(elements.cardNumberInput.value)) {
+        elements.cardNumberInput.value = buildCardNumber(1, new Date().getFullYear());
+    }
+    if (elements.musicIconInput) {
+        elements.musicIconInput.value = normalizeMusicIcon(elements.musicIconInput.value || DEFAULT_MUSIC_ICON);
+        currentMusicIcon = elements.musicIconInput.value;
+    }
+    syncPreview();
+    stripSignatureBackground(elements.signatureImg);
+    setPaymentState(false, "", "");
+    clearLegacyPaymentProof();
+
+    const params = new URLSearchParams(window.location.search);
+    const nequiStatus = sanitizeText(params.get("nequi_status") || params.get("paypal_status")).toLowerCase();
+    const nequiRef = sanitizeText(params.get("nequi_ref") || params.get("paypal_ref"));
+    if (nequiStatus === "approved" && nequiRef) {
+        setPaymentState(true, "nequi", nequiRef);
+    }
+
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getDatabase(app);
+    } catch (err) {
+        console.error("Error inicializando Firebase en FUNDAR:", err);
+        setMessage("No se pudo inicializar Firebase. Recarga la página.", "error");
+    }
+    Promise.resolve(ensureIdentifiers({ refreshCardNumber: true }))
+        .then(() => {
+            syncPreview();
+        })
+        .catch((err) => {
+            console.warn("No se pudo asignar el número automático del carnet:", err);
+        });
+    if (paymentVerified) {
+        setMessage("Referencia registrada. Tu carnet quedará en espera de verificación por administración (24 horas o menos).", "info");
+        updateResultPanel({
+            title: "Muestra lista para guardar",
+            stateText: "Pendiente verificación",
+            stateClass: "is-ready",
+            paymentRef: paymentReference || "Pendiente",
+            activeState: "Inactivo",
+            expiryAt: currentExpiryAt
+        });
+    } else {
+        setMessage("Registra la referencia de pago para poder generar el carnet.", "info");
+        updateResultPanel({
+            title: "Aún no guardado",
+            stateText: "Pendiente",
+            stateClass: "is-pending",
+            paymentRef: "Pendiente",
+            activeState: "Inactivo",
+            expiryAt: currentExpiryAt
+        });
+    }
+
+    if (elements.lookupBtn) {
+        elements.lookupBtn.addEventListener("click", async () => {
+            const inputName = sanitizeText(elements.lookupNameInput ? elements.lookupNameInput.value : "");
+            const inputCode = sanitizeText(elements.lookupCodeInput ? elements.lookupCodeInput.value : "").toUpperCase();
+
+            if (!db) {
+                setLookupMessage("Firebase no está disponible en este momento.", "error");
+                return;
+            }
+            if (!inputName || !inputCode) {
+                setLookupMessage("Debes ingresar nombre y código para consultar.", "error");
+                return;
+            }
+
+            elements.lookupBtn.disabled = true;
+            const previousLookupText = elements.lookupBtn.textContent;
+            elements.lookupBtn.textContent = "Buscando carnet...";
+
+            try {
+                const queryByCode = async (codeValue) => {
+                    const carnetQuery = query(ref(db, "Carnetfundar"), orderByChild("codigoUnico"), equalTo(codeValue));
+                    return await get(carnetQuery);
+                };
+
+                let snap = await queryByCode(inputCode);
+                if (!snap.exists() && inputCode.toLowerCase() !== inputCode) {
+                    snap = await queryByCode(inputCode.toLowerCase());
+                }
+
+                if (!snap.exists()) {
+                    setLookupMessage("No existe carnet con ese código.", "error");
+                    return;
+                }
+
+                const targetName = normalizeName(inputName);
+                let foundRecord = null;
+                snap.forEach((child) => {
+                    const row = child.val() || {};
+                    const rowName = normalizeName(row.nombreNormalizado || row.nombre || "");
+                    if (rowName === targetName) {
+                        foundRecord = { ...row, key: child.key };
+                    }
+                });
+
+                if (!foundRecord) {
+                    setLookupMessage("El código existe, pero el nombre no coincide.", "error");
+                    return;
+                }
+
+                const syncedRecord = await syncLifecycleWithDatabase(foundRecord);
+                applyCarnetToUI(syncedRecord);
+
+                const lifecycle = getLifecycleFromRecord(syncedRecord || {});
+                const noteValue = sanitizeText(syncedRecord && syncedRecord.note);
+                if (noteValue) {
+                    setLookupMessage(noteValue + " Si necesitas ayuda, acércate a FUNDAR (Carrera 14 #56-16 Piso 2 Oficina 18B, Bogotá).", "error");
+                    setMessage("Tu carnet tiene una observación administrativa. Revisa el detalle en pantalla.", "error");
+                } else if (!lifecycle.active) {
+                    setLookupMessage("Carnet cargado. Estado inactivo o pendiente de verificación administrativa.", "info");
+                    setMessage("Tu carnet está pendiente de activación por administración. Tiempo estimado: 24 horas o menos.", "info");
+                } else {
+                    setLookupMessage("Carnet encontrado y cargado. Puedes girarlo para ver el reverso.", "success");
+                    setMessage("Consulta correcta. Carnet activo y cargado con nombre + código único.", "success");
+                }
+            } catch (err) {
+                console.error("Error consultando carnet FUNDAR:", err);
+                setLookupMessage("No se pudo consultar el carnet. Intenta de nuevo.", "error");
+            } finally {
+                elements.lookupBtn.disabled = false;
+                elements.lookupBtn.textContent = previousLookupText;
+            }
+        });
+    }
+
+    const copyText = async (text) => {
+        const safe = sanitizeText(text);
+        if (!safe) return false;
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(safe);
+                return true;
+            }
+        } catch (err) {
+            // fallback below
+        }
+
+        const temp = document.createElement("textarea");
+        temp.value = safe;
+        temp.style.position = "fixed";
+        temp.style.left = "-9999px";
+        document.body.appendChild(temp);
+        temp.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(temp);
+        return Boolean(ok);
+    };
+
+    if (elements.copyCodeBtn) {
+        elements.copyCodeBtn.addEventListener("click", async () => {
+            const ok = await copyText(elements.resultUniqueCode ? elements.resultUniqueCode.textContent : "");
+            setMessage(ok ? "Código único copiado." : "No se pudo copiar el código.", ok ? "success" : "error");
+        });
+    }
+
+    if (elements.copyCardBtn) {
+        elements.copyCardBtn.addEventListener("click", async () => {
+            const ok = await copyText(elements.resultCardNumber ? elements.resultCardNumber.textContent : "");
+            setMessage(ok ? "Número de carnet copiado." : "No se pudo copiar el número.", ok ? "success" : "error");
+        });
+    }
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!db) {
+            setMessage("Firebase no está disponible en este momento.", "error");
+            return;
+        }
+
+        if (!paymentVerified || !sanitizeText(paymentReference)) {
+            setMessage("Debes registrar una referencia de pago Nequi para generar el carnet.", "error");
+            return;
+        }
+
+        await ensureIdentifiers({ refreshCardNumber: true });
+        syncPreview();
+
+        const payload = {
+            nombre: sanitizeText(elements.nameInput.value),
+            cedula: sanitizeText(elements.cedulaInput.value),
+            fechaNacimiento: sanitizeText(elements.birthInput.value),
+            ipsEps: sanitizeText(elements.ipsInput.value),
+            nucleoFamiliar: sanitizeText(elements.familyInput.value),
+            telefono: sanitizeText(elements.phoneInput.value),
+            direccion: sanitizeText(elements.addressInput.value),
+            tipoSangre: sanitizeText(elements.bloodInput.value).toUpperCase(),
+            musico: sanitizeText(elements.musicianInput.value),
+            agrupacion: sanitizeText(elements.agrupacionInput ? elements.agrupacionInput.value : ""),
+            venueId: elements.venueSelect ? sanitizeText(elements.venueSelect.value) : "",
+            iconoMusical: normalizeMusicIcon(elements.musicIconInput ? elements.musicIconInput.value : currentMusicIcon),
+            numeroCarnet: sanitizeText(elements.cardNumberInput.value),
+            codigoUnico: sanitizeText(elements.uniqueCodeInput.value).toUpperCase()
+        };
+
+        const requiredFields = [
+            "nombre",
+            "cedula",
+            "fechaNacimiento",
+            "ipsEps",
+            "nucleoFamiliar",
+            "telefono",
+            "direccion",
+            "tipoSangre",
+            "musico",
+            "iconoMusical",
+            "codigoUnico"
+        ];
+
+        const missingField = requiredFields.find((field) => !payload[field]);
+        if (missingField) {
+            setMessage("Completa todos los campos obligatorios del carnet.", "error");
+            return;
+        }
+
+        // Validar duplicados primero
+        let existingRecord = null;
+        try {
+            existingRecord = await findDuplicateCarnet(payload);
+        } catch (err) {
+            console.error("Error validando duplicados en Carnetfundar:", err);
+            setMessage("No se pudo validar si ya existe un carnet. Intenta nuevamente.", "error");
+            return;
+        }
+
+        // Preguntar si actualizar carnet existente
+        let isUpdating = false;
+        
+        // Si venimos del modo actualización desde carnet existente
+        if (window.isUpdatingCarnet && window.currentCarnetKey) {
+            isUpdating = true;
+            if (!existingRecord) {
+                existingRecord = { key: window.currentCarnetKey };
+            } else {
+                existingRecord.key = window.currentCarnetKey;
+            }
+        }
+        
+        if (existingRecord && !isUpdating) {
+            const existingName = sanitizeText(existingRecord.nombre || payload.nombre);
+            const existingCode = sanitizeText(existingRecord.codigoUnico).toUpperCase();
+            const existingKey = sanitizeText(existingRecord.key);
+
+            const syncedExisting = await syncLifecycleWithDatabase(existingRecord);
+            const finalExisting = syncedExisting || existingRecord;
+            const existingStatus = getLifecycleFromRecord(finalExisting);
+
+            // Preguntar si desea actualizar el carnet existente
+            const confirmUpdate = window.confirm(
+                `Ya existe un carnet registrado para ti.\n\n` +
+                `Código: ${existingCode}\n` +
+                `Nombre: ${existingName}\n` +
+                `Estado: ${existingStatus.active && !existingStatus.moroso && !existingStatus.expired ? "Activo" : "Inactivo"}\n` +
+                `Creado: ${formatResultDate(finalExisting.createdAt)}\n\n` +
+                `¿Deseas actualizar este carnet con la nueva información?`
+            );
+
+            if (!confirmUpdate) {
+                // Usuario decide NO actualizar
+                applyCarnetToUI(finalExisting);
+                if (elements.lookupNameInput) elements.lookupNameInput.value = existingName;
+                if (elements.lookupCodeInput) elements.lookupCodeInput.value = existingCode;
+
+                setMessage("Actualización cancelada. Tu carnet anterior se mantiene sin cambios.", "info");
+                setLookupMessage(
+                    existingCode
+                        ? "Tu carnet anterior se mantiene. Código: " + existingCode
+                        : "Tu carnet anterior se mantiene sin cambios.",
+                    "info"
+                );
+                return;
+            }
+
+            // Usuario confirmó la actualización - usar datos existentes
+            isUpdating = true;
+            payload.codigoUnico = existingCode;
+            payload.numeroCarnet = sanitizeText(finalExisting.numeroCarnet);
+            existingRecord.key = existingKey;
+        }
+
+        const photoFile = elements.photoInput && elements.photoInput.files ? elements.photoInput.files[0] : null;
+        if (!photoFile && !photoDataUrl) {
+            setMessage("Debes subir una foto para generar el carnet.", "error");
+            return;
+        }
+
+        elements.submitBtn.disabled = true;
+        const previousBtnLabel = elements.submitBtn.textContent;
+        elements.submitBtn.textContent = isUpdating ? "Actualizando carnet..." : "Generando carnet...";
+
+        try {
+            if (photoFile) {
+                photoDataUrl = await optimizePhoto(photoFile);
+            }
+
+            if (!photoDataUrl) {
+                throw new Error("No se pudo procesar la imagen del carnet.");
+            }
+
+            // Asignar número de carnet si no existe uno
+            if (!sanitizeText(payload.numeroCarnet)) {
+                const reservedCardNumber = await reserveNextCardNumber();
+                payload.numeroCarnet = sanitizeText(reservedCardNumber);
+                if (!payload.numeroCarnet) {
+                    throw new Error("No se pudo asignar el número consecutivo del carnet.");
+                }
+            }
+
+            const nowIso = new Date().toISOString();
+            const expiryAtIso = addDaysToIso(nowIso, CARNET_VALID_DAYS);
+            const nombreNormalizado = normalizeName(payload.nombre);
+
+            const carnetData = {
+                createdAt: isUpdating ? (sanitizeText(existingRecord.createdAt) || nowIso) : nowIso,
+                updatedAt: nowIso,
+                nombre: payload.nombre,
+                nombreNormalizado: nombreNormalizado,
+                cedula: payload.cedula,
+                cedulaDigits: normalizeDigits(payload.cedula),
+                fechaNacimiento: payload.fechaNacimiento,
+                ipsEps: payload.ipsEps,
+                nucleoFamiliar: payload.nucleoFamiliar,
+                telefono: payload.telefono,
+                telefonoDigits: normalizeDigits(payload.telefono),
+                direccion: payload.direccion,
+                tipoSangre: payload.tipoSangre,
+                musico: payload.musico,
+                agrupacion: payload.agrupacion,
+                venueId: payload.venueId,
+                iconoMusical: payload.iconoMusical,
+                numeroCarnet: payload.numeroCarnet,
+                codigoUnico: payload.codigoUnico,
+                publicUrl: buildPublicCarnetUrl(payload.codigoUnico),
+                foto: photoDataUrl,
+                paymentStatus: "pending_verification",
+                paymentProvider: paymentProvider || "nequi",
+                paymentReference: paymentReference || "",
+                paymentAmountCop: CARNET_PRICE_COP,
+                activo: false,
+                note: "",
+                vencimientoAt: expiryAtIso,
+                moroso: false,
+                listaEspera: false,
+                key: isUpdating ? existingRecord.key : void 0
+            };
+
+            // Guardar carnet (actualización o creación)
+            if (isUpdating && existingRecord && existingRecord.key) {
+                // Actualizar registro existente
+                await set(ref(db, `Carnetfundar/${existingRecord.key}`), carnetData);
+            } else {
+                // Crear nuevo registro
+                const nodeRef = push(ref(db, "Carnetfundar"));
+                const carnetKey = nodeRef.key || generateUniqueCode();
+                carnetData.key = carnetKey;
+                await set(nodeRef, carnetData);
+            }
+            
+            // Actualizar UI con resultados
+            if (elements.cardNumberInput) {
+                elements.cardNumberInput.value = payload.numeroCarnet;
+            }
+            syncPreview();
+
+            setLifecycleState({
+                active: false,
+                moroso: false,
+                expiryAt: expiryAtIso,
+                note: ""
+            });
+
+            if (elements.lookupNameInput) elements.lookupNameInput.value = payload.nombre;
+            if (elements.lookupCodeInput) elements.lookupCodeInput.value = payload.codigoUnico;
+            
+            // Mensajes contextuales
+            const statusMsg = isUpdating 
+                ? "Carnet actualizado exitosamente. Queda pendiente de reverificación por administración."
+                : "Carnet generado exitosamente. Queda en espera de verificación por administración (24 horas o menos).";
+            setMessage(statusMsg, "success");
+            setLookupMessage("Guarda tu nombre y código para consultarlo.", "info");
+            
+            updateResultPanel({
+                title: isUpdating ? "Carnet actualizado" : "Carnet guardado en base de datos",
+                stateText: "Pendiente verificación",
+                stateClass: "is-saved",
+                cardNumber: payload.numeroCarnet,
+                uniqueCode: payload.codigoUnico,
+                updatedAt: nowIso,
+                paymentRef: paymentReference || "Pendiente",
+                activeState: "Inactivo",
+                expiryAt: expiryAtIso
+            });
+            if (elements.idCard) {
+                elements.idCard.classList.remove("is-flipped");
+            }
+            if (!isUpdating) {
+                goToLivePreviewSection();
+            }
+        } catch (err) {
+            console.error("Error guardando carnet FUNDAR:", err);
+            setMessage("No se pudo guardar el carnet. Intenta nuevamente: " + err.message, "error");
+        } finally {
+            elements.submitBtn.disabled = false;
+            elements.submitBtn.textContent = previousBtnLabel;
+        }
+    });
+
+    // Cargar carnet existente para actualización
+    const loadCarnetForUpdate = async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const code = urlParams.get('code');
+        
+        if (mode === 'update' && code) {
+            setMessage("Cargando tu carnet para actualización...", "info");
+            
+            try {
+                const carnetQuery = query(ref(db, "Carnetfundar"), orderByChild("codigoUnico"), equalTo(code.toUpperCase()));
+                const snap = await get(carnetQuery);
+                
+                if (!snap.exists()) {
+                    setMessage("No se encontró el carnet con el código proporcionado.", "error");
+                    return;
+                }
+                
+                let carnetData = null;
+                let carnetKey = null;
+                snap.forEach((child) => {
+                    carnetData = child.val();
+                    carnetKey = child.key;
+                });
+                
+                if (!carnetData) {
+                    setMessage("No se pudo leer la información del carnet.", "error");
+                    return;
+                }
+                
+                // Llenar el formulario con los datos existentes
+                if (elements.nameInput) elements.nameInput.value = sanitizeText(carnetData.nombre) || "";
+                if (elements.cedulaInput) elements.cedulaInput.value = sanitizeText(carnetData.cedula) || "";
+                if (elements.birthInput) elements.birthInput.value = sanitizeText(carnetData.fechaNacimiento) || "";
+                if (elements.ipsInput) elements.ipsInput.value = sanitizeText(carnetData.ipsEps) || "";
+                if (elements.familyInput) elements.familyInput.value = sanitizeText(carnetData.nucleoFamiliar) || "";
+                if (elements.phoneInput) elements.phoneInput.value = sanitizeText(carnetData.telefono) || "";
+                if (elements.addressInput) elements.addressInput.value = sanitizeText(carnetData.direccion) || "";
+                if (elements.bloodInput) elements.bloodInput.value = sanitizeText(carnetData.tipoSangre) || "";
+                if (elements.musicianInput) elements.musicianInput.value = sanitizeText(carnetData.musico) || "";
+                if (elements.agrupacionInput) elements.agrupacionInput.value = sanitizeText(carnetData.agrupacion) || "";
+                if (elements.cardNumberInput) elements.cardNumberInput.value = sanitizeText(carnetData.numeroCarnet) || "";
+                if (elements.uniqueCodeInput) elements.uniqueCodeInput.value = sanitizeText(carnetData.codigoUnico) || "";
+                
+                // Seleccionar el venue si existe
+                if (elements.venueSelect && carnetData.venueId) {
+                    elements.venueSelect.value = carnetData.venueId;
+                }
+                
+                // Si hay foto, mostrarla
+                if (carnetData.foto && elements.previewPhoto) {
+                    photoDataUrl = carnetData.foto;
+                    elements.previewPhoto.src = carnetData.foto;
+                }
+                
+                // Cambiar el mensaje del botón
+                elements.submitBtn.textContent = "Actualizar mi carnet";
+                
+                // Guardar la clave para la actualización
+                window.currentCarnetKey = carnetKey;
+                window.isUpdatingCarnet = true;
+                
+                // Mostrar mensaje de actualización
+                setMessage("ℹ️ Actualiza la información faltante de tu carnet y vuelve a subir tu foto.", "info");
+                
+                // Scroll al formulario
+                document.getElementById('fundarCarnetForm').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (err) {
+                console.error("Error cargando carnet para actualización:", err);
+                setMessage("Error cargando el carnet. Intenta nuevamente.", "error");
+            }
+        }
+    };
+    
+    // Ejecutar al cargar la página
+    loadCarnetForUpdate();
+
+    window.addEventListener("beforeunload", () => {
+        if (photoObjectUrl) {
+            URL.revokeObjectURL(photoObjectUrl);
+            photoObjectUrl = "";
+        }
+    });
+    </script>
+</body>
+</html>

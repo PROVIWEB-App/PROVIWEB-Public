@@ -1,0 +1,3068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ser aliado de PROVIWEB: pitch de negocio, propuesta de valor, estrategia de crecimiento y oportunidades para alianzas.">
+    <title>Ser aliado - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-dark: #0f0f13;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-purple: #a855f7;
+            --accent-pink: #007BFF;
+            --accent-blue: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-gradient: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --ally-bg-a: #0f0f13;
+            --ally-bg-b: #12121a;
+            --ally-ink: #ffffff;
+            --ally-muted: #a1a1aa;
+            --ally-card: rgba(255, 255, 255, 0.03);
+            --ally-border: rgba(255, 255, 255, 0.08);
+            --ally-glass-shadow: 0 8px 32px rgba(168, 85, 247, 0.15);
+            --ally-soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ally-ink);
+            background: var(--bg-dark);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            animation: aurora 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes aurora {
+            0%, 100% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+            25% { transform: translateX(5%) translateY(-2%) scale(1.05); opacity: 0.9; }
+            50% { transform: translateX(-3%) translateY(3%) scale(1.02); opacity: 1; }
+            75% { transform: translateX(2%) translateY(-1%) scale(1.03); opacity: 0.95; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9333ea, #0056b3);
+        }
+
+        .ally-page-tint {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: var(--sticker-tint-opacity, 0);
+            background:
+                radial-gradient(circle at 22% 18%, rgba(168, 85, 247, 0.2), transparent 46%),
+                radial-gradient(circle at 78% 72%, rgba(0, 123, 255, 0.15), transparent 50%);
+            transition: opacity 0.34s ease, background 0.45s ease;
+        }
+
+        body[data-sticker-theme="aqua"] .ally-page-tint {
+            background:
+                radial-gradient(circle at 20% 18%, rgba(6, 182, 212, 0.2), transparent 46%),
+                radial-gradient(circle at 82% 74%, rgba(8, 145, 178, 0.15), transparent 52%);
+        }
+        body[data-sticker-theme="sky"] .ally-page-tint {
+            background:
+                radial-gradient(circle at 20% 18%, rgba(139, 92, 246, 0.2), transparent 46%),
+                radial-gradient(circle at 82% 74%, rgba(168, 85, 247, 0.15), transparent 52%);
+        }
+        body[data-sticker-theme="mint"] .ally-page-tint {
+            background:
+                radial-gradient(circle at 20% 18%, rgba(16, 185, 129, 0.2), transparent 46%),
+                radial-gradient(circle at 82% 74%, rgba(5, 150, 105, 0.15), transparent 52%);
+        }
+        body[data-sticker-theme="sunset"] .ally-page-tint {
+            background:
+                radial-gradient(circle at 20% 18%, rgba(251, 146, 60, 0.2), transparent 44%),
+                radial-gradient(circle at 82% 74%, rgba(239, 68, 68, 0.15), transparent 52%);
+        }
+
+        #particlesCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            contain: paint;
+            transition: filter 0.25s ease;
+            opacity: 0.4;
+        }
+        body[data-reactive="on"] #particlesCanvas {
+            filter: saturate(calc(1 + var(--react-intensity) * 0.8)) contrast(calc(1 + var(--react-intensity) * 0.25));
+        }
+
+        .ally-noise {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.02) 0.5px, transparent 0.5px);
+            background-size: 4px 4px;
+            opacity: 0.3;
+        }
+
+        .ally-orb {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            width: 290px; height: 290px;
+            border-radius: 50%;
+            filter: blur(8px);
+            opacity: 0.3;
+            animation: orbFloat 11s ease-in-out infinite;
+        }
+        .ally-orb.one {
+            top: 70px; left: -80px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.25), transparent 68%);
+        }
+        .ally-orb.two {
+            right: -90px; bottom: 90px;
+            background: radial-gradient(circle, rgba(0, 123, 255, 0.22), transparent 70%);
+            animation-delay: 1.2s;
+        }
+
+        .ally-shell {
+            position: relative;
+            z-index: 2;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 24px 20px 90px;
+        }
+
+        .ally-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 26px;
+            padding: 16px 24px;
+            background: rgba(15, 15, 19, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+        }
+
+        .ally-brand {
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ally-back {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        .ally-back:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: var(--text-primary);
+        }
+
+        .ally-hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .glass-card {
+            background: var(--ally-card);
+            border: 1px solid var(--ally-border);
+            border-radius: 26px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--ally-glass-shadow);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 12px 48px rgba(168, 85, 247, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .neuro-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+            box-shadow: var(--ally-soft-shadow);
+            border: 1px solid var(--ally-border);
+            transition: all 0.4s ease;
+        }
+        .neuro-card:hover {
+            border-color: rgba(0, 123, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 123, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        body[data-reactive="on"] .glass-card,
+        body[data-reactive="on"] .neuro-card {
+            transform: translateY(calc(var(--react-intensity) * -3px));
+            filter: saturate(calc(1 + var(--react-intensity) * 0.35));
+            box-shadow: 0 16px 40px rgba(168, 85, 247, calc(0.15 + var(--react-intensity) * 0.15)),
+                0 0 0 1px rgba(168, 85, 247, calc(0.1 + var(--react-intensity) * 0.15));
+        }
+        body[data-reactive="on"] .ally-orb {
+            opacity: calc(0.3 + var(--react-intensity) * 0.22);
+            filter: blur(calc(8px - var(--react-intensity) * 2px));
+        }
+
+        .hero-main {
+            padding: 34px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            right: -100px; top: -120px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent 70%);
+        }
+
+        .ally-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .hero-main h1 {
+            margin: 0;
+            font-size: clamp(1.85rem, 4vw, 2.5rem);
+            line-height: 1.15;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-main p {
+            margin: 14px 0 0;
+            color: var(--ally-muted);
+            font-size: 1.03rem;
+            line-height: 1.75;
+            max-width: 62ch;
+        }
+
+        .hero-actions {
+            margin-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .ally-btn {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+        .ally-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: translateX(-150%);
+            transition: transform 0.55s ease;
+        }
+        .ally-btn:hover::before { transform: translateX(160%); }
+        .ally-btn.primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4);
+        }
+        .ally-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.5);
+        }
+        .ally-btn.ghost {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+        .ally-btn.ghost:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .hero-side {
+            padding: 24px;
+            display: grid;
+            gap: 12px;
+            align-content: start;
+        }
+        .hero-stat {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            transition: all 0.3s ease;
+        }
+        .hero-stat:hover {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .hero-stat .val {
+            font-size: 1.7rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .hero-stat .lab {
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: var(--ally-muted);
+        }
+        .hero-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.1);
+        }
+
+        .section-grid {
+            margin-top: 24px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .ally-proofbar {
+            margin-top: 18px;
+            padding: 14px 18px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        .proof-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .proof-item:hover {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .proof-item strong { color: var(--text-primary); font-weight: 800; }
+
+        .ally-process {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .ally-social-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .ally-logo-pill {
+            border-radius: 12px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            text-align: center;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        .ally-logo-pill:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: var(--text-primary);
+        }
+
+        .ally-testimonials {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .ally-testimonial {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .ally-testimonial:hover {
+            border-color: rgba(0, 123, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .ally-testimonial p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.65;
+        }
+        .ally-testimonial strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.83rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .case-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .case-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            transition: all 0.3s ease;
+        }
+        .case-card:hover { border-color: rgba(168, 85, 247, 0.2); }
+        .case-card h3 {
+            margin: 0 0 10px;
+            font-size: 0.94rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        .case-metric {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .case-metric div {
+            border-radius: 10px;
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            padding: 8px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+        .case-metric strong {
+            display: block;
+            font-size: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .funding-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 12px;
+        }
+        .funding-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            transition: all 0.3s ease;
+        }
+        .funding-card:hover { border-color: rgba(0, 123, 255, 0.2); }
+        .funding-list {
+            margin: 8px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+        .funding-list li {
+            display: grid;
+            grid-template-columns: 84px 1fr;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+        }
+        .funding-list strong {
+            display: inline-block;
+            border-radius: 999px;
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            font-size: 0.79rem;
+            padding: 5px 8px;
+            text-align: center;
+        }
+        .funding-timeline {
+            margin-top: 8px;
+            display: grid;
+            gap: 8px;
+        }
+        .funding-timeline div {
+            border-radius: 10px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 9px 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .funding-timeline div strong { color: var(--text-primary); }
+
+        .ally-contrib-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .ally-contrib-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .ally-contrib-card:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            transform: translateY(-2px);
+        }
+        .ally-contrib-card h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        .ally-contrib-card p {
+            margin: 8px 0 0;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .ally-contrib-emphasis {
+            margin-top: 8px;
+            font-size: 0.82rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .ally-ideal {
+            margin-top: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.05);
+            padding: 14px;
+        }
+        .ally-ideal h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #d8b4fe;
+            font-weight: 800;
+        }
+        .ally-ideal ul {
+            margin: 8px 0 0;
+            padding-left: 18px;
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.7;
+        }
+        .ally-ideal ul li::marker { color: var(--accent-purple); }
+
+        .ally-step-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .ally-step-card:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            transform: translateY(-2px);
+        }
+        .ally-step-card .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.82rem;
+            margin-bottom: 8px;
+        }
+        .ally-step-card h3 {
+            margin: 0;
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .ally-step-card p {
+            margin-top: 8px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .ally-brand-win-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .ally-brand-win {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 150px;
+            transition: all 0.3s ease;
+        }
+        .ally-brand-win:hover {
+            border-color: rgba(0, 123, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .ally-brand-win h3 {
+            margin: 0 0 6px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        .ally-brand-win p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .ally-brand-win-cta {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .ally-brand-win-cta p {
+            margin: 0;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+        }
+
+        .ally-local-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .ally-local-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            transition: all 0.3s ease;
+        }
+        .ally-local-card:hover { border-color: rgba(168, 85, 247, 0.2); }
+        .ally-local-card h3 {
+            margin: 0 0 6px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        .ally-local-card p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .ally-sticker-wrap {
+            position: relative;
+            margin-top: 10px;
+            perspective: 1300px;
+            overflow: visible;
+            --sticker-glow: 0;
+        }
+        .ally-sticker-wrap::before {
+            content: "";
+            position: absolute;
+            left: 50%; top: 52%;
+            width: 78%; height: 58%;
+            transform: translate(-50%, -50%);
+            border-radius: 22px;
+            background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.25), rgba(168, 85, 247, 0) 70%);
+            filter: blur(16px);
+            opacity: calc(0.18 + var(--sticker-glow) * 0.5);
+            transition: opacity 0.28s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .ally-sticker-hint {
+            position: fixed;
+            left: 0; top: 0;
+            transform: translate(-50%, 0) scale(0.92);
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(0, 123, 255, 0.9));
+            color: #fff;
+            font-size: 0.73rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 12px 24px rgba(168, 85, 247, 0.3);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            z-index: 8;
+        }
+        .ally-sticker-play-cta {
+            position: absolute;
+            right: 10px; top: -14px;
+            z-index: 7;
+            pointer-events: none;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: #fff;
+            background: var(--accent-gradient);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 0 6px 14px rgba(168, 85, 247, 0.25);
+            animation: stickerPlayCue 2.1s ease-in-out infinite;
+        }
+        .ally-sticker-hint::after {
+            content: "";
+            position: absolute;
+            left: 50%; bottom: -6px;
+            width: 12px; height: 12px;
+            transform: translateX(-50%) rotate(45deg);
+            background: var(--accent-purple);
+            border-radius: 2px;
+        }
+        .ally-sticker-hint[data-placement="bottom"]::after {
+            bottom: auto; top: -6px;
+            transform: translateX(-50%) rotate(45deg);
+        }
+        .ally-sticker-hint.show {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+            animation: stickerHintPulse 0.42s ease both;
+        }
+
+        .ally-sticker {
+            border-radius: 20px;
+            border: 1.5px solid rgba(168, 85, 247, 0.2);
+            background:
+                radial-gradient(circle at 88% 12%, rgba(168, 85, 247, 0.15), transparent 42%),
+                radial-gradient(circle at 8% 95%, rgba(0, 123, 255, 0.1), transparent 42%),
+                linear-gradient(160deg, rgba(20, 20, 28, 0.98) 0%, rgba(15, 15, 22, 0.98) 44%, rgba(10, 10, 15, 0.98) 100%);
+            padding: 14px 14px 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 34px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(168, 85, 247, 0.1) inset,
+                0 0 0 4px rgba(168, 85, 247, 0.05) inset;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            animation: stickerIdleFloat 5.2s ease-in-out infinite;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: grab;
+            touch-action: none;
+            z-index: 2;
+        }
+        .ally-sticker::before {
+            content: "";
+            position: absolute;
+            top: -130%; left: -40%;
+            width: 52%; height: 360%;
+            background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.15) 52%, transparent 72%);
+            transform: rotate(13deg);
+            animation: stickerSweep 6.2s linear infinite;
+            pointer-events: none;
+        }
+        .ally-sticker::after {
+            content: "";
+            position: absolute;
+            right: -1px; bottom: -1px;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, rgba(20, 20, 28, 0) 0%, rgba(30, 30, 40, 0.95) 55%, rgba(20, 20, 28, 1) 100%);
+            border-left: 1px solid rgba(168, 85, 247, 0.15);
+            border-top: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 14px 0 20px 0;
+            transform: rotate(-2deg);
+            box-shadow: -6px 6px 12px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        .ally-sticker:hover {
+            transform: translateY(-4px) rotateX(1.8deg) rotateY(-1.8deg);
+            box-shadow: 0 20px 34px rgba(0, 0, 0, 0.5), 0 0 24px rgba(168, 85, 247, 0.15);
+        }
+        .ally-sticker.is-dragging {
+            animation: none !important;
+            transition: none !important;
+            cursor: grabbing;
+            box-shadow: 0 24px 44px rgba(0, 0, 0, 0.5), 0 0 28px rgba(168, 85, 247, 0.2);
+            z-index: 9;
+        }
+        .ally-sticker.is-returning { pointer-events: none; }
+        .ally-sticker-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .ally-sticker-top > small {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.64rem;
+            letter-spacing: 0.14em;
+            font-weight: 900;
+            color: #d8b4fe;
+            text-transform: uppercase;
+            animation: stickerSealPulse 2.4s ease-in-out infinite;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 999px;
+            padding: 4px 7px;
+            background: rgba(168, 85, 247, 0.1);
+        }
+        .ally-sticker-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ally-sticker-brand img {
+            width: 34px; height: 34px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 4px;
+        }
+        .ally-sticker-brand strong {
+            display: block;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .ally-sticker-score {
+            text-align: right;
+            font-size: 0.74rem;
+            color: #d8b4fe;
+            font-weight: 800;
+        }
+        .ally-sticker-score .stars {
+            display: block;
+            color: #fbbf24;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.35);
+            animation: stickerStarsPulse 1.8s ease-in-out infinite;
+        }
+        .ally-sticker-body {
+            display: grid;
+            grid-template-columns: 1fr 96px;
+            gap: 10px;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .ally-sticker-qr { text-align: center; }
+        .ally-sticker-qr img {
+            width: 90px; height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.1), 0 0 16px rgba(168, 85, 247, 0.1);
+            animation: stickerQrPulse 2.6s ease-in-out infinite;
+        }
+        .ally-sticker-qr small {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.64rem;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+        .ally-sticker-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .ally-sticker-user img {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+        }
+        .ally-sticker-user-info strong {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            line-height: 1.25;
+        }
+        .ally-sticker-user-info span {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        .ally-sticker-plan-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+        }
+        .ally-sticker-plan {
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-radius: 999px;
+            padding: 3px 7px;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+        .ally-sticker-plan.visibilidad {
+            color: #d8b4fe;
+            border-color: rgba(168, 85, 247, 0.4);
+            background: rgba(168, 85, 247, 0.1);
+        }
+        .ally-sticker-plan.formacion {
+            color: #6ee7b7;
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .ally-sticker-plan.estrategico {
+            color: #fdba74;
+            border-color: rgba(251, 146, 60, 0.4);
+            background: rgba(251, 146, 60, 0.1);
+        }
+        .ally-sticker-serial {
+            margin-top: 6px;
+            font-size: 0.64rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .ally-sticker-footer {
+            margin-top: 9px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(168, 85, 247, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .ally-sticker-footer strong {
+            display: block;
+            font-size: 0.8rem;
+            color: #6ee7b7;
+            letter-spacing: 0.01em;
+        }
+        .ally-sticker-footer span {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+
+        .ally-section {
+            padding: 24px;
+        }
+        .ally-section h2 {
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+        .ally-section p {
+            margin: 0;
+            color: var(--ally-muted);
+            line-height: 1.75;
+        }
+        .ally-section a {
+            color: var(--accent-pink);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .ally-section a:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        .ally-token-wrap {
+            margin-top: 12px;
+            display: grid;
+            gap: 12px;
+        }
+        .ally-token-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+        }
+        .ally-token-logo {
+            width: 66px; height: 66px;
+            object-fit: contain;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 8px;
+        }
+        .ally-token-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .ally-token-meta {
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        .ally-token-meta span {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #fdba74;
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.2);
+            border-radius: 999px;
+            padding: 5px 8px;
+        }
+        .ally-token-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .ally-token-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .ally-token-card:hover { border-color: rgba(251, 146, 60, 0.2); }
+        .ally-token-card h3 {
+            margin: 0 0 6px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        .ally-token-card p {
+            margin: 0;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+        .ally-token-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .ally-token-link {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 12px;
+            border-radius: 11px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            box-shadow: 0 8px 18px rgba(234, 88, 12, 0.25);
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .ally-token-link.alt {
+            background: var(--accent-gradient);
+            box-shadow: 0 8px 18px rgba(168, 85, 247, 0.25);
+        }
+        .ally-token-link:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(234, 88, 12, 0.35);
+        }
+        .ally-token-link.alt:hover {
+            box-shadow: 0 12px 24px rgba(168, 85, 247, 0.35);
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .info-tile {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            transition: all 0.35s ease;
+        }
+        .info-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.3);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .info-tile h3 {
+            margin: 0 0 8px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .info-tile p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
+        .market-strip {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .market-chip {
+            border-radius: 14px;
+            padding: 14px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .market-chip:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateY(-2px);
+        }
+        .market-chip strong {
+            display: block;
+            font-size: 1.15rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .market-chip span {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .flywheel {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .fly-step {
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .fly-step:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.05);
+        }
+        .fly-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -10px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-purple);
+            font-weight: 800;
+        }
+
+        .plans {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .plan-card {
+            padding: 18px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+            transition: all 0.35s ease;
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.2);
+            box-shadow: 0 16px 32px rgba(168, 85, 247, 0.1);
+        }
+        .plan-card h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .plan-card p {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .faq-item {
+            margin-top: 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--ally-border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover { border-color: rgba(168, 85, 247, 0.15); }
+        .faq-btn {
+            width: 100%;
+            text-align: left;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .faq-btn:hover { background: rgba(168, 85, 247, 0.05); }
+        .faq-btn span:last-child {
+            color: var(--text-muted);
+            transition: transform 0.25s ease;
+        }
+        .faq-item.open .faq-btn span:last-child {
+            transform: rotate(45deg);
+            color: var(--accent-purple);
+        }
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            padding: 0 16px;
+        }
+        .faq-content p {
+            margin: 0 0 14px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .cta-panel {
+            margin-top: 16px;
+            padding: 26px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(0, 123, 255, 0.08));
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 22px;
+        }
+        .cta-panel h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .cta-panel p {
+            margin: 10px auto 0;
+            max-width: 66ch;
+            color: var(--text-secondary);
+        }
+        .cta-panel a { color: var(--accent-pink); }
+        .cta-panel a:hover { color: var(--accent-purple); }
+
+        .ally-trust-bar {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .ally-trust-chip {
+            border-radius: 12px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .ally-trust-chip:hover {
+            background: rgba(168, 85, 247, 0.05);
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+        .ally-trust-chip strong {
+            display: block;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .plan-compare-wrap {
+            margin: 14px auto 0;
+            overflow-x: hidden;
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.02);
+            max-width: 980px;
+        }
+        .plan-compare-headline {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .plan-legend {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .plan-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .plan-goal-switch {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .plan-goal-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .plan-goal-btn:hover {
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #d8b4fe;
+            transform: translateY(-1px);
+        }
+        .plan-goal-btn.active {
+            border-color: rgba(168, 85, 247, 0.4);
+            background: rgba(168, 85, 247, 0.1);
+            color: #d8b4fe;
+            box-shadow: 0 8px 18px rgba(168, 85, 247, 0.15);
+        }
+        .plan-goal-insight {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            background: rgba(168, 85, 247, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            max-width: 980px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .plan-goal-insight p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .plan-goal-insight strong { color: var(--text-primary); }
+
+        .ally-pricing-note {
+            margin-top: 10px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .ally-pricing-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+        }
+        .ally-pricing-card {
+            border-radius: 14px;
+            border: 1px solid var(--ally-border);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 14px;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .ally-pricing-card:hover {
+            border-color: rgba(168, 85, 247, 0.2);
+            transform: translateY(-2px);
+        }
+        .ally-pricing-card.featured {
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 16px 28px rgba(168, 85, 247, 0.12);
+            position: relative;
+        }
+        .ally-pricing-card.featured::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: 14px 14px 0 0;
+        }
+        .ally-pricing-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 0.67rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--accent-gradient);
+            margin-bottom: 8px;
+            width: fit-content;
+        }
+        .ally-pricing-card h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        .ally-pricing-amount {
+            margin-top: 6px;
+            font-size: 1.32rem;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.01em;
+        }
+        .ally-pricing-amount small {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            -webkit-text-fill-color: var(--text-muted);
+            margin-left: 4px;
+        }
+        .ally-pricing-sub {
+            margin-top: 3px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .ally-pricing-list {
+            margin: 10px 0 12px;
+            padding-left: 17px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+        .ally-pricing-list li::marker { color: var(--accent-purple); }
+
+        .plan-compare-table {
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            table-layout: fixed;
+        }
+        .plan-compare-table th,
+        .plan-compare-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--ally-border);
+            text-align: center;
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+        .plan-compare-table th:first-child,
+        .plan-compare-table td:first-child {
+            text-align: left;
+            color: var(--text-primary);
+            font-weight: 700;
+            width: 34%;
+        }
+        .plan-compare-table thead th {
+            background: linear-gradient(180deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.05));
+            color: #d8b4fe;
+            font-weight: 800;
+        }
+        .plan-compare-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.02); }
+        .plan-compare-table tbody tr:last-child td {
+            border-bottom: 0;
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .plan-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 800;
+        }
+        .plan-chip.ok {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+        }
+        .plan-chip.mid {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+        }
+        .plan-chip.no {
+            background: rgba(113, 113, 122, 0.15);
+            color: var(--text-muted);
+        }
+        .plan-price {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            font-weight: 800;
+            line-height: 1.35;
+        }
+        .plan-price small { color: var(--text-muted); font-weight: 700; }
+
+        .plan-compare-wrap[data-focus="comunidad"] .plan-compare-table th:nth-child(2),
+        .plan-compare-wrap[data-focus="comunidad"] .plan-compare-table td:nth-child(2),
+        .plan-compare-wrap[data-focus="visibilidad"] .plan-compare-table th:nth-child(3),
+        .plan-compare-wrap[data-focus="visibilidad"] .plan-compare-table td:nth-child(3),
+        .plan-compare-wrap[data-focus="formacion"] .plan-compare-table th:nth-child(4),
+        .plan-compare-wrap[data-focus="formacion"] .plan-compare-table td:nth-child(4),
+        .plan-compare-wrap[data-focus="estrategico"] .plan-compare-table th:nth-child(5),
+        .plan-compare-wrap[data-focus="estrategico"] .plan-compare-table td:nth-child(5) {
+            background: rgba(168, 85, 247, 0.08);
+        }
+        .plan-compare-table th:not(:first-child),
+        .plan-compare-table td:not(:first-child) { width: 20%; }
+
+        .ally-sticky-cta {
+            position: fixed;
+            left: 50%;
+            bottom: 16px;
+            transform: translateX(-50%);
+            z-index: 40;
+            width: min(960px, calc(100% - 22px));
+            padding: 10px;
+            border-radius: 16px;
+            background: rgba(15, 15, 19, 0.9);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+        .ally-sticky-cta p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .ally-sticky-cta .ally-btn {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+        }
+        .ally-sticky-cta.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(12px);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes stickerSweep {
+            0% { transform: translateX(-60%) rotate(13deg); }
+            100% { transform: translateX(70%) rotate(13deg); }
+        }
+        @keyframes stickerQrPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes stickerStarsPulse {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 1; }
+        }
+        @keyframes stickerIdleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        @keyframes stickerHintPulse {
+            0% { transform: translate(-50%, 0) scale(0.9); }
+            60% { transform: translate(-50%, 0) scale(1.03); }
+            100% { transform: translate(-50%, 0) scale(1); }
+        }
+        @keyframes stickerPlayCue {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.9; }
+            30% { transform: translateY(-2px) scale(1.03); opacity: 1; }
+            55% { transform: translateY(0) scale(0.98); }
+            75% { transform: translateY(-1px) scale(1.01); }
+        }
+        @keyframes stickerSealPulse {
+            0%, 100% { opacity: 0.85; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+        .footer-brand {
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .skip-link {
+            position: absolute;
+            top: -40px; left: 0;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 0 0 8px 0;
+            z-index: 1001;
+            font-weight: 600;
+        }
+        .skip-link:focus { top: 0; }
+
+        @media (max-width: 1024px) {
+            .ally-hero { grid-template-columns: 1fr; }
+            .three-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .plans { grid-template-columns: 1fr; }
+            .flywheel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .fly-step::after { display: none; }
+            .market-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ally-proofbar { grid-template-columns: 1fr; }
+            .ally-process { grid-template-columns: 1fr; }
+            .ally-social-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ally-testimonials { grid-template-columns: 1fr; }
+            .case-grid { grid-template-columns: 1fr; }
+            .funding-grid { grid-template-columns: 1fr; }
+            .ally-contrib-grid { grid-template-columns: 1fr; }
+            .ally-token-grid { grid-template-columns: 1fr; }
+            .ally-trust-bar { grid-template-columns: 1fr; }
+            .ally-brand-win-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ally-local-grid { grid-template-columns: 1fr; }
+            .ally-sticker-body { grid-template-columns: 1fr; }
+            .ally-pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .plan-compare-wrap { overflow-x: auto; }
+            .plan-compare-table { min-width: 680px; }
+        }
+
+        @media (max-width: 640px) {
+            .ally-shell { padding: 18px 14px 72px; }
+            .hero-main, .hero-side, .ally-section { padding: 18px; }
+            .ally-token-head { align-items: flex-start; }
+            .ally-token-logo { width: 58px; height: 58px; }
+            .three-col { grid-template-columns: 1fr; }
+            .ally-brand-win-grid { grid-template-columns: 1fr; }
+            .market-strip { grid-template-columns: 1fr; }
+            .ally-pricing-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; }
+            .ally-btn { width: 100%; }
+            .ally-sticky-cta {
+                width: calc(100% - 14px);
+                padding: 10px;
+                border-radius: 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .ally-sticker-play-cta {
+                top: -12px;
+                right: 8px;
+                font-size: 0.62rem;
+                padding: 4px 8px;
+            }
+            .ally-topbar {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 10px;
+                position: relative;
+                top: 0;
+            }
+            .ally-back { width: 100%; text-align: center; }
+            .plan-compare-table { min-width: 760px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ally-orb, .ally-btn, .reveal, .info-tile, .plan-card, .ally-sticker,
+            .ally-sticker::before, .ally-sticker-score .stars, .ally-sticker-qr img {
+                animation: none !important;
+                transition: none !important;
+            }
+            .ally-sticker-hint { transition: none !important; }
+            .ally-sticker-play-cta, .ally-sticker-top > small { animation: none !important; }
+            body::before { animation: none; }
+        }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#allyMain">Saltar al contenido</a>
+<canvas id="particlesCanvas"></canvas>
+<div class="ally-page-tint" aria-hidden="true"></div>
+<div class="ally-noise" aria-hidden="true"></div>
+<div class="ally-orb one" aria-hidden="true"></div>
+<div class="ally-orb two" aria-hidden="true"></div>
+
+<main class="ally-shell" id="allyMain">
+    <div class="ally-topbar reveal">
+        <a class="ally-brand" href="index.html">PROVIWEB</a>
+        <a class="ally-back" href="index.html">← Volver al inicio</a>
+    </div>
+
+    <section class="ally-hero reveal">
+        <article class="hero-main glass-card">
+            <span class="ally-kicker">✨ Pitch Mode · Alianzas Estratégicas</span>
+            <h1>Conecta tu marca con el próximo hub del talento artístico en Latinoamérica</h1>
+            <p>PROVIWEB integra comunidad, oportunidades, formación y visibilidad para artistas y entidades culturales. Esta propuesta para aliados está diseñada como un caso de inversión: problema real, solución clara, crecimiento medible y plan de marca con ejecución digital para mariachis, bandas, teatros, academias, conservatorios y organizaciones del sector.</p>
+            <div class="hero-actions">
+                <a href="ally-register.html" class="ally-btn primary">💜 Formar parte como aliado</a>
+                <a href="ally-register.html#meetingWindow" class="ally-btn ghost">Solicitar reunión desde registro</a>
+            </div>
+            <p style="margin-top:10px; font-size:0.83rem; color:var(--ally-muted);">También puedes <a href="mailto:proviwebapp@proviweb.com?subject=Solicitud%20de%20reuni%C3%B3n%20de%20alianza%20-%20PROVIWEB">escribir por correo</a> o <a href="onepager-alianzas-proviweb.html" download>descargar el one-pager</a>. Primera reunión de exploración sin costo ni compromiso.</p>
+        </article>
+        <aside class="hero-side neuro-card">
+            <div class="hero-stat">
+                <div class="val" id="metric-user-count">...</div>
+                <div class="lab">Usuarios registrados</div>
+            </div>
+            <div class="hero-stat">
+                <div class="val" id="metric-country-count">...</div>
+                <div class="lab">Países con presencia</div>
+            </div>
+            <div class="hero-stat">
+                <div class="val">B2C + B2B</div>
+                <div class="lab">Artistas + instituciones + marcas</div>
+            </div>
+            <div class="hero-note">Ventaja competitiva: nicho cultural vertical con data accionable, segmentación por disciplina y una narrativa de marca alineada con impacto social.</div>
+        </aside>
+    </section>
+
+    <section class="ally-proofbar neuro-card reveal" aria-label="Elementos de confianza">
+        <div class="proof-item"><strong>Producto activo:</strong> web + app + comunidad artística en expansión.</div>
+        <div class="proof-item"><strong>Modelo:</strong> B2C + B2B con monetización escalable.</div>
+        <div class="proof-item"><strong>SLA de contacto:</strong> respuesta del equipo en menos de 48 horas.</div>
+    </section>
+
+    <div class="section-grid">
+        <section class="ally-section glass-card reveal">
+            <h2>Prueba social y credibilidad</h2>
+            <p>PROVIWEB crece con aliados tecnológicos y culturales. Tu marca no entra sola: entra a un ecosistema activo, especializado y con propósito.</p>
+            <div class="ally-social-grid" aria-label="Aliados y soporte tecnológico">
+                <div class="ally-logo-pill">Google</div>
+                <div class="ally-logo-pill">Google Play</div>
+                <div class="ally-logo-pill">Firebase</div>
+                <div class="ally-logo-pill">FUNDAR</div>
+            </div>
+            <div class="ally-testimonials" aria-label="Testimonios de aliados">
+                <article class="ally-testimonial">
+                    <p>"Con PROVIWEB conectamos nuestra oferta con artistas reales en menos tiempo y con mejor calidad de postulaciones."</p>
+                    <strong>Coordinación Cultural · Entidad aliada</strong>
+                </article>
+                <article class="ally-testimonial">
+                    <p>"La narrativa de marca con propósito nos permitió activar campañas con alto engagement en comunidad creativa."</p>
+                    <strong>Marketing · Marca aliada</strong>
+                </article>
+                <article class="ally-testimonial">
+                    <p>"El proceso fue claro: diagnóstico, activación y medición. Eso hace viable una alianza sostenible."</p>
+                    <strong>Dirección · Fundación aliada</strong>
+                </article>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal">
+            <h2>Problema que resolvemos</h2>
+            <p>El mercado artístico está fragmentado entre redes generales, grupos cerrados y canales informales. PROVIWEB centraliza discovery de talento, empleos, convocatorias y recursos especializados en un ecosistema único para cultura y artes.</p>
+            <div class="three-col">
+                <article class="info-tile">
+                    <h3>Para artistas</h3>
+                    <p>Perfil profesional, portafolio verificable, networking sectorial y acceso a oportunidades reales de contratación.</p>
+                </article>
+                <article class="info-tile">
+                    <h3>Para instituciones</h3>
+                    <p>Búsqueda más rápida de talento por disciplina, convocatoria y territorio con mejor tasa de respuesta.</p>
+                </article>
+                <article class="info-tile">
+                    <h3>Para marcas y entidades aliadas</h3>
+                    <p>Branding con propósito, posicionamiento cultural y activaciones con audiencias creativas de alto engagement.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="ally-section neuro-card reveal">
+            <h2>Estrategia de posicionamiento y crecimiento</h2>
+            <p>Modelo estilo startup de alto rendimiento: storytelling de impacto, visibilidad multiplataforma y funnel relacional con comunidad activa.</p>
+            <div class="three-col">
+                <article class="info-tile">
+                    <h3>Brand Positioning</h3>
+                    <p>PROVIWEB como infraestructura cultural digital. Mensaje: "el talento artístico sí tiene un lugar especializado".</p>
+                </article>
+                <article class="info-tile">
+                    <h3>Content Engine</h3>
+                    <p>Microcontenidos, reels, casos de éxito y campañas de aliados para awareness, consideración y reputación.</p>
+                </article>
+                <article class="info-tile">
+                    <h3>Community Flywheel</h3>
+                    <p>Más artistas atraen más oportunidades; más oportunidades atraen más instituciones; eso eleva retención y marca.</p>
+                </article>
+            </div>
+            <div class="flywheel" aria-label="Flywheel de crecimiento">
+                <div class="fly-step">Adquisición de artistas</div>
+                <div class="fly-step">Contenido y prueba social</div>
+                <div class="fly-step">Convocatorias activas</div>
+                <div class="fly-step">Contrataciones y casos</div>
+                <div class="fly-step">Referidos orgánicos</div>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal">
+            <h2>Mercado y oportunidad</h2>
+            <p>La economía creativa y cultural continúa digitalizándose. PROVIWEB se posiciona en una categoría con baja especialización regional y alta necesidad de producto vertical.</p>
+            <div class="market-strip">
+                <div class="market-chip"><strong>TAM</strong><span>Ecosistema cultural LATAM + hispano global</span></div>
+                <div class="market-chip"><strong>SAM</strong><span>Música, artes escénicas y formación artística</span></div>
+                <div class="market-chip"><strong>SOM</strong><span>Comunidades e instituciones activas en fase de expansión</span></div>
+                <div class="market-chip"><strong>Moat</strong><span>Nicho especializado + marca con propósito + data sectorial</span></div>
+            </div>
+        </section>
+
+        <section class="ally-section neuro-card reveal">
+            <h2>Cómo los aliados sostienen la API de PROVIWEB</h2>
+            <p>Las alianzas ayudan directamente a mantener la API y la operación de la plataforma. El aporte económico se traduce en estabilidad técnica, seguridad y evolución del producto para toda la comunidad.</p>
+            <div class="funding-grid">
+                <article class="funding-card">
+                    <h3 style="margin:0 0 6px; font-size:0.95rem; color:var(--text-primary);">Distribución de inversión (referencial mensual)</h3>
+                    <ul class="funding-list">
+                        <li><strong>35%</strong><span>Infraestructura cloud: API, base de datos, hosting, almacenamiento y CDN.</span></li>
+                        <li><strong>20%</strong><span>Seguridad y continuidad: backups, monitoreo, protección de acceso y hardening.</span></li>
+                        <li><strong>20%</strong><span>Desarrollo de producto: nuevas funcionalidades, mejoras UX y optimización de rendimiento.</span></li>
+                        <li><strong>15%</strong><span>Operación y soporte: atención, validación de datos y gestión de alianzas.</span></li>
+                        <li><strong>10%</strong><span>Crecimiento comercial y contenido: activaciones, difusión y adquisición de comunidad.</span></li>
+                    </ul>
+                </article>
+                <article class="funding-card">
+                    <h3 style="margin:0 0 6px; font-size:0.95rem; color:var(--text-primary);">Cuándo y cómo se aplica</h3>
+                    <div class="funding-timeline">
+                        <div><strong>Onboarding:</strong> definición del plan y objetivos de alianza (posicionamiento, oportunidades, formación o co-marketing).</div>
+                        <div><strong>Ciclo mensual:</strong> ejecución del presupuesto sobre infraestructura API, soporte y crecimiento acordado.</div>
+                        <div><strong>Corte quincenal:</strong> seguimiento de KPIs y salud técnica (disponibilidad, tiempo de respuesta, incidencias).</div>
+                        <div><strong>Cierre mensual/trimestral:</strong> reporte de impacto de alianza y ajuste de inversión por resultados.</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal" id="token-qav">
+            <h2>QAV: token criptográfico del ecosistema PROVIWEB</h2>
+            <p>Además del patrocinio directo, PROVIWEB integra un activo digital para habilitar economía interna del proyecto. Para los aliados, entender QAV permite diseñar campañas, beneficios y experiencias con más alcance comercial y fidelización.</p>
+            <div class="ally-token-wrap">
+                <article class="ally-token-head">
+                    <img src="assets/qav.png" alt="Logo token QAV" class="ally-token-logo">
+                    <div>
+                        <p class="ally-token-title">Token oficial QAV</p>
+                        <div class="ally-token-meta">
+                            <span>Red: BNB Smart Chain (BEP-20)</span>
+                            <span>Contrato: 0xdd63867e7336204c52483b78f4c42a45f6244444</span>
+                        </div>
+                    </div>
+                </article>
+                <div class="ally-token-grid">
+                    <article class="ally-token-card">
+                        <h3>Utilidad en producto</h3>
+                        <p>QAV permite comprar productos del proyecto, pagar clases online, adquirir entradas a eventos y activar dinámicas de regalo en publicaciones.</p>
+                    </article>
+                    <article class="ally-token-card">
+                        <h3>Ventas para aliados</h3>
+                        <p>Los aliados pueden publicar y vender sus productos o servicios dentro de PROVIWEB, aceptando QAV como método de pago para monetizar su oferta.</p>
+                    </article>
+                    <article class="ally-token-card">
+                        <h3>Valor para aliados</h3>
+                        <p>Facilita programas de incentivos, promociones temáticas, patrocinios con trazabilidad y acciones de marca con conversión medible.</p>
+                    </article>
+                    <article class="ally-token-card">
+                        <h3>Experiencia de comunidad</h3>
+                        <p>Potencia retención al conectar interacción social, aprendizaje y recompensas dentro de una economía cultural propia.</p>
+                    </article>
+                    <article class="ally-token-card">
+                        <h3>Narrativa de marca</h3>
+                        <p>QAV refuerza el posicionamiento de PROVIWEB como plataforma artística con visión tecnológica y modelo sostenible a largo plazo.</p>
+                    </article>
+                </div>
+                <div class="ally-token-links">
+                    <a class="ally-token-link" href="https://four.meme/token/0xdd63867e7336204c52483b78f4c42a45f6244444" target="_blank" rel="noopener">Página oficial del token</a>
+                    <a class="ally-token-link alt" href="https://bscscan.com/token/0xdd63867e7336204c52483b78f4c42a45f6244444" target="_blank" rel="noopener">Ver token en BscScan</a>
+                    <a class="ally-token-link alt" href="https://bscscan.com/address/0xdd63867e7336204c52483b78f4c42a45f6244444" target="_blank" rel="noopener">Ver contrato en BscScan</a>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="ally-section glass-card reveal">
+            <h2>¿Qué debe aportar un aliado además de capital?</h2>
+            <p>En PROVIWEB el aporte económico importa, pero no es suficiente por sí solo. La alianza ideal suma red, credibilidad, acción y visión de largo plazo.</p>
+            <div class="ally-contrib-grid">
+                <article class="ally-contrib-card">
+                    <h3>1. Expansión estratégica</h3>
+                    <p>Conectar PROVIWEB con orquestas, mariachis, conservatorios, academias de música, productores y managers. Abrir puertas institucionales y facilitar alianzas internacionales.</p>
+                    <div class="ally-contrib-emphasis">El dinero acelera. Las conexiones multiplican.</div>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>2. Credibilidad y reputación</h3>
+                    <p>Un aliado con trayectoria en el medio artístico refuerza la imagen del proyecto, genera confianza en músicos y acelera la atracción de nuevos usuarios y profesores.</p>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>3. Creación de comunidad</h3>
+                    <p>Invitar músicos activamente, participar en eventos digitales, promover desafíos musicales y ayudar a consolidar cultura de plataforma.</p>
+                    <div class="ally-contrib-emphasis">PROVIWEB no es solo una app, es un ecosistema artístico.</div>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>4. Mentoría estratégica</h3>
+                    <p>Aportar visión de negocio, detectar oportunidades y riesgos, y ayudar a priorizar crecimiento sostenible con horizonte de largo plazo.</p>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>5. Apoyo en difusión</h3>
+                    <p>Promoción en redes, apariciones públicas, recomendaciones directas y respaldo en lanzamientos importantes.</p>
+                    <div class="ally-contrib-emphasis">Un aliado silencioso no es realmente aliado.</div>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>6. Participación en decisiones clave</h3>
+                    <p>Estar informado, entender el modelo, comprometerse con objetivos claros y respetar la visión fundadora del proyecto.</p>
+                </article>
+            </div>
+
+            <div class="ally-ideal">
+                <h3>Principios de colaboración que nos ayudan a crecer mejor</h3>
+                <ul>
+                    <li>Alineación con la visión cultural y tecnológica del proyecto.</li>
+                    <li>Enfoque de mediano y largo plazo para construir valor sostenible.</li>
+                    <li>Apertura a iterar estrategias sin frenar innovación.</li>
+                    <li>Compromiso con una relación clara, ágil y no burocrática.</li>
+                </ul>
+            </div>
+
+            <div class="ally-ideal">
+                <h3>Perfil recomendado de "Aliado Estratégico PROVIWEB"</h3>
+                <ul>
+                    <li>Ama el arte y entiende la dinámica cultural.</li>
+                    <li>Comprende la tecnología como motor de escalabilidad.</li>
+                    <li>Tiene red de contactos y capacidad de abrir oportunidades.</li>
+                    <li>Busca dejar legado y no solo rentabilidad inmediata.</li>
+                    <li>Respeta el liderazgo y la esencia del fundador.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal">
+            <h2>Caso de uso: antes y después de una alianza</h2>
+            <p>Ejemplo de activación tipo en campañas de convocatoria y posicionamiento cultural dentro del ecosistema PROVIWEB.</p>
+            <div class="case-grid">
+                <article class="case-card">
+                    <h3>Antes (canales dispersos)</h3>
+                    <div class="case-metric">
+                        <div><strong>1.2k</strong> Alcance orgánico</div>
+                        <div><strong>24</strong> Postulaciones útiles</div>
+                        <div><strong>2.1%</strong> Conversión a contacto</div>
+                        <div><strong>9 días</strong> Tiempo de cierre</div>
+                    </div>
+                </article>
+                <article class="case-card">
+                    <h3>Después (activación con PROVIWEB)</h3>
+                    <div class="case-metric">
+                        <div><strong>5.8k</strong> Alcance segmentado</div>
+                        <div><strong>96</strong> Postulaciones útiles</div>
+                        <div><strong>7.4%</strong> Conversión a contacto</div>
+                        <div><strong>3 días</strong> Tiempo de cierre</div>
+                    </div>
+                </article>
+            </div>
+            <p style="margin-top:10px; font-size:0.8rem; color:var(--ally-muted);">KPIs referenciales de campaña tipo para estimación de impacto.</p>
+        </section>
+
+        <section class="ally-section neuro-card reveal" id="beneficios-marca">
+            <h2>Beneficios concretos para tu marca o entidad</h2>
+            <p>Al integrarte a PROVIWEB, tu organización gana un canal cultural especializado con impacto medible en posicionamiento, captación y conversión.</p>
+            <div class="ally-brand-win-grid">
+                <article class="ally-brand-win">
+                    <h3>Audiencia segmentada real</h3>
+                    <p>Conectas con artistas, docentes, academias e instituciones culturales en un mismo entorno de alto interés.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Captación con intención</h3>
+                    <p>Tu oferta llega a usuarios que ya buscan clases, eventos, oportunidades y herramientas para crecer.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Conversión en contexto</h3>
+                    <p>Puedes vender productos y servicios dentro de la plataforma, incluyendo flujos de pago con QAV.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Posicionamiento con propósito</h3>
+                    <p>Tu marca se asocia a oportunidades artísticas, formación y desarrollo cultural, no solo publicidad genérica.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Data accionable</h3>
+                    <p>Obtienes señales por perfil e intereses para optimizar campañas y decisiones comerciales.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Activaciones medibles</h3>
+                    <p>Masterclasses, retos, torneos patrocinados y campañas temáticas con KPIs de seguimiento.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Autoridad sectorial</h3>
+                    <p>Presencia donde el talento artístico construye reputación y comunidad de largo plazo.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>Relación escalable</h3>
+                    <p>No es campaña única: es una alianza continua con posibilidad de co-creación y crecimiento conjunto.</p>
+                </article>
+            </div>
+            <div class="ally-brand-win-cta">
+                <p>Si quieres estos resultados en tu organización, iniciemos con una reunión de exploración sin costo.</p>
+                <a href="ally-register.html" class="ally-btn primary">💜 Regístrate como aliado</a>
+            </div>
+        </section>
+
+        <section class="ally-section neuro-card reveal" id="publicar-oportunidades">
+            <h2>Publicar oportunidades: herramienta especializada para instituciones</h2>
+            <p>Si eres una orquesta, fundación, academia, conservatorio o productora, PROVIWEB te ofrece un ecosistema completo para publicar convocatorias, encontrar talento especializado y organizar todo en un solo lugar, sin perder postulaciones en el ruido de redes generales.</p>
+            
+            <div class="three-col">
+                <article class="info-tile">
+                    <h3>🟣 Encontrar Músicos/Artístas</h3>
+                    <p>Acceso directo a músicos verificados, con portafolio, ubicación y disponibilidad clara. No es búsqueda ciega: es búsqueda segmentada por disciplina.</p>
+                </article>
+                <article class="info-tile">
+                    <h3>🟣 Publicar convocatorias</h3>
+                    <p>Lanza oportunidades de trabajo, audiciones o proyectos a una comunidad especializada que está buscando exactamente lo que ofertas.</p>
+                </article>
+                <article class="info-tile">
+                    <h3>🟣 Ahorrar tiempo en selección</h3>
+                    <p>Recibe postulaciones organizadas, filtra por disciplina, ubicación e idoneidad. Sin whatsapps dispersos ni perfiles incompletos.</p>
+                </article>
+            </div>
+
+            <h3 style="margin:16px 0 10px; font-size:1rem; color:var(--text-primary);">Base de datos organizada y crecimiento sostenido</h3>
+            <p style="color:var(--ally-muted); margin:0 0 12px;">Cada vez que publiques una oportunidad en PROVIWEB, contribuyes a construir un ecosystem donde hay más demanda (convocatorias, trabajo, aprendizaje) y más oferta (músicos activos, talento disponible). Eso significa que cada nueva oportunidad atrae más candidatos reales.</p>
+
+            <div class="case-grid">
+                <article class="case-card">
+                    <h3>Sin PROVIWEB (publicar en redes generales)</h3>
+                    <div class="case-metric">
+                        <div><strong>3-5 días</strong> Para viral u organizar</div>
+                        <div><strong>12-18</strong> Postulaciones (muchas no aplican)</div>
+                        <div><strong>WhatsApp + email</strong> Comunicación dispersa</div>
+                        <div><strong>Sáb/dom</strong> Tiempo de cierre</div>
+                    </div>
+                </article>
+                <article class="case-card">
+                    <h3>Con PROVIWEB (comunidad especializada)</h3>
+                    <div class="case-metric">
+                        <div><strong>1-2 días</strong> Publicar y estar visible</div>
+                        <div><strong>28-45</strong> Postulaciones calificadas</div>
+                        <div><strong>Plataforma única</strong> Todo en un lugar</div>
+                        <div><strong>Mar/mié</strong> Cierre acelerado</div>
+                    </div>
+                </article>
+            </div>
+
+            <h3 style="margin:16px 0 10px; font-size:1rem; color:var(--text-primary);">¿Por qué PROVIWEB es mejor que las alternativas?</h3>
+            <div class="ally-contrib-grid">
+                <article class="ally-contrib-card">
+                    <h3>❌ Instagram: ruido artístico general</h3>
+                    <p>Tu convocatoria compite con miles de contenidos. Además, los músicos que te siguen no necesariamente están buscando trabajo. Resultado: baja conversión, mucho ruido.</p>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>❌ Tu sitio web: aislamiento digital</h3>
+                    <p>Tu base de datos crece lentamente. Los músicos no saben que existes. Necesitas invertir en marketing para atraer tráfico. Dependes de SEO y publicidad pagada.</p>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>❌ LinkedIn de la música: arena sin talento local</h3>
+                    <p>Demasiado corporativo, no especializado en artes, sin comunidad cultural auténtica. Los artistas emergentes no están en esos espacios.</p>
+                </article>
+                <article class="ally-contrib-card">
+                    <h3>✅ PROVIWEB: audiencia especializada + intención real</h3>
+                    <p>Los músicos BUSCAN activamente oportunidades aquí. Están verificados, con portafolio, y tu convocatoria llega a personas que realmente quieren lo que ofertas.</p>
+                </article>
+            </div>
+
+            <h3 style="margin:16px 0 10px; font-size:1rem; color:var(--text-primary);">Ejemplo práctico: caso de una orquesta</h3>
+            <div class="ally-ideal">
+                <h3 style="color:var(--text-primary); margin:0 0 8px;">Escenario real</h3>
+                <p style="margin:0; color:var(--text-secondary); font-size:0.88rem; line-height:1.6;">Una orquesta sinfónica necesita 3 violinistas para un concierto en 2 semanas. En Instagram, publica: "Se buscan violinistas". Recibe comentarios dispersos, seguidor sin foto, perfiles incompletos. Pierde tiempo filtrando.</p>
+                <p style="margin:10px 0 0; color:var(--text-secondary); font-size:0.88rem; line-height:1.6;"><strong>En PROVIWEB:</strong> Publica "Audición: Violín sinfónico, nivel avanzado, ubicación flexible, contrato de 2 semanas". En 24 horas recibe 12 postulaciones de violinistas verificados con video de audición, CV y disponibilidad clara. Selecciona en 3 días. Problema resuelto. Todo documentado en la plataforma.</p>
+            </div>
+
+            <div class="ally-brand-win-grid" style="margin-top:12px;">
+                <article class="ally-brand-win">
+                    <h3>📊 Datos de músicos</h3>
+                    <p>Perfil completo: disciplina, nivel, experiencia, ubicación, disponibilidad y preferencias.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>🎯 Búsqueda segmentada</h3>
+                    <p>Filtra por disciplina, género musical, región y disponibilidad. No es publicar al void: es publicar donde están tus candidatos.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>⏱️ Postulaciones organizadas</h3>
+                    <p>Todas las solicitudes en un solo lugar. Evalúa, contacta y selecciona sin perder información.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>🔄 Relación de largo plazo</h3>
+                    <p>Los músicos que contrataste hoy puede ser tu red para próximas oportunidades. Construcción sostenible de talento.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>📧 Comunicación directa</h3>
+                    <p>Mensajería integrada. Menos WhatsApp, menos emails perdidos. Una sola plataforma.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>💚 Presencia con propósito</h3>
+                    <p>Tu institución es visible como lugar donde el talento CRECE. Eso atrae a más músicos en el futuro.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>🌟 Credibilidad verificada</h3>
+                    <p>PROVIWEB certifica que eres una institución real. Los músicos confían en postular porque la plataforma valida a ambas partes.</p>
+                </article>
+                <article class="ally-brand-win">
+                    <h3>📈 Crecimiento exponencial</h3>
+                    <p>Mientras más oportunidades publiques, más confianza genera. Mientras más instituciones hay, más músicos participan. Efecto red.</p>
+                </article>
+            </div>
+
+            <div class="ally-brand-win-cta">
+                <p>¿Tu institución quiere publicar convocatorias en una comunidad especializada donde el talento busca activamente?</p>
+                <a href="ally-register.html" class="ally-btn primary">💜 Publica tu primera convocatoria</a>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal" id="aliados-locales">
+            <h2>Programa de aliados locales: turismo, gastronomía y experiencias</h2>
+            <p>PROVIWEB también está abierto a hoteles, restaurantes, heladerías y negocios de estilo de vida local o de marca. Además, los planes de alianza aplican para grupos y entidades musicales como mariachis, bandas, teatros, academias, conservatorios, productoras y fundaciones culturales.</p>
+            <div class="ally-local-grid">
+                <article class="ally-local-card">
+                    <h3>Sticker de negocio aliado PROVIWEB</h3>
+                    <p>Cada negocio aliado recibe un sticker tipo recomendación (estilo TripAdvisor) para exhibir en su local. Así clientes y visitantes identifican que ese lugar apoya al arte y forma parte de la red cultural PROVIWEB.</p>
+                    <div class="ally-sticker-wrap">
+                        <div class="ally-sticker-play-cta">Tócame y muéveme</div>
+                        <div class="ally-sticker-hint" aria-live="polite">¿Me vería genial en tu negocio, no?</div>
+                        <div class="ally-sticker" data-playful-sticker="true">
+                            <div class="ally-sticker-top">
+                                <small>Sello oficial aliado</small>
+                                <div class="ally-sticker-brand">
+                                    <img src="assets/logotransparente.png" alt="Logo PROVIWEB">
+                                    <strong>PROVIWEB Verified</strong>
+                                </div>
+                                <div class="ally-sticker-score">
+                                    <span class="stars">★★★★★</span>
+                                    4.9 comunidad
+                                </div>
+                            </div>
+                            <div class="ally-sticker-body">
+                                <div class="ally-sticker-user">
+                                    <img src="assets/user.png" alt="Foto del aliado">
+                                    <div class="ally-sticker-user-info">
+                                        <strong>Nombre del Aliado</strong>
+                                        <span>Tipo: Restaurante / Hotel / Heladería</span>
+                                        <span>Ciudad · País</span>
+                                        <div class="ally-sticker-plan-row">
+                                            <span class="ally-sticker-plan visibilidad">Visibilidad</span>
+                                            <span class="ally-sticker-plan formacion">Formación</span>
+                                            <span class="ally-sticker-plan estrategico">Estratégico</span>
+                                        </div>
+                                        <div class="ally-sticker-serial">ID aliado: PW-CO-0001</div>
+                                    </div>
+                                </div>
+                                <div class="ally-sticker-qr">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https%3A%2F%2Fproviweb.com" alt="QR PROVIWEB">
+                                    <small>Escanea y descubre aliados PROVIWEB</small>
+                                </div>
+                            </div>
+                            <div class="ally-sticker-footer">
+                                <strong>Este negocio impulsa arte y talento local</strong>
+                                <span>#ComunidadPROVIWEB · Activa marca y oportunidades</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <article class="ally-local-card">
+                    <h3>Descubrimiento y recomendación dentro de la plataforma</h3>
+                    <p>Los usuarios de PROVIWEB pueden encontrar y visitar negocios aliados recomendados por el proyecto. Esto crea tráfico calificado, preferencia de marca y una relación directa entre comunidad artística y comercio local.</p>
+                    <ul style="margin:10px 0 0; padding-left:18px; color:var(--text-secondary); font-size:0.84rem; line-height:1.6;">
+                        <li>Mayor visibilidad ante artistas, estudiantes y público cultural.</li>
+                        <li>Diferenciación del negocio como marca que apoya el talento local.</li>
+                        <li>Posibilidad de activaciones conjuntas (eventos, descuentos, experiencias).</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="ally-section neuro-card reveal" id="planes">
+            <h2>Planes de alianza (modulares)</h2>
+            <p>Diseñados para co-marketing, posicionamiento institucional y activación de comunidad artística dentro de PROVIWEB, incluyendo organizaciones culturales y musicales de diferentes tamaños.</p>
+            <div class="plans">
+                <article class="plan-card">
+                    <h3>Aliado Visibilidad</h3>
+                    <p>Presencia de marca en sección de aliados, menciones editoriales y activaciones ligeras en contenido de comunidad.</p>
+                </article>
+                <article class="plan-card">
+                    <h3>Aliado Formación</h3>
+                    <p>Masterclasses, talleres o recursos patrocinados con marca compartida y captación calificada.</p>
+                </article>
+                <article class="plan-card">
+                    <h3>Aliado Estratégico</h3>
+                    <p>Integración comercial completa, campañas de captación de talento y seguimiento prioritario con foco en crecimiento sostenido.</p>
+                </article>
+            </div>
+            <div class="ally-trust-bar" style="margin-top:12px;">
+                <div class="ally-trust-chip"><strong>Grupos musicales</strong>Mariachis, bandas, orquestas y ensambles.</div>
+                <div class="ally-trust-chip"><strong>Artes escénicas</strong>Teatros, colectivos y salas culturales.</div>
+                <div class="ally-trust-chip"><strong>Entidades de música</strong>Academias, conservatorios, fundaciones y productoras.</div>
+            </div>
+            <div class="ally-process" aria-label="Proceso de alianza">
+                <article class="ally-step-card">
+                    <span class="step-num">1</span>
+                    <h3>Diagnóstico rápido</h3>
+                    <p>Definimos objetivo de negocio y audiencia (posicionamiento, captación, oportunidades o formación).</p>
+                </article>
+                <article class="ally-step-card">
+                    <span class="step-num">2</span>
+                    <h3>Activación conjunta</h3>
+                    <p>Lanzamos campaña y presencia de marca dentro del ecosistema PROVIWEB con contenido estratégico.</p>
+                </article>
+                <article class="ally-step-card">
+                    <span class="step-num">3</span>
+                    <h3>Reporte de impacto</h3>
+                    <p>Medimos KPIs y optimizamos para escalar resultados y construir una alianza de largo plazo.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="ally-section glass-card reveal" id="programa-pagos-aliados">
+            <h2>Programa de Aliados PROVIWEB</h2>
+            <p>Los aliados contribuyen trimestralmente al mantenimiento de infraestructura, API, inteligencia artificial, base tecnológica y equipo humano que sostienen el proyecto. Esta corresponsabilidad fortalece la seguridad, la innovación y el crecimiento del ecosistema artístico. A cambio, reciben visibilidad, beneficios exclusivos, posicionamiento estratégico y participación activa en una red especializada que conecta talento con oportunidades reales para artistas, agrupaciones y entidades culturales.</p>
+            <h3 style="margin:12px 0 8px; font-size:1rem; color:var(--text-primary);">¿Por qué existe el programa?</h3>
+            <div class="ally-trust-bar" style="margin-top:0;">
+                <div class="ally-trust-chip"><strong>Infraestructura</strong>Servidores, disponibilidad y rendimiento continuo.</div>
+                <div class="ally-trust-chip"><strong>IA</strong>Mejoras inteligentes para experiencia y escalabilidad.</div>
+                <div class="ally-trust-chip"><strong>Equipo humano</strong>Operación, soporte y ejecución estratégica.</div>
+                <div class="ally-trust-chip"><strong>Seguridad</strong>Protección de datos, accesos y confianza de usuarios.</div>
+                <div class="ally-trust-chip"><strong>Innovación constante</strong>Evolución del producto y nuevas oportunidades.</div>
+            </div>
+            <h3 style="margin:14px 0 8px; font-size:1rem; color:var(--text-primary);">Planes con aporte trimestral</h3>
+            <p class="ally-pricing-note">Valores accesibles para aliados locales, grupos musicales, teatros y entidades del sector cultural. Puedes iniciar en un plan y escalar según resultados. Las instituciones que publiquen oportunidades acceden sin costo el primer año. Después del año gratis, pueden continuar con un plan de pago o mantener acceso limitado.</p>
+            <div class="ally-pricing-grid" aria-label="Planes y precios trimestrales para aliados">
+                <article class="ally-pricing-card featured">
+                    <span class="ally-pricing-badge">Gratis 1 año</span>
+                    <h4>Plan Comunidad</h4>
+                    <p class="ally-pricing-amount">GRATIS <small>primer año</small></p>
+                    <p class="ally-pricing-sub">Para instituciones que publiquen oportunidades</p>
+                    <ul class="ally-pricing-list">
+                        <li>Publicar convocatorias y audiciones.</li>
+                        <li>Acceso a base de datos de músicos.</li>
+                        <li>Búsqueda segmentada por disciplina.</li>
+                        <li>Gestión de postulaciones en plataforma.</li>
+                    </ul>
+                    <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(168,85,247,0.1); font-size:0.78rem; color:var(--text-muted); line-height:1.5;">
+                        <strong style="color:var(--text-secondary);">Después del año:</strong> Continúa con Plan Visibilidad ($130k/mes) o personaliza según tus necesidades.
+                    </div>
+                    <a href="ally-register.html?plan=comunidad" class="ally-btn primary" style="margin-top:10px;">Comenzar ahora</a>
+                </article>
+                <article class="ally-pricing-card">
+                    <h4>Plan Visibilidad</h4>
+                    <p class="ally-pricing-amount">$390.000 COP <small>/ trimestre</small></p>
+                    <p class="ally-pricing-sub">Equivale a $130.000 COP al mes</p>
+                    <ul class="ally-pricing-list">
+                        <li>Presencia en sección de aliados.</li>
+                        <li>Mención de marca en campañas seleccionadas.</li>
+                        <li>Sello digital de aliado PROVIWEB.</li>
+                    </ul>
+                    <a href="ally-register.html?plan=visibilidad" class="ally-btn primary">Seleccionar Plan</a>
+                </article>
+                <article class="ally-pricing-card featured">
+                    <span class="ally-pricing-badge">Más elegido</span>
+                    <h4>Plan Formación</h4>
+                    <p class="ally-pricing-amount">$720.000 COP <small>/ trimestre</small></p>
+                    <p class="ally-pricing-sub">Equivale a $240.000 COP al mes</p>
+                    <ul class="ally-pricing-list">
+                        <li>Todo lo del Plan Visibilidad.</li>
+                        <li>Activaciones con talleres o masterclasses.</li>
+                        <li>Captación de contactos calificados por interés.</li>
+                    </ul>
+                    <a href="ally-register.html?plan=formacion" class="ally-btn primary">Seleccionar Plan</a>
+                </article>
+                <article class="ally-pricing-card">
+                    <h4>Plan Estratégico</h4>
+                    <p class="ally-pricing-amount">$1.350.000 COP <small>/ trimestre</small></p>
+                    <p class="ally-pricing-sub">Equivale a $450.000 COP al mes</p>
+                    <ul class="ally-pricing-list">
+                        <li>Todo lo del Plan Formación.</li>
+                        <li>Integración comercial completa con QAV.</li>
+                        <li>Seguimiento prioritario y mesa trimestral.</li>
+                    </ul>
+                    <a href="ally-register.html?plan=estrategico" class="ally-btn primary">Seleccionar Plan</a>
+                </article>
+            </div>
+            <div style="margin:16px 0; padding:16px; border-radius:14px; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2);">
+                <h3 style="margin:0 0 8px; font-size:0.95rem; color:var(--text-primary);">🎵 Plan Comunidad: Tu ruta de crecimiento</h3>
+                <p style="margin:0; color:var(--text-secondary); font-size:0.88rem; line-height:1.6;">
+                    Empiezas <strong style="color:var(--text-primary);">gratis durante 12 meses</strong> publicando oportunidades y accediendo a la comunidad de músicos PROVIWEB. 
+                    Después, evalúas resultados y escalas: continúa con <strong>Plan Visibilidad</strong> ($130k/mes) para más visibilidad y características, o <strong>upgradea</strong> a Formación o Estratégico si necesitas campañas de marca. 
+                    No hay sorpresas: planificamos juntos la siguiente fase según tus resultados.
+                </p>
+            </div>
+            <h3 style="margin:14px 0 8px; font-size:1rem; color:var(--text-primary);">Comparativa rápida</h3>
+            <div class="plan-compare-headline">
+                <span>Compara en 20 segundos qué plan encaja mejor con tu objetivo.</span>
+                <div class="plan-legend" aria-label="Leyenda de comparativa">
+                    <span><i class="plan-chip ok">Alto</i> Incluido completo</span>
+                    <span><i class="plan-chip mid">Medio</i> Incluido parcial</span>
+                    <span><i class="plan-chip no">No</i> No incluido</span>
+                </div>
+            </div>
+            <div class="plan-goal-switch" role="tablist" aria-label="Seleccionar objetivo de alianza">
+                <button class="plan-goal-btn active" data-goal="comunidad" type="button" aria-selected="true">Soy institución musical</button>
+                <button class="plan-goal-btn" data-goal="visibilidad" type="button" aria-selected="false">Quiero visibilidad de marca</button>
+                <button class="plan-goal-btn" data-goal="formacion" type="button" aria-selected="false">Quiero captar talento y clientes</button>
+                <button class="plan-goal-btn" data-goal="estrategico" type="button" aria-selected="false">Quiero alianza estratégica</button>
+            </div>
+            <div class="plan-goal-insight" aria-live="polite">
+                <p id="planGoalText"><strong>Recomendado:</strong> Plan Comunidad para instituciones musicales, orquestas, academias y fundaciones que publiquen oportunidades. Acceso gratis por 1 año.</p>
+                <a id="planGoalCta" href="ally-register.html?plan=comunidad" class="ally-btn primary">Seleccionar este plan</a>
+            </div>
+            <div class="plan-compare-wrap" role="region" aria-label="Comparativa de planes de aliados" data-focus="comunidad">
+                <table class="plan-compare-table">
+                    <thead>
+                        <tr>
+                            <th>Beneficio</th>
+                            <th>Comunidad (Gratis 1 año)</th>
+                            <th>Visibilidad</th>
+                            <th>Formación</th>
+                            <th>Estratégico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Inversión trimestral</td>
+                            <td><span class="plan-price">Gratis <small>(primer año)</small></span></td>
+                            <td><span class="plan-price">$390.000 COP <small>(130.000/mes)</small></span></td>
+                            <td><span class="plan-price">$720.000 COP <small>(240.000/mes)</small></span></td>
+                            <td><span class="plan-price">$1.350.000 COP <small>(450.000/mes)</small></span></td>
+                        </tr>
+                        <tr>
+                            <td>Publicar convocatorias y audiciones</td>
+                            <td><span class="plan-chip ok">Completo</span></td>
+                            <td><span class="plan-chip no">No</span></td>
+                            <td><span class="plan-chip no">No</span></td>
+                            <td><span class="plan-chip ok">Completo</span></td>
+                        </tr>
+                        <tr>
+                            <td>Acceso a base de datos de músicos</td>
+                            <td><span class="plan-chip ok">Sí</span></td>
+                            <td><span class="plan-chip no">No</span></td>
+                            <td><span class="plan-chip no">No</span></td>
+                            <td><span class="plan-chip ok">Sí</span></td>
+                        </tr>
+                        <tr>
+                            <td>Visibilidad en PROVIWEB</td>
+                            <td><span class="plan-chip mid">Institucional</span></td>
+                            <td><span class="plan-chip ok">Alta</span></td>
+                            <td><span class="plan-chip mid">Media</span></td>
+                            <td><span class="plan-chip ok">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td>Campañas y activaciones de marca</td>
+                            <td><span class="plan-chip no">No</span></td>
+                            <td><span class="plan-chip mid">Parcial</span></td>
+                            <td><span class="plan-chip ok">Total</span></td>
+                            <td><span class="plan-chip ok">Total</span></td>
+                        </tr>
+                        <tr>
+                            <td>Integración comercial con QAV</td>
+                            <td><span class="plan-chip mid">Base</span></td>
+                            <td><span class="plan-chip mid">Base</span></td>
+                            <td><span class="plan-chip mid">Base</span></td>
+                            <td><span class="plan-chip ok">Completa</span></td>
+                        </tr>
+                        <tr>
+                            <td>Soporte y seguimiento</td>
+                            <td><span class="plan-chip mid">Estándar</span></td>
+                            <td><span class="plan-chip mid">Estándar</span></td>
+                            <td><span class="plan-chip mid">Estándar</span></td>
+                            <td><span class="plan-chip ok">Prioritario</span></td>
+                        </tr>
+                        <tr style="border-top:2px solid rgba(168,85,247,0.3);">
+                            <td style="color:var(--accent-purple); font-weight:800; font-size:0.86rem;">Después del período inicial</td>
+                            <td style="font-size:0.82rem; color:var(--text-secondary);">Escala a Plan Visibilidad o personaliza</td>
+                            <td style="font-size:0.82rem; color:var(--text-secondary);">Plan permanente con pago trimestral</td>
+                            <td style="font-size:0.82rem; color:var(--text-secondary);">Plan permanente con pago trimestral</td>
+                            <td style="font-size:0.82rem; color:var(--text-secondary);">Plan permanente con pago trimestral</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="ally-pricing-note">Precios de referencia para aliados en etapa de expansión del programa. Si tu organización requiere un alcance especial, se ajusta en la reunión inicial.</p>
+        </section>
+
+        <section class="ally-section glass-card reveal">
+            <h2>Preguntas frecuentes de aliados</h2>
+            <div class="faq-item">
+                <button class="faq-btn" type="button" aria-expanded="false"><span>¿Qué gana una entidad aliada dentro de PROVIWEB?</span><span>+</span></button>
+                <div class="faq-content"><p>Acceso a una audiencia cultural segmentada, posicionamiento en un entorno de confianza y campañas con narrativa de impacto real. Aplica tanto para marcas comerciales como para mariachis, bandas, teatros, academias, conservatorios y fundaciones.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-btn" type="button" aria-expanded="false"><span>¿Pueden medir resultados de una alianza?</span><span>+</span></button>
+                <div class="faq-content"><p>Sí. Se definen KPIs por objetivo: alcance, interacción, contactos, postulaciones, tráfico y conversión según el formato de alianza.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-btn" type="button" aria-expanded="false"><span>¿Hay opciones para instituciones públicas y privadas?</span><span>+</span></button>
+                <div class="faq-content"><p>Sí. PROVIWEB trabaja con modelos flexibles para entidades culturales, academias, conservatorios, teatros, mariachis, bandas, productoras, fundaciones y marcas comerciales.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-btn" type="button" aria-expanded="false"><span>¿Qué pasa después del año gratis en Plan Comunidad?</span><span>+</span></button>
+                <div class="faq-content"><p>Después de 12 meses, tu institución puede: (1) continuar con <strong>Plan Visibilidad</strong> ($130k/mes) para mantener presencia de marca y funcionalidades adicionales, (2) upgradear a <strong>Plan Formación</strong> o <strong>Estratégico</strong> si deseas más activaciones, o (3) contactarnos para customizar un plan según tus necesidades específicas. No hay obligación de cambio inmediato; evaluamos opciones juntos.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-btn" type="button" aria-expanded="false"><span>¿La primera reunión y diagnóstico tienen costo?</span><span>+</span></button>
+                <div class="faq-content"><p>No. La primera reunión de exploración y el diagnóstico inicial son sin costo y sin compromiso, para evaluar encaje real de alianza.</p></div>
+            </div>
+        </section>
+
+        <section class="ally-section neuro-card reveal" aria-label="Señales de confianza">
+            <h2>Antes de decidir: señales claras para aliados</h2>
+            <div class="ally-trust-bar">
+                <div class="ally-trust-chip"><strong>&lt;48h</strong>Respuesta del equipo</div>
+                <div class="ally-trust-chip"><strong>0 costo</strong>Primera reunión</div>
+                <div class="ally-trust-chip"><strong>1:1</strong>Diagnóstico personalizado</div>
+            </div>
+        </section>
+
+        <!-- Sección Establecimientos de Música en Vivo -->
+        <section class="reveal" style="background:linear-gradient(135deg, rgba(168,85,247,0.08), rgba(0,123,255,0.08)); border:1px solid rgba(168,85,247,0.2); border-radius:24px; padding:40px; margin:40px 0; text-align:center;">
+            <div style="font-size:48px; margin-bottom:16px;">🎺🎸🍺</div>
+            <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:16px; color:var(--ally-ink);">¿Eres un establecimiento de música en vivo?</h2>
+            <p style="color:var(--ally-muted); max-width:600px; margin:0 auto 24px; line-height:1.7;">
+                Si tienes un bar, restaurante, taberna de mariachi o espacio cultural donde se presenta música en vivo, tenemos una solución diseñada especialmente para ti. Gestiona tu agenda, encuentra talento y haz crecer tu negocio.
+            </p>
+            <div class="hero-actions" style="justify-content:center;">
+                <a href="ser-establecimiento.html" class="ally-btn primary" style="background:linear-gradient(135deg, #a855f7, #007BFF);">🏠 Conoce PROVIWEB para Establecimientos</a>
+                <a href="venues-explore.html" class="ally-btn ghost">Explorar establecimientos</a>
+            </div>
+            <p style="margin-top:16px; font-size:0.875rem; color:var(--ally-muted);">
+                <strong>Planes desde gratis:</strong> 5 eventos + 3 convocatorias. PRO $49.900/mes ilimitado.
+            </p>
+        </section>
+
+        <section class="cta-panel reveal">
+            <h2>Construyamos una alianza con impacto cultural y retorno de marca</h2>
+            <p>Si tu organización busca impacto real dentro del ecosistema creativo, PROVIWEB es el puente estratégico entre propósito, talento y oportunidades. No competimos por tamaño, sino por especialización y conexión auténtica. Te contactaremos en menos de 48 horas para validar la información y coordinar una reunión online. La primera llamada es gratuita y sin compromiso.</p>
+            <div class="hero-actions" style="justify-content:center; margin-top:16px;">
+                <a href="ally-register.html" class="ally-btn primary">💜 Quiero formar parte</a>
+                <a href="ally-register.html#meetingWindow" class="ally-btn ghost">Solicitar reunión desde registro</a>
+            </div>
+            <p style="margin-top:10px; font-size:0.83rem; color:var(--ally-muted);">Canal alterno: <a href="mailto:proviwebapp@proviweb.com">proviwebapp@proviweb.com</a>.</p>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <p><span class="footer-brand">PROVIWEB</span> — Impulsando el talento artístico</p>
+    <p style="margin-top: 8px; font-size: 0.75rem;">© 2026 PROVIWEB. Todos los derechos reservados.</p>
+</footer>
+
+<div class="ally-sticky-cta" role="region" aria-label="Acción principal de alianza" style="flex-wrap:wrap; gap:12px;">
+    <p style="flex:1; min-width:250px;">¿Tu entidad quiere activar marca, comunidad y oportunidades artísticas? Reunión inicial sin costo.</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="ally-register.html" class="ally-btn primary" id="stickyAllyCta" style="white-space:nowrap;">💜 Ser aliado</a>
+        <a href="ser-establecimiento.html" class="ally-btn ghost" style="border-color:rgba(168,85,247,0.5); white-space:nowrap;">🏠 Soy establecimiento</a>
+    </div>
+</div>
+
+<script src="assets/particles.js"></script>
+<script type="module">
+(function() {
+    var revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(function(el) { observer.observe(el); });
+    } else {
+        revealEls.forEach(function(el) { el.classList.add('show'); });
+    }
+
+    var faqBtns = document.querySelectorAll('.faq-btn');
+    faqBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var item = btn.closest('.faq-item');
+            var content = item.querySelector('.faq-content');
+            var isOpen = item.classList.contains('open');
+            item.classList.toggle('open');
+            btn.setAttribute('aria-expanded', String(!isOpen));
+            content.style.maxHeight = !isOpen ? content.scrollHeight + 'px' : '0px';
+        });
+    });
+
+    // Oculta CTA flotante cuando se alcanza el CTA final para evitar saturación visual
+    var stickyCta = document.querySelector('.ally-sticky-cta');
+    var finalCta = document.querySelector('.cta-panel');
+    if (stickyCta && finalCta && 'IntersectionObserver' in window) {
+        var ctaObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                stickyCta.classList.toggle('is-hidden', entry.isIntersecting);
+            });
+        }, { threshold: 0.2 });
+        ctaObserver.observe(finalCta);
+    }
+
+    var goalButtons = document.querySelectorAll('.plan-goal-btn');
+    var goalText = document.getElementById('planGoalText');
+    var goalCta = document.getElementById('planGoalCta');
+    var compareWrap = document.querySelector('.plan-compare-wrap');
+    var stickyAllyCta = document.getElementById('stickyAllyCta');
+    var selectedPlanKey = 'proviweb_selected_ally_plan';
+    var selectedPlan = '';
+    function getStoredPlan() {
+        try {
+            return localStorage.getItem(selectedPlanKey) || '';
+        } catch (error) {
+            return '';
+        }
+    }
+    function getSelectedPlan() {
+        return getStoredPlan() || selectedPlan;
+    }
+    selectedPlan = getStoredPlan();
+    var goalConfig = {
+        comunidad: {
+            text: '<strong>Recomendado:</strong> Plan Comunidad para instituciones musicales, orquestas, academias y fundaciones que publiquen oportunidades. Acceso gratis por 1 año.',
+            href: 'ally-register.html?plan=comunidad'
+        },
+        visibilidad: {
+            text: '<strong>Recomendado:</strong> Plan Visibilidad para marcas y entidades que quieren presencia inicial con inversión controlada.',
+            href: 'ally-register.html?plan=visibilidad'
+        },
+        formacion: {
+            text: '<strong>Recomendado:</strong> Plan Formación para captar talento, oportunidades y clientes con mayor intención.',
+            href: 'ally-register.html?plan=formacion'
+        },
+        estrategico: {
+            text: '<strong>Recomendado:</strong> Plan Estratégico para alianzas de largo plazo con integración comercial completa y operación prioritaria.',
+            href: 'ally-register.html?plan=estrategico'
+        }
+    };
+
+    function applyGoal(goalKey) {
+        if (!goalConfig[goalKey]) return;
+        goalButtons.forEach(function(btn) {
+            var isActive = btn.getAttribute('data-goal') === goalKey;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-selected', String(isActive));
+        });
+        if (compareWrap) {
+            compareWrap.setAttribute('data-focus', goalKey);
+        }
+        if (goalText) {
+            goalText.innerHTML = goalConfig[goalKey].text;
+        }
+        if (goalCta) {
+            goalCta.setAttribute('href', goalConfig[goalKey].href);
+        }
+    }
+
+    function persistSelectedPlan(goalKey) {
+        if (!goalConfig[goalKey]) return;
+        selectedPlan = goalKey;
+        try {
+            localStorage.setItem(selectedPlanKey, goalKey);
+        } catch (error) {}
+    }
+
+    goalButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var goalKey = btn.getAttribute('data-goal');
+            applyGoal(goalKey);
+            persistSelectedPlan(goalKey);
+        });
+    });
+    
+    if (goalButtons.length > 0) {
+        var initialGoal = goalConfig[selectedPlan] ? selectedPlan : 'comunidad';
+        applyGoal(initialGoal);
+        persistSelectedPlan(initialGoal);
+    }
+
+    var planLinks = document.querySelectorAll('a[href^="ally-register.html?plan="]');
+    planLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            var href = link.getAttribute('href') || '';
+            var planMatch = href.match(/[?&]plan=([a-z]+)/i);
+            if (planMatch && planMatch[1]) {
+                persistSelectedPlan(planMatch[1].toLowerCase());
+            }
+        });
+    });
+
+    function showSelectPlanNotice() {
+        if (!stickyAllyCta) return;
+        var originalText = stickyAllyCta.textContent;
+        stickyAllyCta.textContent = 'Selecciona un plan primero';
+        stickyAllyCta.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        window.setTimeout(function() {
+            stickyAllyCta.textContent = originalText;
+            stickyAllyCta.style.background = '';
+        }, 1800);
+    }
+
+    if (stickyAllyCta) {
+        stickyAllyCta.addEventListener('click', function(event) {
+            var plan = getSelectedPlan();
+            if (!plan) {
+                event.preventDefault();
+                showSelectPlanNotice();
+                var planSection = document.getElementById('programa-pagos-aliados');
+                if (planSection) {
+                    planSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                return;
+            }
+            stickyAllyCta.setAttribute('href', 'ally-register.html?plan=' + encodeURIComponent(plan));
+        });
+    }
+
+    var directAllyLinks = document.querySelectorAll('a[href="ally-register.html"], a[href="ally-register.html#meetingWindow"]');
+    directAllyLinks.forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            var plan = getSelectedPlan();
+            if (!plan) {
+                event.preventDefault();
+                showSelectPlanNotice();
+                var planSection = document.getElementById('programa-pagos-aliados');
+                if (planSection) {
+                    planSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                return;
+            }
+            var baseHref = link.getAttribute('href') || 'ally-register.html';
+            var anchor = '';
+            if (baseHref.indexOf('#') !== -1) {
+                anchor = baseHref.slice(baseHref.indexOf('#'));
+            }
+            link.setAttribute('href', 'ally-register.html?plan=' + encodeURIComponent(plan) + anchor);
+        });
+    });
+
+    var sticker = document.querySelector('[data-playful-sticker="true"]');
+    if (sticker && 'PointerEvent' in window) {
+        var stickerWrap = sticker.closest('.ally-sticker-wrap');
+        var bodyEl = document.body;
+        var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var hint = sticker.parentElement ? sticker.parentElement.querySelector('.ally-sticker-hint') : null;
+        var isDragging = false;
+        var startX = 0, startY = 0, originX = 0, originY = 0;
+        var tx = 0, ty = 0, rx = 0, ry = 0;
+        var hintTimer = null, hintIndex = -1;
+        var hintMessages = [
+            'Tu marca puede liderar experiencias culturales de alto impacto.',
+            'Con PROVIWEB, tu alianza se convierte en comunidad real y activa.',
+            'Tu negocio puede crecer mientras impulsa el arte local.',
+            'Aquí no compras visibilidad: construyes reputación con propósito.',
+            'Tu equipo y el nuestro pueden crear campañas memorables juntos.',
+            'Aliarte con PROVIWEB es apostar por talento, territorio y futuro.',
+            'Tu marca puede estar donde nacen los próximos grandes artistas.',
+            'Esto no es solo promoción: es posicionamiento cultural estratégico.',
+            'Convierte tu presencia comercial en legado para la comunidad artística.',
+            'Cada activación conjunta puede traducirse en confianza y crecimiento.',
+            'Tu empresa puede ser recordada por apoyar oportunidades reales.',
+            'PROVIWEB conecta tu marca con audiencias creativas de alto valor.',
+            'Tu alianza puede abrir puertas a eventos, formación y talento emergente.',
+            'Cuando tu marca apoya arte, la comunidad responde con fidelidad.',
+            'Podemos diseñar una ruta de impacto medible para tu organización.'
+        ];
+        var activePointerId = null;
+        var lastMoveX = 0, lastMoveY = 0, lastMoveT = 0;
+        var velocityX = 0, velocityY = 0;
+
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
+        }
+
+        function updateBackgroundTint() {
+            if (!bodyEl) return;
+            var dist = Math.sqrt((tx * tx) + (ty * ty));
+            var intensity = clamp(dist / 210, 0, 1);
+            var themes = ['aqua', 'sky', 'mint', 'sunset'];
+            var angle = Math.atan2(ty || 0, tx || 0);
+            var normalized = (angle + Math.PI) / (Math.PI * 2);
+            var index = Math.floor(normalized * themes.length) % themes.length;
+            bodyEl.setAttribute('data-sticker-theme', themes[index]);
+            bodyEl.style.setProperty('--sticker-tint-opacity', String(0.1 + intensity * 0.5));
+
+            var bgA = '#0f0f13', bgB = '#12121a';
+            if (themes[index] === 'aqua') { bgA = '#0a1a1f'; bgB = '#061418'; }
+            if (themes[index] === 'sky') { bgA = '#0f0f1a'; bgB = '#0a0a14'; }
+            if (themes[index] === 'mint') { bgA = '#0a1f15'; bgB = '#06140d'; }
+            if (themes[index] === 'sunset') { bgA = '#1f1510'; bgB = '#140d09'; }
+            bodyEl.style.setProperty('--ally-bg-a', bgA);
+            bodyEl.style.setProperty('--ally-bg-b', bgB);
+            bodyEl.style.setProperty('--react-intensity', String(intensity));
+            bodyEl.setAttribute('data-reactive', 'on');
+            window.PROVIWEB_REACTIVE_LEVEL = intensity;
+        }
+
+        function resetBackgroundTint() {
+            if (!bodyEl) return;
+            bodyEl.style.setProperty('--sticker-tint-opacity', '0');
+            bodyEl.style.setProperty('--ally-bg-a', '#0f0f13');
+            bodyEl.style.setProperty('--ally-bg-b', '#12121a');
+            bodyEl.style.setProperty('--react-intensity', '0');
+            bodyEl.removeAttribute('data-reactive');
+            window.PROVIWEB_REACTIVE_LEVEL = 0;
+        }
+
+        function applyTransform() {
+            sticker.style.transform = 'translate3d(' + tx + 'px,' + ty + 'px,0) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+            if (stickerWrap) {
+                var glow = clamp((Math.abs(tx) + Math.abs(ty)) / 320, 0, 1);
+                stickerWrap.style.setProperty('--sticker-glow', String(glow));
+            }
+            positionHint();
+            updateBackgroundTint();
+        }
+
+        function positionHint() {
+            if (!hint) return;
+            var rect = sticker.getBoundingClientRect();
+            var margin = 10;
+            var centerX = rect.left + (rect.width / 2);
+            var hintWidth = hint.offsetWidth || 280;
+            var hintHeight = hint.offsetHeight || 34;
+
+            var minLeft = (hintWidth / 2) + margin;
+            var maxLeft = window.innerWidth - (hintWidth / 2) - margin;
+            var safeLeft = clamp(centerX, minLeft, maxLeft);
+
+            var canPlaceTop = rect.top > (hintHeight + 18);
+            var top;
+            if (canPlaceTop) {
+                top = rect.top - hintHeight - 10;
+                hint.setAttribute('data-placement', 'top');
+            } else {
+                top = rect.bottom + 10;
+                hint.setAttribute('data-placement', 'bottom');
+            }
+
+            top = clamp(top, margin, window.innerHeight - hintHeight - margin);
+            hint.style.left = safeLeft + 'px';
+            hint.style.top = top + 'px';
+        }
+
+        function showHint() {
+            if (!hint) return;
+            positionHint();
+            if (hintMessages.length > 0) {
+                if (hintMessages.length === 1) {
+                    hintIndex = 0;
+                } else {
+                    var nextIndex = hintIndex;
+                    while (nextIndex === hintIndex) {
+                        nextIndex = Math.floor(Math.random() * hintMessages.length);
+                    }
+                    hintIndex = nextIndex;
+                }
+                hint.textContent = hintMessages[hintIndex];
+            }
+            hint.classList.add('show');
+            window.clearTimeout(hintTimer);
+            hintTimer = window.setTimeout(function() {
+                hint.classList.remove('show');
+            }, 5000);
+        }
+
+        function returnSticker(withFling) {
+            sticker.classList.add('is-returning');
+            if (prefersReducedMotion || typeof sticker.animate !== 'function') {
+                tx = 0; ty = 0; rx = 0; ry = 0;
+                applyTransform();
+                window.setTimeout(function() {
+                    sticker.style.transform = '';
+                    sticker.classList.remove('is-returning');
+                }, 120);
+                showHint();
+                return;
+            }
+
+            var flingX = withFling ? clamp(velocityX * 120, -78, 78) : 0;
+            var flingY = withFling ? clamp(velocityY * 120, -64, 64) : 0;
+            var flingRX = withFling ? clamp(-velocityY * 34, -16, 16) : 0;
+            var flingRY = withFling ? clamp(velocityX * 34, -16, 16) : 0;
+            var keyframes = [
+                { transform: 'translate3d(' + tx + 'px,' + ty + 'px,0) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)' },
+                { transform: 'translate3d(' + (tx + flingX) + 'px,' + (ty + flingY) + 'px,0) rotateX(' + (rx + flingRX) + 'deg) rotateY(' + (ry + flingRY) + 'deg)', offset: 0.22 },
+                { transform: 'translate3d(' + (tx * 0.56) + 'px,' + (ty * 0.56) + 'px,0) rotateX(' + (rx * 0.45) + 'deg) rotateY(' + (ry * 0.45) + 'deg)', offset: 0.44 },
+                { transform: 'translate3d(-16px,9px,0) rotateX(3.2deg) rotateY(-5.6deg)', offset: 0.68 },
+                { transform: 'translate3d(11px,-6px,0) rotateX(-2deg) rotateY(4.1deg)', offset: 0.82 },
+                { transform: 'translate3d(-6px,4px,0) rotateX(0.8deg) rotateY(-2.2deg)', offset: 0.91 },
+                { transform: 'translate3d(0,0,0) rotateX(0deg) rotateY(0deg)', offset: 1 }
+            ];
+
+            var anim = sticker.animate(keyframes, {
+                duration: withFling ? 1120 : 980,
+                easing: 'cubic-bezier(.2,1.2,.24,1)',
+                fill: 'forwards'
+            });
+
+            anim.onfinish = function() {
+                tx = 0; ty = 0; rx = 0; ry = 0;
+                sticker.style.transform = '';
+                sticker.classList.remove('is-returning');
+                if (stickerWrap) stickerWrap.style.setProperty('--sticker-glow', '0');
+                resetBackgroundTint();
+            };
+            anim.oncancel = function() {
+                sticker.classList.remove('is-returning');
+            };
+            showHint();
+        }
+
+        sticker.addEventListener('pointerdown', function(event) {
+            if (event.button !== 0 && event.pointerType !== 'touch') return;
+            isDragging = true;
+            activePointerId = event.pointerId;
+            startX = event.clientX;
+            startY = event.clientY;
+            originX = tx;
+            originY = ty;
+            lastMoveX = event.clientX;
+            lastMoveY = event.clientY;
+            lastMoveT = performance.now();
+            velocityX = 0;
+            velocityY = 0;
+            sticker.classList.remove('is-returning');
+            sticker.classList.add('is-dragging');
+            if (hint) hint.classList.remove('show');
+            positionHint();
+            if (bodyEl) bodyEl.style.setProperty('--sticker-tint-opacity', '0.2');
+            if (typeof sticker.setPointerCapture === 'function') {
+                sticker.setPointerCapture(event.pointerId);
+            }
+            event.preventDefault();
+        });
+
+        sticker.addEventListener('pointermove', function(event) {
+            if (!isDragging || event.pointerId !== activePointerId) return;
+            tx = originX + (event.clientX - startX);
+            ty = originY + (event.clientY - startY);
+            rx = clamp(-ty / 16, -18, 18);
+            ry = clamp(tx / 16, -18, 18);
+            var now = performance.now();
+            var dt = Math.max(16, now - lastMoveT);
+            velocityX = (event.clientX - lastMoveX) / dt;
+            velocityY = (event.clientY - lastMoveY) / dt;
+            lastMoveX = event.clientX;
+            lastMoveY = event.clientY;
+            lastMoveT = now;
+            applyTransform();
+        });
+
+        function onPointerRelease(event) {
+            if (!isDragging || event.pointerId !== activePointerId) return;
+            isDragging = false;
+            sticker.classList.remove('is-dragging');
+            if (typeof sticker.releasePointerCapture === 'function') {
+                try { sticker.releasePointerCapture(event.pointerId); } catch (e) {}
+            }
+            activePointerId = null;
+            returnSticker(true);
+        }
+
+        sticker.addEventListener('pointerup', onPointerRelease);
+        sticker.addEventListener('pointercancel', onPointerRelease);
+        sticker.addEventListener('lostpointercapture', function() {
+            if (!isDragging) return;
+            isDragging = false;
+            sticker.classList.remove('is-dragging');
+            activePointerId = null;
+            returnSticker(false);
+        });
+
+        window.addEventListener('resize', positionHint);
+        window.addEventListener('scroll', positionHint, { passive: true });
+        positionHint();
+        resetBackgroundTint();
+    }
+})();
+
+(async function() {
+    var elUsers = document.getElementById('metric-user-count');
+    var elCountries = document.getElementById('metric-country-count');
+    if (!elUsers || !elCountries) return;
+    elUsers.textContent = '...';
+    elCountries.textContent = '...';
+
+    try {
+        var appModule = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js');
+        var app = appModule.initializeApp({
+            apiKey: 'AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw',
+            authDomain: 'proviweb-d8764.firebaseapp.com',
+            projectId: 'proviweb-d8764',
+            storageBucket: 'proviweb-d8764.appspot.com',
+            messagingSenderId: '475963980955',
+            appId: '1:475963980955:web:8444288d8ba13e428e1a3e'
+        });
+        var fnModule = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js');
+        var functions = fnModule.getFunctions(app, 'us-central1');
+        var callable = fnModule.httpsCallable(functions, 'getPublicStats');
+        var res = await callable();
+        var data = res.data || {};
+        elUsers.textContent = data.userCount != null ? String(data.userCount) : '500+';
+        var byCountry = data.byCountry || {};
+        var countries = Object.keys(byCountry).length;
+        elCountries.textContent = countries > 0 ? String(countries) : '15+';
+    } catch (error) {
+        elUsers.textContent = '500+';
+        elCountries.textContent = '15+';
+    }
+})();
+</script>
+</body>
+</html>

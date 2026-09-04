@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - PROVIWEB · La Red Social de Músicos y Artistas</title>
+    <link rel="icon" href="./assets/logotransparente-1dd37ce8.png">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="css/brand-ads.css">
+    
+    <!-- PDF.js para renderizar miniaturas de partituras -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    
+    <style>
+        :root {
+            --bg-primary: #08080e;
+            --bg-secondary: #0f0f18;
+            --bg-card: rgba(18, 18, 28, 0.82);
+            --bg-card-hover: rgba(26, 26, 42, 0.92);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --bg-glass-hover: rgba(255, 255, 255, 0.08);
+            --bg-glass-active: rgba(168, 85, 247, 0.16);
+            --border-glass: rgba(255, 255, 255, 0.07);
+            --border-glass-focus: rgba(168, 85, 247, 0.45);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --accent-green: #22c55e;
+            --accent-rose: #f43f5e;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+            --gradient-music: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.38);
+            --shadow-glow: 0 0 24px rgba(168, 85, 247, 0.25);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 12% 18%, rgba(168, 85, 247, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 88% 82%, rgba(56, 189, 248, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.02) 0%, transparent 60%);
+            background-attachment: fixed;
+            padding-bottom: 90px;
+        }
+
+        /* SCROLLBAR CUSTOM */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.4); }
+
+        /* ==========================================================================
+           HEADER NAVBAR
+           ========================================================================== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(8, 8, 14, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-glass);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            gap: 18px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.4px;
+        }
+
+        .header-logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.35));
+        }
+
+        .header-center {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 50px;
+            padding: 9px 16px 9px 40px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .search-box input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: #cbd5e1;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-glass-hover);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .badge-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 7px;
+            height: 7px;
+            background: var(--accent-rose);
+            border-radius: 50%;
+            border: 1.5px solid var(--bg-primary);
+        }
+
+        .user-balance-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: var(--accent-gold);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12.5px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .user-balance-pill:hover {
+            background: rgba(251, 191, 36, 0.22);
+            transform: scale(1.02);
+        }
+
+        .user-header-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-purple);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .user-header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ==========================================================================
+           MAIN 3-COLUMN COMPACT LAYOUT
+           ========================================================================== */
+        .main-container {
+            max-width: 1380px;
+            width: 100%;
+            margin: 18px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 270px 1fr 310px;
+            gap: 20px;
+            align-items: start;
+            flex: 1;
+        }
+
+        /* SIDEBAR COMMON */
+        .sidebar-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* USER PROFILE CARD (LEFT) */
+        .user-hub-card {
+            text-align: center;
+            padding: 20px 16px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-hub-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.35) 0%, rgba(99, 102, 241, 0.2) 100%);
+            z-index: 0;
+        }
+
+        .hub-avatar-wrap {
+            position: relative;
+            width: 74px;
+            height: 74px;
+            margin: 10px auto 8px;
+            z-index: 1;
+        }
+
+        .hub-avatar-wrap img {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid #131320;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+
+        .hub-user-name {
+            font-size: 15px;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .hub-user-handle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .hub-instrument-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #d8b4fe;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2.5px 9px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+        }
+
+        .hub-stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 9px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .hub-stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hub-stat-num {
+            font-size: 14px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .hub-stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hub-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 10px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .hub-action-btn:hover {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            transform: translateY(-1px);
+        }
+
+        /* NAVIGATION MENU (LEFT) */
+        .nav-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .nav-menu-item .menu-icon {
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .nav-menu-item:hover {
+            background: var(--bg-glass-hover);
+            color: #fff;
+            transform: translateX(3px);
+        }
+
+        .nav-menu-item.active {
+            background: var(--bg-glass-active);
+            color: var(--accent-purple);
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        /* TOOLS GRID */
+        .tools-quick-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .tool-quick-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 9px 6px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 11.5px;
+            font-weight: 800;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .tool-quick-btn:hover {
+            background: var(--bg-glass-hover);
+            border-color: rgba(168, 85, 247, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tool-quick-btn span:first-child {
+            font-size: 18px;
+        }
+
+        /* ==========================================================================
+           CENTRAL FEED AREA
+           ========================================================================== */
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        /* STORIES / REELS STRIP */
+        .stories-strip-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .stories-strip-scroll {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+
+        .story-bubble {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            flex-shrink: 0;
+            text-decoration: none;
+            width: 62px;
+        }
+
+        .story-ring {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, #a855f7 0%, #fbbf24 50%, #38bdf8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .story-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid #101018;
+        }
+
+        .story-ring.add-story {
+            background: var(--bg-glass);
+            border: 1.5px dashed var(--accent-purple);
+            color: var(--accent-purple);
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .story-bubble:hover .story-ring {
+            transform: scale(1.06);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .story-label {
+            font-size: 11px;
+            color: #cbd5e1;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* COMPACT POST COMPOSER */
+        .expandable-composer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.25s ease;
+        }
+
+        .expandable-composer-card.is-expanded {
+            border-color: var(--border-glass-focus);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .composer-collapsed-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .composer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1.5px solid var(--border-glass);
+        }
+
+        .composer-prompt-input {
+            flex: 1;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 50px;
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .composer-prompt-input:hover {
+            background: var(--bg-glass-hover);
+            color: #fff;
+        }
+
+        .composer-quick-chips {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+        }
+
+        .chip-composer {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .chip-composer:hover {
+            background: var(--bg-glass-hover);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .composer-expanded-studio {
+            display: none;
+            margin-top: 12px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .composer-textarea {
+            width: 100%;
+            min-height: 80px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            resize: vertical;
+            margin-bottom: 10px;
+            line-height: 1.45;
+        }
+
+        .composer-selectors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .composer-select {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            padding: 7px 10px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 12px;
+            width: 100%;
+        }
+
+        /* FEED TABS SELECTOR */
+        .feed-tabs-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 5px;
+            box-shadow: var(--shadow-card);
+            overflow-x: auto;
+        }
+
+        .feed-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .feed-tab-btn:hover {
+            color: #fff;
+            background: var(--bg-glass-hover);
+        }
+
+        .feed-tab-btn.active {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(168, 85, 247, 0.35);
+        }
+
+        /* COMPACT POST CARDS */
+        .posts-stream-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .post-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 16px 18px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.2s ease;
+        }
+
+        .post-card-item:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .post-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .post-author-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .post-author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1.5px solid var(--border-glass);
+        }
+
+        .post-author-name {
+            font-size: 14.5px;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-author-handle {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .post-instrument-badge {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.12);
+            padding: 1.5px 7px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .post-time-tag {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .post-body-text {
+            font-size: 13.5px;
+            color: #e2e8f0;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+
+        /* CONSTRAINED MEDIA CONTAINER */
+        .post-card-media-wrap {
+            width: 100%;
+            max-height: 380px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-card-media-wrap img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .post-card-media-wrap video {
+            width: 100%;
+            max-height: 380px;
+            border-radius: 12px;
+            background: #000;
+        }
+
+        .post-actions-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .post-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .post-action-btn:hover {
+            background: var(--bg-glass-hover);
+            color: var(--accent-purple);
+        }
+
+        .post-action-btn.btn-tip-qav {
+            color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        /* MUSIC SONGS STREAM CARDS */
+        .song-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.2s ease;
+        }
+
+        .song-card-item:hover {
+            border-color: rgba(168, 85, 247, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .song-card-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .song-cover-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1.5px solid var(--border-glass);
+            flex-shrink: 0;
+        }
+
+        .song-meta-box {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .song-title-text {
+            font-size: 14px;
+            font-weight: 900;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-artist-text {
+            font-size: 12px;
+            color: var(--accent-purple);
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .song-tag-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .btn-play-song-card {
+            background: var(--gradient-primary);
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12.5px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 12px rgba(168, 85, 247, 0.35);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-play-song-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* COLLABORATIONS & GROUPS CARDS */
+        .collab-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.2s ease;
+        }
+
+        .collab-card-item:hover {
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+
+        /* ==========================================================================
+           FLOATING PERSISTENT MUSIC PLAYER BAR
+           ========================================================================== */
+        .global-music-player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(12, 12, 20, 0.94);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-top: 1px solid rgba(168, 85, 247, 0.3);
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6), 0 0 24px rgba(168, 85, 247, 0.15);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .player-track-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
+        }
+
+        .player-vinyl-cover {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-purple);
+            object-fit: cover;
+            animation: rotateVinyl 8s linear infinite;
+        }
+
+        .player-vinyl-cover.paused {
+            animation-play-state: paused;
+        }
+
+        .player-track-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-track-title {
+            font-size: 13.5px;
+            font-weight: 900;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .player-track-artist {
+            font-size: 11.5px;
+            color: var(--accent-purple);
+            font-weight: 700;
+        }
+
+        .player-controls-center {
+            flex: 1;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin: 0 16px;
+        }
+
+        .player-buttons-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-player-action {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-player-play {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(168, 85, 247, 0.4);
+            font-size: 14px;
+        }
+
+        .player-progress-bar-wrap {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-time-num {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            font-family: monospace;
+            min-width: 32px;
+        }
+
+        .player-seek-slider {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .player-seek-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        .player-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ==========================================================================
+           RIGHT SIDEBAR
+           ========================================================================== */
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .trend-pill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            border-radius: 10px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .trend-pill-item:hover {
+            background: var(--bg-glass-hover);
+            transform: translateX(3px);
+        }
+
+        /* MOBILE BOTTOM NAV BAR */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(8, 8, 14, 0.95);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border-glass);
+            z-index: 999;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--accent-purple);
+        }
+
+        /* ANIMATIONS */
+        @keyframes rotateVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 250px 1fr;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 0 12px;
+                margin-top: 10px;
+                margin-bottom: 75px;
+            }
+            .sidebar-left {
+                display: none;
+            }
+            .mobile-bottom-nav {
+                display: flex;
+            }
+            .header {
+                padding: 0 14px;
+            }
+            .header-center {
+                display: none;
+            }
+            .global-music-player-bar {
+                bottom: 60px;
+                padding: 0 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER NAVIGATION -->
+    <header class="header">
+        <div class="header-left">
+            <a href="home.html" class="header-logo">
+                <img src="./assets/logotransparente-1dd37ce8.png" alt="PROVIWEB">
+                <span>PROVIWEB <span style="color:var(--accent-purple); font-size:12px; font-weight:800; background:rgba(168,85,247,0.15); padding:2px 7px; border-radius:5px;">ARTIST</span></span>
+            </a>
+        </div>
+
+        <div class="header-center">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar canciones, partituras, músicos, convocatorias...">
+            </div>
+        </div>
+
+        <div class="header-right" style="display:flex; align-items:center; gap:8px;">
+            <!-- Billetera Comunitaria (QAV + Diamantes) -->
+            <a href="wallet.html" class="user-balance-pill" title="Billetera PROVIWEB (Tokens QAV y Diamantes)">
+                <span>🪙</span> <span id="sidebarUserBalance">0 QAV</span>
+                <span style="opacity:0.35; margin:0 3px;">|</span>
+                <span>💎</span> <span id="sidebarUserDiamonds">0.00</span>
+            </a>
+
+            <!-- Archivo & Guardados -->
+            <a href="archive.html" class="nav-btn" title="Archivo & Publicaciones Guardadas">
+                <span>📁</span>
+            </a>
+
+            <!-- Notificaciones -->
+            <button type="button" id="btnNotificationsHeader" class="nav-btn" title="Notificaciones" style="position:relative; background:var(--bg-glass); border:1px solid var(--border-glass); cursor:pointer; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                <span>🔔</span>
+                <span class="badge-dot" id="notyBadge" style="display:none; position:absolute; top:4px; right:4px; width:8px; height:8px; background:#ef4444; border-radius:50%; border:1.5px solid #0f0f15;"></span>
+            </button>
+
+            <!-- Mensajes Directos -->
+            <a href="chat.html" class="nav-btn" title="Mensajes Directos">
+                <span>💬</span>
+            </a>
+
+            <!-- Tienda & Marketplace -->
+            <a href="promotion.html" class="nav-btn" title="Tienda de Instrumentos & Equipos">
+                <span>🛍️</span>
+            </a>
+
+            <!-- Ajustes de Cuenta -->
+            <a href="edirmyprofile.html" class="nav-btn" title="Ajustes y Configuración">
+                <span>⚙️</span>
+            </a>
+
+            <!-- Cerrar Sesión -->
+            <button type="button" id="logoutIcon" class="nav-btn btn-header-logout" title="Cerrar Sesión" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#ef4444; cursor:pointer; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; transition:all 0.2s;">
+                <span>🚪</span>
+            </button>
+
+            <!-- Avatar del Usuario -->
+            <a href="myprofile.html" class="user-header-avatar" title="Mi Perfil">
+                <img src="assets/profile-assets/avatar.png" id="profilePhotoCard" alt="Avatar">
+            </a>
+        </div>
+    </header>
+
+    <!-- NOTIFICATIONS DROPDOWN PANEL -->
+    <div id="notificationsDropdownPanel" style="display:none; position:fixed; top:68px; right:20px; width:380px; max-width:calc(100vw - 32px); max-height:520px; background:rgba(14,14,22,0.96); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.12); border-radius:20px; box-shadow:0 16px 48px rgba(0,0,0,0.8), 0 0 20px rgba(168,85,247,0.2); z-index:99999; flex-direction:column; overflow:hidden;">
+        <div style="padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.02);">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:16px;">🔔</span>
+                <div>
+                    <h4 style="font-size:14.5px; font-weight:900; color:#fff; margin:0;">Notificaciones</h4>
+                    <span style="font-size:11px; color:var(--text-muted);">Actividad de tu comunidad</span>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" id="btnClearNotys" style="background:transparent; border:none; color:var(--accent-purple); font-size:11.5px; font-weight:800; cursor:pointer;" title="Limpiar todas">Limpiar</button>
+                <button type="button" id="btnCloseNotys" style="background:transparent; border:none; color:var(--text-muted); font-size:16px; cursor:pointer; padding:2px;">✕</button>
+            </div>
+        </div>
+
+        <div id="notificationsListContainer" style="overflow-y:auto; max-height:380px; padding:8px 0;">
+            <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+                <span>✨</span> Cargando notificaciones...
+            </div>
+        </div>
+
+        <a href="myprofile.html?tab=notifications" style="display:block; text-align:center; padding:11px; font-size:12px; font-weight:800; color:var(--accent-purple); text-decoration:none; background:rgba(255,255,255,0.02); border-top:1px solid rgba(255,255,255,0.06); transition:background 0.2s;">
+            Ver historial de notificaciones completo ➜
+        </a>
+    </div>
+
+
+    <!-- MAIN 3-COLUMN LAYOUT -->
+    <div class="main-container" id="mainContent">
+
+        <!-- ====================================================================
+             LEFT COLUMN: USER HUB, TOOLS & DISCOVERY
+             ==================================================================== -->
+        <aside class="sidebar-left">
+            <!-- User Hub Card -->
+            <div class="sidebar-card user-hub-card">
+                <div class="hub-avatar-wrap">
+                    <img src="assets/profile-assets/avatar.png" id="expandedUserAvatar" alt="Avatar">
+                </div>
+                <div class="hub-user-name">
+                    <span id="expandedUserName">Músico</span>
+                    <span id="hubVerifiedBadge" style="color:var(--accent-blue); font-size:13px; display:none;">✓</span>
+                </div>
+                <div class="hub-user-handle" id="expandedUserHandle">@musico</div>
+                <div class="hub-instrument-tag" id="hubInstrumentTag">🎻 Músico / Creador</div>
+
+                <div class="hub-stats-row">
+                    <div class="hub-stat-item">
+                        <span class="hub-stat-num" id="hubFollowersCount">0</span>
+                        <span class="hub-stat-label">Seguidores</span>
+                    </div>
+                    <div class="hub-stat-item">
+                        <span class="hub-stat-num" id="hubPostsCount">0</span>
+                        <span class="hub-stat-label">Obras</span>
+                    </div>
+                </div>
+
+                <a href="myprofile.html" class="hub-action-btn">
+                    <span>👤</span><span>Ver Mi Perfil de Artista</span>
+                </a>
+            </div>
+
+            <!-- Main Navigation Menu -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🧭 Navegación</div>
+                <nav class="nav-menu-list">
+                    <a href="home.html" class="nav-menu-item active">
+                        <span class="menu-icon">🏠</span><span>Feed Principal</span>
+                    </a>
+                    <a href="mymusic.html" class="nav-menu-item">
+                        <span class="menu-icon">🎵</span><span>Mi Estudio & Música</span>
+                    </a>
+                    <a href="reels.html" class="nav-menu-item">
+                        <span class="menu-icon">🎬</span><span>Reels & Clips</span>
+                    </a>
+                    <a href="opportunities.html" class="nav-menu-item">
+                        <span class="menu-icon">💼</span><span>Convocatorias & Gigs</span>
+                    </a>
+                    <a href="eventos.html" class="nav-menu-item">
+                        <span class="menu-icon">📅</span><span>Conciertos & Eventos</span>
+                    </a>
+                    <a href="servicesmap.html" class="nav-menu-item">
+                        <span class="menu-icon">🗺️</span><span>Mapa de Artistas</span>
+                    </a>
+                    <a href="fundar-artist-credentials.html" class="nav-menu-item">
+                        <span class="menu-icon">🎫</span><span>Carnet FUNDAR</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Musician Quick Tools -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🎛️ Herramientas de Artista</div>
+                <div class="tools-quick-grid">
+                    <a href="gamesmusic.html?tool=tuner" class="tool-quick-btn">
+                        <span>🎯</span>
+                        <span>Afinador</span>
+                    </a>
+                    <a href="gamesmusic.html?tool=metronome" class="tool-quick-btn">
+                        <span>⏱️</span>
+                        <span>Metrónomo</span>
+                    </a>
+                    <a href="aiprofessor.html" class="tool-quick-btn">
+                        <span>🤖</span>
+                        <span>IA Profesor</span>
+                    </a>
+                    <a href="gamesmusic.html?tool=radio" class="tool-quick-btn">
+                        <span>📻</span>
+                        <span>Radio Pro</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recommended Musicians -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">
+                    <span>🌟 Artistas Recomendados</span>
+                    <a href="servicesmap.html" style="font-size:11px; color:var(--accent-purple); text-decoration:none; font-weight:700;">Ver todos</a>
+                </div>
+                <div id="suggestedUsersBox">
+                    <div style="text-align:center; padding:10px 0; font-size:11.5px; color:var(--text-muted);">Cargando colegas...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ====================================================================
+             CENTRAL COLUMN: FEED, STORIES & COMPOSER
+             ==================================================================== -->
+        <main class="content">
+
+            <!-- 1. Stories / Reels Strip (Top) -->
+            <div class="stories-strip-wrap">
+                <div class="stories-strip-scroll" id="storiesStripScroll">
+                    <a href="createpost.html?type=reel" class="story-bubble">
+                        <div class="story-ring add-story">+</div>
+                        <span class="story-label">Crear Reel</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Compact Post Composer -->
+            <div class="expandable-composer-card" id="inlineComposerCard">
+                <!-- Collapsed Trigger Row -->
+                <div class="composer-collapsed-row" id="composerTriggerRow">
+                    <img src="assets/profile-assets/avatar.png" class="composer-avatar" id="composerMiniAvatar" alt="Avatar">
+                    <div class="composer-prompt-input" id="composerTriggerPrompt">
+                        ¿Qué estás creando o compartiendo hoy?
+                    </div>
+                </div>
+
+                <!-- Quick Action Chips -->
+                <div class="composer-quick-chips">
+                    <button type="button" class="chip-composer" id="btnAttachAudio">
+                        <span>🎵</span><span>Audio / Canción</span>
+                    </button>
+                    <button type="button" class="chip-composer" id="btnAttachSheet">
+                        <span>🎼</span><span>Partitura</span>
+                    </button>
+                    <button type="button" class="chip-composer" id="btnAttachPhoto">
+                        <span>📸</span><span>Foto</span>
+                    </button>
+                    <button type="button" class="chip-composer" id="btnAttachVideo">
+                        <span>🎬</span><span>Reel / Video</span>
+                    </button>
+                </div>
+
+                <!-- Expanded Composer Studio -->
+                <div class="composer-expanded-studio" id="composerExpandedBox" style="display:none;">
+                    <form id="inlinePostForm">
+                        <textarea id="composerTextarea" class="composer-textarea" placeholder="Escribe sobre tu nueva obra, proceso de ensayo, arreglo musical o anuncio para la comunidad..."></textarea>
+                        
+                        <div class="composer-selectors-grid">
+                            <div>
+                                <label style="font-size:10.5px; font-weight:800; color:var(--text-muted); display:block; margin-bottom:3px;">CATEGORÍA</label>
+                                <select id="composerCategorySelect" class="composer-select">
+                                    <option value="music">🎵 Estreno Musical</option>
+                                    <option value="score">🎼 Partitura / Arreglo</option>
+                                    <option value="collab">🤝 Busco Músicos / Colaboración</option>
+                                    <option value="general">🌟 General / Comunidad</option>
+                                    <option value="event">📅 Concierto / Presentación</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:10.5px; font-weight:800; color:var(--text-muted); display:block; margin-bottom:3px;">GÉNERO / ESTILO</label>
+                                <select id="composerGenreSelect" class="composer-select">
+                                    <option value="Clásica">🎻 Clásica / Académica</option>
+                                    <option value="Mariachi">🎺 Mariachi / Tradicional</option>
+                                    <option value="Jazz">🎷 Jazz / Blues</option>
+                                    <option value="Rock">🎸 Rock / Metal</option>
+                                    <option value="Pop">🎤 Pop / Acústico</option>
+                                    <option value="Folclore">🪗 Folclore Latino</option>
+                                    <option value="Electrónica">🎧 Electrónica / Beat</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Previews Box -->
+                        <div class="composer-previews-container" id="composerPreviewsBox" style="display:none; margin-bottom:12px;"></div>
+
+                        <!-- Hidden File Inputs -->
+                        <input type="file" id="inlineAudioInput" accept="audio/*" style="display:none;">
+                        <input type="file" id="inlineSheetInput" accept=".pdf,image/*" style="display:none;">
+                        <input type="file" id="inlinePhotoInput" accept="image/*" style="display:none;" multiple>
+                        <input type="file" id="inlineVideoInput" accept="video/*" style="display:none;">
+
+                        <!-- Upload Progress Bar -->
+                        <div id="composerProgressWrap" style="display:none; margin-bottom:12px;">
+                            <div style="height:5px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                                <div id="composerProgressBar" style="height:100%; width:0%; background:var(--gradient-primary); transition:width 0.2s;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px;">
+                            <button type="button" id="btnCancelComposer" style="background:transparent; border:none; color:var(--text-muted); font-weight:800; cursor:pointer; font-size:12.5px;">
+                                Cancelar
+                            </button>
+                            <button type="submit" id="btnSubmitInlinePost" style="background:var(--gradient-primary); color:#fff; border:none; padding:9px 22px; border-radius:10px; font-weight:900; font-size:13.5px; cursor:pointer; box-shadow:0 3px 14px rgba(168,85,247,0.4); transition:transform 0.2s;">
+                                Publicar Obra ➜
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 3. Feed Tabs Selector -->
+            <div class="feed-tabs-bar" role="tablist">
+                <button type="button" class="feed-tab-btn active" data-tab="all" onclick="switchFeedTab('all')">
+                    <span>🌟</span><span>Para Ti</span>
+                </button>
+                <button type="button" class="feed-tab-btn" data-tab="music" onclick="switchFeedTab('music')">
+                    <span>🎵</span><span>Música & Canciones</span>
+                </button>
+                <button type="button" class="feed-tab-btn" data-tab="collabs" onclick="switchFeedTab('collabs')">
+                    <span>🤝</span><span>Colaboraciones</span>
+                </button>
+                <button type="button" class="feed-tab-btn" data-tab="posts" onclick="switchFeedTab('posts')">
+                    <span>📸</span><span>Publicaciones</span>
+                </button>
+                <button type="button" class="feed-tab-btn" data-tab="reels" onclick="switchFeedTab('reels')">
+                    <span>🎬</span><span>Reels</span>
+                </button>
+                <button type="button" class="feed-tab-btn" data-tab="opportunities" onclick="switchFeedTab('opportunities')">
+                    <span>💼</span><span>Convocatorias</span>
+                </button>
+            </div>
+
+            <!-- 4. Posts Feed Stream -->
+            <div class="posts-stream-wrap" id="mainFeedStream">
+                <!-- Posts Container (Tab: all, posts) -->
+                <div class="posts-container" id="postsContainer">
+                    <div style="text-align:center; padding:36px 20px; color:var(--text-secondary);">
+                        <div style="font-size:32px; margin-bottom:8px;">🎻</div>
+                        <div style="font-weight:800; font-size:14.5px; color:#fff;">Cargando la música y publicaciones de la comunidad...</div>
+                    </div>
+                </div>
+
+                <!-- Songs Container (Tab: music) -->
+                <div class="songs-stream-container" id="songsContainer" style="display:none; display:flex; flex-direction:column; gap:12px;"></div>
+
+                <!-- Collabs Container (Tab: collabs) -->
+                <div class="collabs-stream-container" id="collabsContainer" style="display:none; display:flex; flex-direction:column; gap:12px;"></div>
+
+                <!-- Reels Container (Tab: reels) -->
+                <div class="reels-container" id="reelsContainer" style="display:none;"></div>
+
+                <!-- Opportunities Container (Tab: opportunities) -->
+                <div id="opportunitiesList" style="display:none;"></div>
+            </div>
+
+        </main>
+
+        <!-- ====================================================================
+             RIGHT COLUMN: OPPORTUNITIES, TRENDS & CHAT
+             ==================================================================== -->
+        <aside class="sidebar-right">
+            <!-- Active Commercial Sponsored Ad -->
+            <div class="sidebar-card" id="proviwebCommercialAdBox" style="padding:14px; background:linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(168,85,247,0.1) 100%); border-color:rgba(251,191,36,0.3);">
+                <div style="font-size:10.5px; font-weight:900; color:var(--accent-gold); letter-spacing:0.5px; margin-bottom:4px;">ESPACIO PATROCINADO</div>
+                <div style="font-size:13.5px; font-weight:800; color:#fff; margin-bottom:3px;">Promociona tu Música o Recinto</div>
+                <div style="font-size:11.5px; color:var(--text-secondary); line-height:1.4; margin-bottom:10px;">Llega a miles de artistas, profesores y productores en PROVIWEB.</div>
+                <a href="brand-ads.html" class="hub-action-btn" style="background:var(--gradient-gold); color:#000; font-size:11.5px; padding:7px;">
+                    Crear Anuncio ➜
+                </a>
+            </div>
+
+            <!-- Trending Music & Topics -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🔥 Tendencias en la Comunidad</div>
+                <a href="opportunities.html" class="trend-pill-item">
+                    <div>
+                        <div style="font-weight:800; font-size:12.5px;">#AudicionesOrquesta</div>
+                        <div style="font-size:10.5px; color:var(--text-muted);">Convocatorias abiertas</div>
+                    </div>
+                    <span style="color:var(--accent-purple); font-size:12px;">➜</span>
+                </a>
+                <a href="servicesmap.html" class="trend-pill-item">
+                    <div>
+                        <div style="font-weight:800; font-size:12.5px;">#EstrenosMusicales</div>
+                        <div style="font-size:10.5px; color:var(--text-muted);">Nuevas pistas y arreglos</div>
+                    </div>
+                    <span style="color:var(--accent-purple); font-size:12px;">➜</span>
+                </a>
+                <a href="eventos.html" class="trend-pill-item">
+                    <div>
+                        <div style="font-weight:800; font-size:12.5px;">#ConciertosEnVivo</div>
+                        <div style="font-size:10.5px; color:var(--text-muted);">Cartelera musical</div>
+                    </div>
+                    <span style="color:var(--accent-purple); font-size:12px;">➜</span>
+                </a>
+            </div>
+
+            <!-- Direct Messages Quick Widget -->
+            <div class="sidebar-card" style="padding:16px;">
+                <div class="sidebar-title">
+                    <span>💬 Mensajes Directos</span>
+                    <a href="chat.html" style="font-size:11px; color:var(--accent-purple); text-decoration:none; font-weight:800;">Abrir Hub</a>
+                </div>
+                <div id="quickChatContainer">
+                    <div style="text-align:center; padding:14px 0; font-size:12px; color:var(--text-muted);">
+                        Chatea y colabora en tiempo real desde <a href="chat.html" style="color:var(--accent-purple); text-decoration:none; font-weight:800;">Mensajes Directos</a>.
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- ======================================================================
+         FLOATING PERSISTENT GLOBAL AUDIO PLAYER BAR
+         ====================================================================== -->
+    <div class="global-music-player-bar" id="globalMusicPlayerBar">
+        <!-- Track Meta -->
+        <div class="player-track-info">
+            <img src="assets/profile-assets/avatar.png" class="player-vinyl-cover paused" id="globalPlayerCover" alt="Cover">
+            <div class="player-track-meta">
+                <div class="player-track-title" id="globalPlayerTitle">Obra Musical</div>
+                <div class="player-track-artist" id="globalPlayerArtist">Artista de PROVIWEB</div>
+            </div>
+        </div>
+
+        <!-- Center Controls & Progress -->
+        <div class="player-controls-center">
+            <div class="player-buttons-row">
+                <button type="button" class="btn-player-action" id="btnPlayerPrev" title="Anterior">⏮</button>
+                <button type="button" class="btn-player-action btn-player-play" id="btnPlayerPlay" title="Reproducir / Pausar">▶</button>
+                <button type="button" class="btn-player-action" id="btnPlayerNext" title="Siguiente">⏭</button>
+            </div>
+            <div class="player-progress-bar-wrap">
+                <span class="player-time-num" id="playerCurrentTime">0:00</span>
+                <input type="range" class="player-seek-slider" id="playerSeekSlider" min="0" max="100" value="0">
+                <span class="player-time-num" id="playerDuration">0:00</span>
+            </div>
+        </div>
+
+        <!-- Right Actions -->
+        <div class="player-right-actions">
+            <button type="button" class="post-action-btn" id="btnPlayerClap" style="font-size:12px; color:#fff;" title="Aplaudir esta pista">
+                <span>👏</span> <span id="playerClapCount">0</span>
+            </button>
+            <button type="button" class="btn-player-action" id="btnPlayerClose" title="Cerrar reproductor" style="font-size:13px; color:var(--text-muted);">
+                ✕
+            </button>
+        </div>
+
+        <!-- Hidden Global Audio Element -->
+        <audio id="globalHtmlAudio" preload="none"></audio>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="mobile-bottom-nav">
+        <a href="home.html" class="mobile-nav-item active">
+            <span style="font-size:17px;">🏠</span><span>Inicio</span>
+        </a>
+        <a href="reels.html" class="mobile-nav-item">
+            <span style="font-size:17px;">🎬</span><span>Reels</span>
+        </a>
+        <a href="createpost.html" class="mobile-nav-item" style="color:var(--accent-purple);">
+            <span style="font-size:20px; font-weight:900;">➕</span><span>Publicar</span>
+        </a>
+        <a href="mymusic.html" class="mobile-nav-item">
+            <span style="font-size:17px;">🎵</span><span>Música</span>
+        </a>
+        <a href="myprofile.html" class="mobile-nav-item">
+            <span style="font-size:17px;">👤</span><span>Perfil</span>
+        </a>
+    </nav>
+
+    <!-- TAB SWITCHER SCRIPT HELPER -->
+    <script>
+        function switchFeedTab(tabName) {
+            document.querySelectorAll('.feed-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+            });
+
+            const postsBox = document.getElementById('postsContainer');
+            const songsBox = document.getElementById('songsContainer');
+            const collabsBox = document.getElementById('collabsContainer');
+            const reelsBox = document.getElementById('reelsContainer');
+            const oppBox = document.getElementById('opportunitiesList');
+
+            if (postsBox) postsBox.style.display = (tabName === 'all' || tabName === 'posts') ? 'flex' : 'none';
+            if (songsBox) songsBox.style.display = (tabName === 'music') ? 'flex' : 'none';
+            if (collabsBox) collabsBox.style.display = (tabName === 'collabs') ? 'flex' : 'none';
+            if (reelsBox) reelsBox.style.display = (tabName === 'reels') ? 'grid' : 'none';
+            if (oppBox) oppBox.style.display = (tabName === 'opportunities') ? 'block' : 'none';
+        }
+
+        // Expand / Collapse Composer
+        document.addEventListener('DOMContentLoaded', () => {
+            const triggerPrompt = document.getElementById('composerTriggerPrompt');
+            const expandedBox = document.getElementById('composerExpandedBox');
+            const composerCard = document.getElementById('inlineComposerCard');
+            const btnCancel = document.getElementById('btnCancelComposer');
+
+            if (triggerPrompt && expandedBox && composerCard) {
+                triggerPrompt.addEventListener('click', () => {
+                    expandedBox.style.display = 'block';
+                    composerCard.classList.add('is-expanded');
+                    document.getElementById('composerTextarea')?.focus();
+                });
+            }
+
+            if (btnCancel && expandedBox && composerCard) {
+                btnCancel.addEventListener('click', () => {
+                    expandedBox.style.display = 'none';
+                    composerCard.classList.remove('is-expanded');
+                });
+            }
+
+            document.getElementById('btnAttachPhoto')?.addEventListener('click', () => {
+                expandedBox.style.display = 'block';
+                composerCard.classList.add('is-expanded');
+                document.getElementById('inlinePhotoInput')?.click();
+            });
+
+            document.getElementById('btnAttachVideo')?.addEventListener('click', () => {
+                expandedBox.style.display = 'block';
+                composerCard.classList.add('is-expanded');
+                document.getElementById('inlineVideoInput')?.click();
+            });
+
+            document.getElementById('btnAttachAudio')?.addEventListener('click', () => {
+                expandedBox.style.display = 'block';
+                composerCard.classList.add('is-expanded');
+                document.getElementById('inlineAudioInput')?.click();
+            });
+
+            document.getElementById('btnAttachSheet')?.addEventListener('click', () => {
+                expandedBox.style.display = 'block';
+                composerCard.classList.add('is-expanded');
+                document.getElementById('inlineSheetInput')?.click();
+            });
+        });
+    </script>
+
+    <!-- FIREBASE AND MEDIA ENGINES -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/post-media.js"></script>
+
+    <!-- FIREBASE MODULAR DATA ENGINE -->
+    
+    <!-- IN-PAGE FULLSCREEN IMAGE LIGHTBOX MODAL -->
+    <div id="inPageLightboxModal" style="display:none; position:fixed; inset:0; background:rgba(4,4,8,0.95); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); z-index:30000; align-items:center; justify-content:center; padding:20px;">
+        <button type="button" id="btnCloseLightbox" style="position:absolute; top:20px; right:24px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:20px; width:44px; height:44px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:all 0.2s;">✕</button>
+        
+        <button type="button" id="btnPrevLightbox" style="position:absolute; left:20px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:24px; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;">❮</button>
+        
+        <div style="max-width:90vw; max-height:85vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <img id="lightboxImageEl" src="" alt="Vista ampliada" style="max-width:100%; max-height:80vh; object-fit:contain; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,0.8);">
+            <div id="lightboxCounterEl" style="margin-top:12px; font-size:13px; font-weight:800; color:#cbd5e1; background:rgba(0,0,0,0.5); padding:4px 14px; border-radius:50px; border:1px solid rgba(255,255,255,0.1);">1 / 1</div>
+        </div>
+
+        <button type="button" id="btnNextLightbox" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:24px; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;">❯</button>
+    </div>
+
+    <!-- IN-PAGE QAV TIPPING & REWARD MODAL -->
+    <div id="inPageQavModal" style="display:none; position:fixed; inset:0; background:rgba(4,4,8,0.85); backdrop-filter:blur(20px); z-index:30000; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:var(--bg-card); border:1.5px solid rgba(251,191,36,0.4); border-radius:24px; padding:28px 24px; max-width:440px; width:100%; box-shadow:0 16px 48px rgba(0,0,0,0.8), 0 0 30px rgba(251,191,36,0.15); text-align:center; position:relative;">
+            <button type="button" id="btnCloseQavModal" style="position:absolute; top:16px; right:16px; background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;">✕</button>
+            
+            <div style="font-size:44px; margin-bottom:8px;">🪙</div>
+            <h3 style="font-size:18px; font-weight:900; color:#fff; margin-bottom:4px;">Recompensar a <span id="tipArtistName">el Artista</span></h3>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:18px;">Apoya el talento musical enviando Tokens QAV de propina.</p>
+
+            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:18px;">
+                <button type="button" class="btn-tip-preset" data-amount="1" style="background:var(--bg-glass); border:1px solid var(--border-glass); color:var(--accent-gold); padding:10px 4px; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer;">1 QAV</button>
+                <button type="button" class="btn-tip-preset" data-amount="5" style="background:var(--bg-glass); border:1px solid var(--border-glass); color:var(--accent-gold); padding:10px 4px; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer;">5 QAV</button>
+                <button type="button" class="btn-tip-preset" data-amount="10" style="background:var(--bg-glass); border:1px solid var(--border-glass); color:var(--accent-gold); padding:10px 4px; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer;">10 QAV</button>
+                <button type="button" class="btn-tip-preset" data-amount="25" style="background:var(--bg-glass); border:1px solid var(--border-glass); color:var(--accent-gold); padding:10px 4px; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer;">25 QAV</button>
+            </div>
+
+            <div style="margin-bottom:18px;">
+                <input type="number" id="customQavAmount" min="1" placeholder="Otro monto (ej: 50)" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); padding:10px 14px; border-radius:12px; color:#fff; font-size:14px; text-align:center; outline:none;">
+            </div>
+
+            <button type="button" id="btnConfirmSendQav" style="background:var(--gradient-gold); color:#000; border:none; width:100%; padding:12px; border-radius:12px; font-weight:900; font-size:14px; cursor:pointer; box-shadow:0 4px 16px rgba(251,191,36,0.35);">
+                Enviar Recompensa ➜
+            </button>
+        </div>
+    </div>
+    <!-- /IN-PAGE MODALS -->
+
+    <!-- FIREBASE MODULAR DATA ENGINE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, push, update, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+            authDomain: "proviweb-d8764.firebaseapp.com",
+            databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+            projectId: "proviweb-d8764",
+            storageBucket: "proviweb-d8764.appspot.com",
+            messagingSenderId: "475963980955",
+            appId: "1:475963980955:web:53a6f1d2df8940822eef6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        // Variables de estado
+        let currentUID = localStorage.getItem('id') || null;
+        let currentUserData = null;
+        let currentUserBalance = 0;
+        let mediaFiles = [];
+        let mediaType = null;
+        let currentActivePostKey = null;
+        const userCache = new Map();
+
+        // Estado del Lightbox
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        // Estado de Propina QAV
+        let activeTipRecipientUid = null;
+        let activeTipRecipientName = '';
+
+        function timeAgo(timestamp) {
+            if (!timestamp) return 'Reciente';
+            const num = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+            if (isNaN(num)) return 'Reciente';
+            const now = Date.now();
+            const diff = Math.floor((now - num) / 1000);
+            if (diff < 60) return 'Hace un momento';
+            if (diff < 3600) return `Hace ${Math.floor(diff / 60)} min`;
+            if (diff < 86400) return `Hace ${Math.floor(diff / 3600)} h`;
+            if (diff < 604800) return `Hace ${Math.floor(diff / 86400)} d`;
+            return new Date(num).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+        }
+
+        // =========================================================================
+        // CONTROL DE PESTAÑAS (TABS) DEL FEED
+        // =========================================================================
+        window.switchFeedTab = function(tabName) {
+            document.querySelectorAll('.feed-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+            });
+
+            const postsBox = document.getElementById('postsContainer');
+            const songsBox = document.getElementById('songsContainer');
+            const collabsBox = document.getElementById('collabsContainer');
+            const reelsBox = document.getElementById('reelsContainer');
+            const oppBox = document.getElementById('opportunitiesList');
+
+            if (postsBox) postsBox.style.display = (tabName === 'all' || tabName === 'posts') ? 'flex' : 'none';
+            if (songsBox) songsBox.style.display = (tabName === 'music') ? 'flex' : 'none';
+            if (collabsBox) collabsBox.style.display = (tabName === 'collabs') ? 'flex' : 'none';
+            if (reelsBox) reelsBox.style.display = (tabName === 'reels') ? 'grid' : 'none';
+            if (oppBox) oppBox.style.display = (tabName === 'opportunities') ? 'block' : 'none';
+        };
+
+        // =========================================================================
+        // MOTOR DE RESOLUCIÓN DE USUARIOS (Users/{uid})
+        // =========================================================================
+        function getUserData(uid, callback) {
+            if (!uid) return;
+            if (userCache.has(uid)) {
+                callback(userCache.get(uid));
+            }
+
+            const uRef = ref(db, 'Users/' + uid);
+            onValue(uRef, snap => {
+                if (snap.exists()) {
+                    const u = snap.val();
+                    const info = {
+                        uid: uid,
+                        name: u.name || u.username || 'Músico de PROVIWEB',
+                        username: u.username ? '@' + u.username : '@' + uid.slice(0, 8),
+                        photo: u.photo || u.image || 'assets/profile-assets/avatar.png',
+                        instrument: u.instrument || u.generoMusic || '',
+                        verified: u.verified === 'yes' || u.verified === true,
+                        verifiedProfesor: u.verifiedprofesor === 'yes' || u.verifiedProfessor === true,
+                        verifiedEntidad: u.role === 'brand' || u.verifiedentidad === 'yes'
+                    };
+                    userCache.set(uid, info);
+                    callback(info);
+                } else if (!userCache.has(uid)) {
+                    const fallback = {
+                        uid: uid,
+                        name: 'Músico de PROVIWEB',
+                        username: '@' + uid.slice(0, 8),
+                        photo: 'assets/profile-assets/avatar.png',
+                        instrument: '',
+                        verified: false
+                    };
+                    userCache.set(uid, fallback);
+                    callback(fallback);
+                }
+            });
+        }
+
+        function applyVerificationBadge(badgeEl, userData) {
+            if (!badgeEl) return;
+            if (userData?.verified || userData?.verified === 'yes') {
+                badgeEl.textContent = '✓';
+                badgeEl.title = 'Artista verificado';
+                badgeEl.style.display = 'inline';
+            } else if (userData?.verifiedProfesor || userData?.verifiedprofesor === 'yes') {
+                badgeEl.textContent = '🎓';
+                badgeEl.title = 'Profesor verificado';
+                badgeEl.style.display = 'inline';
+            } else if (userData?.verifiedEntidad || userData?.verifiedentidad === 'yes') {
+                badgeEl.textContent = '🏢';
+                badgeEl.title = 'Entidad verificada';
+                badgeEl.style.display = 'inline';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
+
+        // =========================================================================
+        // 1. CARGA DE DATOS DEL USUARIO ACTUAL
+        // =========================================================================
+        function renderCurrentUserData(data, uid) {
+            if (!data) return;
+            currentUserData = data;
+
+            const name = data.name || data.username || 'Músico';
+            const photo = data.photo || data.image || 'assets/profile-assets/avatar.png';
+            const username = data.username ? '@' + data.username : '@' + (uid.slice(0, 8));
+            const instrument = data.instrument || data.generoMusic || 'Músico / Creador';
+
+            const pPhoto = document.getElementById('profilePhotoCard');
+            if (pPhoto) pPhoto.src = photo;
+            const ePhoto = document.getElementById('expandedUserAvatar');
+            if (ePhoto) ePhoto.src = photo;
+            const cPhoto = document.getElementById('composerMiniAvatar');
+            if (cPhoto) cPhoto.src = photo;
+
+            const eName = document.getElementById('expandedUserName');
+            if (eName) eName.textContent = name;
+            const eHandle = document.getElementById('expandedUserHandle');
+            if (eHandle) eHandle.textContent = username;
+            const eInst = document.getElementById('hubInstrumentTag');
+            if (eInst) eInst.textContent = '🎻 ' + instrument;
+
+            const hubBadge = document.getElementById('hubVerifiedBadge');
+            applyVerificationBadge(hubBadge, data);
+
+            const promptEl = document.getElementById('composerTriggerPrompt');
+            if (promptEl) promptEl.textContent = `¿Qué estás creando o compartiendo hoy, ${name.split(' ')[0]}?`;
+        }
+
+        if (currentUID) {
+            const uRef = ref(db, 'Users/' + currentUID);
+            onValue(uRef, snap => {
+                if (snap.exists()) renderCurrentUserData(snap.val(), currentUID);
+            });
+
+            const balRef = ref(db, 'Balance/' + currentUID + '/balance');
+            onValue(balRef, snap => {
+                currentUserBalance = snap.exists() ? (parseInt(snap.val(), 10) || 0) : 0;
+                const balEl = document.getElementById('sidebarUserBalance');
+                if (balEl) balEl.textContent = `${currentUserBalance} QAV`;
+            });
+
+            const diaRef = ref(db, 'Balance/' + currentUID + '/diamond');
+            onValue(diaRef, snap => {
+                const d = snap.exists() ? parseFloat(snap.val()) || 0 : 0;
+                const dEl = document.getElementById('sidebarUserDiamonds');
+                if (dEl) dEl.textContent = d.toFixed(2);
+            });
+
+            const folRef = ref(db, `Follow/${currentUID}/Followers`);
+            onValue(folRef, snap => {
+                const count = snap.exists() ? Object.keys(snap.val() || {}).length : 0;
+                const countEl = document.getElementById('hubFollowersCount');
+                if (countEl) countEl.textContent = count;
+            });
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUID = user.uid;
+                localStorage.setItem('id', user.uid);
+                const uRef = ref(db, 'Users/' + user.uid);
+                onValue(uRef, snap => {
+                    if (snap.exists()) renderCurrentUserData(snap.val(), user.uid);
+                });
+            }
+        });
+
+        // =========================================================================
+        // 2. RECOMPENSA AUTOMÁTICA DE DIAMANTES CADA 3 MINUTOS
+        // =========================================================================
+        function showDiamondNotification(total) {
+            let toast = document.getElementById('homeDiamondToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'homeDiamondToast';
+                toast.style.cssText = 'position:fixed; bottom:84px; right:20px; background:linear-gradient(135deg, rgba(14,165,233,0.95) 0%, rgba(99,102,241,0.95) 100%); border:1.5px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 16px; border-radius:50px; font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:8px; box-shadow:0 8px 24px rgba(14,165,233,0.4); z-index:25000; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); transform:translateY(100px); opacity:0; pointer-events:none;';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<span>💎</span> <span>+0.10 Diamantes por tu tiempo en PROVIWEB (Total: ${total})</span>`;
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.transform = 'translateY(100px)';
+                toast.style.opacity = '0';
+            }, 4000);
+        }
+
+        async function rewardUserDiamonds() {
+            if (!currentUID) return;
+            try {
+                const balRef = ref(db, 'Balance/' + currentUID);
+                const snap = await get(balRef);
+                let curDiamonds = 0;
+                if (snap.exists()) {
+                    const d = snap.val().diamond || snap.val().diamonds || 0;
+                    curDiamonds = typeof d === 'number' ? d : parseFloat(d) || 0;
+                }
+                const newTotal = parseFloat((curDiamonds + 0.10).toFixed(2));
+                await update(ref(db, 'Balance/' + currentUID), { diamond: newTotal.toString() });
+                await update(ref(db, 'Diamond/' + currentUID), { diamond: newTotal.toString(), lastUpdated: Date.now() });
+
+                const dEl = document.getElementById('sidebarUserDiamonds');
+                if (dEl) dEl.textContent = newTotal.toFixed(2);
+                showDiamondNotification(newTotal.toFixed(2));
+            } catch (err) {
+                console.warn('[DiamondRewards] Error:', err);
+            }
+        }
+
+        setInterval(rewardUserDiamonds, 3 * 60 * 1000);
+
+        // =========================================================================
+        // 3. IN-PAGE LIGHTBOX
+        // =========================================================================
+        const lightboxModal = document.getElementById('inPageLightboxModal');
+        const lightboxImg = document.getElementById('lightboxImageEl');
+        const lightboxCounter = document.getElementById('lightboxCounterEl');
+        const btnCloseLightbox = document.getElementById('btnCloseLightbox');
+        const btnPrevLightbox = document.getElementById('btnPrevLightbox');
+        const btnNextLightbox = document.getElementById('btnNextLightbox');
+
+        window.openInPageLightbox = function(images, index = 0) {
+            if (!images || images.length === 0) return;
+            currentLightboxImages = Array.isArray(images) ? images : [images];
+            currentLightboxIndex = Math.max(0, Math.min(index, currentLightboxImages.length - 1));
+
+            updateLightboxDisplay();
+            if (lightboxModal) lightboxModal.style.display = 'flex';
+        };
+
+        function updateLightboxDisplay() {
+            if (!lightboxImg || currentLightboxImages.length === 0) return;
+            lightboxImg.src = currentLightboxImages[currentLightboxIndex];
+
+            if (lightboxCounter) {
+                lightboxCounter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+                lightboxCounter.style.display = currentLightboxImages.length > 1 ? 'block' : 'none';
+            }
+
+            if (btnPrevLightbox) btnPrevLightbox.style.display = currentLightboxImages.length > 1 ? 'flex' : 'none';
+            if (btnNextLightbox) btnNextLightbox.style.display = currentLightboxImages.length > 1 ? 'flex' : 'none';
+        }
+
+        if (btnCloseLightbox) btnCloseLightbox.addEventListener('click', () => {
+            if (lightboxModal) lightboxModal.style.display = 'none';
+        });
+
+        if (btnPrevLightbox) btnPrevLightbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxImages.length > 1) {
+                currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+                updateLightboxDisplay();
+            }
+        });
+
+        if (btnNextLightbox) btnNextLightbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxImages.length > 1) {
+                currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxImages.length;
+                updateLightboxDisplay();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightboxModal || lightboxModal.style.display !== 'flex') return;
+            if (e.key === 'Escape') lightboxModal.style.display = 'none';
+            if (e.key === 'ArrowLeft') btnPrevLightbox?.click();
+            if (e.key === 'ArrowRight') btnNextLightbox?.click();
+        });
+
+        // =========================================================================
+        // 4. IN-PAGE QAV TIP MODAL
+        // =========================================================================
+        const qavModal = document.getElementById('inPageQavModal');
+        const tipArtistNameEl = document.getElementById('tipArtistName');
+        const btnCloseQav = document.getElementById('btnCloseQavModal');
+        const customQavInput = document.getElementById('customQavAmount');
+        const btnConfirmSendQav = document.getElementById('btnConfirmSendQav');
+
+        window.openTipQavModal = function(authorId, authorName) {
+            if (!currentUID) {
+                window.location.href = 'index.html?needAuth=1';
+                return;
+            }
+            if (currentUID === authorId) {
+                alert('No puedes enviarte propinas a ti mismo.');
+                return;
+            }
+
+            activeTipRecipientUid = authorId;
+            activeTipRecipientName = authorName || 'el Artista';
+            if (tipArtistNameEl) tipArtistNameEl.textContent = activeTipRecipientName;
+            if (customQavInput) customQavInput.value = '5';
+            if (qavModal) qavModal.style.display = 'flex';
+        };
+
+        if (btnCloseQav) btnCloseQav.addEventListener('click', () => {
+            if (qavModal) qavModal.style.display = 'none';
+        });
+
+        document.querySelectorAll('.btn-tip-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const amt = btn.getAttribute('data-amount');
+                if (customQavInput) customQavInput.value = amt;
+            });
+        });
+
+        if (btnConfirmSendQav) {
+            btnConfirmSendQav.addEventListener('click', async () => {
+                const amount = parseInt(customQavInput?.value, 10);
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Por favor ingresa una cantidad válida de Tokens QAV.');
+                    return;
+                }
+                if (amount > currentUserBalance) {
+                    alert(`Saldo insuficiente. Tienes ${currentUserBalance} QAV disponibles.`);
+                    return;
+                }
+
+                try {
+                    btnConfirmSendQav.disabled = true;
+                    btnConfirmSendQav.textContent = 'Transfiriendo QAV...';
+
+                    const newSenderBal = currentUserBalance - amount;
+                    await update(ref(db, 'Balance/' + currentUID), { balance: newSenderBal });
+
+                    const recipientBalSnap = await get(ref(db, `Balance/${activeTipRecipientUid}/balance`));
+                    const currentRecipientBal = recipientBalSnap.exists() ? (parseInt(recipientBalSnap.val(), 10) || 0) : 0;
+                    await update(ref(db, 'Balance/' + activeTipRecipientUid), { balance: currentRecipientBal + amount });
+
+                    await push(ref(db, `BalanceEnviado/${currentUID}`), {
+                        to: activeTipRecipientUid,
+                        amount: amount,
+                        timestamp: Date.now(),
+                        concept: 'Recompensa por publicación musical'
+                    });
+
+                    if (qavModal) qavModal.style.display = 'none';
+                    alert(`✨ ¡Has enviado exitosamente ${amount} QAV a ${activeTipRecipientName}!`);
+                } catch (e) {
+                    console.error('Error al transferir QAV:', e);
+                    alert('Ocurrió un error al enviar la recompensa.');
+                } finally {
+                    btnConfirmSendQav.disabled = false;
+                    btnConfirmSendQav.textContent = 'Enviar Recompensa ➜';
+                }
+            });
+        }
+
+        // =========================================================================
+        // 5. NOTIFICACIONES & LOGOUT SEGURO
+        // =========================================================================
+        const btnNotyHeader = document.getElementById('btnNotificationsHeader');
+        const notyPanel = document.getElementById('notificationsDropdownPanel');
+        const btnCloseNoty = document.getElementById('btnCloseNotys');
+        const btnClearNoty = document.getElementById('btnClearNotys');
+        const notyListContainer = document.getElementById('notificationsListContainer');
+        const notyBadgeEl = document.getElementById('notyBadge');
+
+        function toggleNotificationsPanel() {
+            if (!notyPanel) return;
+            const isVisible = notyPanel.style.display === 'flex';
+            if (isVisible) {
+                notyPanel.style.display = 'none';
+            } else {
+                notyPanel.style.display = 'flex';
+                if (currentUID) loadLiveNotifications(currentUID);
+            }
+        }
+
+        if (btnNotyHeader) {
+            btnNotyHeader.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleNotificationsPanel();
+            });
+        }
+
+        if (btnCloseNoty) {
+            btnCloseNoty.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (notyPanel) notyPanel.style.display = 'none';
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (notyPanel && notyPanel.style.display === 'flex') {
+                if (!notyPanel.contains(e.target) && e.target !== btnNotyHeader && !btnNotyHeader?.contains(e.target)) {
+                    notyPanel.style.display = 'none';
+                }
+            }
+        });
+
+        function loadLiveNotifications(uid) {
+            if (!uid || !notyListContainer) return;
+            const notyRef = ref(db, 'Notifications/' + uid);
+            onValue(notyRef, snap => {
+                notyListContainer.innerHTML = '';
+
+                if (!snap.exists()) {
+                    notyListContainer.innerHTML = `
+                        <div style="text-align:center; padding:32px 16px; color:var(--text-secondary);">
+                            <div style="font-size:28px; margin-bottom:6px;">✨</div>
+                            <div style="font-size:13.5px; font-weight:800; color:#fff;">No tienes notificaciones pendientes</div>
+                        </div>
+                    `;
+                    if (notyBadgeEl) notyBadgeEl.style.display = 'none';
+                    return;
+                }
+
+                const notys = [];
+                snap.forEach(c => {
+                    notys.push({ key: c.key, data: c.val() });
+                });
+
+                if (notyBadgeEl) notyBadgeEl.style.display = notys.length > 0 ? 'block' : 'none';
+
+                notys.sort((a, b) => (b.data.timestamp || b.data.pTime || 0) - (a.data.timestamp || a.data.pTime || 0));
+
+                notys.forEach(({ key, data }) => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'padding:11px 16px; display:flex; align-items:flex-start; gap:12px; border-bottom:1px solid rgba(255,255,255,0.03); cursor:pointer; transition:background 0.15s;';
+                    item.addEventListener('mouseenter', () => item.style.background = 'rgba(255,255,255,0.03)');
+                    item.addEventListener('mouseleave', () => item.style.background = 'transparent');
+
+                    let icon = '🔔';
+                    if (data.type === 'new_post') icon = '🎵';
+                    else if (data.type === 'like' || data.type === 'aplauso') icon = '👏';
+                    else if (data.type === 'comment') icon = '💬';
+                    else if (data.type === 'tip') icon = '🪙';
+                    else if (data.type === 'follow') icon = '👥';
+
+                    const iconBox = document.createElement('div');
+                    iconBox.style.cssText = 'width:34px; height:34px; border-radius:10px; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.25); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;';
+                    iconBox.textContent = icon;
+
+                    const contentBox = document.createElement('div');
+                    contentBox.style.cssText = 'flex:1; min-width:0;';
+
+                    const msgText = document.createElement('div');
+                    msgText.style.cssText = 'font-size:12.5px; font-weight:700; color:#e2e8f0; line-height:1.35;';
+                    msgText.textContent = data.message || data.text || 'Nueva interacción en PROVIWEB';
+
+                    const timeSpan = document.createElement('div');
+                    timeSpan.style.cssText = 'font-size:10.5px; color:var(--text-muted); margin-top:3px;';
+                    timeSpan.textContent = timeAgo(data.timestamp || data.pTime || key);
+
+                    contentBox.appendChild(msgText);
+                    contentBox.appendChild(timeSpan);
+                    item.appendChild(iconBox);
+                    item.appendChild(contentBox);
+
+                    item.addEventListener('click', () => {
+                        if (data.postId || data.pId) {
+                            window.location.href = `viewpost.html?postId=${encodeURIComponent(data.postId || data.pId)}&pId=${encodeURIComponent(data.postId || data.pId)}`;
+                        } else if (data.sUid || data.userId) {
+                            window.location.href = `userprofile.html?uid=${encodeURIComponent(data.sUid || data.userId)}`;
+                        }
+                    });
+
+                    notyListContainer.appendChild(item);
+                });
+            });
+        }
+
+        if (btnClearNoty) {
+            btnClearNoty.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!currentUID) return;
+                try {
+                    await set(ref(db, 'Notifications/' + currentUID), null);
+                    if (notyBadgeEl) notyBadgeEl.style.display = 'none';
+                    if (notyListContainer) {
+                        notyListContainer.innerHTML = '<div style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">Notificaciones limpiadas.</div>';
+                    }
+                } catch (err) {
+                    console.warn(err);
+                }
+            });
+        }
+
+        if (currentUID) {
+            const notyRef = ref(db, 'Notifications/' + currentUID);
+            onValue(notyRef, snap => {
+                if (notyBadgeEl) {
+                    notyBadgeEl.style.display = (snap.exists() && Object.keys(snap.val() || {}).length > 0) ? 'block' : 'none';
+                }
+            });
+        }
+
+        // CERRAR SESIÓN ESTÁNDAR
+        const logoutHandler = async () => {
+            try {
+                await signOut(auth);
+            } catch (err) {
+                console.warn('SignOut error:', err);
+            }
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('index.html?logout=1');
+        };
+
+        const logoutBtn = document.getElementById('logoutIcon') || document.getElementById('btnLogoutHeader');
+        if (logoutBtn) logoutBtn.addEventListener('click', logoutHandler);
+        document.querySelectorAll('.btn-header-logout, [data-action="logout"]').forEach(btn => {
+            btn.addEventListener('click', logoutHandler);
+        });
+
+        // =========================================================================
+        // 6. REPRODUCTOR GLOBAL FLOTANTE
+        // =========================================================================
+        const globalPlayerBar = document.getElementById('globalMusicPlayerBar');
+        const globalAudio = document.getElementById('globalHtmlAudio');
+        const playerPlayBtn = document.getElementById('btnPlayerPlay');
+        const playerSeek = document.getElementById('playerSeekSlider');
+        const playerCurrentTimeEl = document.getElementById('playerCurrentTime');
+        const playerDurationEl = document.getElementById('playerDuration');
+        const playerCover = document.getElementById('globalPlayerCover');
+        const playerTitle = document.getElementById('globalPlayerTitle');
+        const playerArtist = document.getElementById('globalPlayerArtist');
+        const playerCloseBtn = document.getElementById('btnPlayerClose');
+        const playerClapBtn = document.getElementById('btnPlayerClap');
+        const playerClapCount = document.getElementById('playerClapCount');
+
+        function formatTime(secs) {
+            if (isNaN(secs)) return '0:00';
+            const m = Math.floor(secs / 60);
+            const s = Math.floor(secs % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        window.playTrackInGlobalBar = function(audioUrl, title, artist, coverUrl, postKey) {
+            if (!globalAudio || !globalPlayerBar) return;
+            currentActivePostKey = postKey;
+
+            globalPlayerBar.style.display = 'flex';
+            if (playerTitle) playerTitle.textContent = title || 'Obra Musical';
+            if (playerArtist) playerArtist.textContent = artist || 'Artista de PROVIWEB';
+            if (playerCover) playerCover.src = coverUrl || 'assets/profile-assets/avatar.png';
+
+            globalAudio.src = audioUrl;
+            globalAudio.play().then(() => {
+                if (playerPlayBtn) playerPlayBtn.textContent = '⏸';
+                if (playerCover) playerCover.classList.remove('paused');
+            }).catch(e => console.warn('Autoplay blocked:', e));
+
+            if (postKey) {
+                const aRef = ref(db, `Aplausos/${postKey}`);
+                onValue(aRef, snap => {
+                    if (playerClapCount) playerClapCount.textContent = snap.exists() ? Object.keys(snap.val() || {}).length : 0;
+                }, { onlyOnce: true });
+            }
+        };
+
+        if (playerPlayBtn && globalAudio) {
+            playerPlayBtn.addEventListener('click', () => {
+                if (globalAudio.paused) {
+                    globalAudio.play();
+                    playerPlayBtn.textContent = '⏸';
+                    if (playerCover) playerCover.classList.remove('paused');
+                } else {
+                    globalAudio.pause();
+                    playerPlayBtn.textContent = '▶';
+                    if (playerCover) playerCover.classList.add('paused');
+                }
+            });
+
+            globalAudio.addEventListener('timeupdate', () => {
+                if (playerSeek && globalAudio.duration) {
+                    playerSeek.value = (globalAudio.currentTime / globalAudio.duration) * 100;
+                    if (playerCurrentTimeEl) playerCurrentTimeEl.textContent = formatTime(globalAudio.currentTime);
+                    if (playerDurationEl) playerDurationEl.textContent = formatTime(globalAudio.duration);
+                }
+            });
+
+            if (playerSeek) {
+                playerSeek.addEventListener('input', () => {
+                    if (globalAudio.duration) {
+                        globalAudio.currentTime = (playerSeek.value / 100) * globalAudio.duration;
+                    }
+                });
+            }
+
+            if (playerCloseBtn) {
+                playerCloseBtn.addEventListener('click', () => {
+                    globalAudio.pause();
+                    globalPlayerBar.style.display = 'none';
+                });
+            }
+
+            if (playerClapBtn) {
+                playerClapBtn.addEventListener('click', async () => {
+                    if (!currentActivePostKey || !currentUID) return;
+                    const clapRef = ref(db, `Aplausos/${currentActivePostKey}/${currentUID}`);
+                    const check = await get(clapRef);
+                    if (check.exists()) {
+                        await set(clapRef, null);
+                    } else {
+                        await set(clapRef, { uid: currentUID, timestamp: Date.now() });
+                    }
+                });
+            }
+        }
+
+        // =========================================================================
+        // 7. CARGA DE CANCIONES (SONGS & AUDIOS)
+        // =========================================================================
+        const songsContainer = document.getElementById('songsContainer');
+        function loadSongsStream() {
+            const songsRef = ref(db, 'Songs');
+            onValue(songsRef, (snapshot) => {
+                if (!songsContainer) return;
+                songsContainer.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    songsContainer.innerHTML = `
+                        <div style="text-align:center; padding:36px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                            <div style="font-size:32px; margin-bottom:8px;">🎵</div>
+                            <h3 style="font-size:15px; font-weight:800; color:#fff;">No hay canciones registradas aún</h3>
+                        </div>
+                    `;
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const song = child.val();
+                    const key = child.key;
+
+                    const card = document.createElement('div');
+                    card.className = 'song-card-item';
+
+                    const leftBox = document.createElement('div');
+                    leftBox.className = 'song-card-left';
+
+                    const cover = document.createElement('img');
+                    cover.className = 'song-cover-thumb';
+                    cover.src = song.coverUrl || song.cover || 'assets/profile-assets/avatar.png';
+                    cover.alt = song.title || 'Canción';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'song-meta-box';
+
+                    const title = document.createElement('div');
+                    title.className = 'song-title-text';
+                    title.textContent = song.title || 'Pista Musical';
+
+                    const artist = document.createElement('div');
+                    artist.className = 'song-artist-text';
+                    artist.textContent = song.artist || 'Artista PROVIWEB';
+
+                    const tagRow = document.createElement('div');
+                    tagRow.className = 'song-tag-row';
+                    tagRow.innerHTML = `
+                        <span style="color:var(--accent-gold); font-weight:800;">${song.genre || 'Música'}</span>
+                        <span>·</span>
+                        <span>⏱️ ${song.duration || '3:00'}</span>
+                        <span>·</span>
+                        <span>❤️ ${song.likeCount || 0}</span>
+                    `;
+
+                    meta.appendChild(title);
+                    meta.appendChild(artist);
+                    meta.appendChild(tagRow);
+                    leftBox.appendChild(cover);
+                    leftBox.appendChild(meta);
+
+                    const playBtn = document.createElement('button');
+                    playBtn.className = 'btn-play-song-card';
+                    playBtn.innerHTML = '<span>▶</span> <span>Escuchar</span>';
+                    playBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (song.audioUrl) {
+                            window.playTrackInGlobalBar(
+                                song.audioUrl,
+                                song.title || 'Obra Musical',
+                                song.artist || 'Artista PROVIWEB',
+                                song.coverUrl || '',
+                                key
+                            );
+                        } else {
+                            alert('Esta pista no tiene archivo de audio disponible.');
+                        }
+                    });
+
+                    card.appendChild(leftBox);
+                    card.appendChild(playBtn);
+                    songsContainer.appendChild(card);
+                });
+            });
+        }
+        loadSongsStream();
+
+        // =========================================================================
+        // 8. CARGA DE COLABORACIONES & AGRUPACIONES
+        // =========================================================================
+        const collabsContainer = document.getElementById('collabsContainer');
+        function loadCollabsStream() {
+            const groupsRef = ref(db, 'GrupMusicRegis');
+            onValue(groupsRef, (snapshot) => {
+                if (!collabsContainer) return;
+                collabsContainer.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    collabsContainer.innerHTML = `
+                        <div style="text-align:center; padding:36px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                            <div style="font-size:32px; margin-bottom:8px;">🤝</div>
+                            <h3 style="font-size:15px; font-weight:800; color:#fff;">No hay agrupaciones registradas aún</h3>
+                        </div>
+                    `;
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const g = child.val();
+                    const key = child.key;
+
+                    const card = document.createElement('div');
+                    card.className = 'collab-card-item';
+
+                    card.innerHTML = `
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <div>
+                                <span style="font-size:11px; font-weight:900; color:var(--accent-blue); letter-spacing:0.5px;">AGRUPACIÓN & COLABORACIÓN</span>
+                                <h4 style="font-size:16px; font-weight:900; color:#fff; margin-top:2px;">${g.name || 'Banda / Ensamble'}</h4>
+                            </div>
+                            <span style="background:rgba(56,189,248,0.12); color:var(--accent-blue); padding:3px 10px; border-radius:50px; font-size:11.5px; font-weight:800;">
+                                👥 ${g.cantidad || '12'} Músicos
+                            </span>
+                        </div>
+                        <p style="font-size:13px; color:#cbd5e1; line-height:1.45; margin:4px 0;">
+                            ${g.description ? (g.description.length > 160 ? g.description.slice(0, 160) + '...' : g.description) : 'Agrupación musical profesional disponible para grabaciones, giras y presentaciones.'}
+                        </p>
+                        <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                            <span style="font-size:12px; color:var(--text-muted);">📍 ${g.ubicacion || 'Colombia'}</span>
+                            <a href="cotizaciones.html?groupId=${key}" style="background:var(--gradient-primary); color:#fff; text-decoration:none; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:800;">
+                                🤝 Contactar / Colaborar
+                            </a>
+                        </div>
+                    `;
+
+                    collabsContainer.appendChild(card);
+                });
+            });
+        }
+        loadCollabsStream();
+
+        // =========================================================================
+        // 9. CARGA DEL FEED DE PUBLICACIONES
+        // =========================================================================
+        const postsContainer = document.getElementById('postsContainer');
+
+        function loadPostsFeed() {
+            const postsRef = ref(db, 'Posts');
+            onValue(postsRef, (snapshot) => {
+                if (!postsContainer) return;
+                postsContainer.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    postsContainer.innerHTML = `
+                        <div style="text-align:center; padding:36px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                            <div style="font-size:32px; margin-bottom:8px;">🎼</div>
+                            <h3 style="font-size:15px; font-weight:800; color:#fff;">No hay publicaciones aún</h3>
+                            <button type="button" onclick="document.getElementById('composerTriggerPrompt')?.click()" style="background:var(--gradient-primary); color:#fff; border:none; padding:8px 18px; border-radius:10px; font-weight:800; cursor:pointer; font-size:13px; margin-top:10px;">Crear Publicación ➜</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const postsArray = [];
+                let myPostCount = 0;
+
+                snapshot.forEach(childSnap => {
+                    const data = childSnap.val();
+                    const key = childSnap.key;
+                    const authorId = data.id || data.uid || data.uId || '';
+
+                    if (currentUID && authorId === currentUID) myPostCount++;
+
+                    postsArray.push({ key, data, authorId });
+                });
+
+                const hubPostsEl = document.getElementById('hubPostsCount');
+                if (hubPostsEl) hubPostsEl.textContent = myPostCount;
+
+                postsArray.sort((a, b) => {
+                    const timeA = a.data.pTime || a.data.timestamp || parseInt(a.key) || 0;
+                    const timeB = b.data.pTime || b.data.timestamp || parseInt(b.key) || 0;
+                    return timeB - timeA;
+                });
+
+                postsArray.forEach(({ key, data, authorId }) => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card-item';
+                    card.setAttribute('data-post-id', key);
+
+                    // Header
+                    const headerRow = document.createElement('div');
+                    headerRow.className = 'post-header-row';
+
+                    const authorLink = document.createElement('a');
+                    authorLink.className = 'post-author-box';
+                    authorLink.href = (currentUID && authorId === currentUID) ? 'myprofile.html' : `userprofile.html?uid=${encodeURIComponent(authorId)}`;
+
+                    const authorAvatar = document.createElement('img');
+                    authorAvatar.className = 'post-author-avatar';
+                    authorAvatar.src = data.uImage || data.photo || 'assets/profile-assets/avatar.png';
+                    authorAvatar.alt = data.name || 'Autor';
+
+                    const authorInfo = document.createElement('div');
+                    const authorName = document.createElement('div');
+                    authorName.className = 'post-author-name';
+                    authorName.innerHTML = `<span class="author-name-text">${data.name || 'Músico de PROVIWEB'}</span>`;
+
+                    const authorBadge = document.createElement('span');
+                    authorBadge.style.display = 'none';
+                    authorBadge.style.color = 'var(--accent-blue)';
+                    authorBadge.style.fontSize = '12px';
+                    authorName.appendChild(authorBadge);
+
+                    const instTag = document.createElement('span');
+                    instTag.className = 'post-instrument-badge';
+                    if (data.instrument || data.category === 'music' || data.genre) {
+                        instTag.textContent = data.instrument || data.genre || '🎵 Obra';
+                        authorName.appendChild(instTag);
+                    }
+
+                    const authorHandle = document.createElement('div');
+                    authorHandle.className = 'post-author-handle';
+                    authorHandle.textContent = data.username ? '@' + data.username : (authorId ? '@' + authorId.slice(0, 8) : '@proviweb');
+
+                    authorInfo.appendChild(authorName);
+                    authorInfo.appendChild(authorHandle);
+                    authorLink.appendChild(authorAvatar);
+                    authorLink.appendChild(authorInfo);
+
+                    const timeTag = document.createElement('span');
+                    timeTag.className = 'post-time-tag';
+                    timeTag.textContent = timeAgo(data.pTime || data.timestamp || key);
+
+                    headerRow.appendChild(authorLink);
+                    headerRow.appendChild(timeTag);
+                    card.appendChild(headerRow);
+
+                    // Dynamic User resolution
+                    let resolvedAuthorName = data.name || 'Músico de PROVIWEB';
+                    if (authorId) {
+                        getUserData(authorId, (user) => {
+                            if (user.photo) authorAvatar.src = user.photo;
+                            const nameSpan = authorName.querySelector('.author-name-text');
+                            if (nameSpan && user.name) {
+                                nameSpan.textContent = user.name;
+                                resolvedAuthorName = user.name;
+                            }
+                            if (user.username) authorHandle.textContent = user.username;
+                            if (user.instrument && !data.instrument) {
+                                instTag.textContent = user.instrument;
+                                if (!authorName.contains(instTag)) authorName.appendChild(instTag);
+                            }
+                            applyVerificationBadge(authorBadge, user);
+                        });
+                    }
+
+                    // Text
+                    if (data.text || data.pDescr || data.description) {
+                        const postText = document.createElement('div');
+                        postText.className = 'post-body-text';
+                        postText.textContent = data.text || data.pDescr || data.description;
+                        card.appendChild(postText);
+                    }
+
+                    // VIDEO SUPPORT: Check data.vine (from ModelPost.java) or data.video
+                    const videoUrl = (data.vine && data.vine !== 'noVideo' && data.vine.startsWith('http')) ? data.vine :
+                                     (data.video && data.video !== 'noVideo' && data.video.startsWith('http')) ? data.video : '';
+
+                    // IMAGES SUPPORT
+                    let imagesList = [];
+                    if (Array.isArray(data.memes) && data.memes.length > 0) {
+                        imagesList = data.memes.filter(url => typeof url === 'string' && url.startsWith('http'));
+                    } else if (data.memes && typeof data.memes === 'object') {
+                        imagesList = Object.values(data.memes).filter(url => typeof url === 'string' && url.startsWith('http'));
+                    }
+                    if (imagesList.length === 0 && data.meme && data.meme !== 'noImage' && data.meme.startsWith('http')) {
+                        imagesList.push(data.meme);
+                    } else if (imagesList.length === 0 && data.image && data.image.startsWith('http')) {
+                        imagesList.push(data.image);
+                    }
+
+                    if (videoUrl) {
+                        // REPRODUCTOR DE VIDEO DIRECTO EN EL POST
+                        const vidWrap = document.createElement('div');
+                        vidWrap.style.cssText = 'width:100%; max-height:380px; border-radius:14px; overflow:hidden; margin-bottom:12px; background:#000; position:relative;';
+
+                        const vid = document.createElement('video');
+                        vid.src = videoUrl;
+                        vid.controls = true;
+                        vid.playsInline = true;
+                        vid.preload = 'metadata';
+                        vid.style.cssText = 'width:100%; max-height:380px; object-fit:contain; display:block;';
+
+                        ['click', 'play', 'pause', 'seeking', 'seeked', 'volumechange', 'fullscreenchange'].forEach(ev => {
+                            vid.addEventListener(ev, (e) => e.stopPropagation());
+                        });
+
+                        vidWrap.appendChild(vid);
+                        card.appendChild(vidWrap);
+                    } else if (imagesList.length > 1) {
+                        // GALERÍA MULTI-IMAGEN
+                        const multiWrap = document.createElement('div');
+                        multiWrap.style.cssText = 'position:relative; width:100%; margin-bottom:12px;';
+
+                        const scrollTrack = document.createElement('div');
+                        scrollTrack.style.cssText = 'display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px; scroll-behavior:smooth;';
+
+                        imagesList.forEach((imgUrl, idx) => {
+                            const slide = document.createElement('div');
+                            slide.style.cssText = 'flex:0 0 calc(50% - 5px); min-width:200px; height:240px; border-radius:14px; overflow:hidden; position:relative; scroll-snap-align:start; cursor:pointer; background:#101018; border:1px solid var(--border-glass); transition:transform 0.2s;';
+                            slide.addEventListener('mouseenter', () => slide.style.transform = 'scale(1.02)');
+                            slide.addEventListener('mouseleave', () => slide.style.transform = 'scale(1)');
+
+                            const img = document.createElement('img');
+                            img.src = imgUrl;
+                            img.alt = `Foto ${idx + 1}`;
+                            img.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
+
+                            const zoomBadge = document.createElement('span');
+                            zoomBadge.style.cssText = 'position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.6); color:#fff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:6px; backdrop-filter:blur(6px);';
+                            zoomBadge.textContent = `📷 ${idx + 1}/${imagesList.length}`;
+
+                            slide.appendChild(img);
+                            slide.appendChild(zoomBadge);
+
+                            slide.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                window.openInPageLightbox(imagesList, idx);
+                            });
+
+                            scrollTrack.appendChild(slide);
+                        });
+
+                        multiWrap.appendChild(scrollTrack);
+                        card.appendChild(multiWrap);
+                    } else if (imagesList.length === 1) {
+                        // IMAGEN ÚNICA
+                        const singleWrap = document.createElement('div');
+                        singleWrap.style.cssText = 'width:100%; max-height:380px; border-radius:14px; overflow:hidden; margin-bottom:12px; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid var(--border-glass);';
+
+                        const img = document.createElement('img');
+                        img.src = imagesList[0];
+                        img.alt = 'Foto';
+                        img.style.cssText = 'width:100%; max-height:380px; object-fit:contain; display:block;';
+
+                        singleWrap.appendChild(img);
+                        singleWrap.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            window.openInPageLightbox(imagesList, 0);
+                        });
+
+                        card.appendChild(singleWrap);
+                    } else if (data.audioUrl || data.audio) {
+                        // AUDIO
+                        const audioCard = document.createElement('div');
+                        audioCard.style.cssText = 'background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); border-radius:12px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;';
+                        audioCard.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span style="font-size:24px;">🎵</span>
+                                <div>
+                                    <div style="font-weight:800; font-size:13.5px; color:#fff;">${data.title || 'Pista de Audio'}</div>
+                                    <div style="font-size:11.5px; color:var(--text-secondary);">Escuchar en el reproductor de la comunidad</div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-play-song-card" style="padding:6px 14px; font-size:12px;">
+                                <span>▶</span> <span>Reproducir</span>
+                            </button>
+                        `;
+                        audioCard.querySelector('button').addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            window.playTrackInGlobalBar(data.audioUrl || data.audio, data.title || 'Pista de Audio', resolvedAuthorName, '', key);
+                        });
+                        card.appendChild(audioCard);
+                    }
+
+                    // Acciones
+                    const actionsBar = document.createElement('div');
+                    actionsBar.className = 'post-actions-bar';
+
+                    // 👏 Aplausos
+                    const clapBtn = document.createElement('button');
+                    clapBtn.className = 'post-action-btn';
+                    clapBtn.innerHTML = `<span>👏</span> <span class="clap-count">0</span>`;
+
+                    const aplausosRef = ref(db, `Aplausos/${key}`);
+                    onValue(aplausosRef, snap => {
+                        const count = snap.exists() ? Object.keys(snap.val() || {}).length : (data.likes || 0);
+                        const countSpan = clapBtn.querySelector('.clap-count');
+                        if (countSpan) countSpan.textContent = count;
+                    });
+
+                    clapBtn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (!currentUID) {
+                            window.location.href = 'index.html?needAuth=1';
+                            return;
+                        }
+                        const myClapRef = ref(db, `Aplausos/${key}/${currentUID}`);
+                        const check = await get(myClapRef);
+                        if (check.exists()) {
+                            await set(myClapRef, null);
+                        } else {
+                            await set(myClapRef, { timestamp: Date.now(), uid: currentUID });
+                        }
+                    });
+
+                    // 💬 Comentarios
+                    const commentBtn = document.createElement('a');
+                    commentBtn.className = 'post-action-btn';
+                    commentBtn.href = `viewpost.html?postId=${encodeURIComponent(key)}&pId=${encodeURIComponent(key)}&id=${encodeURIComponent(authorId)}`;
+                    commentBtn.innerHTML = `<span>💬</span> <span>Comentar</span>`;
+
+                    // 🪙 Propina QAV
+                    const tipBtn = document.createElement('button');
+                    tipBtn.className = 'post-action-btn btn-tip-qav';
+                    tipBtn.innerHTML = `<span>🪙</span> <span>Recompensar</span>`;
+                    tipBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.openTipQavModal(authorId, resolvedAuthorName);
+                    });
+
+                    // 🔗 Compartir
+                    const shareBtn = document.createElement('button');
+                    shareBtn.className = 'post-action-btn';
+                    shareBtn.innerHTML = `<span>🔄</span> <span>Compartir</span>`;
+                    shareBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const url = `${window.location.origin}/viewpost.html?postId=${key}&pId=${key}`;
+                        if (navigator.clipboard) {
+                            navigator.clipboard.writeText(url).then(() => alert('¡Enlace de la publicación copiado al portapapeles!'));
+                        }
+                    });
+
+                    actionsBar.appendChild(clapBtn);
+                    actionsBar.appendChild(commentBtn);
+                    actionsBar.appendChild(tipBtn);
+                    actionsBar.appendChild(shareBtn);
+                    card.appendChild(actionsBar);
+
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('button, a, input, video, audio, .carousel-arrow, .carousel-dot, .post-multi-images-strip, img')) {
+                            window.location.href = `viewpost.html?postId=${encodeURIComponent(key)}&pId=${encodeURIComponent(key)}&id=${encodeURIComponent(authorId)}`;
+                        }
+                    });
+
+                    postsContainer.appendChild(card);
+                });
+            });
+        }
+        loadPostsFeed();
+
+        // =========================================================================
+        // 10. CARGA DE REELS EN LA BARRA SUPERIOR Y GRILLA
+        // =========================================================================
+        const reelsContainer = document.getElementById('reelsContainer');
+        const storiesStrip = document.getElementById('storiesStripScroll');
+
+        function loadReelsAndStories() {
+            const reelsRef = ref(db, 'Reels');
+            onValue(reelsRef, (snapshot) => {
+                if (!snapshot.exists()) return;
+
+                if (reelsContainer) reelsContainer.innerHTML = '';
+
+                const reelsList = [];
+                snapshot.forEach(snap => {
+                    reelsList.push({ key: snap.key, data: snap.val() });
+                });
+
+                reelsList.sort((a, b) => (b.data.pTime || 0) - (a.data.pTime || 0));
+
+                if (storiesStrip) {
+                    storiesStrip.innerHTML = `
+                        <a href="createpost.html?type=reel" class="story-bubble">
+                            <div class="story-ring add-story">+</div>
+                            <span class="story-label">Crear Reel</span>
+                        </a>
+                    `;
+
+                    reelsList.slice(0, 18).forEach(({ key, data }) => {
+                        const authorId = data.id || data.uid || '';
+                        const bubble = document.createElement('a');
+                        bubble.className = 'story-bubble';
+                        bubble.href = `reels.html?reelId=${key}`;
+
+                        const ring = document.createElement('div');
+                        ring.className = 'story-ring';
+
+                        const img = document.createElement('img');
+                        img.src = data.uImage || data.photo || 'assets/profile-assets/avatar.png';
+                        img.alt = data.name || 'Reel';
+
+                        ring.appendChild(img);
+
+                        const label = document.createElement('span');
+                        label.className = 'story-label';
+                        label.textContent = (data.name ? data.name.split(' ')[0] : 'Artista');
+
+                        bubble.appendChild(ring);
+                        bubble.appendChild(label);
+                        storiesStrip.appendChild(bubble);
+
+                        if (authorId) {
+                            getUserData(authorId, (user) => {
+                                if (user.photo) img.src = user.photo;
+                                if (user.name) label.textContent = user.name.split(' ')[0];
+                            });
+                        }
+                    });
+                }
+
+                if (reelsContainer) {
+                    reelsContainer.style.display = 'grid';
+                    reelsContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+                    reelsContainer.style.gap = '14px';
+
+                    reelsList.forEach(({ key, data }) => {
+                        const authorId = data.id || data.uid || '';
+                        const rCard = document.createElement('a');
+                        rCard.href = `reels.html?reelId=${key}`;
+                        rCard.style.cssText = 'display:block; position:relative; aspect-ratio:9/16; border-radius:16px; overflow:hidden; background:#000; text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,0.4);';
+
+                        const vidSrc = data.video || data.vine;
+                        if (vidSrc && vidSrc !== 'noVideo') {
+                            const v = document.createElement('video');
+                            v.src = vidSrc;
+                            v.muted = true;
+                            v.playsInline = true;
+                            v.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
+                            rCard.appendChild(v);
+                        } else if (data.meme || data.image) {
+                            const im = document.createElement('img');
+                            im.src = data.meme || data.image;
+                            im.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
+                            rCard.appendChild(im);
+                        }
+
+                        const overlay = document.createElement('div');
+                        overlay.style.cssText = 'position:absolute; bottom:0; left:0; right:0; padding:10px; background:linear-gradient(transparent, rgba(0,0,0,0.85)); color:#fff;';
+                        overlay.innerHTML = `
+                            <div class="reel-owner-name" style="font-weight:800; font-size:12.5px;">${data.name || 'Artista'}</div>
+                            <div style="font-size:11px; opacity:0.8;">${data.text ? (data.text.slice(0, 30) + '...') : 'Ver clip ➜'}</div>
+                        `;
+                        rCard.appendChild(overlay);
+                        reelsContainer.appendChild(rCard);
+
+                        if (authorId) {
+                            getUserData(authorId, (user) => {
+                                const nameEl = overlay.querySelector('.reel-owner-name');
+                                if (nameEl && user.name) nameEl.textContent = user.name;
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        loadReelsAndStories();
+
+        // =========================================================================
+        // 11. CONVOCATORIAS
+        // =========================================================================
+        const oppList = document.getElementById('opportunitiesList');
+        function loadOpportunities() {
+            const vCallsRef = ref(db, 'VenueCalls');
+            onValue(vCallsRef, snap => {
+                if (!oppList) return;
+                oppList.innerHTML = '';
+
+                if (!snap.exists()) {
+                    oppList.innerHTML = `
+                        <div style="text-align:center; padding:28px; color:var(--text-secondary); background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-glass);">
+                            <div style="font-size:28px; margin-bottom:6px;">💼</div>
+                            <div style="font-weight:800; color:#fff; font-size:14px;">No hay convocatorias activas en este momento.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                snap.forEach(child => {
+                    const item = child.val();
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-glass); border-radius:var(--radius-lg); padding:16px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:14px; box-shadow:var(--shadow-card);';
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-size:10.5px; font-weight:900; color:var(--accent-gold); letter-spacing:0.5px;">${(item.genre || 'CONVOCATORIA MUSICAL').toUpperCase()}</div>
+                            <div style="font-size:15px; font-weight:900; color:#fff; margin:2px 0 4px;">${item.title || 'Llamado a Músicos'}</div>
+                            <div style="font-size:12.5px; color:var(--text-secondary);">📍 ${item.location || 'Todo el país'} · ${item.pay ? ('💰 ' + item.pay) : '💰 Remunerado'}</div>
+                        </div>
+                        <a href="opportunities.html" style="background:var(--gradient-gold); color:#000; text-decoration:none; padding:8px 16px; border-radius:10px; font-weight:900; font-size:12.5px; white-space:nowrap;">
+                            Postular ➜
+                        </a>
+                    `;
+                    oppList.appendChild(card);
+                });
+            });
+        }
+        loadOpportunities();
+
+        // =========================================================================
+        // 12. ARTISTAS SUGERIDOS
+        // =========================================================================
+        const suggestedBox = document.getElementById('suggestedUsersBox');
+        function loadSuggestedUsers() {
+            const usersQuery = query(ref(db, 'Users'), limitToLast(6));
+            onValue(usersQuery, snap => {
+                if (!suggestedBox || !snap.exists()) return;
+                suggestedBox.innerHTML = '';
+
+                snap.forEach(child => {
+                    const u = child.val();
+                    const uid = child.key;
+                    if (currentUID && uid === currentUID) return;
+
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04);';
+
+                    const avatar = document.createElement('img');
+                    avatar.src = u.photo || u.image || 'assets/profile-assets/avatar.png';
+                    avatar.style.cssText = 'width:34px; height:34px; border-radius:10px; object-fit:cover;';
+
+                    const info = document.createElement('div');
+                    info.style.cssText = 'flex:1; min-width:0;';
+
+                    const nameDiv = document.createElement('div');
+                    nameDiv.style.cssText = 'font-size:12.5px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;';
+                    nameDiv.textContent = u.name || u.username || 'Músico';
+
+                    const genreDiv = document.createElement('div');
+                    genreDiv.style.cssText = 'font-size:10.5px; color:var(--text-muted);';
+                    genreDiv.textContent = u.instrument || u.generoMusic || 'Músico';
+
+                    info.appendChild(nameDiv);
+                    info.appendChild(genreDiv);
+
+                    const profileBtn = document.createElement('a');
+                    profileBtn.href = `userprofile.html?uid=${encodeURIComponent(uid)}`;
+                    profileBtn.style.cssText = 'background:var(--bg-glass); border:1px solid var(--border-glass); color:var(--accent-purple); font-size:11px; font-weight:800; padding:4px 9px; border-radius:6px; text-decoration:none;';
+                    profileBtn.textContent = 'Ver';
+
+                    row.appendChild(avatar);
+                    row.appendChild(info);
+                    row.appendChild(profileBtn);
+
+                    suggestedBox.appendChild(row);
+                });
+            });
+        }
+        loadSuggestedUsers();
+
+        // =========================================================================
+        // 13. FORMULARIO COMPOSITOR
+        // =========================================================================
+        const inlineForm = document.getElementById('inlinePostForm');
+        const photoInput = document.getElementById('inlinePhotoInput');
+        const videoInput = document.getElementById('inlineVideoInput');
+        const audioInput = document.getElementById('inlineAudioInput');
+        const sheetInput = document.getElementById('inlineSheetInput');
+        const previewsBox = document.getElementById('composerPreviewsBox');
+        const progressWrap = document.getElementById('composerProgressWrap');
+        const progressBar = document.getElementById('composerProgressBar');
+        const submitBtn = document.getElementById('btnSubmitInlinePost');
+
+        function handleFileSelection(files, type) {
+            if (!files || files.length === 0) return;
+            mediaFiles = Array.from(files);
+            mediaType = type;
+            if (previewsBox) {
+                previewsBox.style.display = 'block';
+                const typeLabels = { audio: '🎵 Audio', sheet: '🎼 Partitura PDF', image: '📸 Foto', video: '🎬 Video' };
+                previewsBox.innerHTML = `<div style="font-size:12px; color:var(--accent-purple); font-weight:800;">📎 ${typeLabels[type] || 'Archivo'}: ${mediaFiles[0].name} (${mediaFiles.length} archivo/s)</div>`;
+            }
+        }
+
+        if (photoInput) photoInput.addEventListener('change', e => handleFileSelection(e.target.files, 'image'));
+        if (videoInput) videoInput.addEventListener('change', e => handleFileSelection(e.target.files, 'video'));
+        if (audioInput) audioInput.addEventListener('change', e => handleFileSelection(e.target.files, 'audio'));
+        if (sheetInput) sheetInput.addEventListener('change', e => handleFileSelection(e.target.files, 'sheet'));
+
+        if (inlineForm) {
+            inlineForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = document.getElementById('composerTextarea')?.value.trim();
+
+                if (!text && mediaFiles.length === 0) {
+                    alert('Por favor escribe un mensaje o adjunta un archivo para publicar.');
+                    return;
+                }
+
+                if (!currentUID) {
+                    window.location.href = 'index.html?needAuth=1';
+                    return;
+                }
+
+                try {
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Publicando...';
+                    }
+                    if (progressWrap) progressWrap.style.display = 'block';
+
+                    const timestamp = Date.now();
+                    let uploadedMediaUrl = '';
+                    let uploadedMemesList = [];
+
+                    if (mediaFiles.length > 0) {
+                        for (let i = 0; i < mediaFiles.length; i++) {
+                            const file = mediaFiles[i];
+                            const storagePath = `Posts/${currentUID}/${timestamp}_${i}_${file.name}`;
+                            const storageRef = sRef(storage, storagePath);
+                            const uploadTask = uploadBytesResumable(storageRef, file);
+
+                            await new Promise((resolve, reject) => {
+                                uploadTask.on('state_changed',
+                                    (snapshot) => {
+                                        const progress = ((i + (snapshot.bytesTransferred / snapshot.totalBytes)) / mediaFiles.length) * 100;
+                                        if (progressBar) progressBar.style.width = `${progress}%`;
+                                    },
+                                    reject,
+                                    async () => {
+                                        const dl = await getDownloadURL(uploadTask.snapshot.ref);
+                                        uploadedMemesList.push(dl);
+                                        if (!uploadedMediaUrl) uploadedMediaUrl = dl;
+                                        resolve();
+                                    }
+                                );
+                            });
+                        }
+                    }
+
+                    const postPayload = {
+                        id: currentUID,
+                        uid: currentUID,
+                        name: currentUserData?.name || 'Músico de PROVIWEB',
+                        username: currentUserData?.username || '',
+                        uImage: currentUserData?.photo || currentUserData?.image || 'assets/profile-assets/avatar.png',
+                        text: text || '',
+                        pTime: timestamp,
+                        timestamp: timestamp,
+                        likes: 0,
+                        category: document.getElementById('composerCategorySelect')?.value || 'general',
+                        genre: document.getElementById('composerGenreSelect')?.value || 'Clásica',
+                        instrument: currentUserData?.instrument || ''
+                    };
+
+                    if (mediaType === 'image') {
+                        postPayload.type = 'image';
+                        postPayload.meme = uploadedMediaUrl || '';
+                        if (uploadedMemesList.length > 1) {
+                            postPayload.memes = uploadedMemesList;
+                        }
+                    } else if (mediaType === 'video' && uploadedMediaUrl) {
+                        postPayload.type = 'video';
+                        postPayload.vine = uploadedMediaUrl;
+                        postPayload.video = uploadedMediaUrl;
+                    } else if (mediaType === 'audio' && uploadedMediaUrl) {
+                        postPayload.type = 'audio';
+                        postPayload.audioUrl = uploadedMediaUrl;
+                    } else if (mediaType === 'sheet' && uploadedMediaUrl) {
+                        postPayload.type = 'sheet';
+                        postPayload.pdfUrl = uploadedMediaUrl;
+                    }
+
+                    await set(ref(db, `Posts/${timestamp}`), postPayload);
+
+                    document.getElementById('composerTextarea').value = '';
+                    mediaFiles = [];
+                    mediaType = null;
+                    if (previewsBox) previewsBox.style.display = 'none';
+                    if (progressWrap) progressWrap.style.display = 'none';
+                    document.getElementById('composerExpandedBox').style.display = 'none';
+                    document.getElementById('inlineComposerCard').classList.remove('is-expanded');
+
+                    alert('🎉 ¡Tu obra se ha compartido exitosamente!');
+                } catch (err) {
+                    console.error('Error al publicar:', err);
+                    alert('Ocurrió un error al publicar.');
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Publicar Obra ➜';
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

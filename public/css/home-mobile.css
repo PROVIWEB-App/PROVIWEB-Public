@@ -1,0 +1,162 @@
+/* Ajustes finales para el feed y paneles de PROVIWEB en tabletas y teléfonos. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+img,
+video,
+canvas {
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 10px 16px !important;
+  }
+
+  .header .search-box {
+    order: 3;
+    width: 100%;
+    flex: 1 0 100%;
+  }
+
+  .header .search-box input {
+    min-height: 42px;
+    font-size: 16px;
+  }
+
+  .nav-icons {
+    gap: 6px;
+  }
+
+  .main-container {
+    padding-inline: 16px !important;
+  }
+
+  .sidebar-left,
+  .sidebar-right,
+  .widget,
+  .create-post-card,
+  .post-item,
+  .reel-item {
+    min-width: 0;
+  }
+
+  .footer {
+    margin-top: 36px;
+    padding: 32px 16px 20px;
+  }
+
+  .footer-content {
+    gap: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .header {
+    padding: 9px 12px !important;
+  }
+
+  .header .brand {
+    max-width: 126px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nav-icons {
+    max-width: calc(100vw - 160px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-icons::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-icons img {
+    flex: 0 0 auto;
+    min-width: 34px;
+    min-height: 34px;
+  }
+
+  .main-container {
+    gap: 12px;
+    padding-inline: 10px !important;
+  }
+
+  .sidebar-left,
+  .sidebar-right {
+    border-radius: 18px !important;
+  }
+
+  .widget,
+  .create-post-card {
+    padding: 14px !important;
+    border-radius: 16px;
+  }
+
+  .post-item,
+  .reel-item {
+    border-radius: 16px;
+  }
+
+  .comments-list {
+    max-height: 260px;
+  }
+
+  .comment-input {
+    min-height: 40px;
+    font-size: 16px;
+  }
+
+  .comment-send-btn {
+    min-height: 40px;
+    padding-inline: 12px;
+  }
+
+  .reaction-popup {
+    max-width: calc(100vw - 32px);
+    overflow-x: auto;
+  }
+
+  .footer {
+    margin-top: 28px;
+    padding-inline: 14px;
+  }
+
+  .footer-section a {
+    padding-block: 5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .header .brand {
+    max-width: 104px;
+    font-size: 15px !important;
+  }
+
+  .nav-icons {
+    max-width: calc(100vw - 136px);
+  }
+
+  .nav-icons img {
+    min-width: 30px;
+    min-height: 30px;
+  }
+}

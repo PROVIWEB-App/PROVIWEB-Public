@@ -1,0 +1,29 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.israviolink.app",
+      "sha256_cert_fingerprints": [
+        "29:9F:41:2C:50:E1:C2:F7:6F:DC:B4:C2:CD:33:13:3F:47:56:ED:82:9C:2D:CA:C9:C7:A3:E0:FC:D5:27:70:12",
+        "36:0F:9A:CE:DA:47:C3:50:EC:3F:51:4C:43:0E:E7:B9:E7:78:8E:2E:00:FE:17:1B:43:1C:EE:0A:B3:79:65:E4",
+        "9A:F8:C8:24:BF:46:39:16:96:75:ED:6E:56:B1:56:8B:73:D1:28:53:57:BD:DB:43:0E:5C:31:3B:02:A4:16:D0"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.israviolink.serenapp",
+      "sha256_cert_fingerprints": [
+        "36:0F:9A:CE:DA:47:C3:50:EC:3F:51:4C:43:0E:E7:B9:E7:78:8E:2E:00:FE:17:1B:43:1C:EE:0A:B3:79:65:E4"
+      ]
+    }
+  }
+]

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB - Convocatorias, toques en vivo, empleos y oportunidades para músicos y artistas">
+    <title>Oportunidades y Convocatorias - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-secondary: #161622;
+            --bg-card: rgba(26, 26, 38, 0.75);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --border-radius: 16px;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
+        .opp-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: rgba(15, 15, 19, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-sizing: border-box;
+        }
+
+        .opp-brand {
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hero Banner */
+        .opp-hero {
+            text-align: center;
+            padding: 40px 20px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .opp-hero-title {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 30%, #d8b4fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .opp-hero-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Search & Filter Bar */
+        .opp-filter-bar {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .opp-search-input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+        }
+
+        .opp-search-input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 16px rgba(168, 85, 247, 0.35);
+        }
+
+        .genre-chips-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+        }
+
+        .genre-chips-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .genre-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .genre-chip:hover, .genre-chip.active {
+            background: var(--gradient-primary);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        /* Opportunities Grid */
+        .opp-container-grid {
+            max-width: 1100px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .opp-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .opp-card-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .opp-card-badge {
+            align-self: flex-start;
+            background: rgba(168, 85, 247, 0.18);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #d8b4fe;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .opp-card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .opp-card-venue-name {
+            font-size: 13px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .opp-card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .opp-card-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .opp-salary-tag {
+            font-weight: 800;
+            color: #4ade80;
+            font-size: 15px;
+        }
+
+        .btn-apply-opp {
+            width: 100%;
+            background: var(--gradient-primary);
+            border: none;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-apply-opp:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Modal Application */
+        .opp-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .opp-modal.open {
+            display: flex;
+        }
+
+        .opp-modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="opp-header">
+        <a href="home.html" class="opp-brand">
+            <img src="assets/logotransparente.png" alt="PROVIWEB" style="width: 32px; height: 32px;">
+            <span>PROVIWEB OPORTUNIDADES</span>
+        </a>
+        <div style="display: flex; gap: 10px;">
+            <a href="venue-dashboard.html" class="btn-apply-opp" style="width: auto; padding: 8px 18px; text-decoration: none; font-size: 13px;">🏢 Publicar Oportunidad</a>
+            <a href="home.html" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; font-size: 14px; font-weight: 600; padding: 0 10px;">Inicio</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="opp-hero">
+        <h1 class="opp-hero-title">💼 Oportunidades y Convocatorias Artísticas</h1>
+        <p class="opp-hero-subtitle">Conecta con establecimientos, bares, estudios y eventos que están buscando músicos y artistas en vivo.</p>
+    </section>
+
+    <!-- Search and Genre Filter -->
+    <section class="opp-filter-bar">
+        <input type="text" id="oppSearchInput" class="opp-search-input" placeholder="🔍 Buscar por puesto, género musical, ciudad o establecimiento...">
+        <div class="genre-chips-scroll" id="genreFilterChips">
+            <button type="button" class="genre-chip active" data-genre="all">Todos</button>
+            <button type="button" class="genre-chip" data-genre="Mariachi">🎺 Mariachi</button>
+            <button type="button" class="genre-chip" data-genre="Banda / Regional">🎷 Banda / Regional</button>
+            <button type="button" class="genre-chip" data-genre="Voz / Cantante">🎤 Voz / Cantantes</button>
+            <button type="button" class="genre-chip" data-genre="Clásica / Cuerdas">🎻 Clásica / Cuerdas</button>
+            <button type="button" class="genre-chip" data-genre="Jazz / Blues">🎹 Jazz / Blues</button>
+            <button type="button" class="genre-chip" data-genre="Rock / Pop">🎸 Rock / Pop</button>
+            <button type="button" class="genre-chip" data-genre="Docente / Clases">👨‍🏫 Clases / Docente</button>
+        </div>
+    </section>
+
+    <!-- Container Grid -->
+    <main class="opp-container-grid" id="oppCardsGrid">
+        <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px;">
+            Cargando convocatorias y oportunidades...
+        </div>
+    </main>
+
+    <!-- Modal Postulación -->
+    <div class="opp-modal" id="applyModal">
+        <div class="opp-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                <h3 style="margin: 0; font-size: 20px; font-weight: 800;" id="applyModalTitle">Postularme a Convocatoria</h3>
+                <button type="button" id="closeApplyModalBtn" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">&times;</button>
+            </div>
+
+            <form id="applyForm">
+                <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                    <div style="font-weight: 700; color: #fff; font-size: 15px;" id="applyOppTitle">--</div>
+                    <div style="font-size: 13px; color: #4ade80; margin-top: 4px;" id="applyOppSalary">--</div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Propuesta / Mensaje de Presentación</label>
+                    <textarea id="applyMessageInput" rows="4" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); border-radius: 10px; padding: 12px; color: #fff; font-size: 14px; box-sizing: border-box; outline: none;" placeholder="Cuéntale al comercio sobre tu experiencia, repertorio o disponibilidad..." required></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                    <button type="button" id="cancelApplyBtn" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-glass); color:#fff; padding:10px 18px; border-radius:10px; cursor:pointer;">Cancelar</button>
+                    <button type="submit" class="btn-apply-opp" id="submitApplyBtn" style="width: auto; padding: 10px 24px;">🚀 Enviar Postulación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let allOpportunities = [];
+        let selectedCall = null;
+        let currentFilterGenre = 'all';
+
+        const grid = document.getElementById('oppCardsGrid');
+        const searchInput = document.getElementById('oppSearchInput');
+        const applyModal = document.getElementById('applyModal');
+        const closeApplyBtn = document.getElementById('closeApplyModalBtn');
+        const cancelApplyBtn = document.getElementById('cancelApplyBtn');
+        const applyForm = document.getElementById('applyForm');
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            loadAllOpportunities();
+        });
+
+        // 1. Cargar Oportunidades desde VenueCalls y ads/
+        async function loadAllOpportunities() {
+            const oppMap = new Map();
+
+            // Leer desde ads/ (nodo Android)
+            try {
+                const adsSnap = await get(ref(db, 'ads'));
+                if (adsSnap.exists()) {
+                    adsSnap.forEach(child => {
+                        const ad = child.val();
+                        oppMap.set(child.key, {
+                            id: child.key,
+                            title: ad.title || 'Oportunidad Musical',
+                            genre: ad.jobCategory || 'Música en Vivo',
+                            position: ad.position || 'Músico',
+                            salary: ad.salary || 'A convenir',
+                            period: ad.period || 'Fecha por definir',
+                            location: ad.location || 'Ubicación acordada',
+                            description: ad.description || '',
+                            venueId: ad.venueId || null,
+                            ownerUid: ad.idUser || null
+                        });
+                    });
+                }
+            } catch(e) {
+                console.warn('Error leyendo ads/', e);
+            }
+
+            // Leer desde VenueCalls
+            try {
+                const venuesSnap = await get(ref(db, 'VenueCalls'));
+                if (venuesSnap.exists()) {
+                    venuesSnap.forEach(venueCallsSnap => {
+                        const vId = venueCallsSnap.key;
+                        venueCallsSnap.forEach(callSnap => {
+                            const c = callSnap.val();
+                            oppMap.set(callSnap.key, {
+                                id: callSnap.key,
+                                title: c.title || 'Oportunidad Musical',
+                                genre: c.genre || 'Música en Vivo',
+                                position: c.position || 'Músico',
+                                salary: c.salary || c.paymentAmount || 'A convenir',
+                                period: c.period || 'Fecha por definir',
+                                location: c.location || 'En el local',
+                                description: c.description || '',
+                                venueId: vId,
+                                ownerUid: c.createdBy || null
+                            });
+                        });
+                    });
+                }
+            } catch(e) {
+                console.warn('Error leyendo VenueCalls/', e);
+            }
+
+            allOpportunities = Array.from(oppMap.values());
+            renderOpportunities(allOpportunities);
+        }
+
+        function renderOpportunities(list) {
+            let filtered = list;
+
+            if (currentFilterGenre !== 'all') {
+                filtered = filtered.filter(item => 
+                    (item.genre && item.genre.toLowerCase().includes(currentFilterGenre.toLowerCase()))
+                );
+            }
+
+            const query = searchInput.value.trim().toLowerCase();
+            if (query) {
+                filtered = filtered.filter(item => 
+                    (item.title && item.title.toLowerCase().includes(query)) ||
+                    (item.description && item.description.toLowerCase().includes(query)) ||
+                    (item.genre && item.genre.toLowerCase().includes(query)) ||
+                    (item.location && item.location.toLowerCase().includes(query))
+                );
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px;">
+                        <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                        <div style="font-weight: 700; font-size: 16px;">No se encontraron convocatorias</div>
+                        <p style="font-size: 14px;">Prueba buscando con otros términos o géneros.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.forEach(opp => {
+                const card = document.createElement('div');
+                card.className = 'opp-card-item';
+
+                card.innerHTML = `
+                    <div>
+                        <span class="opp-card-badge">${opp.genre || 'Música'}</span>
+                        <h2 class="opp-card-title">${opp.title}</h2>
+                        <div class="opp-card-venue-name">📍 ${opp.location || 'Ubicación en perfil'}</div>
+                        <p class="opp-card-desc">${opp.description || 'Sin descripción detallada.'}</p>
+                    </div>
+
+                    <div>
+                        <div class="opp-card-meta-row">
+                            <span>💼 ${opp.position || 'Músico'}</span>
+                            <span class="opp-salary-tag">💰 ${opp.salary}</span>
+                        </div>
+                        <button type="button" class="btn-apply-opp" data-opp-id="${opp.id}">Postularme ➜</button>
+                    </div>
+                `;
+
+                card.querySelector('.btn-apply-opp').addEventListener('click', () => {
+                    openApplyModal(opp);
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Filtro por chips
+        document.querySelectorAll('.genre-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.genre-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilterGenre = btn.dataset.genre;
+                renderOpportunities(allOpportunities);
+            });
+        });
+
+        searchInput.addEventListener('input', () => {
+            renderOpportunities(allOpportunities);
+        });
+
+        // Modal de postulación
+        function openApplyModal(opp) {
+            if (!currentUser) {
+                alert('Debes iniciar sesión con tu cuenta de artista para postularte.');
+                window.location.href = `index.html?redirect=opportunities.html`;
+                return;
+            }
+
+            selectedCall = opp;
+            document.getElementById('applyOppTitle').textContent = opp.title;
+            document.getElementById('applyOppSalary').textContent = `Remuneración: ${opp.salary}`;
+            document.getElementById('applyMessageInput').value = '';
+            applyModal.classList.add('open');
+        }
+
+        closeApplyBtn.addEventListener('click', () => applyModal.classList.remove('open'));
+        cancelApplyBtn.addEventListener('click', () => applyModal.classList.remove('open'));
+
+        // Enviar Postulación
+        applyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !selectedCall) return;
+
+            const submitBtn = document.getElementById('submitApplyBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Enviando...';
+
+            try {
+                // Obtener datos del artista actual
+                const userSnap = await get(ref(db, `Users/${currentUser.uid}`));
+                const u = userSnap.exists() ? userSnap.val() : {};
+
+                const appData = {
+                    artistId: currentUser.uid,
+                    artistName: u.name || 'Artista',
+                    artistUsername: u.username || '',
+                    artistPhoto: u.photo || 'assets/avatar.png',
+                    verifiedFundar: !!u.fundarCarnet,
+                    adId: selectedCall.id,
+                    callTitle: selectedCall.title,
+                    venueId: selectedCall.venueId || 'general',
+                    message: document.getElementById('applyMessageInput').value.trim(),
+                    status: 'pending',
+                    timestamp: Date.now()
+                };
+
+                // Guardar en CallApplications/{callId}/{uid}
+                await set(ref(db, `CallApplications/${selectedCall.id}/${currentUser.uid}`), appData);
+
+                // Notificar al dueño del establecimiento si existe
+                if (selectedCall.ownerUid) {
+                    const notifRef = push(ref(db, `Users/${selectedCall.ownerUid}/Notifications`));
+                    await set(notifRef, {
+                        id: notifRef.key,
+                        type: 'job_application',
+                        senderId: currentUser.uid,
+                        senderName: u.name || 'Artista',
+                        text: `se ha postulado a tu convocatoria: "${selectedCall.title}"`,
+                        timestamp: Date.now()
+                    });
+                }
+
+                alert('¡Tu postulación ha sido enviada con éxito al establecimiento!');
+                applyModal.classList.remove('open');
+            } catch(err) {
+                alert('Error al enviar postulación: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Enviar Postulación';
+            }
+        });
+    </script>
+
+<!-- MOBILE BOTTOM NAVIGATION -->
+<nav class="mobile-bottom-nav" aria-label="Navegación Móvil">
+    <a href="home.html" class="mobile-nav-tab " id="mobileNavHome" title="Inicio">
+        <span class="tab-icon">🏠</span>
+        <span>Inicio</span>
+    </a>
+    <a href="reels.html" class="mobile-nav-tab " id="mobileNavReels" title="Reels">
+        <span class="tab-icon">🎬</span>
+        <span>Reels</span>
+    </a>
+    <a href="createpost.html" class="mobile-nav-tab tab-create-btn" id="mobileNavCreate" title="Publicar">
+        <div class="tab-create-circle">➕</div>
+    </a>
+    <a href="opportunities.html" class="mobile-nav-tab active" id="mobileNavOpp" title="Oportunidades">
+        <span class="tab-icon">💼</span>
+        <span>Empleos</span>
+    </a>
+    <a href="createchat.html" class="mobile-nav-tab " id="mobileNavChat" title="Mensajes">
+        <span class="tab-icon">💬</span>
+        <span>Chats</span>
+    </a>
+    <a href="myprofile.html" class="mobile-nav-tab " id="mobileNavProfile" title="Perfil">
+        <span class="tab-icon">👤</span>
+        <span>Perfil</span>
+    </a>
+</nav>
+
+</body>
+</html>

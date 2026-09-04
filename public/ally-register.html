@@ -1,0 +1,1559 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Registro exclusivo de aliados PROVIWEB.">
+    <link rel="canonical" href="https://proviweb.com">
+    <title>Registro de Aliados - PROVIWEB</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-card: rgba(28, 28, 36, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-purple: #a855f7;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .ally-register-wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 28px 16px 60px;
+        }
+
+        .ally-register-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .ally-register-brand {
+            text-decoration: none;
+            font-weight: 800;
+            color: var(--accent-purple);
+            font-size: 1.1rem;
+        }
+
+        .ally-register-back {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .ally-register-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 24px;
+        }
+
+        .ally-register-title {
+            margin: 0;
+            font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .ally-register-subtitle {
+            margin: 10px 0 0;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.96rem;
+            max-width: 70ch;
+        }
+
+        .ally-contact-alert {
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--accent-purple);
+            background: rgba(168, 85, 247, 0.15);
+            padding: 10px 12px;
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            line-height: 1.55;
+        }
+
+        .ally-plan-banner {
+            margin-top: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.5);
+            padding: 12px;
+        }
+
+        .ally-plan-banner h2 {
+            margin: 0 0 6px;
+            font-size: 0.96rem;
+            color: var(--accent-purple);
+            font-weight: 800;
+        }
+
+        .ally-plan-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ally-plan-item {
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.6);
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .ally-plan-item strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+
+        .ally-payment-card {
+            margin-top: 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.5);
+            padding: 12px;
+        }
+
+        .ally-payment-status {
+            margin-top: 8px;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.6);
+            color: var(--text-secondary);
+        }
+
+        .ally-payment-status.ok {
+            color: #4ade80;
+            border-color: rgba(74, 222, 128, 0.3);
+            background: rgba(74, 222, 128, 0.15);
+        }
+
+        .ally-payment-status.warn {
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.35);
+            background: rgba(251, 191, 36, 0.15);
+        }
+
+        .ally-payment-alt-note {
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .ally-payment-fallback {
+            margin-top: 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.45;
+            padding: 8px 10px;
+            display: none;
+        }
+
+        .ally-submit.is-disabled-link {
+            pointer-events: none;
+            opacity: 0.62;
+            box-shadow: none;
+            background: linear-gradient(135deg, #4b5563, #374151) !important;
+        }
+
+        .ally-grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .step-indicator {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .step-chip {
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.6);
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .step-chip.active {
+            color: var(--accent-purple);
+            border-color: rgba(168, 85, 247, 0.35);
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        .step-pane {
+            display: none;
+        }
+
+        .step-pane.active {
+            display: block;
+        }
+
+        .form-block {
+            margin-top: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 14px;
+        }
+
+        .form-block:first-of-type {
+            margin-top: 18px;
+        }
+
+        .form-block-title {
+            margin: 0 0 10px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-block-title::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+        }
+
+        .ally-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ally-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .ally-field label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .field-error {
+            display: none;
+            font-size: 0.78rem;
+            color: #f87171;
+            margin-top: -2px;
+        }
+
+        .ally-field input,
+        .ally-field select,
+        .ally-field textarea {
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.93rem;
+            font-family: inherit;
+            background: rgba(20, 20, 26, 0.8);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .ally-field input:focus,
+        .ally-field select:focus,
+        .ally-field textarea:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+        }
+
+        .ally-field input::placeholder,
+        .ally-field textarea::placeholder {
+            color: #6b7280;
+        }
+
+        .ally-field textarea {
+            resize: vertical;
+            min-height: 106px;
+        }
+
+        .ally-note {
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .draft-note {
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .draft-clear {
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.6);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .draft-clear:hover {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .ally-badge-preview {
+            margin-top: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+            background: rgba(28, 28, 36, 0.5);
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .ally-badge-preview strong {
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+        }
+
+        .ally-actions {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(28, 28, 36, 0.5);
+            border: 1px solid var(--border-glass);
+        }
+
+        .ally-submit {
+            border: 0;
+            border-radius: 12px;
+            background: var(--gradient-primary);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.94rem;
+            padding: 12px 16px;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(168, 85, 247, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ally-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(168, 85, 247, 0.45);
+        }
+
+        .ally-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ally-login-link {
+            color: var(--accent-purple);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .ally-login-link:hover {
+            text-decoration: underline;
+        }
+
+        .ally-error {
+            margin-top: 12px;
+            font-size: 0.86rem;
+            color: #f87171;
+            display: none;
+            border-radius: 10px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            background: rgba(248, 113, 113, 0.15);
+            padding: 10px 12px;
+        }
+
+        .ally-success {
+            margin-top: 12px;
+            font-size: 0.86rem;
+            color: #4ade80;
+            display: none;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            background: rgba(74, 222, 128, 0.15);
+            padding: 10px 12px;
+        }
+
+        @media (max-width: 760px) {
+            .ally-grid { grid-template-columns: 1fr; }
+            .ally-plan-meta { grid-template-columns: 1fr; }
+            .ally-register-card { padding: 16px; }
+            .ally-actions { flex-direction: column; align-items: stretch; }
+            .ally-submit { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<script src="js/auth-maintenance.js"></script>
+<main class="ally-register-wrap">
+    <div class="ally-register-top">
+        <a class="ally-register-brand" href="index.html">PROVIWEB</a>
+        <a class="ally-register-back" href="ser-aliado.html">Volver al pitch de aliados</a>
+    </div>
+
+    <section class="ally-register-card" aria-labelledby="allyRegisterTitle">
+        <h1 id="allyRegisterTitle" class="ally-register-title">Registro exclusivo para aliados</h1>
+        <p class="ally-register-subtitle">Este registro es específico para entidades aliadas (marcas, fundaciones, instituciones, productoras y empresas culturales). Al finalizar, tu cuenta quedará con <strong>rol de aliado</strong> y <strong>distintivo institucional</strong> dentro de PROVIWEB.</p>
+        <div style="background:linear-gradient(135deg, rgba(168,85,247,0.1), rgba(0,123,255,0.1)); border:1px solid rgba(168,85,247,0.3); border-radius:12px; padding:16px; margin-bottom:20px; text-align:center;">
+            <p style="margin:0 0 10px 0; font-size:0.9rem; color:var(--text-secondary);">
+                🎺 <strong>¿Tienes un bar, restaurante o espacio con música en vivo?</strong>
+            </p>
+            <a href="ser-establecimiento.html" style="display:inline-block; padding:8px 16px; background:linear-gradient(135deg, #a855f7, #007BFF); color:white; text-decoration:none; border-radius:8px; font-size:0.875rem; font-weight:500;">
+                Regístrate como establecimiento →
+            </a>
+        </div>
+        <div class="ally-contact-alert">
+            Después de registrarte, <strong>nuestro equipo te contactará para verificar la información</strong> y
+            <strong>agendar una reunión online</strong> para definir el modelo de alianza más conveniente para ambas partes.
+        </div>
+        <section class="ally-plan-banner" id="allyPlanBanner" aria-live="polite">
+            <h2>Plan seleccionado para la alianza</h2>
+            <p id="selectedPlanText" style="margin:0; font-size:0.86rem; color:var(--text-secondary);">Selecciona tu plan desde la sección de aliados para continuar con el registro y el pago.</p>
+            <div class="ally-plan-meta">
+                <div class="ally-plan-item"><strong>Plan</strong><span id="selectedPlanName">Pendiente</span></div>
+                <div class="ally-plan-item"><strong>Aporte trimestral</strong><span id="selectedPlanAmount">Pendiente</span></div>
+                <div class="ally-plan-item"><strong>Equivalente mensual</strong><span id="selectedPlanMonthly">Pendiente</span></div>
+            </div>
+            <div class="ally-payment-card">
+                <p id="paymentIntroText" style="margin:0; font-size:0.84rem; color:var(--text-primary);"><strong>Pago obligatorio para activar el plan.</strong> Usa tarjeta débito o crédito en checkout seguro.</p>
+                <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <a id="payNowBtn" href="ser-aliado.html#programa-pagos-aliados" class="ally-submit" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; padding:10px 14px;">Pagar plan con tarjeta</a>
+                    <a id="paypalPayBtn" href="https://paypal.me/proviweb" target="_blank" rel="noopener" class="ally-submit" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; background:linear-gradient(135deg,#0070ba,#003087);">Pagar con PayPal</a>
+                    <button id="paypalConfirmBtn" type="button" class="ally-register-back">Ya pagué por PayPal</button>
+                    <a id="changePlanBtn" href="ser-aliado.html#programa-pagos-aliados" class="ally-register-back">Cambiar plan</a>
+                </div>
+                <div id="epaycoFallbackNotice" class="ally-payment-fallback">ePayco puede presentar fallas temporales. Usa PayPal para continuar con tu registro sin interrupciones.</div>
+                <p id="paymentAltNote" class="ally-payment-alt-note">Si pagas por PayPal, al volver debes confirmar la referencia de la transacción para activar el registro.</p>
+                <div id="paymentStatus" class="ally-payment-status warn">Estado de pago: pendiente. Debes pagar para registrar el aliado.</div>
+            </div>
+        </section>
+        <div class="step-indicator" aria-label="Progreso del formulario">
+            <div class="step-chip active" id="stepChip1">Paso 1 · Datos esenciales</div>
+            <div class="step-chip" id="stepChip2">Paso 2 · Contexto de alianza</div>
+        </div>
+
+        <form id="allyRegisterForm" novalidate>
+            <section class="step-pane active" id="stepPane1">
+            <section class="form-block">
+                <h2 class="form-block-title">Información de contacto</h2>
+                <div class="ally-grid">
+                <div class="ally-field">
+                    <label for="name">Nombre de contacto</label>
+                    <input id="name" name="name" type="text" placeholder="Nombre y apellido">
+                    <span class="field-error" id="err-name">Este campo es obligatorio.</span>
+                </div>
+                <div class="ally-field">
+                    <label for="username">Usuario de la cuenta</label>
+                    <input id="username" name="username" type="text" placeholder="alias_aliado" minlength="4">
+                    <span class="field-error" id="err-username">Usa 4-30 caracteres válidos.</span>
+                </div>
+
+                <div class="ally-field">
+                    <label for="email">Correo corporativo</label>
+                    <input id="email" name="email" type="email" placeholder="contacto@tuentidad.com">
+                    <span class="field-error" id="err-email">Ingresa un correo válido.</span>
+                </div>
+                <div class="ally-field">
+                    <label for="password">Contraseña</label>
+                    <input id="password" name="password" type="password" minlength="8" placeholder="Mínimo 8 caracteres">
+                    <span class="field-error" id="err-password">Mínimo 8 caracteres.</span>
+                </div>
+                </div>
+            </section>
+
+            <section class="form-block">
+                <h2 class="form-block-title">Perfil de la entidad</h2>
+                <div class="ally-grid">
+                <div class="ally-field">
+                    <label for="entityName">Nombre de la entidad</label>
+                    <input id="entityName" name="entityName" type="text" placeholder="Nombre legal o comercial">
+                    <span class="field-error" id="err-entityName">Este campo es obligatorio.</span>
+                </div>
+                <div class="ally-field">
+                    <label for="contactRole">Cargo del contacto</label>
+                    <input id="contactRole" name="contactRole" type="text" placeholder="Dirección / Coordinación / Marketing">
+                </div>
+
+                <div class="ally-field">
+                    <label for="allyType">Tipo de aliado</label>
+                    <select id="allyType" name="allyType">
+                        <option value="">Selecciona</option>
+                        <option value="marca">Marca comercial</option>
+                        <option value="fundacion">Fundación</option>
+                        <option value="institucion">Institución educativa</option>
+                        <option value="productora">Productora / agencia</option>
+                        <option value="publica">Entidad pública cultural</option>
+                        <option value="empresa">Empresa cultural privada</option>
+                        <option value="hotel">Hotel / hospedaje</option>
+                        <option value="restaurante">Restaurante / gastro aliado</option>
+                        <option value="transporte">Transporte / movilidad</option>
+                        <option value="venue">Venue / escenario / teatro</option>
+                        <option value="medio">Medio de comunicación</option>
+                        <option value="tecnologia">Proveedor tecnológico</option>
+                    </select>
+                    <span class="field-error" id="err-allyType">Selecciona un tipo de aliado.</span>
+                </div>
+                <div class="ally-field">
+                    <label for="allyFocus">Objetivo principal de alianza</label>
+                    <select id="allyFocus" name="allyFocus">
+                        <option value="">Selecciona</option>
+                        <option value="branding">Branding y posicionamiento</option>
+                        <option value="empleabilidad">Empleabilidad y convocatorias</option>
+                        <option value="formacion">Formación y contenidos</option>
+                        <option value="co-marketing">Co-marketing y comunidad</option>
+                    </select>
+                </div>
+                </div>
+            </section>
+            <div class="ally-actions">
+                <button class="ally-submit" id="nextStepBtn" type="button">Continuar al paso 2</button>
+                <a class="ally-login-link" href="index.html">Ya tengo cuenta</a>
+            </div>
+            </section>
+
+            <section class="step-pane" id="stepPane2">
+            <section class="form-block">
+                <h2 class="form-block-title">Calificación comercial</h2>
+                <div class="ally-grid">
+                <div class="ally-field">
+                    <label for="entitySize">Tamaño aproximado de la entidad</label>
+                    <select id="entitySize" name="entitySize">
+                        <option value="">Selecciona</option>
+                        <option value="micro">Micro (1-10 personas)</option>
+                        <option value="pyme">PyME (11-100 personas)</option>
+                        <option value="mediana">Mediana (101-500 personas)</option>
+                        <option value="grande">Grande (500+ personas)</option>
+                    </select>
+                </div>
+                <div class="ally-field">
+                    <label for="budgetRange">Rango de inversión estimado (mensual)</label>
+                    <select id="budgetRange" name="budgetRange">
+                        <option value="">Selecciona</option>
+                        <option value="<500usd">Menos de USD 500</option>
+                        <option value="500-1500usd">USD 500 - 1,500</option>
+                        <option value="1500-5000usd">USD 1,500 - 5,000</option>
+                        <option value="5000+usd">Más de USD 5,000</option>
+                        <option value="por-definir">Por definir en reunión</option>
+                    </select>
+                </div>
+
+                <div class="ally-field">
+                    <label for="country">País</label>
+                    <input id="country" name="country" type="text" placeholder="Colombia">
+                </div>
+                <div class="ally-field">
+                    <label for="city">Ciudad</label>
+                    <input id="city" name="city" type="text" placeholder="Bogotá">
+                </div>
+
+                <div class="ally-field">
+                    <label for="website">Sitio web (opcional)</label>
+                    <input id="website" name="website" type="text" placeholder="tuentidad.com o https://tuentidad.com">
+                </div>
+                <div class="ally-field">
+                    <label for="phone">Teléfono de contacto (opcional)</label>
+                    <input id="phone" name="phone" type="text" placeholder="+57 300 000 0000">
+                </div>
+                <div class="ally-field">
+                    <label for="whatsapp">WhatsApp de contacto</label>
+                    <input id="whatsapp" name="whatsapp" type="text" placeholder="+57 300 000 0000">
+                </div>
+                <div class="ally-field">
+                    <label for="meetingWindow">Disponibilidad para reunión online</label>
+                    <select id="meetingWindow" name="meetingWindow">
+                        <option value="">Selecciona</option>
+                        <option value="manana">Mañana (8:00 - 12:00)</option>
+                        <option value="tarde">Tarde (12:00 - 18:00)</option>
+                        <option value="noche">Noche (18:00 - 21:00)</option>
+                        <option value="flexible">Flexible</option>
+                    </select>
+                </div>
+                <div class="ally-field">
+                    <label for="timezone">Zona horaria</label>
+                    <input id="timezone" name="timezone" type="text" placeholder="America/Bogota">
+                </div>
+                </div>
+            </section>
+
+            <section class="form-block">
+                <h2 class="form-block-title">Propuesta de alianza</h2>
+                <div class="ally-grid">
+                <div class="ally-field full">
+                    <label for="proposal">Describe brevemente la propuesta o interés de alianza</label>
+                    <textarea id="proposal" name="proposal" placeholder="Objetivos, campañas, alcance esperado, tipo de colaboración..."></textarea>
+                </div>
+
+                <div class="ally-field full">
+                    <label for="allyOffer">¿Qué puede aportar tu entidad a PROVIWEB?</label>
+                    <textarea id="allyOffer" name="allyOffer" placeholder="Ejemplo: descuentos para artistas, espacios, patrocinio, difusión, movilidad, hospedaje, alimentación, tecnología..."></textarea>
+                </div>
+
+                <div class="ally-field full">
+                    <label style="display:flex; gap:8px; align-items:flex-start; font-weight:600; color:var(--text-secondary);">
+                        <input id="terms" type="checkbox" style="margin-top:2px;">
+                        Acepto los <a href="terms.html" target="_blank" rel="noopener" style="color:var(--accent-purple);">Términos y Condiciones</a> y la <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--accent-purple);">Política de Privacidad</a> de PROVIWEB.
+                    </label>
+                </div>
+                </div>
+            </section>
+
+            <div class="ally-badge-preview" id="badgePreview">
+                <strong>Rol asignado:</strong> Pendiente por selección de tipo de aliado.<br>
+                <strong>Distintivo:</strong> Se asignará automáticamente al registrarte.
+            </div>
+
+            <p class="ally-note">Este registro crea una cuenta especializada de aliado. No se registrará como usuario estándar ni organización general.</p>
+            <div class="draft-note">
+                <span id="draftStatus">Guardado automático de borrador activo en este dispositivo.</span>
+                <button type="button" class="draft-clear" id="clearDraftBtn">Limpiar borrador</button>
+            </div>
+
+            <div class="ally-actions">
+                <button class="ally-submit" id="prevStepBtn" type="button" style="background: linear-gradient(135deg, #374151, #1f2937); box-shadow:none;">Volver al paso 1</button>
+                <button class="ally-submit" id="submitBtn" type="submit">Registrar aliado</button>
+                <a class="ally-login-link" href="index.html">Ya tengo cuenta</a>
+            </div>
+            </section>
+
+            <div class="ally-error" id="errorBox"></div>
+            <div class="ally-success" id="successBox"></div>
+        </form>
+    </section>
+</main>
+
+<script src="https://checkout.epayco.co/checkout.js"></script>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js';
+    import { getDatabase, ref, set, get, query, orderByChild, equalTo } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: 'AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw',
+        authDomain: 'proviweb-d8764.firebaseapp.com',
+        databaseURL: 'https://proviweb-d8764-default-rtdb.firebaseio.com',
+        projectId: 'proviweb-d8764',
+        storageBucket: 'proviweb-d8764.appspot.com',
+        messagingSenderId: '475963980955',
+        appId: '1:475963980955:web:8444288d8ba13e428e1a3e'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const ROLE_MAP = {
+        marca: { role: 'ALLY_BRAND', badge: 'Aliado Comercial' },
+        fundacion: { role: 'ALLY_FOUNDATION', badge: 'Aliado Social' },
+        institucion: { role: 'ALLY_EDUCATION', badge: 'Aliado Académico' },
+        productora: { role: 'ALLY_PRODUCTION', badge: 'Aliado Producción' },
+        publica: { role: 'ALLY_PUBLIC_ENTITY', badge: 'Aliado Institucional' },
+        empresa: { role: 'ALLY_CULTURAL_COMPANY', badge: 'Aliado Estratégico' },
+        hotel: { role: 'ALLY_HOSPITALITY', badge: 'Aliado de Hospedaje' },
+        restaurante: { role: 'ALLY_GASTRO', badge: 'Aliado Gastronómico' },
+        transporte: { role: 'ALLY_MOBILITY', badge: 'Aliado de Movilidad' },
+        venue: { role: 'ALLY_VENUE', badge: 'Aliado de Escenarios' },
+        medio: { role: 'ALLY_MEDIA', badge: 'Aliado de Difusión' },
+        tecnologia: { role: 'ALLY_TECH', badge: 'Aliado Tecnológico' }
+    };
+
+    const PLAN_MAP = {
+        comunidad: {
+            key: 'comunidad',
+            name: 'Plan Comunidad',
+            amountCop: 0,
+            monthlyCop: 0,
+            requiresPayment: false
+        },
+        visibilidad: {
+            key: 'visibilidad',
+            name: 'Plan Visibilidad',
+            amountCop: 390000,
+            monthlyCop: 130000,
+            requiresPayment: true
+        },
+        formacion: {
+            key: 'formacion',
+            name: 'Plan Formación',
+            amountCop: 720000,
+            monthlyCop: 240000,
+            requiresPayment: true
+        },
+        estrategico: {
+            key: 'estrategico',
+            name: 'Plan Estratégico',
+            amountCop: 1350000,
+            monthlyCop: 450000,
+            requiresPayment: true
+        }
+    };
+
+    const EPAYCO_CONFIG = {
+        publicKey: '2b6635fafe22b45fee5c4c76bae6da2c',
+        test: false,
+        currency: 'cop'
+    };
+    const SITE_BASE_URL = 'https://proviweb.com';
+    const EPAYCO_BUSINESS_URL = 'https://proviweb.epayco.me';
+    const SELECTED_PLAN_KEY = 'proviweb_selected_ally_plan';
+    const PAYMENT_PROOF_KEY = 'proviweb_ally_payment_proof_v1';
+
+    const form = document.getElementById('allyRegisterForm');
+    const allyTypeEl = document.getElementById('allyType');
+    const badgePreview = document.getElementById('badgePreview');
+    const submitBtn = document.getElementById('submitBtn');
+    const nextStepBtn = document.getElementById('nextStepBtn');
+    const prevStepBtn = document.getElementById('prevStepBtn');
+    const stepPane1 = document.getElementById('stepPane1');
+    const stepPane2 = document.getElementById('stepPane2');
+    const stepChip1 = document.getElementById('stepChip1');
+    const stepChip2 = document.getElementById('stepChip2');
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+    const selectedPlanText = document.getElementById('selectedPlanText');
+    const selectedPlanName = document.getElementById('selectedPlanName');
+    const selectedPlanAmount = document.getElementById('selectedPlanAmount');
+    const selectedPlanMonthly = document.getElementById('selectedPlanMonthly');
+    const paymentStatus = document.getElementById('paymentStatus');
+    const payNowBtn = document.getElementById('payNowBtn');
+    const paypalPayBtn = document.getElementById('paypalPayBtn');
+    const paypalConfirmBtn = document.getElementById('paypalConfirmBtn');
+    const paymentIntroText = document.getElementById('paymentIntroText');
+    const paymentAltNote = document.getElementById('paymentAltNote');
+    const epaycoFallbackNotice = document.getElementById('epaycoFallbackNotice');
+    const changePlanBtn = document.getElementById('changePlanBtn');
+    const draftStatus = document.getElementById('draftStatus');
+    const clearDraftBtn = document.getElementById('clearDraftBtn');
+    const DRAFT_KEY = 'proviweb_ally_register_draft_v1';
+    let selectedPlan = null;
+    let paymentVerified = false;
+    let paymentReference = '';
+    let paymentProvider = '';
+    let epaycoUnavailable = false;
+
+    function formatCop(amount) {
+        return '$' + Number(amount || 0).toLocaleString('es-CO') + ' COP';
+    }
+
+    function planRequiresPayment(plan) {
+        return Boolean(plan && plan.requiresPayment !== false && Number(plan.amountCop || 0) > 0);
+    }
+
+    function getSelectedPlanFromSource() {
+        const params = new URLSearchParams(window.location.search);
+        const planFromUrl = (params.get('plan') || '').toLowerCase();
+        const planFromStorage = (localStorage.getItem(SELECTED_PLAN_KEY) || '').toLowerCase();
+        const key = PLAN_MAP[planFromUrl] ? planFromUrl : (PLAN_MAP[planFromStorage] ? planFromStorage : '');
+        return key ? PLAN_MAP[key] : null;
+    }
+
+    function getPageBaseUrl() {
+        return SITE_BASE_URL.replace(/\/+$/, '') + '/ally-register.html';
+    }
+
+    function buildResponseUrl(planKey) {
+        const url = new URL(getPageBaseUrl());
+        url.searchParams.set('plan', planKey);
+        url.searchParams.set('paid_plan', planKey);
+        return url.toString();
+    }
+
+    function buildConfirmationUrl() {
+        // Endpoint sugerido para validar pagos desde ePayco (debe existir en backend).
+        return SITE_BASE_URL.replace(/\/+$/, '') + '/api/payments/epayco/confirm';
+    }
+
+    function buildPaypalUrl(plan) {
+        const amountUsd = (Number(plan.amountCop || 0) / 4000).toFixed(2);
+        return 'https://paypal.me/proviweb/' + amountUsd;
+    }
+
+    function getEpaycoRefFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return (
+            params.get('ref_payco') ||
+            params.get('x_ref_payco') ||
+            params.get('x_transaction_id') ||
+            ''
+        ).trim();
+    }
+
+    function savePaymentProof(proof) {
+        try {
+            localStorage.setItem(PAYMENT_PROOF_KEY, JSON.stringify(proof));
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    function readPaymentProof() {
+        try {
+            const raw = localStorage.getItem(PAYMENT_PROOF_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async function verifyEpaycoReference(refPayco, expectedPlan) {
+        if (!refPayco || !expectedPlan) return null;
+        try {
+            const res = await fetch('https://secure.epayco.co/validation/v1/reference/' + encodeURIComponent(refPayco), { method: 'GET' });
+            if (!res.ok) return null;
+            const payload = await res.json();
+            const data = payload && payload.data ? payload.data : null;
+            if (!data) return null;
+
+            const cod = String(data.x_cod_response || '');
+            const responseText = String(data.x_response || '').toLowerCase();
+            const approved = cod === '1' || responseText.includes('acept');
+            const amount = Number(data.x_amount || 0);
+            const currency = String(data.x_currency_code || '').toLowerCase();
+            const planOk = String(expectedPlan.key) === String((new URLSearchParams(window.location.search)).get('paid_plan') || expectedPlan.key);
+            const amountOk = Math.abs(amount - Number(expectedPlan.amountCop)) < 1;
+            const currencyOk = currency === EPAYCO_CONFIG.currency;
+
+            if (approved && planOk && amountOk && currencyOk) {
+                return {
+                    approved: true,
+                    reference: String(data.x_ref_payco || refPayco),
+                    amount: amount,
+                    currency: currency,
+                    checkedAt: new Date().toISOString()
+                };
+            }
+            return {
+                approved: false,
+                reference: String(data.x_ref_payco || refPayco),
+                amount: amount,
+                currency: currency,
+                checkedAt: new Date().toISOString()
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function applyPlanUI() {
+        if (!selectedPlan) {
+            selectedPlanText.textContent = 'No detectamos un plan elegido. Regresa al pitch de aliados y selecciona un plan para continuar.';
+            selectedPlanName.textContent = 'Pendiente';
+            selectedPlanAmount.textContent = 'Pendiente';
+            selectedPlanMonthly.textContent = 'Pendiente';
+            if (paymentIntroText) paymentIntroText.innerHTML = '<strong>Pago obligatorio para activar el plan.</strong> Usa tarjeta débito o crédito en checkout seguro.';
+            if (paymentAltNote) paymentAltNote.style.display = 'block';
+            if (payNowBtn) payNowBtn.style.display = 'inline-flex';
+            if (paypalPayBtn) paypalPayBtn.style.display = 'inline-flex';
+            if (paypalConfirmBtn) paypalConfirmBtn.style.display = 'inline-flex';
+            paymentStatus.textContent = 'Estado de pago: pendiente. Primero selecciona un plan.';
+            paymentStatus.classList.add('warn');
+            paymentStatus.classList.remove('ok');
+            nextStepBtn.disabled = true;
+            submitBtn.disabled = true;
+            payNowBtn.href = EPAYCO_BUSINESS_URL;
+            payNowBtn.classList.remove('is-disabled-link');
+            payNowBtn.textContent = 'Pagar plan con tarjeta';
+            return;
+        }
+
+        const requiresPayment = planRequiresPayment(selectedPlan);
+        selectedPlanName.textContent = selectedPlan.name;
+        selectedPlanAmount.textContent = requiresPayment ? formatCop(selectedPlan.amountCop) + ' / trimestre' : 'Gratis / primer año';
+        selectedPlanMonthly.textContent = requiresPayment ? formatCop(selectedPlan.monthlyCop) + ' / mes' : '$0 COP / mes';
+        nextStepBtn.disabled = false;
+        changePlanBtn.href = 'ser-aliado.html#programa-pagos-aliados';
+
+        if (!requiresPayment) {
+            selectedPlanText.textContent = 'Plan Comunidad detectado. Este plan no exige pago inicial durante el primer año para instituciones que publiquen oportunidades.';
+            if (paymentIntroText) paymentIntroText.innerHTML = '<strong>Pago no requerido en esta fase.</strong> Puedes continuar con el registro y activar tu panel aliado.';
+            if (paymentAltNote) paymentAltNote.style.display = 'none';
+            if (epaycoFallbackNotice) epaycoFallbackNotice.style.display = 'none';
+            if (payNowBtn) payNowBtn.style.display = 'none';
+            if (paypalPayBtn) paypalPayBtn.style.display = 'none';
+            if (paypalConfirmBtn) paypalConfirmBtn.style.display = 'none';
+            paymentStatus.textContent = 'Estado de pago: no requerido (Plan Comunidad). Ya puedes registrar el aliado.';
+            paymentStatus.classList.add('ok');
+            paymentStatus.classList.remove('warn');
+            submitBtn.disabled = false;
+            return;
+        }
+
+        selectedPlanText.textContent = 'Plan detectado correctamente. Completa el pago para activar el registro aliado.';
+        if (paymentIntroText) paymentIntroText.innerHTML = '<strong>Pago obligatorio para activar el plan.</strong> Usa tarjeta débito o crédito en checkout seguro.';
+        if (paymentAltNote) paymentAltNote.style.display = 'block';
+        if (payNowBtn) payNowBtn.style.display = 'inline-flex';
+        if (paypalPayBtn) paypalPayBtn.style.display = 'inline-flex';
+        if (paypalConfirmBtn) paypalConfirmBtn.style.display = 'inline-flex';
+
+        if (epaycoUnavailable) {
+            payNowBtn.href = '#';
+            payNowBtn.classList.add('is-disabled-link');
+            payNowBtn.textContent = 'Tarjeta no disponible';
+            if (epaycoFallbackNotice) epaycoFallbackNotice.style.display = 'block';
+        } else {
+            payNowBtn.href = '#';
+            payNowBtn.classList.remove('is-disabled-link');
+            payNowBtn.textContent = 'Pagar plan con tarjeta';
+            if (epaycoFallbackNotice) epaycoFallbackNotice.style.display = 'none';
+        }
+        payNowBtn.removeAttribute('target');
+        payNowBtn.removeAttribute('rel');
+    }
+
+    function setEpaycoUnavailable(reason) {
+        epaycoUnavailable = true;
+        applyPlanUI();
+        if (epaycoFallbackNotice && selectedPlan && planRequiresPayment(selectedPlan)) epaycoFallbackNotice.style.display = 'block';
+        if (reason && selectedPlan && planRequiresPayment(selectedPlan)) {
+            showError(reason + ' Usa PayPal para completar el pago.');
+        }
+    }
+
+    async function applyPaymentStateFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const paidPlan = (params.get('paid_plan') || '').toLowerCase();
+        const refPayco = getEpaycoRefFromUrl();
+        const paypalStatus = (params.get('paypal_status') || '').toLowerCase();
+        const paypalRef = (params.get('paypal_ref') || '').trim();
+        const cachedProof = readPaymentProof();
+        paymentVerified = false;
+        paymentReference = '';
+        paymentProvider = '';
+
+        if (selectedPlan && !planRequiresPayment(selectedPlan)) {
+            paymentVerified = true;
+            paymentProvider = 'comunidad';
+            paymentReference = 'SIN-PAGO-INICIAL';
+            paymentStatus.textContent = 'Estado de pago: no requerido (Plan Comunidad). Ya puedes registrar el aliado.';
+            paymentStatus.classList.add('ok');
+            paymentStatus.classList.remove('warn');
+            submitBtn.disabled = false;
+            return;
+        }
+
+        if (selectedPlan && cachedProof && cachedProof.plan === selectedPlan.key && cachedProof.approved) {
+            paymentVerified = true;
+            paymentReference = cachedProof.reference || '';
+            paymentProvider = cachedProof.provider || '';
+        }
+
+        if (selectedPlan && refPayco && paidPlan === selectedPlan.key) {
+            const verification = await verifyEpaycoReference(refPayco, selectedPlan);
+            if (verification && verification.approved) {
+                paymentVerified = true;
+                paymentReference = verification.reference || refPayco;
+                paymentProvider = 'epayco';
+                savePaymentProof({
+                    approved: true,
+                    plan: selectedPlan.key,
+                    provider: 'epayco',
+                    reference: paymentReference,
+                    amount: selectedPlan.amountCop,
+                    currency: EPAYCO_CONFIG.currency,
+                    verifiedAt: verification.checkedAt
+                });
+            }
+        }
+
+        // Fallback PayPal (confirmación manual con referencia por parte del aliado).
+        if (!paymentVerified && selectedPlan && paidPlan === selectedPlan.key && paypalStatus === 'approved' && paypalRef) {
+            paymentVerified = true;
+            paymentReference = paypalRef;
+            paymentProvider = 'paypal';
+            savePaymentProof({
+                approved: true,
+                plan: selectedPlan.key,
+                provider: 'paypal',
+                reference: paymentReference,
+                amount: selectedPlan.amountCop,
+                currency: 'usd',
+                verifiedAt: new Date().toISOString()
+            });
+        }
+
+        if (paymentVerified) {
+            const providerLabel = paymentProvider === 'paypal' ? 'PayPal' : 'ePayco';
+            paymentStatus.textContent = 'Estado de pago: aprobado (' + providerLabel + ')' + (paymentReference ? ' · Ref: ' + paymentReference : '') + '. Ya puedes registrar el aliado.';
+            paymentStatus.classList.add('ok');
+            paymentStatus.classList.remove('warn');
+            submitBtn.disabled = false;
+            return;
+        }
+
+        paymentStatus.textContent = 'Estado de pago: pendiente. Debes pagar para registrar el aliado.';
+        paymentStatus.classList.remove('ok');
+        paymentStatus.classList.add('warn');
+        submitBtn.disabled = true;
+    }
+
+    function setFieldError(id, show) {
+        const el = document.getElementById('err-' + id);
+        if (!el) return;
+        el.style.display = show ? 'block' : 'none';
+    }
+
+    function clearEssentialErrors() {
+        ['name', 'username', 'email', 'password', 'entityName', 'allyType'].forEach((id) => setFieldError(id, false));
+    }
+
+    function goStep(step) {
+        const atStep1 = step === 1;
+        stepPane1.classList.toggle('active', atStep1);
+        stepPane2.classList.toggle('active', !atStep1);
+        stepChip1.classList.toggle('active', atStep1);
+        stepChip2.classList.toggle('active', !atStep1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    selectedPlan = getSelectedPlanFromSource();
+    if (selectedPlan) {
+        try { localStorage.setItem(SELECTED_PLAN_KEY, selectedPlan.key); } catch (e) {}
+    }
+    applyPlanUI();
+    applyPaymentStateFromUrl();
+
+    // Verificación temprana: si ePayco no cargó, activamos fallback a PayPal.
+    window.setTimeout(() => {
+        if (!(window.ePayco && window.ePayco.checkout && typeof window.ePayco.checkout.configure === 'function')) {
+            setEpaycoUnavailable('ePayco no está disponible temporalmente.');
+        }
+    }, 800);
+
+    if (payNowBtn) {
+        payNowBtn.addEventListener('click', (event) => {
+            if (!selectedPlan) return;
+            if (!planRequiresPayment(selectedPlan)) {
+                event.preventDefault();
+                showError('El Plan Comunidad no requiere pago. Continúa con el registro.');
+                return;
+            }
+            if (epaycoUnavailable) {
+                event.preventDefault();
+                return;
+            }
+            event.preventDefault();
+            if (!(window.ePayco && window.ePayco.checkout && typeof window.ePayco.checkout.configure === 'function')) {
+                setEpaycoUnavailable('No se pudo cargar ePayco checkout.');
+                return;
+            }
+
+            const handler = window.ePayco.checkout.configure({
+                key: EPAYCO_CONFIG.publicKey,
+                test: EPAYCO_CONFIG.test
+            });
+
+            const responseUrl = buildResponseUrl(selectedPlan.key);
+            const confirmationUrl = buildConfirmationUrl();
+            const invoiceRef = 'ALLY-' + selectedPlan.key.toUpperCase() + '-' + Date.now();
+            const nameValue = (document.getElementById('name').value || '').trim();
+            const emailValue = (document.getElementById('email').value || '').trim().toLowerCase();
+            const phoneValue = ((document.getElementById('phone').value || '').trim() || (document.getElementById('whatsapp').value || '').trim());
+            const countryValue = (document.getElementById('country').value || '').trim() || 'CO';
+            const cityValue = (document.getElementById('city').value || '').trim();
+
+            handler.open({
+                name: selectedPlan.name + ' - PROVIWEB',
+                description: 'Aporte trimestral Programa de Aliados PROVIWEB',
+                invoice: invoiceRef,
+                currency: EPAYCO_CONFIG.currency,
+                amount: String(selectedPlan.amountCop),
+                tax_base: '0',
+                tax: '0',
+                country: 'co',
+                lang: 'es',
+                external: 'false',
+                response: responseUrl,
+                confirmation: confirmationUrl,
+                extra1: selectedPlan.key,
+                extra2: 'ally-register',
+                name_billing: nameValue,
+                email_billing: emailValue,
+                mobilephone_billing: phoneValue,
+                address_billing: cityValue,
+                country_billing: countryValue
+            });
+        });
+    }
+
+    if (paypalPayBtn) {
+        paypalPayBtn.addEventListener('click', (event) => {
+            if (!selectedPlan) {
+                event.preventDefault();
+                showError('Selecciona un plan antes de pagar con PayPal.');
+                return;
+            }
+            if (!planRequiresPayment(selectedPlan)) {
+                event.preventDefault();
+                showError('El Plan Comunidad no requiere pago por PayPal.');
+                return;
+            }
+            paypalPayBtn.href = buildPaypalUrl(selectedPlan);
+        });
+    }
+
+    if (paypalConfirmBtn) {
+        paypalConfirmBtn.addEventListener('click', () => {
+            if (!selectedPlan) {
+                showError('Selecciona un plan antes de confirmar un pago por PayPal.');
+                return;
+            }
+            if (!planRequiresPayment(selectedPlan)) {
+                showError('El Plan Comunidad no requiere confirmación de pago.');
+                return;
+            }
+            const ref = window.prompt('Ingresa la referencia de transacción de PayPal:');
+            const cleanRef = (ref || '').trim();
+            if (!cleanRef) {
+                showError('Debes ingresar la referencia de PayPal para continuar.');
+                return;
+            }
+            const url = new URL(getPageBaseUrl());
+            url.searchParams.set('plan', selectedPlan.key);
+            url.searchParams.set('paid_plan', selectedPlan.key);
+            url.searchParams.set('paypal_status', 'approved');
+            url.searchParams.set('paypal_ref', cleanRef);
+            window.location.href = url.toString();
+        });
+    }
+
+    if (nextStepBtn) {
+        nextStepBtn.addEventListener('click', () => {
+            clearEssentialErrors();
+            const essentials = {
+                name: document.getElementById('name').value.trim(),
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
+                password: document.getElementById('password').value,
+                entityName: document.getElementById('entityName').value.trim(),
+                allyType: allyTypeEl.value
+            };
+
+            let hasErrors = false;
+            if (!essentials.name) { setFieldError('name', true); hasErrors = true; }
+            if (!essentials.entityName) { setFieldError('entityName', true); hasErrors = true; }
+            if (!essentials.email || !essentials.email.includes('@')) { setFieldError('email', true); hasErrors = true; }
+            if (!validateUsername(essentials.username)) { setFieldError('username', true); hasErrors = true; }
+            if (!essentials.password || essentials.password.length < 8) { setFieldError('password', true); hasErrors = true; }
+            if (!essentials.allyType) { setFieldError('allyType', true); hasErrors = true; }
+
+            if (hasErrors) {
+                showError('Completa los campos esenciales del paso 1 para continuar.');
+                return;
+            }
+            errorBox.style.display = 'none';
+            goStep(2);
+        });
+    }
+
+    if (prevStepBtn) {
+        prevStepBtn.addEventListener('click', () => {
+            errorBox.style.display = 'none';
+            goStep(1);
+        });
+    }
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+        successBox.style.display = 'none';
+    }
+
+    function showSuccess(msg) {
+        successBox.textContent = msg;
+        successBox.style.display = 'block';
+        errorBox.style.display = 'none';
+    }
+
+    allyTypeEl.addEventListener('change', () => {
+        const selected = ROLE_MAP[allyTypeEl.value];
+        if (!selected) {
+            badgePreview.innerHTML = '<strong>Rol asignado:</strong> Pendiente por selección de tipo de aliado.<br><strong>Distintivo:</strong> Se asignará automáticamente al registrarte.';
+            return;
+        }
+        badgePreview.innerHTML = `<strong>Rol asignado:</strong> ${selected.role}<br><strong>Distintivo:</strong> ${selected.badge}`;
+    });
+
+    function validateUsername(username) {
+        return /^[A-Za-z0-9_-]{4,30}$/.test(username);
+    }
+
+    // Autocompleta zona horaria local
+    try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        const tzEl = document.getElementById('timezone');
+        if (tzEl && !tzEl.value) tzEl.value = tz;
+    } catch (e) {
+        // ignore
+    }
+
+    function collectDraftData() {
+        return {
+            name: document.getElementById('name').value.trim(),
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            entityName: document.getElementById('entityName').value.trim(),
+            contactRole: document.getElementById('contactRole').value.trim(),
+            allyType: document.getElementById('allyType').value,
+            allyFocus: document.getElementById('allyFocus').value,
+            entitySize: document.getElementById('entitySize').value,
+            budgetRange: document.getElementById('budgetRange').value,
+            country: document.getElementById('country').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            website: document.getElementById('website').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            whatsapp: document.getElementById('whatsapp').value.trim(),
+            meetingWindow: document.getElementById('meetingWindow').value,
+            timezone: document.getElementById('timezone').value.trim(),
+            proposal: document.getElementById('proposal').value.trim(),
+            allyOffer: document.getElementById('allyOffer').value.trim(),
+            terms: document.getElementById('terms').checked,
+            lastStep: stepPane2.classList.contains('active') ? 2 : 1,
+            savedAt: new Date().toISOString()
+        };
+    }
+
+    function persistDraft() {
+        try {
+            const data = collectDraftData();
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+            if (draftStatus) draftStatus.textContent = 'Borrador guardado automáticamente.';
+        } catch (e) {
+            if (draftStatus) draftStatus.textContent = 'No se pudo guardar el borrador en este navegador.';
+        }
+    }
+
+    function applyDraft(data) {
+        if (!data || typeof data !== 'object') return;
+        const setValue = (id, value) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.type === 'checkbox') {
+                el.checked = !!value;
+            } else if (value != null && value !== '') {
+                el.value = value;
+            }
+        };
+
+        setValue('name', data.name);
+        setValue('username', data.username);
+        setValue('email', data.email);
+        setValue('entityName', data.entityName);
+        setValue('contactRole', data.contactRole);
+        setValue('allyType', data.allyType);
+        setValue('allyFocus', data.allyFocus);
+        setValue('entitySize', data.entitySize);
+        setValue('budgetRange', data.budgetRange);
+        setValue('country', data.country);
+        setValue('city', data.city);
+        setValue('website', data.website);
+        setValue('phone', data.phone);
+        setValue('whatsapp', data.whatsapp);
+        setValue('meetingWindow', data.meetingWindow);
+        setValue('timezone', data.timezone);
+        setValue('proposal', data.proposal);
+        setValue('allyOffer', data.allyOffer);
+        setValue('terms', data.terms);
+
+        const selected = ROLE_MAP[document.getElementById('allyType').value];
+        if (selected) {
+            badgePreview.innerHTML = `<strong>Rol asignado:</strong> ${selected.role}<br><strong>Distintivo:</strong> ${selected.badge}`;
+        }
+
+        if (Number(data.lastStep) === 2) goStep(2);
+        if (draftStatus) draftStatus.textContent = 'Borrador restaurado automáticamente.';
+    }
+
+    function clearDraft() {
+        try {
+            localStorage.removeItem(DRAFT_KEY);
+            if (draftStatus) draftStatus.textContent = 'Borrador eliminado.';
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    try {
+        const rawDraft = localStorage.getItem(DRAFT_KEY);
+        if (rawDraft) {
+            const parsed = JSON.parse(rawDraft);
+            applyDraft(parsed);
+        }
+    } catch (e) {
+        // ignore invalid draft payload
+    }
+
+    const trackedIds = [
+        'name','username','email','entityName','contactRole','allyType','allyFocus','entitySize','budgetRange',
+        'country','city','website','phone','whatsapp','meetingWindow','timezone','proposal','allyOffer','terms'
+    ];
+    trackedIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const evt = el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input';
+        el.addEventListener(evt, persistDraft);
+    });
+
+    if (clearDraftBtn) {
+        clearDraftBtn.addEventListener('click', clearDraft);
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+        clearEssentialErrors();
+
+        const formData = {
+            name: document.getElementById('name').value.trim(),
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('email').value.trim().toLowerCase(),
+            password: document.getElementById('password').value,
+            entityName: document.getElementById('entityName').value.trim(),
+            contactRole: document.getElementById('contactRole').value.trim(),
+            allyType: allyTypeEl.value,
+            allyFocus: document.getElementById('allyFocus').value,
+            entitySize: document.getElementById('entitySize').value,
+            budgetRange: document.getElementById('budgetRange').value,
+            country: document.getElementById('country').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            website: document.getElementById('website').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            whatsapp: document.getElementById('whatsapp').value.trim(),
+            meetingWindow: document.getElementById('meetingWindow').value,
+            timezone: document.getElementById('timezone').value.trim(),
+            proposal: document.getElementById('proposal').value.trim(),
+            allyOffer: document.getElementById('allyOffer').value.trim(),
+            terms: document.getElementById('terms').checked,
+            allyPlan: selectedPlan ? selectedPlan.key : '',
+            allyPlanName: selectedPlan ? selectedPlan.name : '',
+            allyPlanAmountCop: selectedPlan ? selectedPlan.amountCop : 0,
+            allyPlanMonthlyCop: selectedPlan ? selectedPlan.monthlyCop : 0
+        };
+
+        if (!formData.name || !formData.username || !formData.email || !formData.password || !formData.entityName || !formData.allyType) {
+            if (!formData.name) setFieldError('name', true);
+            if (!formData.entityName) setFieldError('entityName', true);
+            if (!formData.email || !formData.email.includes('@')) setFieldError('email', true);
+            if (!validateUsername(formData.username)) setFieldError('username', true);
+            if (!formData.password || formData.password.length < 8) setFieldError('password', true);
+            if (!formData.allyType) setFieldError('allyType', true);
+            showError('Completa los datos esenciales del aliado para registrar la cuenta.');
+            return;
+        }
+
+        if (!formData.terms) {
+            showError('Debes aceptar términos y política de privacidad para continuar.');
+            return;
+        }
+
+        if (!selectedPlan) {
+            showError('Debes seleccionar un plan en la sección de aliados antes de registrarte.');
+            return;
+        }
+
+        if (planRequiresPayment(selectedPlan) && !paymentVerified) {
+            showError('Para continuar, primero debes completar el pago del ' + selectedPlan.name + ' con tarjeta débito/crédito.');
+            return;
+        }
+
+        if (!validateUsername(formData.username)) {
+            showError('El usuario debe tener 4-30 caracteres y usar solo letras, números, guion y guion bajo.');
+            return;
+        }
+
+        const mappedRole = ROLE_MAP[formData.allyType];
+        if (!mappedRole) {
+            showError('Selecciona un tipo de aliado válido.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creando cuenta aliada...';
+
+        try {
+            const emailQuery = query(ref(db, 'Users'), orderByChild('email'), equalTo(formData.email));
+            const emailSnap = await get(emailQuery);
+            if (emailSnap.exists()) {
+                showError('Este correo ya está registrado en PROVIWEB.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Registrar aliado';
+                return;
+            }
+
+            const usernameQuery = query(ref(db, 'Users'), orderByChild('username'), equalTo(formData.username));
+            const usernameSnap = await get(usernameQuery);
+            if (usernameSnap.exists()) {
+                showError('Este usuario ya existe. Usa otro nombre de usuario.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Registrar aliado';
+                return;
+            }
+
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = userCredential.user;
+
+            const userData = {
+                id: user.uid,
+                name: formData.name,
+                email: formData.email,
+                username: formData.username,
+                bio: 'Cuenta aliada registrada en PROVIWEB',
+                verified: '',
+                verifiedprofesor: '',
+                verifiedstudent: '',
+                verifiedentidad: '',
+                verifiedprofesorart: '',
+                musicservice: '',
+                location: `${formData.city}, ${formData.country}`,
+                phone: formData.phone || '',
+                status: Date.now().toString(),
+                typingTo: 'noOne',
+                link: formData.website || '',
+                photo: '',
+                verifyEmail: false,
+                instrument: '',
+                generoMusic: 'Alianzas',
+                organizaton: 'Aliado',
+                organizationName: formData.entityName,
+                organizationRole: formData.contactRole,
+                fraseSeguridad: '',
+                twoFactorMethod: 'email',
+                createdAt: new Date().toISOString(),
+                accountType: 'ally',
+                allyRole: mappedRole.role,
+                allyBadge: mappedRole.badge,
+                allyType: formData.allyType,
+                allyFocus: formData.allyFocus,
+                entitySize: formData.entitySize,
+                budgetRange: formData.budgetRange,
+                whatsapp: formData.whatsapp,
+                meetingWindow: formData.meetingWindow,
+                timezone: formData.timezone || '',
+                allyOffer: formData.allyOffer,
+                allyPlan: formData.allyPlan,
+                allyPlanName: formData.allyPlanName,
+                allyPlanAmountCop: formData.allyPlanAmountCop,
+                allyPlanMonthlyCop: formData.allyPlanMonthlyCop,
+                allyPaymentStatus: paymentVerified ? 'approved' : 'pending',
+                allyPaymentProvider: paymentProvider || '',
+                allyPaymentReference: paymentReference || '',
+                allyStatus: 'active'
+            };
+
+            const allyData = {
+                userId: user.uid,
+                contactName: formData.name,
+                contactRole: formData.contactRole,
+                entityName: formData.entityName,
+                allyType: formData.allyType,
+                allyRole: mappedRole.role,
+                allyBadge: mappedRole.badge,
+                allyFocus: formData.allyFocus,
+                entitySize: formData.entitySize,
+                budgetRange: formData.budgetRange,
+                country: formData.country,
+                city: formData.city,
+                website: formData.website || '',
+                phone: formData.phone || '',
+                whatsapp: formData.whatsapp || '',
+                meetingWindow: formData.meetingWindow,
+                timezone: formData.timezone || '',
+                allyOffer: formData.allyOffer,
+                proposal: formData.proposal,
+                allyPlan: formData.allyPlan,
+                allyPlanName: formData.allyPlanName,
+                allyPlanAmountCop: formData.allyPlanAmountCop,
+                allyPlanMonthlyCop: formData.allyPlanMonthlyCop,
+                paymentStatus: paymentVerified ? 'approved' : 'pending',
+                paymentProvider: paymentProvider || '',
+                paymentReference: paymentReference || '',
+                createdAt: new Date().toISOString(),
+                status: 'active'
+            };
+
+            await set(ref(db, `Users/${user.uid}`), userData);
+            await set(ref(db, `Allies/${user.uid}`), allyData);
+            clearDraft();
+
+            showSuccess('Registro aliado completado. Nuestro equipo te contactará para verificar la información y agendar una reunión online.');
+            setTimeout(() => {
+                const planParam = selectedPlan && selectedPlan.key ? ('?plan=' + encodeURIComponent(selectedPlan.key)) : '';
+                window.location.href = 'ally-next-steps.html' + planParam;
+            }, 1600);
+        } catch (error) {
+            let message = 'No se pudo completar el registro aliado. Intenta nuevamente.';
+            if (error && error.code === 'auth/email-already-in-use') message = 'Este correo ya está en uso.';
+            if (error && error.code === 'auth/invalid-email') message = 'Correo inválido.';
+            if (error && error.code === 'auth/weak-password') message = 'Contraseña débil. Usa una más robusta.';
+            showError(message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Registrar aliado';
+        }
+    });
+</script>
+</body>
+</html>

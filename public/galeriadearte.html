@@ -1,0 +1,4226 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Galería de Arte - Crea y comparte tu arte">
+<title>Galería de Arte - PROVIWEB</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+    :root {
+        --bg-primary: #0f0f13;
+        --bg-card: rgba(28, 28, 36, 0.7);
+        --border-glass: rgba(255, 255, 255, 0.1);
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0b0;
+        --accent-purple: #a855f7;
+        --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+        --border-radius: 12px;
+        --transition: all 0.3s ease;
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+    }
+
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 60px;
+        background: var(--gradient-primary);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+
+    .header h1 {
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .header button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+    }
+
+    .header button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .header .header-brand-link {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+    .header .header-brand-link:hover { opacity: 0.9; }
+
+    .container {
+        max-width: 1200px;
+        margin: 80px auto 30px;
+        padding: 20px;
+    }
+
+    .art-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--border-glass);
+    }
+
+    .user-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent-purple);
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: var(--accent-purple);
+    }
+
+    .art-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+
+    /* Tabs para diferentes modos */
+    .art-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .art-tab {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px;
+        border: 2px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .art-tab.active {
+        border-color: var(--accent-purple);
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .art-tab:hover {
+        border-color: var(--accent-purple);
+    }
+
+    /* Layout mejorado con paneles laterales */
+    .paint-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px;
+        gap: 15px;
+        margin-bottom: 20px;
+        min-height: 70vh;
+    }
+
+    .tool-panel {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-glass);
+        padding: 15px;
+        overflow-y: auto;
+        max-height: 75vh;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .tool-panel::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .tool-panel::-webkit-scrollbar-track {
+        background: var(--bg-primary);
+        border-radius: 3px;
+    }
+
+    .tool-panel::-webkit-scrollbar-thumb {
+        background: var(--accent-purple);
+        border-radius: 3px;
+    }
+
+    .tool-panel::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-purple);
+        opacity: 0.8;
+    }
+
+    /* Canvas de pintura */
+    .canvas-container {
+        position: relative;
+        width: 100%;
+        background: var(--bg-primary);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        border: 2px solid var(--border-glass);
+        background-image: 
+            linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+            linear-gradient(-45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.03) 75%),
+            linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.03) 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+    }
+
+    #artCanvas {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        cursor: crosshair;
+        touch-action: none;
+        background: #fff;
+        transform-origin: center center;
+        transition: transform 0.1s ease-out;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Grid overlay */
+    .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background-image: 
+            linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        display: none;
+    }
+
+    .grid-overlay.active {
+        display: block;
+    }
+
+    /* Zoom indicator */
+    .zoom-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 100;
+    }
+
+    /* Herramientas de dibujo - Diseño lateral */
+    .drawing-tools {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .tool-section {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-glass);
+        margin-bottom: 8px;
+    }
+
+    .tool-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-purple);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent-purple);
+    }
+
+    .tool-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .tool-btn {
+        padding: 10px 8px;
+        border: 2px solid var(--border-glass);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 11px;
+        white-space: nowrap;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        min-height: 50px;
+        justify-content: center;
+    }
+
+    .tool-btn::before {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .tool-btn:hover {
+        border-color: var(--accent-purple);
+        background: rgba(168, 85, 247, 0.1);
+        color: var(--accent-purple);
+        transform: translateY(-2px);
+    }
+
+    .tool-btn.active {
+        border-color: var(--accent-purple);
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+    }
+
+    .color-picker-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .color-picker {
+        width: 60px;
+        height: 40px;
+        border: 2px solid var(--border-glass);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: var(--bg-card);
+    }
+
+    .color-picker:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Paleta de colores predefinidos */
+    .color-palette {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+    .color-swatch {
+        width: 100%;
+        aspect-ratio: 1;
+        border: 2px solid var(--border-glass);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .color-swatch:hover {
+        transform: scale(1.15);
+        z-index: 10;
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .color-swatch.active {
+        border-color: #fff;
+        border-width: 3px;
+        box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--accent-purple);
+    }
+
+    .brush-size-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .brush-size-slider {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border-glass);
+        outline: none;
+    }
+
+    .brush-size-slider::-webkit-slider-thumb {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent-purple);
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .brush-size-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent-purple);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Opacidad */
+    .opacity-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .opacity-slider {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border-glass);
+        outline: none;
+    }
+
+    /* Stickers/Emojis */
+    .sticker-palette {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        margin-top: 8px;
+    }
+
+    .sticker-item {
+        font-size: 32px;
+        cursor: pointer;
+        text-align: center;
+        padding: 8px;
+        border-radius: 8px;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sticker-item:hover {
+        background: var(--accent-purple);
+        transform: scale(1.2);
+    }
+
+    /* Input de texto */
+    .text-input-wrapper {
+        margin-top: 10px;
+    }
+
+    .text-input {
+        width: 100%;
+        padding: 8px;
+        border: 2px solid var(--border-glass);
+        border-radius: 8px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+    }
+
+    /* Botones de acción */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 8px 16px;
+        border: 2px solid var(--border-glass);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    .action-btn:hover {
+        border-color: var(--accent-purple);
+        background: rgba(168, 85, 247, 0.1);
+        color: var(--accent-purple);
+    }
+
+    .action-btn.danger:hover {
+        border-color: #dc3545;
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    /* Preview de imágenes */
+    .media-preview {
+        margin-top: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .media-item {
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        aspect-ratio: 1;
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+    }
+
+    .media-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .media-item .remove-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .media-item .remove-btn:hover {
+        background: rgba(220, 53, 69, 1);
+        transform: scale(1.1);
+    }
+
+    .media-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+    }
+
+    .media-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px 20px;
+        border: 2px dashed var(--border-glass);
+        border-radius: var(--border-radius);
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    .media-btn:hover {
+        border-color: var(--accent-purple);
+        background: rgba(168, 85, 247, 0.1);
+        color: var(--accent-purple);
+    }
+
+    .media-btn input[type="file"] {
+        display: none;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        font-size: 16px;
+        font-family: 'Inter', sans-serif;
+        resize: vertical;
+        min-height: 120px;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: var(--accent-purple);
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: var(--border-radius);
+        background: var(--gradient-primary);
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 8px 32px rgba(168, 85, 247, 0.3);
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .overlay-content {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass);
+        padding: 30px 40px;
+        border-radius: var(--border-radius);
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        min-width: 300px;
+    }
+
+    .overlay-content h3 {
+        color: var(--accent-purple);
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--border-glass);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--gradient-primary);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .error-msg {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(220, 53, 69, 0.1);
+        border-radius: var(--border-radius);
+        border-left: 3px solid #dc3545;
+        display: none;
+    }
+
+    .loading-ai {
+        display: none;
+        padding: 10px;
+        background: rgba(0, 123, 255, 0.1);
+        border-radius: var(--border-radius);
+        margin-top: 10px;
+        text-align: center;
+        color: var(--accent-purple);
+        font-size: 14px;
+    }
+
+    /* Animación del pincel */
+    .brush-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        transition: width 0.1s, height 0.1s;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .brush-cursor.painting {
+        animation: brushPulse 0.3s ease-in-out infinite;
+    }
+
+    @keyframes brushPulse {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+    }
+
+    /* Ocultar contenido según el modo activo */
+    .art-mode {
+        display: none;
+    }
+
+    .art-mode.active {
+        display: block;
+    }
+
+    /* Galería de obras */
+    .gallery-item {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+
+    .gallery-item-info {
+        padding: 12px;
+    }
+
+    .gallery-item-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: var(--text-primary);
+    }
+
+    .gallery-item-artist {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .gallery-item-stats {
+        display: flex;
+        gap: 15px;
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--text-secondary);
+    }
+
+    /* Retos */
+    .challenge-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-glass);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(168, 85, 247, 0.2);
+        border-color: var(--accent-purple);
+    }
+
+    .challenge-card.joined {
+        border-color: #28a745;
+        background: rgba(40, 167, 69, 0.1);
+    }
+
+    .challenge-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .challenge-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--accent-purple);
+        flex: 1;
+    }
+
+    .challenge-badge {
+        background: var(--accent-purple);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .challenge-badge.active {
+        background: #28a745;
+    }
+
+    .challenge-badge.completed {
+        background: var(--text-secondary);
+    }
+
+    .challenge-badge.urgent {
+        background: #dc3545;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .challenge-description {
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .challenge-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+    }
+
+    .challenge-participants {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .participants-list {
+        display: flex;
+        align-items: center;
+        gap: -5px;
+        margin-left: 8px;
+    }
+
+    .participant-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid var(--bg-card);
+        object-fit: cover;
+        margin-left: -8px;
+    }
+
+    .participant-avatar:first-child {
+        margin-left: 0;
+    }
+
+    .challenge-deadline {
+        font-size: 11px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .challenge-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .challenge-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid var(--accent-purple);
+        border-radius: var(--border-radius);
+        background: var(--accent-purple);
+        color: white;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .challenge-btn:hover {
+        background: #9333ea;
+        transform: translateY(-2px);
+    }
+
+    .challenge-btn.joined {
+        background: #28a745;
+        border-color: #28a745;
+    }
+
+    .challenge-btn.view-works {
+        background: transparent;
+        color: var(--accent-purple);
+    }
+
+    .challenge-btn.view-works:hover {
+        background: rgba(168, 85, 247, 0.1);
+    }
+
+    .challenge-category {
+        display: inline-block;
+        padding: 4px 10px;
+        background: rgba(168, 85, 247, 0.2);
+        color: var(--accent-purple);
+        border-radius: 15px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .challenge-prize {
+        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: #000;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    /* Recursos */
+    .resource-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: var(--transition);
+        aspect-ratio: 1;
+    }
+
+    .resource-item:hover {
+        transform: scale(1.05);
+    }
+
+    .resource-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Modal de exportar */
+    .export-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 10001;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .export-modal.active {
+        display: flex;
+    }
+
+    .export-modal-content {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        max-width: 500px;
+        width: 90%;
+    }
+
+    .export-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .export-option {
+        padding: 15px;
+        border: 2px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .export-option:hover {
+        border-color: var(--accent-purple);
+        background: rgba(168, 85, 247, 0.1);
+    }
+
+    /* Modal de compartir */
+    .share-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 10001;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .share-modal.active {
+        display: flex;
+    }
+
+    .share-modal-content {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-glass);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .share-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .share-option {
+        padding: 15px;
+        border: 2px solid var(--border-glass);
+        border-radius: var(--border-radius);
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .share-option:hover {
+        border-color: var(--accent-purple);
+        background: rgba(168, 85, 247, 0.1);
+    }
+
+    @media (max-width: 1200px) {
+        .paint-layout {
+            grid-template-columns: 240px 1fr 240px;
+        }
+    }
+
+    @media (max-width: 968px) {
+        .paint-layout {
+            grid-template-columns: 200px 1fr;
+        }
+        
+        .tool-panel:last-child {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+
+        .art-card {
+            padding: 20px;
+        }
+
+        .paint-layout {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .tool-panel {
+            max-height: 300px;
+            order: 2;
+        }
+
+        .canvas-container {
+            order: 1;
+            min-height: 400px;
+        }
+
+        .tool-group {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .color-palette {
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .sticker-palette {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .tool-btn {
+            font-size: 10px;
+            padding: 8px 6px;
+            min-height: 45px;
+        }
+    }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<div class="header">
+    <a href="home.html" class="header-brand-link">PROVIWEB</a>
+    <h1>🎨 Galería de Arte</h1>
+    <button onclick="window.location.href='home.html'">&times;</button>
+</div>
+
+<div class="container" id="mainContent">
+    <div class="art-card">
+        <div class="user-info">
+            <img id="userPhoto" src="assets/avatar.png" alt="Usuario" class="user-photo">
+            <div>
+                <div class="user-name" id="userName">Usuario <span class="art-badge">ARTE</span></div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Construye tu portafolio creativo y compártelo</div>
+            </div>
+        </div>
+
+        <!-- Tabs para diferentes modos -->
+        <div class="art-tabs">
+            <button class="art-tab active" data-mode="paint">🖌️ Pintar</button>
+            <button class="art-tab" data-mode="ai">🤖 Generar con IA</button>
+            <button class="art-tab" data-mode="upload">📤 Subir Imágenes</button>
+            <button class="art-tab" data-mode="gallery">🖼️ Galería</button>
+            <button class="art-tab" data-mode="challenges">🏆 Retos</button>
+            <button class="art-tab" data-mode="resources">📚 Recursos</button>
+        </div>
+
+        <!-- Modo: Pintar -->
+        <div class="art-mode active" id="paintMode">
+            <div class="paint-layout">
+                <!-- Panel Izquierdo: Herramientas Principales -->
+                <div class="tool-panel">
+                    <div class="drawing-tools">
+                        <!-- Herramientas principales -->
+                        <div class="tool-section">
+                            <div class="tool-section-title">🛠️ Herramientas</div>
+                            <div class="tool-group">
+                                <button class="tool-btn active" id="brushTool" data-tool="brush">
+                                    <span style="font-size:20px;">🖌️</span>
+                                    <span>Pincel</span>
+                                </button>
+                                <button class="tool-btn" id="eraserTool" data-tool="eraser">
+                                    <span style="font-size:20px;">🧹</span>
+                                    <span>Borrador</span>
+                                </button>
+                                <button class="tool-btn" id="shapeTool" data-tool="shape">
+                                    <span style="font-size:20px;">⬜</span>
+                                    <span>Formas</span>
+                                </button>
+                                <button class="tool-btn" id="textTool" data-tool="text">
+                                    <span style="font-size:20px;">📝</span>
+                                    <span>Texto</span>
+                                </button>
+                                <button class="tool-btn" id="stickerTool" data-tool="sticker">
+                                    <span style="font-size:20px;">🎨</span>
+                                    <span>Stickers</span>
+                                </button>
+                            </div>
+                            <div class="action-buttons" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                <button class="action-btn" id="undoBtn">↶ Deshacer</button>
+                                <button class="action-btn" id="redoBtn">↷ Rehacer</button>
+                                <button class="action-btn danger" id="clearTool" style="grid-column:span 2;">🗑️ Limpiar</button>
+                                <label class="action-btn" style="cursor:pointer;grid-column:span 2;">
+                                    📷 Cargar Imagen
+                                    <input type="file" accept="image/*" id="loadImageInput" style="display:none;">
+                                </label>
+                                <button class="action-btn" id="saveDraftBtn" style="grid-column:span 2;background:#ffc107;color:#000;">
+                                    💾 Guardar Borrador
+                                </button>
+                                <button class="action-btn" id="exportBtn" style="grid-column:span 2;background:#28a745;color:white;">
+                                    📥 Exportar
+                                </button>
+                                <button class="action-btn" id="shareBtn" style="grid-column:span 2;background:#17a2b8;color:white;">
+                                    🔗 Compartir
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Color personalizado -->
+                        <div class="tool-section">
+                            <div class="tool-section-title">🎨 Color</div>
+                            <div class="color-picker-wrapper" style="display:flex;flex-direction:column;gap:8px;">
+                                <input type="color" id="colorPicker" class="color-picker" value="#000000" style="width:100%;height:50px;">
+                                <div style="font-size:10px;text-align:center;color:var(--text-secondary);">Personalizado</div>
+                            </div>
+                        </div>
+
+                        <!-- Paleta de colores -->
+                        <div class="tool-section">
+                            <div class="tool-section-title">🌈 Paleta</div>
+                            <div class="color-palette" id="colorPalette"></div>
+                        </div>
+
+                        <!-- Tamaño del pincel -->
+                        <div class="tool-section">
+                            <div class="tool-section-title">📏 Tamaño</div>
+                            <div class="brush-size-wrapper">
+                                <input type="range" id="brushSize" class="brush-size-slider" min="1" max="100" value="5">
+                            </div>
+                            <div style="text-align:center;margin-top:5px;font-size:11px;font-weight:600;color:var(--accent-purple);">
+                                <span id="brushSizeValue">5px</span>
+                            </div>
+                        </div>
+
+                        <!-- Opacidad -->
+                        <div class="tool-section">
+                            <div class="tool-section-title">💧 Opacidad</div>
+                            <div class="opacity-wrapper">
+                                <input type="range" id="opacitySlider" class="opacity-slider" min="0" max="100" value="100">
+                            </div>
+                            <div style="text-align:center;margin-top:5px;font-size:11px;font-weight:600;color:var(--accent-purple);">
+                                <span id="opacityValue">100%</span>
+                            </div>
+                        </div>
+
+                        <!-- Formas -->
+                        <div class="tool-section" id="shapeSection" style="display:none;">
+                            <div class="tool-section-title">⬜ Formas</div>
+                            <div class="tool-group">
+                                <button class="tool-btn" id="rectBtn" data-shape="rect">
+                                    <span style="font-size:20px;">▭</span>
+                                    <span>Rect</span>
+                                </button>
+                                <button class="tool-btn" id="circleBtn" data-shape="circle">
+                                    <span style="font-size:20px;">○</span>
+                                    <span>Círculo</span>
+                                </button>
+                                <button class="tool-btn" id="lineBtn" data-shape="line">
+                                    <span style="font-size:20px;">─</span>
+                                    <span>Línea</span>
+                                </button>
+                                <button class="tool-btn" id="arrowBtn" data-shape="arrow">
+                                    <span style="font-size:20px;">➜</span>
+                                    <span>Flecha</span>
+                                </button>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="fillShape" style="width:14px;height:14px;">
+                                    Rellenar
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Texto -->
+                        <div class="tool-section" id="textSection" style="display:none;">
+                            <div class="tool-section-title">📝 Texto</div>
+                            <div class="text-input-wrapper">
+                                <input type="text" id="textInput" class="text-input" placeholder="Escribe aquí...">
+                            </div>
+                            <div style="margin-top:8px;display:flex;gap:6px;align-items:center;">
+                                <input type="range" id="textSize" min="12" max="72" value="24" style="flex:1;accent-color:var(--accent-purple);">
+                                <span id="textSizeValue" style="font-size:10px;min-width:35px;">24px</span>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="textBold" style="width:14px;height:14px;">
+                                    Negrita
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Stickers -->
+                        <div class="tool-section" id="stickerSection" style="display:none;">
+                            <div class="tool-section-title">🎨 Stickers</div>
+                            <div class="sticker-palette" id="stickerPalette"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas Central -->
+                <div class="canvas-container">
+                    <div class="grid-overlay" id="gridOverlay"></div>
+                    <div class="zoom-indicator" id="zoomIndicator">100%</div>
+                    <canvas id="artCanvas"></canvas>
+                </div>
+
+                <!-- Panel Derecho: Efectos y Avanzadas -->
+                <div class="tool-panel">
+                    <div class="drawing-tools">
+
+                        <!-- Tipos de Pincel -->
+                        <div class="tool-section" id="brushTypeSection">
+                            <div class="tool-section-title">🎨 Tipo Pincel</div>
+                            <div class="tool-group">
+                                <button class="tool-btn active" id="brushNormal" data-brush="normal">
+                                    <span style="font-size:18px;">🖌️</span>
+                                    <span>Normal</span>
+                                </button>
+                                <button class="tool-btn" id="brushWatercolor" data-brush="watercolor">
+                                    <span style="font-size:18px;">💧</span>
+                                    <span>Acuarela</span>
+                                </button>
+                                <button class="tool-btn" id="brushOil" data-brush="oil">
+                                    <span style="font-size:18px;">🖼️</span>
+                                    <span>Óleo</span>
+                                </button>
+                                <button class="tool-btn" id="brushCharcoal" data-brush="charcoal">
+                                    <span style="font-size:18px;">✏️</span>
+                                    <span>Carboncillo</span>
+                                </button>
+                                <button class="tool-btn" id="brushSpray" data-brush="spray">
+                                    <span style="font-size:18px;">💨</span>
+                                    <span>Spray</span>
+                                </button>
+                                <button class="tool-btn" id="brushMarker" data-brush="marker">
+                                    <span style="font-size:18px;">🖍️</span>
+                                    <span>Marcador</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Filtros y Efectos -->
+                        <div class="tool-section" id="filtersSection">
+                            <div class="tool-section-title">✨ Filtros</div>
+                            <div class="tool-group">
+                                <button class="tool-btn" id="blurBtn">
+                                    <span style="font-size:18px;">🌫️</span>
+                                    <span>Blur</span>
+                                </button>
+                                <button class="tool-btn" id="sharpenBtn">
+                                    <span style="font-size:18px;">🔪</span>
+                                    <span>Sharpen</span>
+                                </button>
+                                <button class="tool-btn" id="saturateBtn">
+                                    <span style="font-size:18px;">🌈</span>
+                                    <span>Saturación</span>
+                                </button>
+                                <button class="tool-btn" id="brightnessBtn">
+                                    <span style="font-size:18px;">☀️</span>
+                                    <span>Brillo</span>
+                                </button>
+                                <button class="tool-btn" id="contrastBtn">
+                                    <span style="font-size:18px;">⚡</span>
+                                    <span>Contraste</span>
+                                </button>
+                                <button class="tool-btn" id="grayscaleBtn">
+                                    <span style="font-size:18px;">⚫</span>
+                                    <span>B&N</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Gradientes -->
+                        <div class="tool-section" id="gradientSection">
+                            <div class="tool-section-title">🌈 Gradientes</div>
+                            <div class="tool-group">
+                                <button class="tool-btn" id="gradientLinear" data-gradient="linear">
+                                    <span style="font-size:18px;">➡️</span>
+                                    <span>Lineal</span>
+                                </button>
+                                <button class="tool-btn" id="gradientRadial" data-gradient="radial">
+                                    <span style="font-size:18px;">⭕</span>
+                                    <span>Radial</span>
+                                </button>
+                            </div>
+                            <div style="margin-top:8px;display:flex;gap:6px;">
+                                <input type="color" id="gradientColor1" value="#FF0000" style="flex:1;height:35px;border-radius:6px;border:2px solid var(--border-glass);">
+                                <input type="color" id="gradientColor2" value="#0000FF" style="flex:1;height:35px;border-radius:6px;border:2px solid var(--border-glass);">
+                            </div>
+                        </div>
+
+                        <!-- Herramientas Avanzadas -->
+                        <div class="tool-section" id="advancedSection">
+                            <div class="tool-section-title">🔧 Avanzadas</div>
+                            <div class="tool-group">
+                                <button class="tool-btn" id="symmetryBtn">
+                                    <span style="font-size:18px;">🪞</span>
+                                    <span>Simetría</span>
+                                </button>
+                                <button class="tool-btn" id="gridBtn">
+                                    <span style="font-size:18px;">📐</span>
+                                    <span>Cuadrícula</span>
+                                </button>
+                                <button class="tool-btn" id="zoomInBtn">
+                                    <span style="font-size:18px;">🔍+</span>
+                                    <span>Zoom In</span>
+                                </button>
+                                <button class="tool-btn" id="zoomOutBtn">
+                                    <span style="font-size:18px;">🔍-</span>
+                                    <span>Zoom Out</span>
+                                </button>
+                                <button class="tool-btn" id="resetZoomBtn" style="grid-column:span 2;">
+                                    <span style="font-size:18px;">↺</span>
+                                    <span>Reset Zoom</span>
+                                </button>
+                            </div>
+                            <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="symmetryToggle" style="width:14px;height:14px;">
+                                    Activar simetría
+                                </label>
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="gridToggle" style="width:14px;height:14px;">
+                                    Mostrar cuadrícula
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Efectos de Texto -->
+                        <div class="tool-section" id="textEffectsSection" style="display:none;">
+                            <div class="tool-section-title">✨ Efectos Texto</div>
+                            <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="textShadow" style="width:14px;height:14px;">
+                                    Sombra
+                                </label>
+                                <label style="font-size:10px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                                    <input type="checkbox" id="textOutline" style="width:14px;height:14px;">
+                                    Contorno
+                                </label>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <label style="font-size:10px;margin-bottom:4px;display:block;">Color contorno:</label>
+                                <input type="color" id="textOutlineColor" value="#000000" style="width:100%;height:35px;border-radius:6px;border:2px solid var(--border-glass);">
+                            </div>
+                        </div>
+
+                        <!-- Plantillas -->
+                        <div class="tool-section" id="templatesSection">
+                            <div class="tool-section-title">📐 Plantillas</div>
+                            <div class="tool-group">
+                                <button class="tool-btn" id="templateInstagram" data-template="1080x1080">
+                                    <span style="font-size:18px;">📱</span>
+                                    <span>Instagram</span>
+                                </button>
+                                <button class="tool-btn" id="templateFacebook" data-template="1200x630">
+                                    <span style="font-size:18px;">📘</span>
+                                    <span>Facebook</span>
+                                </button>
+                                <button class="tool-btn" id="templateStory" data-template="1080x1920">
+                                    <span style="font-size:18px;">📸</span>
+                                    <span>Story</span>
+                                </button>
+                                <button class="tool-btn" id="templateCustom" data-template="custom">
+                                    <span style="font-size:18px;">⚙️</span>
+                                    <span>Personalizado</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modo: Generar con IA -->
+        <div class="art-mode" id="aiMode">
+            <div class="form-group">
+                <label for="aiPrompt">Describe la imagen que deseas generar con IA:</label>
+                <textarea id="aiPrompt" placeholder="Ejemplo: Un paisaje surrealista con montañas flotantes y un cielo rosa al atardecer..." maxlength="500"></textarea>
+                <div style="text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
+                    <span id="aiCharCount">0</span>/500
+                </div>
+            </div>
+            <button class="media-btn" id="generateAIBtn">
+                🎨 Generar Imagen con IA
+            </button>
+            <div class="loading-ai" id="loadingAI">
+                <div>🔄 Generando imagen con IA... Esto puede tardar unos momentos.</div>
+            </div>
+            <div class="media-preview" id="aiPreview"></div>
+        </div>
+
+        <!-- Modo: Subir Imágenes -->
+        <div class="art-mode" id="uploadMode">
+            <div class="form-group">
+                <label>Sube una o varias imágenes de tu arte:</label>
+                <div class="media-preview" id="uploadPreview"></div>
+                <div class="media-buttons">
+                    <label class="media-btn">
+                        📷 Agregar Imágenes
+                        <input type="file" accept="image/*" multiple id="imageInput">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modo: Galería de Obras Públicas -->
+        <div class="art-mode" id="galleryMode">
+            <div style="display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
+                <input type="text" id="gallerySearch" placeholder="🔍 Buscar obras, artistas, hashtags..." style="flex:1;min-width:200px;padding:12px;border:2px solid var(--border-glass);border-radius:var(--border-radius);background:rgba(255,255,255,0.05);color:var(--text-primary);">
+                <select id="galleryFilter" style="padding:12px;border:2px solid var(--border-glass);border-radius:var(--border-radius);background:rgba(255,255,255,0.05);color:var(--text-primary);">
+                    <option value="all">Todas las obras</option>
+                    <option value="recent">Más recientes</option>
+                    <option value="popular">Más populares</option>
+                    <option value="digital">Digital</option>
+                    <option value="traditional">Tradicional</option>
+                    <option value="abstract">Abstracto</option>
+                    <option value="realistic">Realista</option>
+                </select>
+                <button class="action-btn" id="galleryViewToggle" style="padding:12px 20px;">
+                    <span id="viewModeIcon">⊞</span> Vista
+                </button>
+            </div>
+            <div id="galleryContainer" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:15px;"></div>
+            <div id="galleryLoading" style="text-align:center;padding:40px;color:var(--text-secondary);display:none;">
+                <div>🔄 Cargando obras...</div>
+            </div>
+            <div id="galleryEmpty" style="text-align:center;padding:40px;color:var(--text-secondary);display:none;">
+                <div style="font-size:48px;margin-bottom:10px;">🎨</div>
+                <div>No se encontraron obras</div>
+            </div>
+        </div>
+
+        <!-- Modo: Retos Artísticos -->
+        <div class="art-mode" id="challengesMode">
+            <div style="background:var(--gradient-primary);padding:30px;border-radius:var(--border-radius);color:white;margin-bottom:20px;">
+                <h2 style="margin-bottom:10px;">🏆 Retos Artísticos</h2>
+                <p>Participa en desafíos temáticos y muestra tu creatividad</p>
+            </div>
+            
+            <!-- Filtros de retos -->
+            <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+                <button class="action-btn active" id="filterAllChallenges" data-filter="all">Todos</button>
+                <button class="action-btn" id="filterActiveChallenges" data-filter="active">Activos</button>
+                <button class="action-btn" id="filterMyChallenges" data-filter="my">Mis Retos</button>
+                <button class="action-btn" id="filterCompletedChallenges" data-filter="completed">Completados</button>
+            </div>
+            
+            <div id="challengesContainer" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:20px;"></div>
+            <div id="challengesLoading" style="text-align:center;padding:40px;color:var(--text-secondary);display:none;">
+                <div>🔄 Cargando retos...</div>
+            </div>
+            <div id="challengesEmpty" style="text-align:center;padding:40px;color:var(--text-secondary);display:none;">
+                <div style="font-size:48px;margin-bottom:10px;">🎨</div>
+                <div>No hay retos disponibles</div>
+            </div>
+        </div>
+
+        <!-- Modo: Biblioteca de Recursos -->
+        <div class="art-mode" id="resourcesMode">
+            <div style="display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
+                <button class="action-btn active" data-resource-type="textures">🖼️ Texturas</button>
+                <button class="action-btn" data-resource-type="patterns">🔲 Patrones</button>
+                <button class="action-btn" data-resource-type="brushes">🖌️ Pinceles</button>
+                <button class="action-btn" data-resource-type="backgrounds">🎨 Fondos</button>
+            </div>
+            <div id="resourcesContainer" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));gap:15px;"></div>
+        </div>
+
+        <!-- Formulario de publicación -->
+        <div class="form-group" style="margin-top: 30px;">
+            <label for="artDescription">Descripción de tu obra <span style="color: var(--accent-purple);">#ArtePROVIWEB</span>:</label>
+            <textarea id="artDescription" placeholder="Comparte la historia detrás de tu arte... #ArtePROVIWEB" maxlength="1000"></textarea>
+            <div style="text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
+                <span id="charCount">0</span>/1000
+            </div>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <button type="button" class="btn-submit" id="submitBtn">
+            🎨 Publicar Arte
+        </button>
+    </div>
+</div>
+
+<div class="overlay" id="overlay">
+    <div class="overlay-content">
+        <h3 id="overlayMessage">Publicando arte...</h3>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Cursor del pincel animado -->
+<div class="brush-cursor" id="brushCursor"></div>
+
+<!-- Modal de Exportar -->
+<div class="export-modal" id="exportModal">
+    <div class="export-modal-content">
+        <h3 style="margin-bottom:20px;color:var(--accent-purple);">📥 Exportar Obra</h3>
+        <div class="export-options">
+            <div class="export-option" data-format="png">
+                <div style="font-size:32px;margin-bottom:8px;">🖼️</div>
+                <div style="font-weight:600;">PNG</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Alta calidad</div>
+            </div>
+            <div class="export-option" data-format="jpg">
+                <div style="font-size:32px;margin-bottom:8px;">📷</div>
+                <div style="font-weight:600;">JPG</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Comprimido</div>
+            </div>
+            <div class="export-option" data-format="svg">
+                <div style="font-size:32px;margin-bottom:8px;">📐</div>
+                <div style="font-weight:600;">SVG</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Vectorial</div>
+            </div>
+            <div class="export-option" data-format="pdf">
+                <div style="font-size:32px;margin-bottom:8px;">📄</div>
+                <div style="font-weight:600;">PDF</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Documento</div>
+            </div>
+        </div>
+        <div style="margin-top:20px;">
+            <label style="display:block;margin-bottom:8px;font-size:12px;font-weight:600;">Calidad:</label>
+            <input type="range" id="exportQuality" min="0.5" max="1" step="0.1" value="1" style="width:100%;accent-color:var(--accent-purple);">
+            <div style="text-align:center;margin-top:5px;font-size:11px;color:var(--text-secondary);">
+                <span id="qualityValue">100%</span>
+            </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:10px;">
+            <button class="action-btn" onclick="closeExportModal()" style="flex:1;">Cancelar</button>
+            <button class="action-btn" id="confirmExportBtn" style="flex:1;background:var(--accent-purple);color:white;">Exportar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Compartir -->
+<div class="share-modal" id="shareModal">
+    <div class="share-modal-content">
+        <h3 style="margin-bottom:20px;color:var(--accent-purple);">🔗 Compartir Obra</h3>
+        <div class="share-options">
+            <div class="share-option" data-platform="facebook">
+                <div style="font-size:32px;">📘</div>
+                <div style="font-size:12px;font-weight:600;">Facebook</div>
+            </div>
+            <div class="share-option" data-platform="twitter">
+                <div style="font-size:32px;">🐦</div>
+                <div style="font-size:12px;font-weight:600;">Twitter</div>
+            </div>
+            <div class="share-option" data-platform="instagram">
+                <div style="font-size:32px;">📷</div>
+                <div style="font-size:12px;font-weight:600;">Instagram</div>
+            </div>
+            <div class="share-option" data-platform="whatsapp">
+                <div style="font-size:32px;">💬</div>
+                <div style="font-size:12px;font-weight:600;">WhatsApp</div>
+            </div>
+            <div class="share-option" data-platform="link">
+                <div style="font-size:32px;">🔗</div>
+                <div style="font-size:12px;font-weight:600;">Copiar Link</div>
+            </div>
+            <div class="share-option" data-platform="qr">
+                <div style="font-size:32px;">📱</div>
+                <div style="font-size:12px;font-weight:600;">QR Code</div>
+            </div>
+        </div>
+        <button class="action-btn" onclick="closeShareModal()" style="width:100%;margin-top:20px;">Cerrar</button>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, push, set, get, query, orderByChild, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+    authDomain: "proviweb-d8764.firebaseapp.com",
+    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+    projectId: "proviweb-d8764",
+    storageBucket: "proviweb-d8764.appspot.com",
+    messagingSenderId: "475963980955",
+    appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+    measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+// Elementos DOM
+const userPhoto = document.getElementById('userPhoto');
+const userName = document.getElementById('userName');
+const artCanvas = document.getElementById('artCanvas');
+const colorPicker = document.getElementById('colorPicker');
+const brushSize = document.getElementById('brushSize');
+const brushSizeValue = document.getElementById('brushSizeValue');
+const brushTool = document.getElementById('brushTool');
+const eraserTool = document.getElementById('eraserTool');
+const clearTool = document.getElementById('clearTool');
+const artTabs = document.querySelectorAll('.art-tab');
+const artModes = document.querySelectorAll('.art-mode');
+const aiPrompt = document.getElementById('aiPrompt');
+const aiCharCount = document.getElementById('aiCharCount');
+const generateAIBtn = document.getElementById('generateAIBtn');
+const loadingAI = document.getElementById('loadingAI');
+const aiPreview = document.getElementById('aiPreview');
+const imageInput = document.getElementById('imageInput');
+const uploadPreview = document.getElementById('uploadPreview');
+const artDescription = document.getElementById('artDescription');
+const charCount = document.getElementById('charCount');
+const submitBtn = document.getElementById('submitBtn');
+const errorMsg = document.getElementById('errorMsg');
+const overlay = document.getElementById('overlay');
+const overlayMessage = document.getElementById('overlayMessage');
+const progressFill = document.getElementById('progressFill');
+const brushCursor = document.getElementById('brushCursor');
+
+let currentUser = null;
+let currentMode = 'paint';
+let currentTool = 'brush';
+let isDrawing = false;
+let canvasContext = null;
+let currentColor = '#000000';
+let currentBrushSize = 5;
+let currentOpacity = 100;
+let mediaFiles = [];
+let aiGeneratedImage = null;
+let canvasImage = null;
+
+// Historial para deshacer/rehacer
+let history = [];
+let historyStep = -1;
+const MAX_HISTORY = 50;
+
+// Variables para formas
+let shapeStartX = 0;
+let shapeStartY = 0;
+let currentShape = null;
+let isDrawingShape = false;
+let shapePreviewImage = null;
+
+// Variables para texto
+let textInputs = [];
+let isAddingText = false;
+
+// Variables para stickers
+let selectedSticker = null;
+
+// Variables para zoom y transformaciones
+let currentZoom = 1;
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+let lastPanPoint = { x: 0, y: 0 };
+
+// Variables para efectos
+let currentBrushType = 'normal';
+let symmetryEnabled = false;
+let gridEnabled = false;
+
+// Variables para gradientes
+let gradientMode = null;
+let gradientColor1 = '#FF0000';
+let gradientColor2 = '#0000FF';
+
+// Paleta de colores predefinidos
+const colorPalette = [
+    '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+    '#FFA500', '#800080', '#FFC0CB', '#A52A2A', '#808080', '#FFD700', '#4B0082', '#FF1493',
+    '#00CED1', '#32CD32', '#FF4500', '#1E90FF', '#FF69B4', '#8B4513', '#2E8B57', '#DC143C',
+    '#4169E1', '#FF6347', '#20B2AA', '#9370DB', '#F0E68C', '#FFA07A', '#98D8C8', '#F7DC6F',
+    '#BB8FCE', '#85C1E2', '#F8B739', '#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#9B59B6',
+    '#E91E63', '#00BCD4', '#4CAF50', '#FF9800', '#795548', '#607D8B', '#9E9E9E', '#000000'
+];
+
+// Stickers/Emojis
+const stickers = [
+    '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩',
+    '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨',
+    '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕',
+    '🤢', '🤮', '🤧', '🥵', '🥶', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️',
+    '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞',
+    '💯', '🔥', '⭐', '🌟', '✨', '💫', '💥', '💢', '💤', '💨', '💦', '🎉', '🎊', '🎈', '🎁', '🏆',
+    '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖',
+    '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💪'
+];
+
+// Configuración del canvas
+function setupCanvas() {
+    // Tamaño inicial del canvas
+    artCanvas.width = 800;
+    artCanvas.height = 600;
+    
+    canvasContext = artCanvas.getContext('2d');
+    canvasContext.lineCap = 'round';
+    canvasContext.lineJoin = 'round';
+    canvasContext.strokeStyle = currentColor;
+    canvasContext.fillStyle = currentColor;
+    canvasContext.lineWidth = currentBrushSize;
+    canvasContext.globalAlpha = currentOpacity / 100;
+    
+    // Fondo blanco
+    canvasContext.fillStyle = '#ffffff';
+    canvasContext.fillRect(0, 0, artCanvas.width, artCanvas.height);
+    
+    // Ajustar tamaño visual manteniendo aspecto
+    adjustCanvasSize();
+    
+    saveState();
+}
+
+function adjustCanvasSize() {
+    const container = artCanvas.parentElement;
+    const containerWidth = container.clientWidth - 40;
+    const containerHeight = container.clientHeight - 40;
+    const aspectRatio = artCanvas.width / artCanvas.height;
+    
+    let displayWidth = containerWidth;
+    let displayHeight = containerWidth / aspectRatio;
+    
+    if (displayHeight > containerHeight) {
+        displayHeight = containerHeight;
+        displayWidth = containerHeight * aspectRatio;
+    }
+    
+    artCanvas.style.width = displayWidth + 'px';
+    artCanvas.style.height = displayHeight + 'px';
+}
+
+// Guardar estado para deshacer/rehacer
+function saveState() {
+    if (historyStep < history.length - 1) {
+        history = history.slice(0, historyStep + 1);
+    }
+    history.push(artCanvas.toDataURL());
+    historyStep++;
+    if (history.length > MAX_HISTORY) {
+        history.shift();
+        historyStep--;
+    }
+    updateUndoRedoButtons();
+}
+
+function updateUndoRedoButtons() {
+    document.getElementById('undoBtn').disabled = historyStep <= 0;
+    document.getElementById('redoBtn').disabled = historyStep >= history.length - 1;
+}
+
+function undo() {
+    if (historyStep > 0) {
+        historyStep--;
+        restoreState();
+    }
+}
+
+function redo() {
+    if (historyStep < history.length - 1) {
+        historyStep++;
+        restoreState();
+    }
+}
+
+function restoreState() {
+    const img = new Image();
+    img.onload = () => {
+        canvasContext.clearRect(0, 0, artCanvas.width, artCanvas.height);
+        canvasContext.drawImage(img, 0, 0);
+        canvasImage = artCanvas.toDataURL('image/png');
+    };
+    img.src = history[historyStep];
+    updateUndoRedoButtons();
+}
+
+// Inicializar canvas
+setupCanvas();
+window.addEventListener('resize', () => {
+    adjustCanvasSize();
+});
+
+// Ajustar canvas cuando cambie el zoom
+const originalUpdateZoom = updateZoom;
+updateZoom = function() {
+    originalUpdateZoom();
+    adjustCanvasSize();
+};
+
+// Inicializar paleta de colores
+function initColorPalette() {
+    const palette = document.getElementById('colorPalette');
+    palette.innerHTML = '';
+    colorPalette.forEach(color => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch';
+        swatch.style.backgroundColor = color;
+        swatch.onclick = () => {
+            currentColor = color;
+            colorPicker.value = color;
+            canvasContext.strokeStyle = color;
+            canvasContext.fillStyle = color;
+            brushCursor.style.backgroundColor = color;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+        };
+        if (color === currentColor) swatch.classList.add('active');
+        palette.appendChild(swatch);
+    });
+}
+
+// Inicializar stickers
+function initStickers() {
+    const stickerPalette = document.getElementById('stickerPalette');
+    stickerPalette.innerHTML = '';
+    stickers.forEach(sticker => {
+        const item = document.createElement('div');
+        item.className = 'sticker-item';
+        item.textContent = sticker;
+        item.onclick = () => {
+            selectedSticker = sticker;
+            currentTool = 'sticker';
+            document.querySelectorAll('[data-tool]').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('stickerTool').classList.add('active');
+        };
+        stickerPalette.appendChild(item);
+    });
+}
+
+// Cambiar modo
+artTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const mode = tab.dataset.mode;
+        currentMode = mode;
+        
+        artTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        artModes.forEach(m => m.classList.remove('active'));
+        document.getElementById(`${mode}Mode`).classList.add('active');
+        
+        // Cargar contenido según el modo
+        if (mode === 'gallery') {
+            loadGallery();
+        } else if (mode === 'challenges') {
+            loadChallenges();
+        } else if (mode === 'resources') {
+            loadResources('textures');
+        }
+    });
+});
+
+// Herramientas de dibujo
+document.querySelectorAll('[data-tool]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tool = btn.dataset.tool;
+        currentTool = tool;
+        
+        document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Mostrar/ocultar secciones
+        document.getElementById('shapeSection').style.display = tool === 'shape' ? 'block' : 'none';
+        document.getElementById('textSection').style.display = tool === 'text' ? 'block' : 'none';
+        document.getElementById('textEffectsSection').style.display = tool === 'text' ? 'block' : 'none';
+        document.getElementById('stickerSection').style.display = tool === 'sticker' ? 'block' : 'none';
+        
+        if (tool === 'brush') {
+            canvasContext.globalCompositeOperation = 'source-over';
+            // Aplicar tipo de pincel actual
+            applyBrushType();
+        } else if (tool === 'eraser') {
+            canvasContext.globalCompositeOperation = 'destination-out';
+            canvasContext.globalAlpha = currentOpacity / 100;
+        }
+    });
+});
+
+// Formas
+document.querySelectorAll('[data-shape]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        currentShape = btn.dataset.shape;
+        document.querySelectorAll('[data-shape]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
+
+// Deshacer/Rehacer
+document.getElementById('undoBtn').addEventListener('click', undo);
+document.getElementById('redoBtn').addEventListener('click', redo);
+
+// Limpiar
+clearTool.addEventListener('click', () => {
+    if (confirm('¿Estás seguro de limpiar todo el canvas?')) {
+        canvasContext.fillStyle = '#ffffff';
+        canvasContext.fillRect(0, 0, artCanvas.width, artCanvas.height);
+        canvasImage = null;
+        saveState();
+    }
+});
+
+// Cargar imagen
+document.getElementById('loadImageInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                canvasContext.drawImage(img, 0, 0, artCanvas.width, artCanvas.height);
+                saveState();
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Color picker
+colorPicker.addEventListener('input', (e) => {
+    currentColor = e.target.value;
+    canvasContext.strokeStyle = currentColor;
+    canvasContext.fillStyle = currentColor;
+    brushCursor.style.backgroundColor = currentColor;
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+});
+
+// Brush size
+brushSize.addEventListener('input', (e) => {
+    currentBrushSize = parseInt(e.target.value);
+    brushSizeValue.textContent = `${currentBrushSize}px`;
+    canvasContext.lineWidth = currentBrushSize;
+    brushCursor.style.width = `${currentBrushSize * 2}px`;
+    brushCursor.style.height = `${currentBrushSize * 2}px`;
+});
+
+// Opacidad
+const opacitySlider = document.getElementById('opacitySlider');
+const opacityValue = document.getElementById('opacityValue');
+opacitySlider.addEventListener('input', (e) => {
+    currentOpacity = parseInt(e.target.value);
+    opacityValue.textContent = `${currentOpacity}%`;
+    canvasContext.globalAlpha = currentOpacity / 100;
+});
+
+// Tamaño de texto
+const textSize = document.getElementById('textSize');
+const textSizeValue = document.getElementById('textSizeValue');
+textSize.addEventListener('input', (e) => {
+    textSizeValue.textContent = `${e.target.value}px`;
+});
+
+// Tipos de pinceles
+document.querySelectorAll('[data-brush]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        currentBrushType = btn.dataset.brush;
+        document.querySelectorAll('[data-brush]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyBrushType();
+    });
+});
+
+function applyBrushType() {
+    // Esta función se llama antes de cada trazo
+    canvasContext.save();
+    
+    switch(currentBrushType) {
+        case 'watercolor':
+            canvasContext.globalCompositeOperation = 'multiply';
+            canvasContext.globalAlpha = Math.min(0.4, currentOpacity / 100 * 0.4);
+            canvasContext.lineCap = 'round';
+            canvasContext.lineJoin = 'round';
+            break;
+        case 'oil':
+            canvasContext.lineCap = 'round';
+            canvasContext.lineJoin = 'round';
+            canvasContext.shadowColor = 'rgba(0,0,0,0.3)';
+            canvasContext.shadowBlur = 3;
+            canvasContext.shadowOffsetX = 1;
+            canvasContext.shadowOffsetY = 1;
+            canvasContext.globalAlpha = currentOpacity / 100;
+            break;
+        case 'charcoal':
+            canvasContext.globalAlpha = Math.min(0.8, currentOpacity / 100 * 0.8);
+            canvasContext.shadowColor = 'rgba(0,0,0,0.5)';
+            canvasContext.shadowBlur = 2;
+            canvasContext.lineCap = 'round';
+            break;
+        case 'spray':
+            canvasContext.globalCompositeOperation = 'screen';
+            canvasContext.globalAlpha = Math.min(0.6, currentOpacity / 100 * 0.6);
+            canvasContext.lineCap = 'round';
+            break;
+        case 'marker':
+            canvasContext.globalAlpha = Math.min(0.9, currentOpacity / 100 * 0.9);
+            canvasContext.lineCap = 'square';
+            canvasContext.lineJoin = 'miter';
+            break;
+        default:
+            canvasContext.globalCompositeOperation = 'source-over';
+            canvasContext.globalAlpha = currentOpacity / 100;
+            canvasContext.lineCap = 'round';
+            canvasContext.lineJoin = 'round';
+            canvasContext.shadowBlur = 0;
+    }
+}
+
+// Filtros y efectos
+document.getElementById('blurBtn').addEventListener('click', () => applyFilter('blur'));
+document.getElementById('sharpenBtn').addEventListener('click', () => applyFilter('sharpen'));
+document.getElementById('saturateBtn').addEventListener('click', () => applyFilter('saturate'));
+document.getElementById('brightnessBtn').addEventListener('click', () => applyFilter('brightness'));
+document.getElementById('contrastBtn').addEventListener('click', () => applyFilter('contrast'));
+document.getElementById('grayscaleBtn').addEventListener('click', () => applyFilter('grayscale'));
+
+function applyFilter(type) {
+    const imageData = canvasContext.getImageData(0, 0, artCanvas.width, artCanvas.height);
+    const data = imageData.data;
+    const width = artCanvas.width;
+    const height = artCanvas.height;
+    
+    switch(type) {
+        case 'blur':
+            applyBlurFilter(data, width, height);
+            break;
+        case 'sharpen':
+            applySharpenFilter(data, width, height);
+            break;
+        case 'saturate':
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const gray = r * 0.299 + g * 0.587 + b * 0.114;
+                data[i] = Math.min(255, Math.max(0, gray + (r - gray) * 1.5));
+                data[i + 1] = Math.min(255, Math.max(0, gray + (g - gray) * 1.5));
+                data[i + 2] = Math.min(255, Math.max(0, gray + (b - gray) * 1.5));
+            }
+            break;
+        case 'brightness':
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.min(255, Math.max(0, data[i] * 1.2));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * 1.2));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * 1.2));
+            }
+            break;
+        case 'contrast':
+            const factor = 1.3;
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.min(255, Math.max(0, (data[i] - 128) * factor + 128));
+                data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * factor + 128));
+                data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * factor + 128));
+            }
+            break;
+        case 'grayscale':
+            for (let i = 0; i < data.length; i += 4) {
+                const grayScale = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                data[i] = grayScale;
+                data[i + 1] = grayScale;
+                data[i + 2] = grayScale;
+            }
+            break;
+    }
+    
+    canvasContext.putImageData(imageData, 0, 0);
+    saveState();
+}
+
+function applyBlurFilter(data, width, height) {
+    const tempData = new Uint8ClampedArray(data);
+    const radius = 3;
+    
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            let r = 0, g = 0, b = 0, a = 0, count = 0;
+            
+            for (let dy = -radius; dy <= radius; dy++) {
+                for (let dx = -radius; dx <= radius; dx++) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+                    
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                        const idx = (ny * width + nx) * 4;
+                        r += tempData[idx];
+                        g += tempData[idx + 1];
+                        b += tempData[idx + 2];
+                        a += tempData[idx + 3];
+                        count++;
+                    }
+                }
+            }
+            
+            const idx = (y * width + x) * 4;
+            data[idx] = r / count;
+            data[idx + 1] = g / count;
+            data[idx + 2] = b / count;
+            data[idx + 3] = a / count;
+        }
+    }
+}
+
+function applySharpenFilter(data, width, height) {
+    const tempData = new Uint8ClampedArray(data);
+    const kernel = [
+        0, -1, 0,
+        -1, 5, -1,
+        0, -1, 0
+    ];
+    
+    for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+            let r = 0, g = 0, b = 0;
+            
+            for (let ky = -1; ky <= 1; ky++) {
+                for (let kx = -1; kx <= 1; kx++) {
+                    const idx = ((y + ky) * width + (x + kx)) * 4;
+                    const k = kernel[(ky + 1) * 3 + (kx + 1)];
+                    r += tempData[idx] * k;
+                    g += tempData[idx + 1] * k;
+                    b += tempData[idx + 2] * k;
+                }
+            }
+            
+            const idx = (y * width + x) * 4;
+            data[idx] = Math.min(255, Math.max(0, r));
+            data[idx + 1] = Math.min(255, Math.max(0, g));
+            data[idx + 2] = Math.min(255, Math.max(0, b));
+        }
+    }
+}
+
+// Gradientes
+document.querySelectorAll('[data-gradient]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (gradientMode === btn.dataset.gradient) {
+            // Si ya está activo, desactivarlo
+            gradientMode = null;
+            btn.classList.remove('active');
+        } else {
+            gradientMode = btn.dataset.gradient;
+            document.querySelectorAll('[data-gradient]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    });
+});
+
+document.getElementById('gradientColor1').addEventListener('input', (e) => {
+    gradientColor1 = e.target.value;
+});
+
+document.getElementById('gradientColor2').addEventListener('input', (e) => {
+    gradientColor2 = e.target.value;
+});
+
+// Zoom
+document.getElementById('zoomInBtn').addEventListener('click', () => {
+    currentZoom = Math.min(5, currentZoom + 0.25);
+    updateZoom();
+});
+
+document.getElementById('zoomOutBtn').addEventListener('click', () => {
+    currentZoom = Math.max(0.25, currentZoom - 0.25);
+    updateZoom();
+});
+
+document.getElementById('resetZoomBtn').addEventListener('click', () => {
+    currentZoom = 1;
+    panX = 0;
+    panY = 0;
+    updateZoom();
+});
+
+function updateZoom() {
+    artCanvas.style.transform = `scale(${currentZoom}) translate(${panX}px, ${panY}px)`;
+    document.getElementById('zoomIndicator').textContent = `${Math.round(currentZoom * 100)}%`;
+}
+
+// Simetría - Toggle directo desde botón
+document.getElementById('symmetryBtn').addEventListener('click', () => {
+    symmetryEnabled = !symmetryEnabled;
+    document.getElementById('symmetryToggle').checked = symmetryEnabled;
+    document.getElementById('symmetryBtn').classList.toggle('active', symmetryEnabled);
+});
+
+document.getElementById('symmetryToggle').addEventListener('change', (e) => {
+    symmetryEnabled = e.target.checked;
+    document.getElementById('symmetryBtn').classList.toggle('active', symmetryEnabled);
+});
+
+// Cuadrícula - Toggle directo desde botón
+document.getElementById('gridBtn').addEventListener('click', () => {
+    gridEnabled = !gridEnabled;
+    document.getElementById('gridToggle').checked = gridEnabled;
+    document.getElementById('gridOverlay').classList.toggle('active', gridEnabled);
+    document.getElementById('gridBtn').classList.toggle('active', gridEnabled);
+});
+
+document.getElementById('gridToggle').addEventListener('change', (e) => {
+    gridEnabled = e.target.checked;
+    document.getElementById('gridOverlay').classList.toggle('active', gridEnabled);
+    document.getElementById('gridBtn').classList.toggle('active', gridEnabled);
+});
+
+// Efectos de texto
+document.getElementById('textOutlineColor').addEventListener('input', (e) => {
+    // Se aplicará cuando se agregue texto
+});
+
+// Plantillas
+document.querySelectorAll('[data-template]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const template = btn.dataset.template;
+        if (template === 'custom') {
+            const width = prompt('Ancho (px):', '800');
+            const height = prompt('Alto (px):', '600');
+            if (width && height && !isNaN(width) && !isNaN(height) && width > 0 && height > 0) {
+                resizeCanvas(parseInt(width), parseInt(height));
+                document.querySelectorAll('[data-template]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            } else if (width && height) {
+                alert('Por favor, ingresa valores numéricos válidos mayores a 0');
+            }
+        } else {
+            const [width, height] = template.split('x');
+            if (width && height) {
+                resizeCanvas(parseInt(width), parseInt(height));
+                document.querySelectorAll('[data-template]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+        }
+    });
+});
+
+function resizeCanvas(width, height) {
+    if (width < 100 || height < 100 || width > 5000 || height > 5000) {
+        alert('Las dimensiones deben estar entre 100px y 5000px');
+        return;
+    }
+    
+    const currentData = artCanvas.toDataURL();
+    const oldWidth = artCanvas.width;
+    const oldHeight = artCanvas.height;
+    
+    artCanvas.width = width;
+    artCanvas.height = height;
+    
+    // Restaurar configuración del contexto
+    canvasContext.lineCap = 'round';
+    canvasContext.lineJoin = 'round';
+    canvasContext.strokeStyle = currentColor;
+    canvasContext.fillStyle = currentColor;
+    canvasContext.lineWidth = currentBrushSize;
+    canvasContext.globalAlpha = currentOpacity / 100;
+    
+    const img = new Image();
+    img.onload = () => {
+        // Escalar la imagen existente al nuevo tamaño
+        canvasContext.drawImage(img, 0, 0, oldWidth, oldHeight, 0, 0, width, height);
+        saveState();
+    };
+    img.src = currentData;
+}
+
+// Pan del canvas (con espacio o botón derecho)
+let spacePressed = false;
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        spacePressed = true;
+        artCanvas.style.cursor = 'grab';
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+        spacePressed = false;
+        isPanning = false;
+        artCanvas.style.cursor = 'crosshair';
+    }
+});
+
+artCanvas.addEventListener('mousedown', (e) => {
+    if (spacePressed || e.button === 2) {
+        e.preventDefault();
+        isPanning = true;
+        lastPanPoint = { x: e.clientX, y: e.clientY };
+        artCanvas.style.cursor = 'grabbing';
+    }
+});
+
+artCanvas.addEventListener('mousemove', (e) => {
+    if (isPanning && (spacePressed || e.button === 2)) {
+        panX += (e.clientX - lastPanPoint.x) / currentZoom;
+        panY += (e.clientY - lastPanPoint.y) / currentZoom;
+        lastPanPoint = { x: e.clientX, y: e.clientY };
+        updateZoom();
+    }
+});
+
+artCanvas.addEventListener('mouseup', () => {
+    if (isPanning) {
+        isPanning = false;
+        if (!spacePressed) {
+            artCanvas.style.cursor = 'crosshair';
+        }
+    }
+});
+
+// Prevenir menú contextual
+artCanvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// Inicializar
+initColorPalette();
+initStickers();
+updateZoom();
+
+// Eventos del canvas - Mouse
+artCanvas.addEventListener('mousedown', startDrawing);
+artCanvas.addEventListener('mousemove', draw);
+artCanvas.addEventListener('mouseup', stopDrawing);
+artCanvas.addEventListener('mouseout', stopDrawing);
+
+// Eventos del canvas - Touch
+artCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    artCanvas.dispatchEvent(mouseEvent);
+});
+
+artCanvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    artCanvas.dispatchEvent(mouseEvent);
+});
+
+artCanvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const mouseEvent = new MouseEvent('mouseup', {});
+    artCanvas.dispatchEvent(mouseEvent);
+});
+
+// Cursor del pincel animado
+artCanvas.addEventListener('mousemove', (e) => {
+    const rect = artCanvas.getBoundingClientRect();
+    brushCursor.style.left = `${e.clientX}px`;
+    brushCursor.style.top = `${e.clientY}px`;
+    brushCursor.style.display = 'block';
+    brushCursor.style.backgroundColor = currentColor;
+    brushCursor.style.width = `${currentBrushSize * 2}px`;
+    brushCursor.style.height = `${currentBrushSize * 2}px`;
+});
+
+artCanvas.addEventListener('mouseleave', () => {
+    brushCursor.style.display = 'none';
+});
+
+function getCanvasCoordinates(e) {
+    const rect = artCanvas.getBoundingClientRect();
+    const scaleX = artCanvas.width / rect.width;
+    const scaleY = artCanvas.height / rect.height;
+    
+    // Ajustar por zoom y pan
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    
+    return {
+        x: (x - panX * scaleX) / currentZoom,
+        y: (y - panY * scaleY) / currentZoom
+    };
+}
+
+function startDrawing(e) {
+    // Prevenir dibujo si se está haciendo pan
+    if (isPanning || spacePressed) return;
+    
+    const coords = getCanvasCoordinates(e);
+    
+    if (currentTool === 'shape' && currentShape) {
+        isDrawingShape = true;
+        shapeStartX = coords.x;
+        shapeStartY = coords.y;
+        // Guardar estado actual para preview
+        shapePreviewImage = new Image();
+        shapePreviewImage.src = artCanvas.toDataURL();
+    } else if (currentTool === 'text') {
+        const text = document.getElementById('textInput').value;
+        if (text) {
+            const fontSize = parseInt(document.getElementById('textSize').value);
+            const isBold = document.getElementById('textBold').checked;
+            const hasShadow = document.getElementById('textShadow').checked;
+            const hasOutline = document.getElementById('textOutline').checked;
+            const outlineColor = document.getElementById('textOutlineColor').value;
+            
+            canvasContext.save();
+            canvasContext.font = `${isBold ? 'bold ' : ''}${fontSize}px Arial`;
+            canvasContext.fillStyle = currentColor;
+            
+            if (hasShadow) {
+                canvasContext.shadowColor = 'rgba(0,0,0,0.5)';
+                canvasContext.shadowBlur = 4;
+                canvasContext.shadowOffsetX = 2;
+                canvasContext.shadowOffsetY = 2;
+            }
+            
+            if (hasOutline) {
+                canvasContext.strokeStyle = outlineColor;
+                canvasContext.lineWidth = 2;
+                canvasContext.strokeText(text, coords.x, coords.y);
+            }
+            
+            canvasContext.fillText(text, coords.x, coords.y);
+            canvasContext.restore();
+            saveState();
+            document.getElementById('textInput').value = '';
+        }
+    } else if (currentTool === 'sticker' && selectedSticker) {
+        canvasContext.save();
+        canvasContext.font = '40px Arial';
+        canvasContext.fillText(selectedSticker, coords.x, coords.y);
+        canvasContext.restore();
+        saveState();
+    } else if (currentTool === 'brush' || currentTool === 'eraser') {
+        isDrawing = true;
+        
+        // Aplicar tipo de pincel
+        applyBrushType();
+        
+        canvasContext.beginPath();
+        
+        // Aplicar gradiente si está activo
+        if (gradientMode && currentTool === 'brush') {
+            const gradient = gradientMode === 'linear' 
+                ? canvasContext.createLinearGradient(0, 0, artCanvas.width, artCanvas.height)
+                : canvasContext.createRadialGradient(coords.x, coords.y, 0, coords.x, coords.y, currentBrushSize * 10);
+            gradient.addColorStop(0, gradientColor1);
+            gradient.addColorStop(1, gradientColor2);
+            canvasContext.strokeStyle = gradient;
+        } else if (currentTool === 'brush') {
+            // El color ya está establecido en applyBrushType, pero lo reestablecemos por si acaso
+            canvasContext.strokeStyle = currentColor;
+        } else if (currentTool === 'eraser') {
+            canvasContext.globalCompositeOperation = 'destination-out';
+        }
+        
+        canvasContext.moveTo(coords.x, coords.y);
+        
+        // Aplicar simetría si está activada
+        if (symmetryEnabled && currentTool === 'brush') {
+            const centerX = artCanvas.width / 2;
+            const mirroredX = centerX - (coords.x - centerX);
+            canvasContext.moveTo(mirroredX, coords.y);
+        }
+        
+        brushCursor.classList.add('painting');
+    }
+}
+
+function draw(e) {
+    if (!isDrawing && !isDrawingShape) return;
+    
+    const coords = getCanvasCoordinates(e);
+    
+    if (isDrawingShape && currentShape && shapePreviewImage) {
+        // Restaurar imagen base
+        canvasContext.clearRect(0, 0, artCanvas.width, artCanvas.height);
+        canvasContext.drawImage(shapePreviewImage, 0, 0);
+        
+        canvasContext.save();
+        canvasContext.strokeStyle = currentColor;
+        canvasContext.fillStyle = currentColor;
+        canvasContext.lineWidth = currentBrushSize;
+        
+        const fillShape = document.getElementById('fillShape').checked;
+        
+        if (currentShape === 'rect') {
+            const width = coords.x - shapeStartX;
+            const height = coords.y - shapeStartY;
+            if (fillShape) {
+                canvasContext.fillRect(shapeStartX, shapeStartY, width, height);
+            } else {
+                canvasContext.strokeRect(shapeStartX, shapeStartY, width, height);
+            }
+        } else if (currentShape === 'circle') {
+            const radius = Math.sqrt(
+                Math.pow(coords.x - shapeStartX, 2) + 
+                Math.pow(coords.y - shapeStartY, 2)
+            );
+            canvasContext.beginPath();
+            canvasContext.arc(shapeStartX, shapeStartY, radius, 0, 2 * Math.PI);
+            if (fillShape) {
+                canvasContext.fill();
+            } else {
+                canvasContext.stroke();
+            }
+        } else if (currentShape === 'line') {
+            canvasContext.beginPath();
+            canvasContext.moveTo(shapeStartX, shapeStartY);
+            canvasContext.lineTo(coords.x, coords.y);
+            canvasContext.stroke();
+        } else if (currentShape === 'arrow') {
+            const angle = Math.atan2(coords.y - shapeStartY, coords.x - shapeStartX);
+            const arrowHeadLength = 20;
+            const arrowHeadAngle = Math.PI / 6;
+            
+            canvasContext.beginPath();
+            canvasContext.moveTo(shapeStartX, shapeStartY);
+            canvasContext.lineTo(coords.x, coords.y);
+            canvasContext.lineTo(
+                coords.x - arrowHeadLength * Math.cos(angle - arrowHeadAngle),
+                coords.y - arrowHeadLength * Math.sin(angle - arrowHeadAngle)
+            );
+            canvasContext.moveTo(coords.x, coords.y);
+            canvasContext.lineTo(
+                coords.x - arrowHeadLength * Math.cos(angle + arrowHeadAngle),
+                coords.y - arrowHeadLength * Math.sin(angle + arrowHeadAngle)
+            );
+            canvasContext.stroke();
+        }
+        canvasContext.restore();
+    } else if (isDrawing) {
+        // Aplicar tipo de pincel en cada punto
+        applyBrushType();
+        
+        canvasContext.lineTo(coords.x, coords.y);
+        canvasContext.stroke();
+        canvasContext.restore();
+        
+        // Aplicar simetría si está activada
+        if (symmetryEnabled && currentTool === 'brush') {
+            applyBrushType();
+            const centerX = artCanvas.width / 2;
+            const mirroredX = centerX - (coords.x - centerX);
+            canvasContext.beginPath();
+            canvasContext.moveTo(mirroredX, coords.y);
+            canvasContext.lineTo(mirroredX, coords.y);
+            canvasContext.stroke();
+            canvasContext.restore();
+        }
+    }
+}
+
+function stopDrawing() {
+    if (isDrawing || isDrawingShape) {
+        isDrawing = false;
+        isDrawingShape = false;
+        canvasContext.beginPath();
+        canvasContext.restore(); // Asegurar que se restaure el estado
+        brushCursor.classList.remove('painting');
+        shapePreviewImage = null;
+        
+        saveState();
+        
+        // Guardar estado del canvas como imagen
+        canvasImage = artCanvas.toDataURL('image/png');
+    }
+}
+
+// Contador de caracteres
+artDescription.addEventListener('input', () => {
+    charCount.textContent = artDescription.value.length;
+    
+    // Asegurar que siempre tenga el hashtag
+    if (!artDescription.value.includes('#ArtePROVIWEB')) {
+        const text = artDescription.value.trim();
+        artDescription.value = text ? `${text} #ArtePROVIWEB` : '#ArtePROVIWEB';
+        charCount.textContent = artDescription.value.length;
+    }
+});
+
+aiPrompt.addEventListener('input', () => {
+    aiCharCount.textContent = aiPrompt.value.length;
+});
+
+// Generar imagen con IA
+generateAIBtn.addEventListener('click', async () => {
+    const prompt = aiPrompt.value.trim();
+    if (!prompt) {
+        alert('Por favor, describe la imagen que deseas generar');
+        return;
+    }
+
+    loadingAI.style.display = 'block';
+    generateAIBtn.disabled = true;
+
+    try {
+        const imageUrl = await generateImageFromText(prompt);
+        
+        // Convertir URL a File
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'ai-generated-art.png', { type: 'image/png' });
+        
+        aiGeneratedImage = file;
+        mediaFiles = [{ file, type: 'image' }];
+        
+        // Mostrar preview
+        aiPreview.innerHTML = '';
+        addMediaPreview(file, 'image', aiPreview);
+        
+        loadingAI.style.display = 'none';
+        generateAIBtn.disabled = false;
+    } catch (error) {
+        console.error('Error generando imagen:', error);
+        alert(`Error: ${error.message || 'Error al generar la imagen. Intenta nuevamente.'}`);
+        loadingAI.style.display = 'none';
+        generateAIBtn.disabled = false;
+    }
+});
+
+// Subir imágenes
+imageInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+            mediaFiles.push({ file, type: 'image' });
+            addMediaPreview(file, 'image', uploadPreview);
+        }
+    });
+});
+
+function addMediaPreview(file, type, container) {
+    const item = document.createElement('div');
+    item.className = 'media-item';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.innerHTML = '×';
+    removeBtn.onclick = () => {
+        item.remove();
+        mediaFiles = mediaFiles.filter(m => m.file !== file);
+        if (aiGeneratedImage === file) {
+            aiGeneratedImage = null;
+        }
+    };
+
+    if (type === 'image') {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        item.appendChild(img);
+    }
+
+    item.appendChild(removeBtn);
+    container.appendChild(item);
+}
+
+// Actualizar progreso
+function updateProgress(percent) {
+    progressFill.style.width = percent + '%';
+}
+
+// Cargar datos del usuario
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    currentUser = user;
+    const userRef = ref(db, `Users/${user.uid}`);
+    const userSnap = await get(userRef);
+    if (userSnap.exists()) {
+        const data = userSnap.val();
+        userName.textContent = (data.name || 'Usuario') + ' ';
+        if (data.photo) userPhoto.src = data.photo;
+    }
+    
+    // Cargar retos del usuario
+    if (currentUser) {
+        const userChallengesRef = ref(db, `UserChallenges/${currentUser.uid}`);
+        const userChallengesSnap = await get(userChallengesRef);
+        if (userChallengesSnap.exists()) {
+            userChallenges = Object.keys(userChallengesSnap.val());
+        }
+    }
+});
+
+// Publicar arte
+submitBtn.addEventListener('click', async () => {
+    errorMsg.style.display = 'none';
+
+    // Validar que haya algo para publicar
+    let hasContent = false;
+    let imageToUpload = null;
+
+    if (currentMode === 'paint' && canvasImage) {
+        hasContent = true;
+        // Convertir canvas a blob
+        const blob = await new Promise(resolve => {
+            artCanvas.toBlob(resolve, 'image/png');
+        });
+        imageToUpload = new File([blob], 'artwork.png', { type: 'image/png' });
+    } else if (currentMode === 'ai' && aiGeneratedImage) {
+        hasContent = true;
+        imageToUpload = aiGeneratedImage;
+    } else if (currentMode === 'upload' && mediaFiles.length > 0) {
+        hasContent = true;
+        if (mediaFiles.length === 1) {
+            imageToUpload = mediaFiles[0].file;
+        }
+    }
+
+    if (!hasContent) {
+        errorMsg.textContent = 'Por favor, crea o sube al menos una imagen de arte';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    const description = artDescription.value.trim();
+    if (!description) {
+        errorMsg.textContent = 'Por favor, agrega una descripción a tu obra';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    submitBtn.disabled = true;
+    overlay.style.display = 'flex';
+    updateProgress(10);
+
+    try {
+        const timestamp = Date.now();
+        const postId = timestamp.toString();
+        
+        updateProgress(30);
+
+        // Subir imagen(es)
+        let imageUrl = null;
+        let imagesObject = null;
+
+        if (currentMode === 'upload' && mediaFiles.length > 1) {
+            // Múltiples imágenes
+            imagesObject = {};
+            for (let i = 0; i < mediaFiles.length; i++) {
+                const file = mediaFiles[i].file;
+                const storageRef = sRef(storage, `ArtPosts/${currentUser.uid}/${timestamp}_${i}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                imagesObject[i] = await getDownloadURL(storageRef);
+                updateProgress(30 + (i + 1) * 30 / mediaFiles.length);
+            }
+        } else {
+            // Una sola imagen
+            const storageRef = sRef(storage, `ArtPosts/${currentUser.uid}/${timestamp}_artwork.png`);
+            await uploadBytes(storageRef, imageToUpload);
+            imageUrl = await getDownloadURL(storageRef);
+            updateProgress(60);
+        }
+
+        updateProgress(80);
+
+        // Crear post de arte
+        const artPostData = {
+            id: currentUser.uid,
+            text: description,
+            type: 'arte',
+            pId: postId,
+            pTime: postId,
+            vine: 'noVideo'
+        };
+
+        if (imagesObject) {
+            artPostData.memes = imagesObject;
+        } else {
+            artPostData.meme = imageUrl;
+        }
+
+        // Guardar en Posts
+        const postsRef = ref(db, `Posts/${postId}`);
+        await set(postsRef, artPostData);
+
+        // Guardar en postExtra
+        const postExtraRef = ref(db, `postExtra/${postId}`);
+        await set(postExtraRef, {
+            feeling: '',
+            location: '',
+            privacy: 'Todos'
+        });
+
+        // Registrar en reto si la descripción contiene un hashtag de reto
+        await registerArtworkInChallenge(description, postId);
+
+        updateProgress(100);
+        overlayMessage.textContent = '¡Arte publicado exitosamente!';
+
+        // Notificar usuarios
+        await notifyUsers(postId);
+
+        setTimeout(() => {
+            window.location.href = 'home.html';
+        }, 1500);
+    } catch (error) {
+        console.error('Error:', error);
+        errorMsg.textContent = error.message || 'Error al publicar. Intenta nuevamente.';
+        errorMsg.style.display = 'block';
+        overlay.style.display = 'none';
+        submitBtn.disabled = false;
+    }
+});
+
+// Notificar usuarios
+async function notifyUsers(postId) {
+    try {
+        const userRef = ref(db, `Users/${currentUser.uid}`);
+        const userSnap = await get(userRef);
+        if (userSnap.exists()) {
+            const userData = userSnap.val();
+            const message = `- Creó una nueva obra de arte. Entra y pulsa el ícono Lupa para verla`;
+            const notificationData = {
+                message: `${userData.name || 'Usuario'} ${message}`,
+                timestamp: Date.now(),
+                postId: postId,
+                type: 'new_art'
+            };
+            
+            const followersRef = ref(db, `Follow/${currentUser.uid}/Followers`);
+            const followersSnap = await get(followersRef);
+            if (followersSnap.exists()) {
+                const followers = Object.keys(followersSnap.val());
+                followers.forEach(async (followerId) => {
+                    const notifRef = ref(db, `Notifications/${followerId}`);
+                    await push(notifRef, notificationData);
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error notificando usuarios:', error);
+    }
+}
+
+// ========== CONFIGURACIÓN DE OPENAI API KEY ==========
+const OPENAI_API_KEY = 'TU_API_KEY_AQUI';
+
+async function generateImageFromText(promptText) {
+    const balanceRef = ref(db, `Balance/${currentUser.uid}/balance`);
+    const balanceSnap = await get(balanceRef);
+    
+    if (!balanceSnap.exists() || parseFloat(balanceSnap.val() || 0) < 1.00) {
+        alert('No tienes suficiente saldo. Necesitas al menos 1.00 QAV para usar esta función.');
+        throw new Error('Saldo insuficiente');
+    }
+
+    if (!OPENAI_API_KEY || OPENAI_API_KEY === 'TU_API_KEY_AQUI' || OPENAI_API_KEY.trim() === '') {
+        alert('⚠️ API Key de OpenAI no configurada.');
+        throw new Error('API key no configurada');
+    }
+
+    try {
+        const response = await fetch('https://api.openai.com/v1/images/generations', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: promptText,
+                n: 1,
+                size: '1024x1024',
+                model: 'dall-e-3'
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('OpenAI DALL-E error:', errorText);
+            let errorMsg = `Error HTTP: ${response.status}`;
+            try {
+                const errorData = JSON.parse(errorText);
+                if (errorData.error && errorData.error.message) {
+                    errorMsg = errorData.error.message;
+                }
+            } catch (e) {}
+            throw new Error(errorMsg);
+        }
+
+        const data = await response.json();
+        const dataArray = data.data || [];
+        
+        if (dataArray.length === 0 || !dataArray[0].url) {
+            throw new Error('Respuesta inválida de OpenAI DALL-E');
+        }
+
+        const imageUrl = dataArray[0].url;
+        const currentBalance = parseFloat(balanceSnap.val() || 0);
+        const newBalance = currentBalance - 1.00;
+        await set(ref(db, `Balance/${currentUser.uid}/balance`), newBalance.toFixed(2));
+
+        return imageUrl;
+    } catch (error) {
+        console.error('Error generando imagen con DALL-E:', error);
+        throw error;
+    }
+}
+
+// ========== FUNCIONALIDADES ADICIONALES ==========
+
+// 1. GALERÍA DE OBRAS PÚBLICAS
+let galleryViewMode = 'grid'; // 'grid' o 'list'
+let galleryFilter = 'all';
+
+async function loadGallery() {
+    const container = document.getElementById('galleryContainer');
+    const loading = document.getElementById('galleryLoading');
+    const empty = document.getElementById('galleryEmpty');
+    
+    container.innerHTML = '';
+    loading.style.display = 'block';
+    empty.style.display = 'none';
+    
+    try {
+        const postsRef = ref(db, 'Posts');
+        const snapshot = await get(postsRef);
+        
+        if (!snapshot.exists()) {
+            loading.style.display = 'none';
+            empty.style.display = 'block';
+            return;
+        }
+        
+        const artPosts = [];
+        snapshot.forEach(child => {
+            const data = child.val();
+            if (data.type === 'arte') {
+                artPosts.push({
+                    key: child.key,
+                    ...data
+                });
+            }
+        });
+        
+        // Aplicar filtros
+        let filteredPosts = artPosts;
+        const searchTerm = document.getElementById('gallerySearch').value.toLowerCase();
+        if (searchTerm) {
+            filteredPosts = artPosts.filter(post => 
+                (post.text && post.text.toLowerCase().includes(searchTerm)) ||
+                post.key.includes(searchTerm)
+            );
+        }
+        
+        const filterValue = document.getElementById('galleryFilter').value;
+        if (filterValue === 'recent') {
+            filteredPosts.sort((a, b) => parseInt(b.pTime || 0) - parseInt(a.pTime || 0));
+        } else if (filterValue === 'popular') {
+            filteredPosts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        }
+        
+        loading.style.display = 'none';
+        
+        if (filteredPosts.length === 0) {
+            empty.style.display = 'block';
+            return;
+        }
+        
+        filteredPosts.forEach(post => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.onclick = () => window.location.href = `viewpost.html?pId=${post.key}&id=${post.id}`;
+            
+            const img = document.createElement('img');
+            img.src = post.meme || (post.memes && Object.values(post.memes)[0]) || 'assets/assets/avatar.png';
+            img.onerror = () => img.src = 'assets/assets/avatar.png';
+            
+            const info = document.createElement('div');
+            info.className = 'gallery-item-info';
+            
+            // Cargar nombre del artista
+            const userRef = ref(db, `Users/${post.id}`);
+            get(userRef).then(userSnap => {
+                const userName = userSnap.exists() ? (userSnap.val().name || 'Artista') : 'Artista';
+                info.innerHTML = `
+                    <div class="gallery-item-title">${post.text ? post.text.substring(0, 30) + '...' : 'Obra de Arte'}</div>
+                    <div class="gallery-item-artist">por ${userName}</div>
+                    <div class="gallery-item-stats">
+                        <span>❤️ ${post.likes || 0}</span>
+                        <span>💬 ${post.comments || 0}</span>
+                        <span>👁️ ${post.views || 0}</span>
+                    </div>
+                `;
+            });
+            
+            item.appendChild(img);
+            item.appendChild(info);
+            container.appendChild(item);
+        });
+    } catch (error) {
+        console.error('Error cargando galería:', error);
+        loading.style.display = 'none';
+        empty.style.display = 'block';
+    }
+}
+
+document.getElementById('gallerySearch').addEventListener('input', () => loadGallery());
+document.getElementById('galleryFilter').addEventListener('change', () => loadGallery());
+document.getElementById('galleryViewToggle').addEventListener('click', () => {
+    galleryViewMode = galleryViewMode === 'grid' ? 'list' : 'grid';
+    const container = document.getElementById('galleryContainer');
+    container.style.gridTemplateColumns = galleryViewMode === 'grid' 
+        ? 'repeat(auto-fill, minmax(250px, 1fr))' 
+        : '1fr';
+    document.getElementById('viewModeIcon').textContent = galleryViewMode === 'grid' ? '⊞' : '☰';
+});
+
+// 2. EXPORTAR OBRA
+let selectedExportFormat = 'png';
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+    document.getElementById('exportModal').classList.add('active');
+});
+
+document.querySelectorAll('.export-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.export-option').forEach(o => o.style.borderColor = 'var(--border-glass)');
+        option.style.borderColor = 'var(--accent-purple)';
+        selectedExportFormat = option.dataset.format;
+    });
+});
+
+document.getElementById('exportQuality').addEventListener('input', (e) => {
+    document.getElementById('qualityValue').textContent = Math.round(e.target.value * 100) + '%';
+});
+
+document.getElementById('confirmExportBtn').addEventListener('click', async () => {
+    if (!canvasImage && currentMode === 'paint') {
+        alert('No hay nada que exportar. Crea una obra primero.');
+        return;
+    }
+    
+    let imageData;
+    if (currentMode === 'paint' && canvasImage) {
+        imageData = canvasImage;
+    } else if (currentMode === 'ai' && aiGeneratedImage) {
+        const reader = new FileReader();
+        imageData = await new Promise(resolve => {
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(aiGeneratedImage);
+        });
+    } else if (currentMode === 'upload' && mediaFiles.length > 0) {
+        const reader = new FileReader();
+        imageData = await new Promise(resolve => {
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(mediaFiles[0].file);
+        });
+    } else {
+        alert('No hay obra para exportar');
+        return;
+    }
+    
+    const quality = parseFloat(document.getElementById('exportQuality').value);
+    const img = new Image();
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        
+        let mimeType = 'image/png';
+        let filename = 'artwork.png';
+        
+        if (selectedExportFormat === 'jpg') {
+            mimeType = 'image/jpeg';
+            filename = 'artwork.jpg';
+        } else if (selectedExportFormat === 'svg') {
+            // SVG sería más complejo, por ahora exportamos como PNG
+            showNotAvailable('La exportación SVG aún no está disponible. Exportando como PNG.');
+            selectedExportFormat = 'png';
+        } else if (selectedExportFormat === 'pdf') {
+            // PDF requiere librería adicional
+            showNotAvailable('La exportación PDF aún no está disponible. Exportando como PNG.');
+            selectedExportFormat = 'png';
+        }
+        
+        canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            closeExportModal();
+        }, mimeType, quality);
+    };
+    img.src = imageData;
+});
+
+function closeExportModal() {
+    document.getElementById('exportModal').classList.remove('active');
+}
+
+// 3. GUARDAR COMO BORRADOR
+document.getElementById('saveDraftBtn').addEventListener('click', async () => {
+    if (!currentUser) return;
+    
+    let imageData = null;
+    if (currentMode === 'paint' && canvasImage) {
+        imageData = canvasImage;
+    } else if (currentMode === 'ai' && aiGeneratedImage) {
+        const reader = new FileReader();
+        imageData = await new Promise(resolve => {
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(aiGeneratedImage);
+        });
+    } else if (currentMode === 'upload' && mediaFiles.length > 0) {
+        const reader = new FileReader();
+        imageData = await new Promise(resolve => {
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(mediaFiles[0].file);
+        });
+    }
+    
+    if (!imageData) {
+        alert('No hay obra para guardar');
+        return;
+    }
+    
+    const draftData = {
+        image: imageData,
+        description: artDescription.value,
+        mode: currentMode,
+        timestamp: Date.now()
+    };
+    
+    const draftRef = ref(db, `Drafts/${currentUser.uid}/${Date.now()}`);
+    await set(draftRef, draftData);
+    
+    alert('✅ Borrador guardado exitosamente');
+});
+
+// 4. COMPARTIR DIRECTO
+document.getElementById('shareBtn').addEventListener('click', () => {
+    document.getElementById('shareModal').classList.add('active');
+});
+
+document.querySelectorAll('.share-option').forEach(option => {
+    option.addEventListener('click', async () => {
+        const platform = option.dataset.platform;
+        let imageUrl = '';
+        
+        if (currentMode === 'paint' && canvasImage) {
+            imageUrl = canvasImage;
+        } else if (currentMode === 'ai' && aiGeneratedImage) {
+            imageUrl = URL.createObjectURL(aiGeneratedImage);
+        } else if (currentMode === 'upload' && mediaFiles.length > 0) {
+            imageUrl = URL.createObjectURL(mediaFiles[0].file);
+        }
+        
+        const text = artDescription.value || 'Mira mi obra de arte en PROVIWEB #ArtePROVIWEB';
+        const url = window.location.href;
+        
+        let shareUrl = '';
+        
+        switch(platform) {
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                break;
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+                break;
+            case 'link':
+                navigator.clipboard.writeText(url);
+                alert('✅ Link copiado al portapapeles');
+                return;
+            case 'qr':
+                // Generar QR code (requeriría librería)
+                showNotAvailable('La generación de QR aún no está disponible');
+                return;
+            default:
+                return;
+        }
+        
+        if (shareUrl) {
+            window.open(shareUrl, '_blank');
+        }
+    });
+});
+
+function closeShareModal() {
+    document.getElementById('shareModal').classList.remove('active');
+}
+
+// 5. RETOS ARTÍSTICOS
+// Variables globales para retos
+let currentChallengeFilter = 'all';
+let userChallenges = [];
+
+async function loadChallenges() {
+    const container = document.getElementById('challengesContainer');
+    const loading = document.getElementById('challengesLoading');
+    const empty = document.getElementById('challengesEmpty');
+    
+    container.innerHTML = '';
+    if (loading) loading.style.display = 'block';
+    if (empty) empty.style.display = 'none';
+    
+    try {
+        const challengesRef = ref(db, 'ArtChallenges');
+        const snapshot = await get(challengesRef);
+        
+        if (!snapshot.exists()) {
+            // Crear retos iniciales más completos
+            await createInitialChallenges();
+            loadChallenges();
+            return;
+        }
+        
+        const challenges = [];
+        snapshot.forEach(child => {
+            challenges.push({
+                id: child.key,
+                ...child.val()
+            });
+        });
+        
+        // Cargar retos del usuario si está logueado
+        if (currentUser) {
+            const userChallengesRef = ref(db, `UserChallenges/${currentUser.uid}`);
+            const userSnap = await get(userChallengesRef);
+            if (userSnap.exists()) {
+                userChallenges = Object.keys(userSnap.val());
+            }
+        }
+        
+        // Aplicar filtros
+        let filteredChallenges = challenges;
+        if (currentChallengeFilter === 'active') {
+            filteredChallenges = challenges.filter(c => c.deadline > Date.now());
+        } else if (currentChallengeFilter === 'my' && currentUser) {
+            filteredChallenges = challenges.filter(c => userChallenges.includes(c.id));
+        } else if (currentChallengeFilter === 'completed') {
+            filteredChallenges = challenges.filter(c => c.deadline <= Date.now());
+        }
+        
+        // Ordenar por fecha de creación (más recientes primero)
+        filteredChallenges.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        
+        if (loading) loading.style.display = 'none';
+        
+        if (filteredChallenges.length === 0) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        
+        // Renderizar cada reto
+        for (const challenge of filteredChallenges) {
+            const card = await renderChallengeCard(challenge);
+            container.appendChild(card);
+        }
+    } catch (error) {
+        console.error('Error cargando retos:', error);
+        if (loading) loading.style.display = 'none';
+        if (empty) empty.style.display = 'block';
+    }
+}
+
+async function createInitialChallenges() {
+    const challenges = [
+        {
+            title: 'Reto Semanal: Naturaleza',
+            description: 'Crea una obra inspirada en la naturaleza. Usa colores vibrantes y muestra la belleza del mundo natural. Puedes dibujar paisajes, animales, plantas o cualquier elemento natural que te inspire.',
+            deadline: Date.now() + 7 * 24 * 60 * 60 * 1000,
+            category: 'Naturaleza',
+            hashtag: '#RetoNaturalezaPROVIWEB',
+            prize: 'Obra destacada en la galería',
+            createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Desafío Mensual: Abstracto',
+            description: 'Expresa emociones a través del arte abstracto. Sin límites, solo creatividad. Deja que tus emociones fluyan en el canvas.',
+            deadline: Date.now() + 30 * 24 * 60 * 60 * 1000,
+            category: 'Abstracto',
+            hashtag: '#DesafioAbstractoPROVIWEB',
+            prize: 'Reconocimiento especial + 50 QAV',
+            createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Reto Rápido: Retrato',
+            description: 'Crea un retrato único. Puede ser realista, caricaturesco o estilizado. ¡Muestra tu técnica!',
+            deadline: Date.now() + 3 * 24 * 60 * 60 * 1000,
+            category: 'Retrato',
+            hashtag: '#RetoRetratoPROVIWEB',
+            prize: 'Obra destacada',
+            createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Desafío: Fantasía y Ciencia Ficción',
+            description: 'Diseña criaturas fantásticas, mundos imaginarios o escenas de ciencia ficción. ¡Deja volar tu imaginación!',
+            deadline: Date.now() + 14 * 24 * 60 * 60 * 1000,
+            category: 'Fantasía',
+            hashtag: '#RetoFantasiaPROVIWEB',
+            prize: 'Reconocimiento + 25 QAV',
+            createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Reto: Minimalismo',
+            description: 'Menos es más. Crea una obra minimalista usando pocos elementos pero con gran impacto visual.',
+            deadline: Date.now() + 5 * 24 * 60 * 60 * 1000,
+            category: 'Minimalismo',
+            hashtag: '#RetoMinimalismoPROVIWEB',
+            prize: 'Obra destacada',
+            createdAt: Date.now(),
+            createdBy: 'system'
+        },
+        {
+            title: 'Desafío: Arte Urbano',
+            description: 'Inspírate en el arte callejero, grafitis y la cultura urbana. Colores vibrantes y estilo único.',
+            deadline: Date.now() + 10 * 24 * 60 * 60 * 1000,
+            category: 'Urbano',
+            hashtag: '#RetoUrbanoPROVIWEB',
+            prize: 'Reconocimiento especial',
+            createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Reto: Acuarela Digital',
+            description: 'Simula la técnica de acuarela usando las herramientas digitales. Colores suaves y transparencias.',
+            deadline: Date.now() + 7 * 24 * 60 * 60 * 1000,
+            category: 'Técnica',
+            hashtag: '#RetoAcuarelaPROVIWEB',
+            prize: 'Obra destacada',
+            createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        },
+        {
+            title: 'Desafío: Emociones',
+            description: 'Expresa una emoción específica (alegría, tristeza, ira, amor) a través del arte visual.',
+            deadline: Date.now() + 6 * 24 * 60 * 60 * 1000,
+            category: 'Emocional',
+            hashtag: '#RetoEmocionesPROVIWEB',
+            prize: 'Reconocimiento + 30 QAV',
+            createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+            createdBy: 'system'
+        }
+    ];
+    
+    for (const challenge of challenges) {
+        const challengeRef = ref(db, `ArtChallenges/${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+        await set(challengeRef, challenge);
+    }
+}
+
+async function renderChallengeCard(challenge) {
+    const card = document.createElement('div');
+    const isJoined = currentUser && userChallenges.includes(challenge.id);
+    const daysLeft = Math.ceil((challenge.deadline - Date.now()) / (24 * 60 * 60 * 1000));
+    const isActive = challenge.deadline > Date.now();
+    const isUrgent = daysLeft <= 3 && daysLeft > 0;
+    
+    if (isJoined) {
+        card.classList.add('joined');
+    }
+    
+    // Cargar participantes reales y contar obras
+    const participantsRef = ref(db, `ChallengeParticipants/${challenge.id}`);
+    const participantsSnap = await get(participantsRef);
+    const participants = participantsSnap.exists() ? Object.keys(participantsSnap.val()) : [];
+    const participantCount = participants.length;
+    
+    // Contar obras totales del reto
+    const challengeArtworksRef = ref(db, `ChallengeArtworks/${challenge.id}`);
+    const artworksSnap = await get(challengeArtworksRef);
+    const artworksCount = artworksSnap.exists() ? Object.keys(artworksSnap.val()).length : 0;
+    
+    // Cargar avatares de participantes (ordenados por actividad)
+    let participantsHTML = '';
+    const participantData = [];
+    
+    // Obtener datos de participantes con número de obras
+    if (participantsSnap.exists()) {
+        for (let i = 0; i < Math.min(10, participants.length); i++) {
+            try {
+                const participantId = participants[i];
+                const participantDataSnap = participantsSnap.val()[participantId];
+                const artworksCount = participantDataSnap && participantDataSnap.artworks 
+                    ? Object.keys(participantDataSnap.artworks).length 
+                    : 0;
+                
+                const userRef = ref(db, `Users/${participantId}`);
+                const userSnap = await get(userRef);
+                if (userSnap.exists()) {
+                    const photo = userSnap.val().photo || 'assets/avatar.png';
+                    participantData.push({
+                        photo: photo,
+                        artworksCount: artworksCount,
+                        uid: participantId
+                    });
+                }
+            } catch (e) {
+                console.error('Error cargando participante:', e);
+            }
+        }
+    }
+    
+    // Ordenar por número de obras (más activos primero)
+    participantData.sort((a, b) => b.artworksCount - a.artworksCount);
+    
+    // Mostrar solo los primeros 5
+    participantsHTML = participantData.slice(0, 5).map(p => 
+        `<img src="${p.photo}" class="participant-avatar" alt="Participante" onerror="this.src='assets/avatar.png'" title="${p.artworksCount} obra(s)">`
+    ).join('');
+    
+    if (participantCount > 5) {
+        participantsHTML += `<div class="participant-avatar" style="background:var(--accent-purple);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;cursor:pointer;" title="Ver todos" onclick="event.stopPropagation();viewAllParticipants('${challenge.id}')">+${participantCount - 5}</div>`;
+    }
+    
+    let badgeClass = 'active';
+    let badgeText = `${daysLeft}d restantes`;
+    if (!isActive) {
+        badgeClass = 'completed';
+        badgeText = 'Completado';
+    } else if (isUrgent) {
+        badgeClass = 'urgent';
+        badgeText = `⚠️ ${daysLeft}d`;
+    }
+    
+    card.innerHTML = `
+        <div class="challenge-category">${challenge.category || 'General'}</div>
+        <div class="challenge-header">
+            <div class="challenge-title">${challenge.title}</div>
+            <div class="challenge-badge ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="challenge-description">${challenge.description}</div>
+        ${challenge.prize ? `<div class="challenge-prize">🏆 ${challenge.prize}</div>` : ''}
+        <div class="challenge-meta">
+            <div class="challenge-participants">
+                <span>👥 ${participantCount} participantes</span>
+                ${participantsHTML ? `<div class="participants-list" onclick="event.stopPropagation();viewAllParticipants('${challenge.id}')" style="cursor:pointer;" title="Ver todos los participantes">${participantsHTML}</div>` : ''}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+                <div class="challenge-deadline">
+                    ⏰ ${formatDeadline(challenge.deadline)}
+                </div>
+                ${artworksCount > 0 ? `<div style="font-size:11px;color:var(--text-secondary);">🎨 ${artworksCount} obra${artworksCount > 1 ? 's' : ''} creada${artworksCount > 1 ? 's' : ''}</div>` : ''}
+            </div>
+        </div>
+        <div class="challenge-actions">
+            ${isActive ? `
+                <button class="challenge-btn ${isJoined ? 'joined' : ''}" onclick="participateInChallenge('${challenge.id}')">
+                    ${isJoined ? '✅ Ya participas' : '🎨 Participar'}
+                </button>
+                <button class="challenge-btn view-works" onclick="viewChallengeWorks('${challenge.id}')">
+                    👁️ Ver Obras
+                </button>
+            ` : `
+                <button class="challenge-btn view-works" style="width:100%;" onclick="viewChallengeWorks('${challenge.id}')">
+                    👁️ Ver Obras del Reto
+                </button>
+            `}
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="action-btn" style="flex:1;padding:8px;font-size:11px;min-width:80px;" onclick="viewChallengeDetails('${challenge.id}')">
+                📊 Detalles
+            </button>
+            <button class="action-btn" style="flex:1;padding:8px;font-size:11px;min-width:80px;" onclick="viewChallengeRanking('${challenge.id}')">
+                🏆 Ranking
+            </button>
+            <button class="action-btn" style="flex:1;padding:8px;font-size:11px;min-width:80px;" onclick="viewAllParticipants('${challenge.id}')">
+                👥 Participantes
+            </button>
+        </div>
+    `;
+    
+    return card;
+}
+
+function formatDeadline(timestamp) {
+    const days = Math.ceil((timestamp - Date.now()) / (24 * 60 * 60 * 1000));
+    if (days < 0) return 'Finalizado';
+    if (days === 0) return 'Hoy';
+    if (days === 1) return 'Mañana';
+    if (days < 7) return `${days} días`;
+    if (days < 30) return `${Math.ceil(days / 7)} semanas`;
+    return `${Math.ceil(days / 30)} meses`;
+}
+
+// Filtros de retos
+setTimeout(() => {
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentChallengeFilter = btn.dataset.filter;
+            document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadChallenges();
+        });
+    });
+}, 100);
+
+window.participateInChallenge = async function(challengeId) {
+    if (!currentUser) {
+        alert('Debes iniciar sesión para participar');
+        return;
+    }
+    
+    // Verificar si ya está participando
+    const userChallengeRef = ref(db, `UserChallenges/${currentUser.uid}/${challengeId}`);
+    const userChallengeSnap = await get(userChallengeRef);
+    
+    if (userChallengeSnap.exists()) {
+        if (confirm('Ya estás participando en este reto. ¿Quieres crear otra obra?')) {
+            // Cambiar a modo pintar y agregar hashtag del reto
+            document.querySelector('[data-mode="paint"]').click();
+            const challengeRef = ref(db, `ArtChallenges/${challengeId}`);
+            const challengeSnap = await get(challengeRef);
+            if (challengeSnap.exists()) {
+                const challenge = challengeSnap.val();
+                artDescription.value = challenge.hashtag + ' ';
+                artDescription.focus();
+            }
+        }
+        return;
+    }
+    
+    // Agregar a participantes
+    const participantRef = ref(db, `ChallengeParticipants/${challengeId}/${currentUser.uid}`);
+    await set(participantRef, {
+        joinedAt: Date.now(),
+        artworks: []
+    });
+    
+    // Agregar a retos del usuario
+    await set(userChallengeRef, {
+        challengeId: challengeId,
+        joinedAt: Date.now()
+    });
+    
+    // Actualizar contador
+    const challengeRef = ref(db, `ArtChallenges/${challengeId}`);
+    const challengeSnap = await get(challengeRef);
+    if (challengeSnap.exists()) {
+        const challenge = challengeSnap.val();
+        await set(ref(db, `ArtChallenges/${challengeId}/participantCount`), (challenge.participantCount || 0) + 1);
+    }
+    
+    alert('✅ ¡Te has unido al reto! Crea tu obra ahora.');
+    
+    // Cambiar a modo pintar y agregar hashtag del reto
+    document.querySelector('[data-mode="paint"]').click();
+    const challengeSnap2 = await get(challengeRef);
+    if (challengeSnap2.exists()) {
+        const challenge = challengeSnap2.val();
+        artDescription.value = challenge.hashtag + ' ';
+        artDescription.focus();
+    }
+    
+    // Recargar retos para actualizar UI
+    userChallenges.push(challengeId);
+    loadChallenges();
+};
+
+window.viewChallengeWorks = async function(challengeId) {
+    const challengeRef = ref(db, `ArtChallenges/${challengeId}`);
+    const challengeSnap = await get(challengeRef);
+    
+    if (!challengeSnap.exists()) return;
+    
+    const challenge = challengeSnap.val();
+    const hashtag = challenge.hashtag.replace('#', '');
+    
+    // Buscar obras con el hashtag del reto
+    const postsRef = ref(db, 'Posts');
+    const postsSnap = await get(postsRef);
+    const challengeWorks = [];
+    
+    if (postsSnap.exists()) {
+        postsSnap.forEach(child => {
+            const post = child.val();
+            if (post.type === 'arte' && post.text && post.text.includes(challenge.hashtag)) {
+                challengeWorks.push({
+                    key: child.key,
+                    ...post
+                });
+            }
+        });
+    }
+    
+    if (challengeWorks.length === 0) {
+        alert('Aún no hay obras para este reto. ¡Sé el primero en participar!');
+        return;
+    }
+    
+    // Mostrar obras en un modal o redirigir
+    if (confirm(`Se encontraron ${challengeWorks.length} obras para este reto.\n\n¿Quieres verlas en la galería?`)) {
+        // Cambiar a galería y filtrar por hashtag
+        document.querySelector('[data-mode="gallery"]').click();
+        document.getElementById('gallerySearch').value = hashtag;
+        setTimeout(() => loadGallery(), 500);
+    }
+};
+
+// Ver detalles del reto
+window.viewChallengeDetails = async function(challengeId) {
+    const challengeRef = ref(db, `ArtChallenges/${challengeId}`);
+    const challengeSnap = await get(challengeRef);
+    
+    if (!challengeSnap.exists()) return;
+    
+    const challenge = challengeSnap.val();
+    
+    // Cargar estadísticas
+    const participantsRef = ref(db, `ChallengeParticipants/${challengeId}`);
+    const participantsSnap = await get(participantsRef);
+    const participantCount = participantsSnap.exists() ? Object.keys(participantsSnap.val()).length : 0;
+    
+    // Contar obras del reto
+    const postsRef = ref(db, 'Posts');
+    const postsSnap = await get(postsRef);
+    let artworkCount = 0;
+    if (postsSnap.exists()) {
+        postsSnap.forEach(child => {
+            const post = child.val();
+            if (post.type === 'arte' && post.text && post.text.includes(challenge.hashtag)) {
+                artworkCount++;
+            }
+        });
+    }
+    
+    const daysLeft = Math.ceil((challenge.deadline - Date.now()) / (24 * 60 * 60 * 1000));
+    const isActive = challenge.deadline > Date.now();
+    
+    const details = `
+🏆 ${challenge.title}
+
+📝 Descripción:
+${challenge.description}
+
+📊 Estadísticas:
+• Participantes: ${participantCount}
+• Obras creadas: ${artworkCount}
+• Estado: ${isActive ? 'Activo' : 'Completado'}
+• ${isActive ? `Días restantes: ${daysLeft}` : 'Finalizado'}
+
+🏷️ Hashtag: ${challenge.hashtag}
+${challenge.prize ? `\n🏆 Premio: ${challenge.prize}` : ''}
+${challenge.category ? `\n📂 Categoría: ${challenge.category}` : ''}
+    `;
+    
+    alert(details);
+};
+
+// Registrar obra en reto automáticamente
+async function registerArtworkInChallenge(description, postId) {
+    if (!description || !currentUser) return;
+    
+    // Buscar hashtags de retos en la descripción
+    const challengesRef = ref(db, 'ArtChallenges');
+    const challengesSnap = await get(challengesRef);
+    
+    if (!challengesSnap.exists()) return;
+    
+    challengesSnap.forEach(child => {
+        const challenge = child.val();
+        if (description.includes(challenge.hashtag)) {
+            // Verificar que el usuario esté participando
+            const userChallengeRef = ref(db, `UserChallenges/${currentUser.uid}/${child.key}`);
+            get(userChallengeRef).then(userChallengeSnap => {
+                if (userChallengeSnap.exists()) {
+                    // Agregar obra a la lista de obras del participante
+                    const participantRef = ref(db, `ChallengeParticipants/${child.key}/${currentUser.uid}/artworks/${postId}`);
+                    set(participantRef, {
+                        postId: postId,
+                        createdAt: Date.now()
+                    });
+                    
+                    // Actualizar contador de obras del reto
+                    const challengeArtworksRef = ref(db, `ChallengeArtworks/${child.key}/${postId}`);
+                    set(challengeArtworksRef, {
+                        postId: postId,
+                        authorId: currentUser.uid,
+                        createdAt: Date.now()
+                    });
+                }
+            });
+        }
+    });
+}
+
+// Ver ranking del reto
+window.viewChallengeRanking = async function(challengeId) {
+    const challengeRef = ref(db, `ArtChallenges/${challengeId}`);
+    const challengeSnap = await get(challengeRef);
+    
+    if (!challengeSnap.exists()) return;
+    
+    const challenge = challengeSnap.val();
+    
+    // Buscar todas las obras del reto
+    const postsRef = ref(db, 'Posts');
+    const postsSnap = await get(postsRef);
+    const artworks = [];
+    
+    if (postsSnap.exists()) {
+        postsSnap.forEach(child => {
+            const post = child.val();
+            if (post.type === 'arte' && post.text && post.text.includes(challenge.hashtag)) {
+                artworks.push({
+                    key: child.key,
+                    likes: post.likes || 0,
+                    comments: post.comments || 0,
+                    views: post.views || 0,
+                    authorId: post.id,
+                    ...post
+                });
+            }
+        });
+    }
+    
+    if (artworks.length === 0) {
+        alert('Aún no hay obras para este reto.');
+        return;
+    }
+    
+    // Ordenar por likes (ranking)
+    artworks.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    
+    // Cargar nombres de autores para el top 10
+    let rankingText = '🏆 TOP OBRAS DEL RETO\n\n';
+    const topArtworks = artworks.slice(0, 10);
+    
+    for (let i = 0; i < topArtworks.length; i++) {
+        const artwork = topArtworks[i];
+        try {
+            const userRef = ref(db, `Users/${artwork.authorId}`);
+            const userSnap = await get(userRef);
+            const authorName = userSnap.exists() ? (userSnap.val().name || 'Artista') : 'Artista';
+            
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`;
+            rankingText += `${medal} ${authorName}\n`;
+            rankingText += `   ❤️ ${artwork.likes || 0} likes | 💬 ${artwork.comments || 0} comentarios\n\n`;
+        } catch (e) {
+            rankingText += `${i + 1}. Obra #${i + 1}\n   ❤️ ${artwork.likes || 0} likes\n\n`;
+        }
+    }
+    
+    if (artworks.length > 10) {
+        rankingText += `... y ${artworks.length - 10} obras más`;
+    }
+    
+    alert(rankingText);
+};
+
+// Ver todos los participantes de un reto
+window.viewAllParticipants = async function(challengeId) {
+    const participantsRef = ref(db, `ChallengeParticipants/${challengeId}`);
+    const participantsSnap = await get(participantsRef);
+    
+    if (!participantsSnap.exists()) {
+        alert('Aún no hay participantes en este reto.');
+        return;
+    }
+    
+    const participants = [];
+    participantsSnap.forEach(child => {
+        participants.push({
+            uid: child.key,
+            joinedAt: child.val().joinedAt,
+            artworksCount: child.val().artworks ? Object.keys(child.val().artworks).length : 0
+        });
+    });
+    
+    // Ordenar por fecha de unión
+    participants.sort((a, b) => a.joinedAt - b.joinedAt);
+    
+    let participantsList = '👥 PARTICIPANTES DEL RETO\n\n';
+    for (let i = 0; i < Math.min(20, participants.length); i++) {
+        const p = participants[i];
+        try {
+            const userRef = ref(db, `Users/${p.uid}`);
+            const userSnap = await get(userRef);
+            const userName = userSnap.exists() ? (userSnap.val().name || 'Artista') : 'Artista';
+            participantsList += `${i + 1}. ${userName} - ${p.artworksCount} obra(s)\n`;
+        } catch (e) {
+            participantsList += `${i + 1}. Participante ${i + 1}\n`;
+        }
+    }
+    
+    if (participants.length > 20) {
+        participantsList += `\n... y ${participants.length - 20} participantes más`;
+    }
+    
+    alert(participantsList);
+};
+
+// 6. BIBLIOTECA DE RECURSOS
+const resources = {
+    textures: [
+        { name: 'Madera', url: 'https://via.placeholder.com/150/8B4513/FFFFFF?text=Madera' },
+        { name: 'Tela', url: 'https://via.placeholder.com/150/FFE4B5/000000?text=Tela' },
+        { name: 'Papel', url: 'https://via.placeholder.com/150/F5F5DC/000000?text=Papel' },
+        { name: 'Metal', url: 'https://via.placeholder.com/150/C0C0C0/000000?text=Metal' }
+    ],
+    patterns: [
+        { name: 'Rayas', url: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=Rayas' },
+        { name: 'Puntos', url: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=Puntos' },
+        { name: 'Cuadros', url: 'https://via.placeholder.com/150/00FF00/000000?text=Cuadros' }
+    ],
+    brushes: [
+        { name: 'Pincel Suave', type: 'soft' },
+        { name: 'Pincel Texturizado', type: 'textured' },
+        { name: 'Pincel Difuso', type: 'blur' }
+    ],
+    backgrounds: [
+        { name: 'Gradiente Azul', url: 'https://via.placeholder.com/150/1E90FF/000080?text=Gradiente' },
+        { name: 'Gradiente Rosa', url: 'https://via.placeholder.com/150/FF69B4/8B008B?text=Gradiente' }
+    ]
+};
+
+function loadResources(type) {
+    const container = document.getElementById('resourcesContainer');
+    container.innerHTML = '';
+    
+    document.querySelectorAll('[data-resource-type]').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.resourceType === type) {
+            btn.classList.add('active');
+        }
+    });
+    
+    const items = resources[type] || [];
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'resource-item';
+        
+        if (item.url) {
+            const img = document.createElement('img');
+            img.src = item.url;
+            img.alt = item.name;
+            div.appendChild(img);
+        } else {
+            div.innerHTML = `<div style="padding:20px;text-align:center;font-size:48px;">🖌️</div><div style="text-align:center;font-size:12px;padding:10px;">${item.name}</div>`;
+        }
+        
+        div.onclick = () => {
+            if (type === 'textures' || type === 'backgrounds') {
+                // Cargar como imagen de fondo
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    canvasContext.drawImage(img, 0, 0, artCanvas.width, artCanvas.height);
+                    saveState();
+                };
+                img.src = item.url;
+            } else if (type === 'brushes') {
+                // Aplicar tipo de pincel
+                currentBrushType = item.type;
+                applyBrushType();
+            }
+        };
+        
+        container.appendChild(div);
+    });
+}
+
+document.querySelectorAll('[data-resource-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        loadResources(btn.dataset.resourceType);
+    });
+});
+
+// 7. ESTADÍSTICAS DE OBRA (se mostrarán al ver una obra publicada)
+async function loadArtStats(postId) {
+    try {
+        const statsRef = ref(db, `ArtStats/${postId}`);
+        const snapshot = await get(statsRef);
+        
+        if (snapshot.exists()) {
+            const stats = snapshot.val();
+            return {
+                views: stats.views || 0,
+                likes: stats.likes || 0,
+                comments: stats.comments || 0,
+                shares: stats.shares || 0
+            };
+        }
+        return { views: 0, likes: 0, comments: 0, shares: 0 };
+    } catch (error) {
+        console.error('Error cargando estadísticas:', error);
+        return { views: 0, likes: 0, comments: 0, shares: 0 };
+    }
+}
+
+// 8. HISTORIAL DE VERSIONES
+let versionHistory = [];
+
+function saveVersion() {
+    if (!canvasImage) return;
+    
+    versionHistory.push({
+        image: canvasImage,
+        timestamp: Date.now(),
+        description: artDescription.value
+    });
+    
+    // Limitar a 10 versiones
+    if (versionHistory.length > 10) {
+        versionHistory.shift();
+    }
+    
+    // Guardar en Firebase
+    if (currentUser) {
+        const versionRef = ref(db, `ArtVersions/${currentUser.uid}/${Date.now()}`);
+        set(versionRef, {
+            image: canvasImage,
+            timestamp: Date.now(),
+            description: artDescription.value
+        });
+    }
+}
+
+function loadVersions() {
+    if (!currentUser) return;
+    
+    const versionsRef = ref(db, `ArtVersions/${currentUser.uid}`);
+    onValue(versionsRef, (snapshot) => {
+        if (snapshot.exists()) {
+            versionHistory = [];
+            snapshot.forEach(child => {
+                versionHistory.push(child.val());
+            });
+            versionHistory.sort((a, b) => b.timestamp - a.timestamp);
+        }
+    });
+}
+
+// Auto-guardar versión cada 2 minutos
+setInterval(() => {
+    if (currentMode === 'paint' && canvasImage) {
+        saveVersion();
+    }
+}, 120000); // 2 minutos
+
+// 9. MODO COLABORATIVO (invitar artistas)
+async function inviteCollaborator(email) {
+    if (!currentUser) return;
+    
+    // Buscar usuario por email
+    const usersRef = ref(db, 'Users');
+    const snapshot = await get(usersRef);
+    let collaboratorId = null;
+    
+    snapshot.forEach(child => {
+        const userData = child.val();
+        if (userData.email === email) {
+            collaboratorId = child.key;
+        }
+    });
+    
+    if (!collaboratorId) {
+        alert('Usuario no encontrado');
+        return;
+    }
+    
+    // Enviar invitación
+    const inviteRef = ref(db, `ArtCollaborations/${currentUser.uid}/${Date.now()}`);
+    await set(inviteRef, {
+        collaboratorId: collaboratorId,
+        status: 'pending',
+        timestamp: Date.now()
+    });
+    
+    alert('Invitación enviada');
+}
+
+// 10. TUTORIALES INTEGRADOS
+const tutorials = [
+    {
+        title: 'Primeros Pasos',
+        content: 'Aprende a usar las herramientas básicas del editor de arte.',
+        video: null
+    },
+    {
+        title: 'Tipos de Pinceles',
+        content: 'Descubre cómo cada tipo de pincel crea efectos únicos.',
+        video: null
+    },
+    {
+        title: 'Uso de Capas',
+        content: 'Organiza tu trabajo usando capas para mayor control.',
+        video: null
+    }
+];
+
+function showTutorial(tutorialId) {
+    const tutorial = tutorials[tutorialId];
+    if (tutorial) {
+        alert(`${tutorial.title}\n\n${tutorial.content}`);
+    }
+}
+
+// 11. COLECCIONES/TEMÁTICAS
+async function createCollection(name, description) {
+    if (!currentUser) return;
+    
+    const collectionRef = ref(db, `ArtCollections/${currentUser.uid}/${Date.now()}`);
+    await set(collectionRef, {
+        name: name,
+        description: description,
+        createdAt: Date.now(),
+        artworks: []
+    });
+    
+    alert('Colección creada exitosamente');
+}
+
+async function addToCollection(collectionId, artworkId) {
+    if (!currentUser) return;
+    
+    const collectionRef = ref(db, `ArtCollections/${currentUser.uid}/${collectionId}`);
+    const snapshot = await get(collectionRef);
+    
+    if (snapshot.exists()) {
+        const collection = snapshot.val();
+        if (!collection.artworks) collection.artworks = [];
+        if (!collection.artworks.includes(artworkId)) {
+            collection.artworks.push(artworkId);
+            await set(collectionRef, collection);
+            alert('Obra agregada a la colección');
+        }
+    }
+}
+
+// 12. MARKETPLACE/TIENDA (estructura básica)
+async function listArtworkForSale(postId, price) {
+    if (!currentUser) return;
+    
+    const marketplaceRef = ref(db, `ArtMarketplace/${postId}`);
+    await set(marketplaceRef, {
+        sellerId: currentUser.uid,
+        price: price,
+        listedAt: Date.now(),
+        status: 'available'
+    });
+    
+    alert('Obra listada en el marketplace');
+}
+
+// 13. FILTROS AVANZADOS (ya implementado en loadGallery)
+// 14. NOTIFICACIONES (ya implementado en notifyUsers)
+// 15. PERFIL DE ARTISTA (se maneja en userprofile.html)
+
+// Inicializar
+initColorPalette();
+initStickers();
+updateZoom();
+
+// Cargar versiones si hay usuario
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loadVersions();
+    }
+});
+</script>
+<script src="not-available.js"></script>
+
+</body>
+</html>

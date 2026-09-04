@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Ver Serie">
+<title>PROVIWEB - Serie</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+    --bg-primary: #0f0f13;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --accent-purple: #a855f7;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --primary-color: #007BFF;
+    --primary-dark: #0056b3;
+    --primary-light: #4da6ff;
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+    --shadow-xl: 0 12px 40px rgba(0,0,0,0.3);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --glass-bg: var(--bg-card);
+    --glass-border: var(--border-glass);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+/* Aurora Background */
+body { 
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    animation: fadeIn 0.5s ease-out;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 123, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-purple);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.8);
+}
+
+/* Container principal tipo ViewPager2 */
+.series-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+    background: var(--bg-primary);
+    z-index: 1;
+}
+
+/* Slide individual de video - Transiciones suaves */
+.series-slide {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    opacity: 0;
+}
+
+.series-slide.active {
+    display: flex;
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 1;
+}
+
+.series-slide.prev {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.series-slide.next {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Video container - Estilo Netflix */
+.video-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    cursor: none;
+    overflow: hidden;
+    z-index: 1;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+.video-container * {
+    box-sizing: border-box;
+}
+
+.video-container:hover {
+    cursor: default;
+}
+
+.video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background: var(--bg-primary);
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: opacity 0.3s ease, z-index 0s;
+}
+
+/* Cuando el video está reproduciéndose, debe estar por encima */
+.video-player:not([paused]) {
+    z-index: 5 !important;
+}
+
+/* Optimización para video en reproducción */
+.video-player.playing {
+    z-index: 5 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.video-thumbnail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    background: var(--bg-primary);
+    pointer-events: none;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Cuando el thumbnail está oculto, asegurar que no interfiera */
+.video-thumbnail.hidden {
+    z-index: -1 !important;
+    pointer-events: none !important;
+    display: none !important;
+}
+
+/* Controles de video - Estilo Netflix */
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(15, 15, 19, 0.95) 0%, rgba(28, 28, 36, 0.8) 50%, transparent 100%);
+    padding: 30px 20px 20px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.video-container:hover .video-controls,
+.video-controls.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.seekbar-container {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.video-time {
+    display: none;
+}
+
+.video-time-current {
+    color: var(--text-primary);
+}
+
+.video-time-total {
+    color: var(--text-secondary);
+}
+
+.seekbar {
+    width: 100%;
+    height: 6px;
+    background: var(--border-glass);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    transition: height 0.2s ease, background 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+}
+
+.seekbar:hover {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.seekbar:active {
+    height: 10px;
+}
+
+.seekbar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.5), 0 0 0 2px rgba(255,255,255,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid var(--text-primary);
+}
+
+.seekbar::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.7), 0 0 0 3px rgba(255,255,255,0.3);
+}
+
+.seekbar:active::-webkit-slider-thumb {
+    transform: scale(1.4);
+}
+
+.seekbar::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent-purple);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.btn-play-pause {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 3px solid var(--border-glass);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 42px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    opacity: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 0 rgba(168, 85, 247, 0.4);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.video-container:hover .btn-play-pause,
+.btn-play-pause.show {
+    opacity: 1;
+}
+
+.btn-play-pause:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: translate(-50%, -50%) scale(1.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(168, 85, 247, 0.6);
+}
+
+.btn-play-pause:active {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+.btn-play-pause.playing {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Header flotante con info del usuario - Estilo Netflix */
+.series-header {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 20;
+    max-width: 350px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: var(--transition);
+    border: 1px solid var(--border-glass);
+    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.series-header:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: translateY(0) scale(1.03);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.series-header.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.video-container:hover .series-header {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-purple);
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-username {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.verified-badge {
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+/* Logo PROVIWEB Series - Estilo Netflix */
+.proviweb-logo {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+    z-index: 20;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 24px;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
+}
+
+.proviweb-logo.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.video-container:hover .proviweb-logo {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.proviweb-logo .series-text {
+    font-size: 11px;
+    margin-left: 5px;
+    opacity: 0.8;
+}
+
+/* Interacciones (comentarios, compartir, más) - Estilo Netflix */
+.interactions-reel {
+    position: absolute;
+    bottom: 120px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.video-container:hover .interactions-reel {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.interaction-btn {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid var(--border-glass);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.interaction-btn:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: scale(1.2) translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+}
+
+.interaction-btn:active {
+    transform: scale(1.1) translateY(0);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* Contenedor de botón de regalo */
+.gift-btn-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Popup de regalos */
+.gift-popup {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 1000;
+    min-width: 180px;
+    margin-bottom: 5px;
+    padding: 8px;
+    display: none;
+}
+
+.gift-popup.show {
+    display: block;
+}
+
+.gift-option {
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    margin-bottom: 2px;
+    color: var(--text-primary);
+}
+
+.gift-option:hover {
+    background: var(--border-glass);
+}
+
+/* Botón saltar siguiente video */
+.btn-skip-next {
+    width: 56px;
+    height: 56px;
+    background: var(--gradient-primary);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-glass);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    position: relative;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.btn-skip-next:hover {
+    background: var(--gradient-primary);
+    transform: scale(1.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+}
+
+.comment-count {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background: var(--accent-purple);
+    color: var(--text-primary);
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+/* Texto de la serie - Estilo Netflix */
+.series-text {
+    position: absolute;
+    bottom: 80px;
+    left: 30px;
+    max-width: 500px;
+    background: var(--bg-card);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    z-index: 5;
+    word-wrap: break-word;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.series-text-content {
+    flex: 1;
+}
+
+.series-text-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-glass);
+}
+
+.video-container:hover .series-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Botón de progreso integrado */
+.btn-progress {
+    padding: 8px 16px;
+    background: rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 20px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-progress:hover {
+    background: rgba(168, 85, 247, 0.4);
+    border-color: rgba(168, 85, 247, 0.6);
+    transform: scale(1.05);
+}
+
+.btn-progress-icon {
+    font-size: 16px;
+}
+
+/* Menú compartir */
+.share-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 1000;
+    min-width: 150px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.share-menu.show {
+    display: block;
+}
+
+.share-option {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+    color: var(--text-primary);
+}
+
+.share-option:hover {
+    background: var(--border-glass);
+}
+
+/* Menú opciones */
+.options-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 1000;
+    min-width: 150px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.options-menu.show {
+    display: block;
+}
+
+.option-item {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+    color: var(--text-primary);
+}
+
+.option-item:hover {
+    background: var(--border-glass);
+}
+
+/* Countdown para siguiente video - Estilo Netflix */
+.countdown-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 15, 19, 0.85);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+}
+
+.countdown-overlay.show {
+    display: flex;
+}
+
+.countdown-text {
+    font-size: 48px;
+    color: var(--text-primary);
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 30px rgba(168, 85, 247, 0.5);
+    animation: pulse 1s ease-in-out infinite;
+    letter-spacing: 2px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Indicador de carga de video */
+.video-loading-indicator {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Botón cerrar (volver) - Estilo Netflix */
+.btn-close {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 30;
+    width: 48px;
+    height: 48px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid var(--border-glass);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    opacity: 1;
+    transform: translateX(0);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.btn-close.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.video-container:hover .btn-close {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.btn-close:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: translateX(0) scale(1.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.btn-close:active {
+    transform: translateX(0) scale(1.05);
+}
+
+/* Indicador de progreso de serie (tipo Netflix) */
+.series-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border-glass);
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-container:hover .series-progress {
+    opacity: 1;
+}
+
+.series-progress-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    transition: width 0.2s linear;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.series-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Sección de comentarios expandible */
+.comment-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-glass);
+    padding: 15px;
+    z-index: 4;
+    display: none;
+    max-height: 50vh;
+    flex-direction: column;
+}
+
+.comment-section.show {
+    display: flex;
+}
+
+.comments-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    max-height: 300px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.comment-user-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.comment-user-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.comment-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    word-wrap: break-word;
+}
+
+.comment-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.comment-input-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+}
+
+.comment-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.comment-send-btn {
+    padding: 10px 20px;
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.comment-send-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* Panel de progreso de serie - Estilo Netflix */
+.series-progress-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg-card);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 1000;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    border-left: 2px solid var(--border-glass);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.7);
+}
+
+.series-progress-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.series-progress-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.series-progress-panel::-webkit-scrollbar-thumb {
+    background: var(--accent-purple);
+    border-radius: 3px;
+}
+
+.series-progress-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.8);
+}
+
+.series-progress-panel.show {
+    right: 0;
+}
+
+.series-progress-header {
+    padding: 30px 25px 25px;
+    border-bottom: 2px solid var(--border-glass);
+    position: sticky;
+    top: 0;
+    background: var(--bg-card);
+    z-index: 10;
+    backdrop-filter: blur(10px);
+}
+
+.series-progress-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.series-progress-title::before {
+    content: '📊';
+    font-size: 28px;
+}
+
+/* Información del usuario en el panel */
+.series-user-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.series-user-info:hover {
+    background: rgba(28, 28, 36, 0.9);
+    border-color: var(--accent-purple);
+    transform: translateX(-3px);
+}
+
+.series-user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-purple);
+    flex-shrink: 0;
+}
+
+.series-user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.series-user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.series-user-username {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.series-user-verified-badge {
+    font-size: 14px;
+    display: inline-block;
+}
+
+/* Información del video actual */
+.current-video-info {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.current-video-info-title {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.current-video-info-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.current-video-time {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.current-video-time-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.current-video-time-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-purple);
+    font-family: 'Courier New', monospace;
+}
+
+.current-video-progress {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.current-video-progress-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.current-video-progress-bar {
+    height: 4px;
+    background: var(--border-glass);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.current-video-progress-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+}
+
+.series-progress-stats {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.progress-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.progress-stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.progress-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-purple);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--border-glass);
+    border-radius: 4px;
+    margin-top: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+    position: relative;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--text-primary);
+    box-shadow: 0 0 4px rgba(255,255,255,0.8);
+}
+
+.videos-list {
+    padding: 20px;
+}
+
+.video-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.video-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-purple);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.video-item:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: translateX(-5px);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.video-item:hover::before {
+    transform: scaleY(1);
+}
+
+.video-item.active {
+    border-color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.15);
+}
+
+.video-item.active::before {
+    transform: scaleY(1);
+    background: var(--accent-purple);
+}
+
+.video-item-thumb {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.video-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.video-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.video-item-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.video-item-status {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.video-item-status.viewed {
+    background: var(--accent-purple);
+    color: var(--text-primary);
+}
+
+.video-item-status.not-viewed {
+    background: var(--border-glass);
+    color: var(--text-secondary);
+}
+
+/* Botón de progreso ya está definido arriba en .series-text-actions */
+
+/* Pantalla de finalización tipo Netflix */
+.series-complete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 15, 19, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.series-complete-overlay.show {
+    display: flex;
+}
+
+.series-complete-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.complete-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.complete-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.complete-subtitle {
+    font-size: 20px;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+}
+
+.complete-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.complete-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.complete-btn-primary {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+}
+
+.complete-btn-primary:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.complete-btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-glass);
+}
+
+.complete-btn-secondary:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: scale(1.05);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Botón cerrar panel */
+.btn-close-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.btn-close-panel:hover {
+    background: rgba(28, 28, 36, 0.9);
+    transform: scale(1.1);
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<div id="mainContent">
+    <div class="series-container" id="seriesContainer">
+        <!-- Los slides se crearán dinámicamente -->
+    </div>
+</div>
+
+<!-- Botón cerrar -->
+<button class="btn-close" id="btnClose">←</button>
+
+<!-- Logo PROVIWEB -->
+<div class="proviweb-logo">
+    PROVIWEB<span class="series-text">SERIES</span>
+</div>
+
+<!-- Botón para abrir panel de progreso (se agregará dinámicamente al lado de la descripción) -->
+
+<!-- Panel de progreso de serie -->
+<div class="series-progress-panel" id="seriesProgressPanel">
+    <button class="btn-close-panel" id="btnClosePanel" title="Cerrar">×</button>
+    <div class="series-progress-header">
+        <div class="series-progress-title">Progreso de la Serie</div>
+        
+        <!-- Información del usuario -->
+        <div class="series-user-info" id="seriesUserInfo">
+            <img class="series-user-photo" id="seriesUserPhoto" src="assets/avatar.png" alt="Usuario">
+            <div class="series-user-details">
+                <div class="series-user-name" id="seriesUserName">
+                    Cargando...
+                </div>
+                <div class="series-user-username" id="seriesUserUsername">
+                    @username
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información del video actual -->
+        <div class="current-video-info" id="currentVideoInfo">
+            <div class="current-video-info-title">Video Actual</div>
+            <div class="current-video-info-content">
+                <div class="current-video-time">
+                    <div class="current-video-time-label">Tiempo</div>
+                    <div class="current-video-time-value" id="currentVideoTime">0:00 / 0:00</div>
+                </div>
+                <div class="current-video-progress">
+                    <div class="current-video-progress-label">Progreso</div>
+                    <div class="current-video-progress-bar">
+                        <div class="current-video-progress-fill" id="currentVideoProgressFill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="overallProgressBar"></div>
+        </div>
+        <div class="series-progress-stats">
+            <div class="progress-stat">
+                <div class="progress-stat-label">Vistos</div>
+                <div class="progress-stat-value" id="viewedCount">0</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-label">Total</div>
+                <div class="progress-stat-value" id="totalCount">0</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-label">Pendientes</div>
+                <div class="progress-stat-value" id="pendingCount">0</div>
+            </div>
+        </div>
+    </div>
+    <div class="videos-list" id="videosList">
+        <!-- Lista de videos se generará dinámicamente -->
+    </div>
+</div>
+
+<!-- Pantalla de finalización tipo Netflix -->
+<div class="series-complete-overlay" id="seriesCompleteOverlay">
+    <div class="series-complete-content">
+        <div class="complete-icon">🎉</div>
+        <div class="complete-title">¡Serie Completada!</div>
+        <div class="complete-subtitle">Has visto todos los videos de esta serie</div>
+        <div class="complete-actions">
+            <button class="complete-btn complete-btn-primary" id="btnWatchMore">Ver Más Series</button>
+            <button class="complete-btn complete-btn-secondary" id="btnReplay">Repetir Serie</button>
+            <button class="complete-btn complete-btn-secondary" id="btnCloseComplete">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">

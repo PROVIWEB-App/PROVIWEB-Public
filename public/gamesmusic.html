@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PROVIWEB Arcade - Gimnasio Musical, Torneos & Trofeo de Temporada">
+    <title>PROVIWEB Arcade - Juegos, Torneos & Clasificación</title>
+    <link rel="icon" href="assets/logotransparente.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(22, 22, 32, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6b6b80;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-gold: #fbbf24;
+            --accent-rose: #f43f5e;
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #38bdf8 100%);
+            --gradient-fire: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --gradient-qav: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top Header */
+        .arcade-header {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            background: rgba(18, 18, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .arcade-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero & Player Stats Bar */
+        .arcade-hero-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 20px 10px;
+        }
+
+        .player-status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .player-status-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 16px;
+            }
+        }
+
+        .player-avatar-box {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .player-avatar-img {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .player-rank-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: var(--gradient-gold);
+            color: #000;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 2px solid #12121a;
+        }
+
+        .level-progress-bar-wrap {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .level-progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 30%;
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        .streak-fire-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: #fb923c;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .qav-reward-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        /* QAV Toast Notification */
+        .qav-toast {
+            position: fixed;
+            top: 74px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.95);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+            font-weight: 800;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 3000;
+            transform: translateY(-50px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .qav-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Section Tabs */
+        .arcade-section-tabs {
+            max-width: 1100px;
+            margin: 0 auto 20px;
+            padding: 0 20px;
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 12px;
+        }
+
+        .sec-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sec-tab-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+        }
+
+        /* Categories Filter */
+        .categories-filter-bar {
+            max-width: 1100px;
+            margin: 0 auto 20px;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .categories-filter-bar::-webkit-scrollbar { display: none; }
+
+        .cat-chip-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-chip-btn.active, .cat-chip-btn:hover {
+            background: var(--gradient-primary);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+        }
+
+        /* Games Grid */
+        .games-arcade-grid {
+            max-width: 1100px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 22px;
+        }
+
+        .game-arcade-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-arcade-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 16px 40px rgba(168, 85, 247, 0.25);
+        }
+
+        .game-badge-reward {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .game-icon-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 14px;
+            background: transparent !important;
+            border: 1px solid var(--border-glass);
+        }
+
+        .game-card-title {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .game-card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .game-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .btn-play-game {
+            background: var(--gradient-primary);
+            border: none;
+            color: #ffffff;
+            font-weight: 800;
+            padding: 8px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+            transition: all 0.2s;
+        }
+
+        /* EXACT INDEX.HTML 3D SEASON TROPHY SHOWCASE STYLES */
+        .showcase-view-container {
+            max-width: 1100px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            display: none;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .games-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        @media (max-width: 880px) {
+            .games-showcase {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .trophy-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 640px;
+            width: 100%;
+            background: #020408;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            perspective: 2000px;
+        }
+
+        .season-trophy-bg-radial {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 40%, rgba(30, 50, 80, 0.4), transparent);
+        }
+
+        .season-trophy-bg-texture {
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+        }
+
+        .season-trophy-rotator {
+            position: relative;
+            width: 360px;
+            height: 500px;
+            transform-style: preserve-3d;
+            cursor: grab;
+            z-index: 1;
+            touch-action: none;
+            user-select: none;
+            will-change: transform;
+            isolation: isolate;
+            transition: filter 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .season-trophy-rotator:hover {
+            filter: brightness(1.05);
+        }
+
+        .season-trophy-rotator.is-dragging {
+            cursor: grabbing;
+        }
+
+        .season-trophy-wall-mount {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transform: translateZ(50px);
+            background: radial-gradient(circle at center, #d4af37, #aa8c2c);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .season-trophy-wall-mount > div {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .season-trophy-wall-mount--tl { top: 32px; left: 32px; }
+        .season-trophy-wall-mount--tr { top: 32px; right: 32px; }
+        .season-trophy-wall-mount--bl { bottom: 32px; left: 32px; }
+        .season-trophy-wall-mount--br { bottom: 32px; right: 32px; }
+
+        .season-trophy-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), inset 0 0 40px rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+        }
+
+        .season-trophy-front {
+            position: absolute;
+            inset: 0;
+            transform: translateZ(35px);
+            border-right: 4px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .season-trophy-back {
+            position: absolute;
+            inset: 0;
+            opacity: 0.4;
+            transform: rotateY(180deg) translateZ(35px);
+            border-radius: 0.75rem;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .season-trophy-bevel {
+            position: absolute;
+            inset: 0;
+            border: 10px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            pointer-events: none;
+        }
+
+        .season-trophy-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 36px;
+            text-align: center;
+        }
+
+        .season-trophy-logo-wrap {
+            margin-bottom: 20px;
+            animation: seasonTrophyFloat 4s ease-in-out infinite;
+        }
+
+        .season-trophy-logo-wrap img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
+        }
+
+        .season-trophy-avatar-wrap {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .season-trophy-avatar-glow {
+            position: absolute;
+            inset: 0;
+            background: rgba(59, 130, 246, 0.2);
+            filter: blur(24px);
+            border-radius: 999px;
+        }
+
+        .season-trophy-avatar-wrap img {
+            position: relative;
+            width: 108px;
+            height: 108px;
+            border-radius: 999px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .season-trophy-typography {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .season-trophy-typography h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .season-trophy-divider {
+            width: 80px;
+            height: 1px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.5), transparent);
+        }
+
+        .season-trophy-typography p {
+            margin: 0;
+            color: rgba(147, 197, 253, 0.8);
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .season-trophy-footer {
+            position: absolute;
+            bottom: 32px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.3);
+            font-family: monospace;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+        }
+
+        .season-trophy-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), transparent, transparent);
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+
+        .season-trophy-shine > div {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            transform: rotate(-45deg);
+            background: linear-gradient(to bottom right, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: seasonTrophyShine 8s linear infinite;
+        }
+
+        .season-trophy-edge {
+            position: absolute;
+            top: 1px;
+            height: calc(100% - 2px);
+            width: 4px;
+            border-radius: 8px;
+            opacity: 0.75;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.08));
+        }
+
+        .season-trophy-edge--right { right: 0; transform: translateZ(35px); }
+        .season-trophy-edge--left { left: 0; transform: translateZ(35px); }
+
+        .season-trophy-controls {
+            position: absolute;
+            bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 50;
+        }
+
+        .season-trophy-controls button {
+            padding: 6px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s ease;
+        }
+
+        .season-trophy-controls button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .season-trophy-hint {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        @keyframes seasonTrophyFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes seasonTrophyShine {
+            from { transform: rotate(-45deg) translate3d(0, 0, 0); }
+            to { transform: rotate(-45deg) translate3d(100%, 100%, 0); }
+        }
+
+        /* Tournaments List matching index.html */
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .game-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .game-item:hover {
+            transform: translateY(-3px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-info h4 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .game-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .game-meta {
+            text-align: right;
+        }
+
+        .game-prize {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+        }
+
+        .game-status {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .game-status.live {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+
+        .game-status.upcoming {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+
+        /* Leaderboard Table */
+        .leaderboard-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            padding: 26px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+
+        .leaderboard-item.top-1 {
+            background: rgba(251, 191, 36, 0.12);
+            border-color: rgba(251, 191, 36, 0.4);
+        }
+
+        .leaderboard-item.top-2 {
+            background: rgba(203, 213, 225, 0.12);
+            border-color: rgba(203, 213, 225, 0.4);
+        }
+
+        .leaderboard-item.top-3 {
+            background: rgba(249, 115, 22, 0.12);
+            border-color: rgba(249, 115, 22, 0.4);
+        }
+
+        /* GAME ARENA MODAL */
+        .game-arena-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .game-arena-modal.open { display: flex; }
+
+        .arena-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 680px;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 26px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .arena-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .combo-badge {
+            background: var(--gradient-fire);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.6);
+            display: inline-block;
+        }
+
+        /* Option Buttons */
+        .game-option-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 18px 0;
+        }
+
+        .game-choice-btn {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 16px !important;
+            padding: 16px 14px !important;
+            color: #ffffff !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-align: center !important;
+            outline: none !important;
+            box-sizing: border-box !important;
+        }
+
+        .game-choice-btn:hover {
+            background: rgba(168, 85, 247, 0.18) !important;
+            border-color: var(--accent-purple) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 18px rgba(168, 85, 247, 0.3) !important;
+        }
+
+        .game-choice-btn:active { transform: scale(0.98); }
+
+        .game-choice-btn.correct {
+            background: rgba(34, 197, 94, 0.25) !important;
+            border-color: #22c55e !important;
+            color: #4ade80 !important;
+            box-shadow: 0 0 24px rgba(34, 197, 94, 0.5) !important;
+        }
+
+        .game-choice-btn.wrong {
+            background: rgba(239, 68, 68, 0.25) !important;
+            border-color: #ef4444 !important;
+            color: #f87171 !important;
+            box-shadow: 0 0 24px rgba(239, 68, 68, 0.5) !important;
+        }
+
+        /* Interactive Reference Piano */
+        .interactive-piano-bar {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 16px 0 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .mini-piano-key {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0 0 8px 8px;
+            color: #ffffff;
+            padding: 18px 8px 6px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .mini-piano-key:hover {
+            background: rgba(168, 85, 247, 0.3);
+            border-color: var(--accent-purple);
+        }
+
+        .mini-piano-key.black {
+            background: rgba(10, 10, 18, 0.95);
+            color: #a0a0b8;
+            height: 48px;
+            margin: 0 -8px;
+            z-index: 2;
+        }
+
+        /* Simon Keys */
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .simon-key-btn {
+            height: 100px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid var(--border-glass);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .simon-key-btn.active-glow {
+            background: rgba(56, 189, 248, 0.4) !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 28px rgba(56, 189, 248, 0.9) !important;
+            transform: scale(1.06);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="arcade-header">
+        <a href="home.html" class="arcade-brand">
+            <img src="assets/logotransparente.png" alt="PROVIWEB" style="width: 32px; height: 32px; filter:none!important; background:transparent!important;">
+            <span>PROVIWEB ARCADE</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="home.html" style="color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 600;">Inicio</a>
+        </div>
+    </header>
+
+    <!-- QAV Reward Toast Notification -->
+    <div class="qav-toast" id="qavToast">
+        <span>💎</span>
+        <span id="qavToastText">+0.01 QAV acreditados a tu billetera</span>
+    </div>
+
+    <!-- Hero & Player Stats Profile -->
+    <section class="arcade-hero-section">
+        <div class="player-status-card">
+            <div class="player-avatar-box">
+                <img src="assets/avatar.png" alt="Avatar" id="userAvatarImg" class="player-avatar-img" style="filter:none!important;">
+                <span class="player-rank-badge" id="playerRankBadge">NIVEL 1</span>
+            </div>
+
+            <div style="overflow: hidden;">
+                <div style="display: flex; align-items: center; gap: 10px; justify-content: inherit; flex-wrap: wrap;">
+                    <h2 style="font-size: 20px; font-weight: 800; margin: 0;" id="playerName">Músico</h2>
+                    <span id="playerTitleTag" style="font-size: 12px; color: var(--accent-purple); font-weight: 700;">Aprendiz del Ritmo</span>
+                </div>
+
+                <div class="level-progress-bar-wrap">
+                    <div class="level-progress-fill" id="levelProgressFill"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 6px;">
+                    <span id="playerXpText">0 / 500 XP</span>
+                    <span id="nextLevelText">Siguiente nivel en 500 XP</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <div class="streak-fire-pill" id="streakPill">
+                    <span>🔥</span>
+                    <span id="streakCount">0 Racha</span>
+                </div>
+                <div class="qav-reward-pill" id="qavBalancePill">
+                    <span>💎</span>
+                    <span id="walletQavs">0.00 QAV</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Navigation Tabs -->
+        <div class="arcade-section-tabs">
+            <button type="button" class="sec-tab-btn active" id="tabGamesBtn">🎮 Juegos y Desafíos (8)</button>
+            <button type="button" class="sec-tab-btn" id="tabRankingsBtn">🏆 Trofeo de Temporada, Torneos & Clasificación</button>
+        </div>
+    </section>
+
+    <!-- SECTION 1: GAMES VIEW -->
+    <div id="sectionGamesView">
+        <!-- Categories Filter Bar -->
+        <div class="categories-filter-bar" id="categoryFilterBar">
+            <button type="button" class="cat-chip-btn active" data-filter="all">🌟 Todos los Juegos (8)</button>
+            <button type="button" class="cat-chip-btn" data-filter="ear">🎯 Oído & Afinación</button>
+            <button type="button" class="cat-chip-btn" data-filter="rhythm">🥁 Ritmo & Tiempo</button>
+            <button type="button" class="cat-chip-btn" data-filter="harmony">🎹 Armonía & Lectura</button>
+            <button type="button" class="cat-chip-btn" data-filter="memory">⚡ Memoria & Cultura</button>
+        </div>
+
+        <!-- Main Games Grid (8 Complete Games) -->
+        <main class="games-arcade-grid" id="gamesGrid">
+            <!-- 1. Pitch Perfect -->
+            <div class="game-arcade-card" data-cat="ear" onclick="startPitchPerfectGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🎯</div>
+                    <h3 class="game-card-title">Duelo de Oído Absoluto</h3>
+                    <p class="game-card-desc">Escucha la frecuencia sonora sintetizada y pulsa la nota correcta antes de que expire el tiempo.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>⭐ +50 XP / acierto</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 2. Interval Master -->
+            <div class="game-arcade-card" data-cat="ear" onclick="startIntervalMasterGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🎵</div>
+                    <h3 class="game-card-title">Maestro de Intervalos</h3>
+                    <p class="game-card-desc">Identifica la distancia entre dos notas (3ra Mayor, 5ta Justa, 4ta, Octava, Tritono) tocadas en tiempo real.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>🎼 Oído Relativo</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 3. Cents Hunter -->
+            <div class="game-arcade-card" data-cat="ear" onclick="startCentsHunterGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🎛️</div>
+                    <h3 class="game-card-title">Caza de Microtonos & Cents</h3>
+                    <p class="game-card-desc">Compara dos tonos y detecta si el segundo está Calante (♭ bajo), Afinada (✓ perfecta) o Sostenida (♯ alta).</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>🎻 Precisión Instrumental</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 4. Rhythm Master -->
+            <div class="game-arcade-card" data-cat="rhythm" onclick="startRhythmMasterGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🥁</div>
+                    <h3 class="game-card-title">Batalla de Ritmo</h3>
+                    <p class="game-card-desc">Autopista rítmica visual. Toca en el momento exacto cuando las notas crucen la línea de impacto para lograr combos x5.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>🔥 Modo Combo Frenzy</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 5. Chord Wizard -->
+            <div class="game-arcade-card" data-cat="harmony" onclick="startChordWizardGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🎹</div>
+                    <h3 class="game-card-title">Desafío de Acordes & Tríadas</h3>
+                    <p class="game-card-desc">Identifica la armonía de tríadas Mayores, Menores, Aumentadas, Disminuidas y acordes con 7ma.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>🎼 Armonía Avanzada</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 6. Sight Reading Flashcards -->
+            <div class="game-arcade-card" data-cat="harmony" onclick="startSightReadingGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🎼</div>
+                    <h3 class="game-card-title">Pentagrama Flash (30s)</h3>
+                    <p class="game-card-desc">Modo contrarreloj de 30 segundos. Lee las notas en Clave de Sol y Clave de Fa a máxima velocidad.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>⏱️ Contrarreloj 30s</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 7. Melody Memory -->
+            <div class="game-arcade-card" data-cat="memory" onclick="startMelodyMemoryGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">⚡</div>
+                    <h3 class="game-card-title">Simón Musical & Dictado Melódico</h3>
+                    <p class="game-card-desc">Memoriza y repite secuencias melódicas crecientes de notas musicales en el sintetizador.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>🧠 Memoria Auditiva</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+
+            <!-- 8. Music Mastermind Trivia -->
+            <div class="game-arcade-card" data-cat="memory" onclick="startTriviaGame()">
+                <span class="game-badge-reward">+0.01 QAV</span>
+                <div>
+                    <div class="game-icon-circle">🧠</div>
+                    <h3 class="game-card-title">Trivia & Historia del Arte</h3>
+                    <p class="game-card-desc">Preguntas dinámicas sobre maestros clásicos, jazz, producción musical, acústica y obras maestras universales.</p>
+                </div>
+                <div class="game-card-footer">
+                    <span>💡 Cultura & Teoría</span>
+                    <button type="button" class="btn-play-game">Entrenar ➜</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SECTION 2: 3D TROPHY, TOURNAMENTS & LEADERBOARD VIEW (EXACT MATCH WITH INDEX.HTML) -->
+    <div id="sectionRankingsView" class="showcase-view-container">
+        <!-- 3D Season Trophy and Tournaments Grid -->
+        <div class="games-showcase">
+            <!-- 3D Trophy Card Identical to Index -->
+            <div class="trophy-card">
+                <div class="season-trophy-bg-radial"></div>
+                <div class="season-trophy-bg-texture"></div>
+
+                <div class="season-trophy-rotator" id="seasonTrophyRotator" tabindex="0" role="img" aria-label="Trofeo 3D interactivo. Arrastra para rotar y doble clic para reiniciar.">
+                    <div class="season-trophy-wall-mount season-trophy-wall-mount--tl"><div></div></div>
+                    <div class="season-trophy-wall-mount season-trophy-wall-mount--tr"><div></div></div>
+                    <div class="season-trophy-wall-mount season-trophy-wall-mount--bl"><div></div></div>
+                    <div class="season-trophy-wall-mount season-trophy-wall-mount--br"><div></div></div>
+
+                    <div class="season-trophy-front season-trophy-glass">
+                        <div class="season-trophy-bevel"></div>
+                        <div class="season-trophy-content">
+                            <div class="season-trophy-logo-wrap">
+                                <img src="./assets/logotransparente-1dd37ce8.png" alt="Logo PROVIWEB" onerror="this.src='assets/logonuevo.png'" style="filter:none!important; background:transparent!important;">
+                            </div>
+
+                            <div class="season-trophy-avatar-wrap">
+                                <div class="season-trophy-avatar-glow"></div>
+                                <img id="seasonTrophyAvatarImg" src="./assets/israphoto-4aaa0ca1.jpeg" alt="Líder de la Temporada" onerror="this.src='assets/avatar.png'" style="filter:none!important;">
+                            </div>
+                            </div>
+
+                            <div class="season-trophy-typography">
+                                <h3 id="seasonTrophyText">IsraViolink</h3>
+                                <div class="season-trophy-divider"></div>
+                                <p id="seasonTrophySubtitle">Grand Prize Winner</p>
+                            </div>
+
+                            <div class="season-trophy-footer">International Art Excellence &#8226; 2026</div>
+                        </div>
+
+                        <div class="season-trophy-shine"><div></div></div>
+                    </div>
+
+                    <div class="season-trophy-back season-trophy-glass"></div>
+                    <div class="season-trophy-edge season-trophy-edge--right"></div>
+                    <div class="season-trophy-edge season-trophy-edge--left"></div>
+                    <div class="season-trophy-shadow"></div>
+                </div>
+
+                <div class="season-trophy-controls">
+                    <button id="seasonTrophyToggle" type="button" aria-pressed="false">Pausar Rotaci&oacute;n</button>
+                    <span class="season-trophy-hint">Arrastra para rotar &#183; Doble clic para reiniciar</span>
+                </div>
+            </div>
+
+            <!-- Tournaments List Identical to Index -->
+            <div class="games-list">
+                <div class="game-item">
+                    <div class="game-info">
+                        <h4>Art Masters League</h4>
+                        <p>Liga oficial mensual de arte y destreza</p>
+                    </div>
+                    <div class="game-meta">
+                        <div class="game-prize">2,200 QAV</div>
+                        <span class="game-status live">En curso</span>
+                    </div>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-info">
+                        <h4>Latin Legacy Cup</h4>
+                        <p>Torneo internacional de virtuosismo</p>
+                    </div>
+                    <div class="game-meta">
+                        <div class="game-prize">1,500 QAV</div>
+                        <span class="game-status upcoming">Próximamente</span>
+                    </div>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-info">
+                        <h4>Duelo de Oído Absoluto & Armonía</h4>
+                        <p>Torneo semanal de precisión acústica</p>
+                    </div>
+                    <div class="game-meta">
+                        <div class="game-prize">800 QAV</div>
+                        <span class="game-status live">Registro abierto</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Leaderboard -->
+        <div class="leaderboard-box">
+            <h2 style="font-size:22px; font-weight:900; color:#fff; margin-bottom:6px;">📊 Tabla de Clasificación Global de Jugadores</h2>
+            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Los músicos con mayor precisión y XP de la comunidad en tiempo real.</p>
+
+            <div id="leaderboardList">
+                <div style="text-align:center; padding:30px; color:var(--text-secondary);">Cargando clasificación en tiempo real...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE GAME ARENA MODAL -->
+    <div class="game-arena-modal" id="gameArenaModal">
+        <div class="arena-container" id="arenaContainer">
+            <!-- Dynamic Game Content Injected Here -->
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" aria-label="Navegación Móvil">
+        <a href="home.html" class="mobile-nav-tab" id="mobileNavHome"><span class="tab-icon">🏠</span><span>Inicio</span></a>
+        <a href="reels.html" class="mobile-nav-tab" id="mobileNavReels"><span class="tab-icon">🎬</span><span>Reels</span></a>
+        <a href="createpost.html" class="mobile-nav-tab tab-create-btn" id="mobileNavCreate"><div class="tab-create-circle">➕</div></a>
+        <a href="opportunities.html" class="mobile-nav-tab" id="mobileNavOpp"><span class="tab-icon">💼</span><span>Empleos</span></a>
+        <a href="createchat.html" class="mobile-nav-tab" id="mobileNavChat"><span class="tab-icon">💬</span><span>Chats</span></a>
+        <a href="myprofile.html" class="mobile-nav-tab" id="mobileNavProfile"><span class="tab-icon">👤</span><span>Perfil</span></a>
+    </nav>
+
+    <!-- SCRIPTS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, update, push, runTransaction, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let playerStats = {
+            level: 1,
+            xp: 0,
+            streak: 0,
+            qavs: 0.0,
+            combo: 1
+        };
+
+        // Realistic Acoustic Piano & Synth Synthesizer
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Multi-Harmonic Tone Synthesis
+        function playTone(freq, type = 'sine', duration = 0.6, gainVal = 0.28) {
+            const ctx = getAudioContext();
+            const now = ctx.currentTime;
+
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = type;
+            osc1.frequency.setValueAtTime(freq, now);
+
+            gain1.gain.setValueAtTime(0.0001, now);
+            gain1.gain.linearRampToValueAtTime(gainVal, now + 0.03);
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + duration);
+
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(freq * 2, now);
+            gain2.gain.setValueAtTime(0.0001, now);
+            gain2.gain.linearRampToValueAtTime(gainVal * 0.35, now + 0.03);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + duration * 0.8);
+
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now);
+            osc2.stop(now + duration * 0.8);
+        }
+
+        function playChord(freqs, duration = 0.9) {
+            freqs.forEach((f, idx) => {
+                setTimeout(() => playTone(f, 'sine', duration, 0.18), idx * 15);
+            });
+        }
+
+        function playCorrectFX() {
+            playTone(523.25, 'sine', 0.2, 0.2);
+            setTimeout(() => playTone(659.25, 'sine', 0.2, 0.2), 80);
+            setTimeout(() => playTone(783.99, 'sine', 0.35, 0.25), 160);
+        }
+
+        function playWrongFX() {
+            playTone(180, 'sawtooth', 0.3, 0.25);
+        }
+
+        // QAV Award Process Engine (+0.01 QAV per process)
+        const QAV_REWARD_PER_PROCESS = 0.01;
+
+        function showQavToast(msg = '+0.01 QAV acreditados a tu billetera') {
+            const toast = document.getElementById('qavToast');
+            const text = document.getElementById('qavToastText');
+            if (toast && text) {
+                text.textContent = msg;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2500);
+            }
+        }
+
+        async function awardProcessQavs(amount = QAV_REWARD_PER_PROCESS) {
+            playerStats.qavs = parseFloat((playerStats.qavs + amount).toFixed(2));
+            showQavToast(`+0.01 QAV acreditados a tu billetera 💎`);
+            updatePlayerStatsUI();
+
+            if (!currentUser) return;
+            try {
+                const balanceRef = ref(db, `Balance/${currentUser.uid}/balance`);
+                await runTransaction(balanceRef, (current) => {
+                    return parseFloat(((current || 0) + amount).toFixed(2));
+                });
+
+                await push(ref(db, `GameEarnings/${currentUser.uid}`), {
+                    amount,
+                    type: 'game_process_reward',
+                    timestamp: Date.now()
+                });
+            } catch(e) {
+                console.warn('Error acreditando QAVs:', e);
+            }
+        }
+
+        // Section Tabs
+        const tabGamesBtn = document.getElementById('tabGamesBtn');
+        const tabRankingsBtn = document.getElementById('tabRankingsBtn');
+        const secGames = document.getElementById('sectionGamesView');
+        const secRankings = document.getElementById('sectionRankingsView');
+
+        tabGamesBtn.addEventListener('click', () => {
+            tabGamesBtn.classList.add('active');
+            tabRankingsBtn.classList.remove('active');
+            secGames.style.display = 'block';
+            secRankings.style.display = 'none';
+        });
+
+        tabRankingsBtn.addEventListener('click', () => {
+            tabRankingsBtn.classList.add('active');
+            tabGamesBtn.classList.remove('active');
+            secGames.style.display = 'none';
+            secRankings.style.display = 'flex';
+            loadLeaderboard();
+        });
+
+        // ========================================================
+        // EXACT INDEX.HTML 3D TROPHY ROTATION & INERTIA CONTROLLER
+        // ========================================================
+        (function initIndexExactTrophy() {
+            const rotator = document.getElementById('seasonTrophyRotator');
+            const toggle = document.getElementById('seasonTrophyToggle');
+            if (!rotator || !toggle) return;
+
+            const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+            let paused = false;
+            let manualPause = false;
+            let dragging = false;
+            let pointerId = null;
+            let lastX = 0;
+            let lastY = 0;
+            let lastMoveTs = performance.now();
+            let manualPitch = 0;
+            let manualYaw = 0;
+            let autoYaw = 0;
+            let yawVelocity = 0;
+            let pitchVelocity = 0;
+            let autoTime = 0;
+            let rafId = null;
+            let lastFrameTs = performance.now();
+            const autoBaseSpeedDegPerSec = 12;
+            const inertiaFriction = 0.92;
+
+            const applyTransform = () => {
+                const cinematicPitch = (!paused && !dragging) ? Math.sin(autoTime * 0.8) * 2.4 : 0;
+                const roll = dragging
+                    ? clamp(yawVelocity * 0.015, -3, 3)
+                    : ((!paused && !manualPause) ? Math.sin(autoTime * 0.6) * 0.75 : 0);
+
+                const pitch = clamp(manualPitch + cinematicPitch, -24, 24).toFixed(2);
+                const yaw = (manualYaw + autoYaw).toFixed(2);
+                rotator.style.transform = `rotateX(${pitch}deg) rotateY(${yaw}deg) rotateZ(${roll.toFixed(2)}deg)`;
+            };
+
+            const setPaused = (nextPaused) => {
+                paused = nextPaused;
+                toggle.setAttribute('aria-pressed', String(nextPaused));
+                toggle.textContent = nextPaused ? 'Reanudar Rotación' : 'Pausar Rotación';
+            };
+
+            const animate = (now) => {
+                const deltaMs = Math.min(64, now - lastFrameTs);
+                const deltaSec = deltaMs / 1000;
+                lastFrameTs = now;
+                autoTime += deltaSec;
+
+                if (!dragging) {
+                    manualYaw += yawVelocity * deltaSec;
+                    manualPitch = clamp(manualPitch + pitchVelocity * deltaSec, -24, 24);
+
+                    const decay = Math.pow(inertiaFriction, deltaMs / 16.6667);
+                    yawVelocity *= decay;
+                    pitchVelocity *= decay;
+
+                    if (Math.abs(yawVelocity) < 0.02) yawVelocity = 0;
+                    if (Math.abs(pitchVelocity) < 0.02) pitchVelocity = 0;
+                }
+
+                if (!paused && !dragging) {
+                    const cinematicSpeed = autoBaseSpeedDegPerSec + Math.sin(autoTime * 0.45) * 3.5;
+                    autoYaw = (autoYaw + cinematicSpeed * deltaSec) % 360;
+                }
+
+                applyTransform();
+                rafId = window.requestAnimationFrame(animate);
+            };
+
+            const endDrag = () => {
+                if (!dragging) return;
+                dragging = false;
+                rotator.classList.remove('is-dragging');
+                if (pointerId !== null && rotator.releasePointerCapture) {
+                    try { rotator.releasePointerCapture(pointerId); } catch (err) {}
+                }
+                pointerId = null;
+                if (!manualPause) setPaused(false);
+            };
+
+            rotator.addEventListener('pointerdown', function(event) {
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                dragging = true;
+                pointerId = event.pointerId;
+                lastX = event.clientX;
+                lastY = event.clientY;
+                lastMoveTs = performance.now();
+                yawVelocity = 0;
+                pitchVelocity = 0;
+                rotator.classList.add('is-dragging');
+                if (rotator.setPointerCapture) rotator.setPointerCapture(pointerId);
+                if (!manualPause) setPaused(true);
+            });
+
+            rotator.addEventListener('pointermove', function(event) {
+                if (!dragging) return;
+                const deltaX = event.clientX - lastX;
+                const deltaY = event.clientY - lastY;
+                const now = performance.now();
+                const moveDeltaMs = Math.max(1, now - lastMoveTs);
+                lastX = event.clientX;
+                lastY = event.clientY;
+                lastMoveTs = now;
+
+                const yawStep = deltaX * 0.36;
+                const pitchStep = -deltaY * 0.24;
+
+                manualYaw += yawStep;
+                manualPitch = clamp(manualPitch + pitchStep, -24, 24);
+                yawVelocity = (yawStep / moveDeltaMs) * 1000;
+                pitchVelocity = (pitchStep / moveDeltaMs) * 1000;
+                applyTransform();
+            });
+
+            rotator.addEventListener('pointerup', endDrag);
+            rotator.addEventListener('pointercancel', endDrag);
+            rotator.addEventListener('pointerleave', function() {
+                if (dragging) endDrag();
+            });
+
+            rotator.addEventListener('mouseenter', function() {
+                if (!manualPause && !dragging) setPaused(true);
+            });
+
+            rotator.addEventListener('mouseleave', function() {
+                if (!manualPause && !dragging) setPaused(false);
+            });
+
+            rotator.addEventListener('dblclick', function() {
+                manualPitch = 0;
+                manualYaw = 0;
+                autoYaw = 0;
+                yawVelocity = 0;
+                pitchVelocity = 0;
+                autoTime = 0;
+                if (!manualPause) setPaused(false);
+                applyTransform();
+            });
+
+            toggle.addEventListener('click', function() {
+                manualPause = !manualPause;
+                setPaused(manualPause);
+            });
+
+            applyTransform();
+            rafId = window.requestAnimationFrame(animate);
+        })();
+
+        // Leaderboard Loader
+        // Sincronización en Tiempo Real de la Tabla y del Trofeo 3D con el Jugador Top 1
+        function listenToLeaderboardAndTrophy() {
+            const listEl = document.getElementById('leaderboardList');
+            const rankRef = ref(db, 'GameRankings');
+            
+            onValue(rankRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = Object.values(snapshot.val());
+                    data.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+
+                    // 1. Actualizar el Trofeo 3D con el Jugador Top 1
+                    if (data.length > 0) {
+                        const top1 = data[0];
+                        const trophyImg = document.getElementById('seasonTrophyAvatarImg');
+                        const trophyText = document.getElementById('seasonTrophyText');
+                        const trophySub = document.getElementById('seasonTrophySubtitle');
+
+                        if (trophyImg && top1.photo) {
+                            trophyImg.src = top1.photo;
+                        }
+                        if (trophyText && top1.name) {
+                            trophyText.textContent = top1.name;
+                        }
+                        if (trophySub) {
+                            trophySub.textContent = `Líder Top 1 · ${top1.xp || 0} XP`;
+                        }
+                    }
+
+                    // 2. Renderizar la Tabla de Clasificación
+                    if (listEl) {
+                        listEl.innerHTML = '';
+                        data.slice(0, 10).forEach((user, idx) => {
+                            const rankClass = idx === 0 ? 'top-1' : (idx === 1 ? 'top-2' : (idx === 2 ? 'top-3' : ''));
+                            const badge = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx + 1}`));
+
+                            const row = document.createElement('div');
+                            row.className = `leaderboard-item ${rankClass}`;
+                            row.innerHTML = `
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <span style="font-weight:900; font-size:16px; width:28px;">${badge}</span>
+                                    <img src="${user.photo || 'assets/avatar.png'}" alt="Avatar" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border-glass); filter:none!important;">
+                                    <div>
+                                        <div style="font-weight:800; font-size:14px; color:#fff;">${user.name || 'Músico'}</div>
+                                        <div style="font-size:11px; color:var(--text-secondary);">Nivel ${user.level || 1} • ${user.xp || 0} XP</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight:800; color:#34d399; font-size:13px;">💎 ${(user.coins || user.qavs || 0).toFixed ? (user.coins || user.qavs || 0).toFixed(2) : user.coins || 0} QAV</div>
+                            `;
+                            listEl.appendChild(row);
+                        });
+                    }
+                } else if (listEl) {
+                    listEl.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary);">¡Sé el primero en jugar y liderar la tabla!</div>';
+                }
+            });
+        }
+
+        async function loadLeaderboard() {
+            listenToLeaderboardAndTrophy();
+        }
+
+        // Category Filter
+        document.querySelectorAll('.cat-chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-chip-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+
+                document.querySelectorAll('.game-arcade-card').forEach(card => {
+                    if (filter === 'all' || card.dataset.cat === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Gamification XP & Streak System
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                const userSnap = await get(ref(db, `Users/${user.uid}`));
+                const u = userSnap.exists() ? userSnap.val() : {};
+                document.getElementById('playerName').textContent = u.name || 'Músico';
+                if (u.photo) document.getElementById('userAvatarImg').src = u.photo;
+
+                const balSnap = await get(ref(db, `Balance/${user.uid}/balance`));
+                if (balSnap.exists()) {
+                    playerStats.qavs = parseFloat(balSnap.val().toFixed(2));
+                }
+
+                const statsSnap = await get(ref(db, `GameStats/${user.uid}`));
+                if (statsSnap.exists()) {
+                    playerStats = { ...playerStats, ...statsSnap.val() };
+                }
+                updatePlayerStatsUI();
+            }
+            listenToLeaderboardAndTrophy();
+        });
+
+        function addXP(amount) {
+            const bonusXP = amount * playerStats.combo;
+            playerStats.xp += bonusXP;
+            playerStats.streak++;
+
+            if (playerStats.streak >= 15) playerStats.combo = 5;
+            else if (playerStats.streak >= 8) playerStats.combo = 3;
+            else if (playerStats.streak >= 3) playerStats.combo = 2;
+            else playerStats.combo = 1;
+
+            const neededXP = playerStats.level * 500;
+            if (playerStats.xp >= neededXP) {
+                playerStats.level++;
+                awardProcessQavs(0.05);
+                alert(`🎉 ¡FELICITACIONES! Has alcanzado el NIVEL ${playerStats.level} y ganado un bono de +0.05 QAVs.`);
+            }
+
+            updatePlayerStatsUI();
+            saveStats();
+        }
+
+        function resetStreak() {
+            playerStats.streak = 0;
+            playerStats.combo = 1;
+            updatePlayerStatsUI();
+            saveStats();
+        }
+
+        function updatePlayerStatsUI() {
+            document.getElementById('playerRankBadge').textContent = `NIVEL ${playerStats.level}`;
+            document.getElementById('streakCount').textContent = `${playerStats.streak} Racha`;
+            document.getElementById('walletQavs').textContent = `${playerStats.qavs.toFixed(2)} QAV`;
+
+            const currentLevelMin = (playerStats.level - 1) * 500;
+            const currentLevelMax = playerStats.level * 500;
+            const currentXPInLevel = playerStats.xp - currentLevelMin;
+            const pct = Math.min(100, Math.max(0, (currentXPInLevel / 500) * 100));
+
+            document.getElementById('levelProgressFill').style.width = `${pct}%`;
+            document.getElementById('playerXpText').textContent = `${playerStats.xp} / ${currentLevelMax} XP`;
+
+            const titles = ['Aprendiz', 'Músico de Estudio', 'Virtuoso Solista', 'Maestro Legendario'];
+            const tIdx = Math.min(titles.length - 1, playerStats.level - 1);
+            document.getElementById('playerTitleTag').textContent = titles[tIdx];
+        }
+
+        async function saveStats() {
+            if (!currentUser) return;
+            try {
+                await update(ref(db, `GameStats/${currentUser.uid}`), playerStats);
+                await set(ref(db, `GameRankings/${currentUser.uid}`), {
+                    uid: currentUser.uid,
+                    name: document.getElementById('playerName').textContent,
+                    photo: document.getElementById('userAvatarImg').src,
+                    level: playerStats.level,
+                    xp: playerStats.xp,
+                    qavs: playerStats.qavs,
+                    updatedAt: Date.now()
+                });
+            } catch(e) {
+                console.warn('Error guardando stats:', e);
+            }
+        }
+
+        // ========================================================
+        // 1. DUELO DE OÍDO ABSOLUTO (Pitch Perfect Pro)
+        // ========================================================
+        const NOTES = [
+            { note: 'DO', eng: 'C4', freq: 261.63, isBlack: false },
+            { note: 'DO#', eng: 'C#4', freq: 277.18, isBlack: true },
+            { note: 'RE', eng: 'D4', freq: 293.66, isBlack: false },
+            { note: 'RE#', eng: 'D#4', freq: 311.13, isBlack: true },
+            { note: 'MI', eng: 'E4', freq: 329.63, isBlack: false },
+            { note: 'FA', eng: 'F4', freq: 349.23, isBlack: false },
+            { note: 'FA#', eng: 'F#4', freq: 369.99, isBlack: true },
+            { note: 'SOL', eng: 'G4', freq: 392.00, isBlack: false },
+            { note: 'SOL#', eng: 'G#4', freq: 415.30, isBlack: true },
+            { note: 'LA', eng: 'A4', freq: 440.00, isBlack: false },
+            { note: 'LA#', eng: 'A#4', freq: 466.16, isBlack: true },
+            { note: 'SI', eng: 'B4', freq: 493.88, isBlack: false }
+        ];
+
+        let targetPitchNote = null;
+
+        window.startPitchPerfectGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🎯 Duelo de Oído Absoluto</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Escucha y pulsa la nota correcta</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="text-align:center; padding:12px 0;">
+                    <button type="button" id="playPitchBtn" class="btn-play-game" style="padding:12px 30px; font-size:15px;">🔊 Reproducir Nota</button>
+                    <div id="pitchHint" style="font-size:14px; color:var(--accent-blue); margin-top:8px; min-height:20px;">Toca para escuchar</div>
+                </div>
+
+                <!-- Teclado de Piano de Referencia -->
+                <div class="interactive-piano-bar" id="pianoReferenceBar">
+                    ${NOTES.map(n => `<button type="button" class="mini-piano-key ${n.isBlack ? 'black' : ''}" onclick="window.playPianoKey(${n.freq})">${n.note}</button>`).join('')}
+                </div>
+
+                <div class="game-option-grid" id="pitchChoicesGrid"></div>
+            `;
+
+            nextPitchRound();
+        };
+
+        window.playPianoKey = function(freq) {
+            playTone(freq, 'sine', 0.5);
+        };
+
+        function nextPitchRound() {
+            targetPitchNote = NOTES[Math.floor(Math.random() * NOTES.length)];
+            playTone(targetPitchNote.freq, 'sine', 0.65);
+
+            document.getElementById('playPitchBtn').onclick = () => {
+                playTone(targetPitchNote.freq, 'sine', 0.65);
+            };
+
+            const choices = [targetPitchNote];
+            while (choices.length < 4) {
+                const rand = NOTES[Math.floor(Math.random() * NOTES.length)];
+                if (!choices.some(c => c.note === rand.note)) choices.push(rand);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('pitchChoicesGrid');
+            grid.innerHTML = '';
+
+            choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'game-choice-btn';
+                btn.innerHTML = `<div>${c.note}</div><div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">${c.eng}</div>`;
+
+                btn.onclick = () => {
+                    if (c.note === targetPitchNote.note) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(50);
+                        awardProcessQavs(0.01);
+                        document.getElementById('pitchHint').textContent = '✨ ¡Correcto! +0.01 QAV acreditados';
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextPitchRound, 900);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('pitchHint').textContent = `❌ Era ${targetPitchNote.note} (${targetPitchNote.eng})`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextPitchRound, 1300);
+                    }
+                };
+
+                grid.appendChild(btn);
+            });
+        }
+
+        // ========================================================
+        // 2. MAESTRO DE INTERVALOS (Interval Master)
+        // ========================================================
+        const INTERVALS_DB = [
+            { name: 'Segunda Menor (2m)', semitones: 1, example: 'Tiburón (Jaws)' },
+            { name: 'Segunda Mayor (2M)', semitones: 2, example: 'Cumpleaños Feliz' },
+            { name: 'Tercera Menor (3m)', semitones: 3, example: 'Greensleeves' },
+            { name: 'Tercera Mayor (3M)', semitones: 4, example: 'Kumbaya / Primavera' },
+            { name: 'Cuarta Justa (4J)', semitones: 5, example: 'Himno a la Alegría' },
+            { name: 'Tritono (4ª Aum / 5ª Dis)', semitones: 6, example: 'Los Simpson (Intro)' },
+            { name: 'Quinta Justa (5J)', semitones: 7, example: 'Star Wars / Twinkle' },
+            { name: 'Octava Justa (8J)', semitones: 12, example: 'Over the Rainbow' }
+        ];
+
+        let targetInterval = null;
+
+        window.startIntervalMasterGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🎵 Maestro de Intervalos</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Identifica la distancia acústica entre ambas notas</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="text-align:center; padding:16px 0;">
+                    <button type="button" id="playIntervalBtn" class="btn-play-game" style="padding:12px 30px; font-size:15px;">🎼 Escuchar Intervalo</button>
+                    <div id="intervalHint" style="font-size:14px; color:var(--accent-blue); margin-top:10px; min-height:20px;">Toca para reproducir</div>
+                </div>
+
+                <div class="game-option-grid" id="intervalChoicesGrid"></div>
+            `;
+
+            nextIntervalRound();
+        };
+
+        function playIntervalSound(semitones) {
+            const baseFreq = 261.63; // C4
+            const targetFreq = baseFreq * Math.pow(2, semitones / 12);
+            playTone(baseFreq, 'sine', 0.5, 0.25);
+            setTimeout(() => playTone(targetFreq, 'sine', 0.6, 0.25), 350);
+        }
+
+        function nextIntervalRound() {
+            targetInterval = INTERVALS_DB[Math.floor(Math.random() * INTERVALS_DB.length)];
+            playIntervalSound(targetInterval.semitones);
+
+            document.getElementById('playIntervalBtn').onclick = () => {
+                playIntervalSound(targetInterval.semitones);
+            };
+
+            const choices = [targetInterval];
+            while (choices.length < 4) {
+                const rand = INTERVALS_DB[Math.floor(Math.random() * INTERVALS_DB.length)];
+                if (!choices.some(c => c.name === rand.name)) choices.push(rand);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('intervalChoicesGrid');
+            grid.innerHTML = '';
+
+            choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'game-choice-btn';
+                btn.innerHTML = `<div>${c.name}</div><div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${c.example}</div>`;
+
+                btn.onclick = () => {
+                    if (c.name === targetInterval.name) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(60);
+                        awardProcessQavs(0.01);
+                        document.getElementById('intervalHint').textContent = `✨ ¡Correcto! (${targetInterval.example}) +0.01 QAV`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextIntervalRound, 1000);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('intervalHint').textContent = `❌ Era ${targetInterval.name} (${targetInterval.example})`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextIntervalRound, 1400);
+                    }
+                };
+
+                grid.appendChild(btn);
+            });
+        }
+
+        // ========================================================
+        // 3. CAZA DE MICROTONOS & DISCRIMINACIÓN (Cents Hunter)
+        // ========================================================
+        let targetCentsOffset = 0;
+
+        window.startCentsHunterGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🎛️ Caza de Microtonos & Cents</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">¿La segunda nota está afinada, baja o alta?</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="text-align:center; padding:16px 0;">
+                    <button type="button" id="playCentsBtn" class="btn-play-game" style="padding:12px 30px; font-size:15px;">🔊 Escuchar Comparación</button>
+                    <div id="centsHint" style="font-size:14px; color:var(--accent-blue); margin-top:10px; min-height:20px;">Toca para escuchar</div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:16px 0;" id="centsChoicesGrid">
+                    <button type="button" class="game-choice-btn" data-ans="flat">♭ Calante (Baja)</button>
+                    <button type="button" class="game-choice-btn" data-ans="in_tune">✓ Afinado (0 Cents)</button>
+                    <button type="button" class="game-choice-btn" data-ans="sharp">♯ Sostenida (Alta)</button>
+                </div>
+            `;
+
+            nextCentsRound();
+        };
+
+        function playCentsComparison(offsetCents) {
+            const baseFreq = 440.00; // A4
+            const testFreq = baseFreq * Math.pow(2, offsetCents / 1200);
+            playTone(baseFreq, 'sine', 0.6, 0.25);
+            setTimeout(() => playTone(testFreq, 'sine', 0.7, 0.25), 450);
+        }
+
+        function nextCentsRound() {
+            const possibilities = [-35, -20, 0, 0, +20, +35];
+            targetCentsOffset = possibilities[Math.floor(Math.random() * possibilities.length)];
+            playCentsComparison(targetCentsOffset);
+
+            document.getElementById('playCentsBtn').onclick = () => {
+                playCentsComparison(targetCentsOffset);
+            };
+
+            const expected = targetCentsOffset === 0 ? 'in_tune' : (targetCentsOffset < 0 ? 'flat' : 'sharp');
+
+            document.querySelectorAll('#centsChoicesGrid .game-choice-btn').forEach(btn => {
+                btn.className = 'game-choice-btn';
+                btn.onclick = () => {
+                    const ans = btn.dataset.ans;
+                    if (ans === expected) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(60);
+                        awardProcessQavs(0.01);
+                        document.getElementById('centsHint').textContent = `✨ ¡Excelente oído! (${targetCentsOffset} Cents) +0.01 QAV`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextCentsRound, 1000);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('centsHint').textContent = `❌ Tenía una desviación de ${targetCentsOffset} Cents`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextCentsRound, 1400);
+                    }
+                };
+            });
+        }
+
+        // ========================================================
+        // 4. BATALLA DE RITMO (Rhythm Master)
+        // ========================================================
+        let rhythmAnimationId = null;
+        let rhythmBeats = [];
+        let rhythmScore = 0;
+
+        window.startRhythmMasterGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🥁 Batalla de Ritmo</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Toca en el impacto cuando la gema cruce la línea</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">
+                    <span>Puntuación: <span id="rhythmScoreDisplay" style="color:#4ade80;">0</span></span>
+                    <span id="rhythmGradeText" style="color:#38bdf8;">¡PREPÁRATE!</span>
+                </div>
+
+                <div style="width:100%; height:240px; background:#08080d; border:1px solid var(--border-glass); border-radius:20px; position:relative; overflow:hidden; margin:14px 0;">
+                    <canvas id="rhythmCanvas" width="600" height="240" style="width:100%; height:100%; display:block;"></canvas>
+                    <div style="position:absolute; bottom:28px; left:0; right:0; height:6px; background:rgba(56,189,248,0.6); box-shadow:0 0 14px rgba(56,189,248,0.9);"></div>
+                </div>
+
+                <button type="button" id="rhythmTapBtn" class="rhythm-tap-trigger" style="width:100%; padding:15px; background:var(--gradient-primary); border:none; border-radius:16px; color:#fff; font-size:17px; font-weight:800; cursor:pointer;">💥 ¡TOCAR EL RITMO!</button>
+            `;
+
+            initRhythmEngine();
+        };
+
+        function initRhythmEngine() {
+            const canvas = document.getElementById('rhythmCanvas');
+            const ctx = canvas.getContext('2d');
+            rhythmBeats = [];
+            rhythmScore = 0;
+
+            const beatInterval = setInterval(() => {
+                if (!document.getElementById('rhythmCanvas')) {
+                    clearInterval(beatInterval);
+                    return;
+                }
+                rhythmBeats.push({ y: 0, lane: Math.floor(Math.random() * 3), hit: false });
+            }, 850);
+
+            function loop() {
+                if (!document.getElementById('rhythmCanvas')) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 3, 0); ctx.lineTo(canvas.width / 3, canvas.height);
+                ctx.moveTo((canvas.width / 3) * 2, 0); ctx.lineTo((canvas.width / 3) * 2, canvas.height);
+                ctx.stroke();
+
+                const laneWidth = canvas.width / 3;
+
+                for (let i = rhythmBeats.length - 1; i >= 0; i--) {
+                    const b = rhythmBeats[i];
+                    b.y += 4;
+                    const x = b.lane * laneWidth + laneWidth / 2;
+
+                    ctx.save();
+                    ctx.shadowColor = '#a855f7';
+                    ctx.shadowBlur = 14;
+                    ctx.fillStyle = '#c084fc';
+                    ctx.beginPath();
+                    ctx.arc(x, b.y, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    if (b.y > canvas.height + 20) {
+                        if (!b.hit) {
+                            resetStreak();
+                            document.getElementById('rhythmGradeText').textContent = 'MISS ❌';
+                            document.getElementById('rhythmGradeText').style.color = '#ef4444';
+                        }
+                        rhythmBeats.splice(i, 1);
+                    }
+                }
+
+                rhythmAnimationId = requestAnimationFrame(loop);
+            }
+
+            rhythmAnimationId = requestAnimationFrame(loop);
+
+            const tapBtn = document.getElementById('rhythmTapBtn');
+            tapBtn.onpointerdown = () => {
+                const hitY = canvas.height - 28;
+                let hitFound = false;
+
+                for (let b of rhythmBeats) {
+                    if (!b.hit && Math.abs(b.y - hitY) < 32) {
+                        b.hit = true;
+                        hitFound = true;
+                        playCorrectFX();
+                        addXP(100);
+                        awardProcessQavs(0.01);
+                        rhythmScore += 100;
+                        document.getElementById('rhythmGradeText').textContent = 'PERFECT! +0.01 QAV ⭐';
+                        document.getElementById('rhythmGradeText').style.color = '#4ade80';
+                        break;
+                    }
+                }
+
+                if (!hitFound) {
+                    playWrongFX();
+                    resetStreak();
+                    document.getElementById('rhythmGradeText').textContent = 'MISFIRE!';
+                    document.getElementById('rhythmGradeText').style.color = '#f87171';
+                }
+
+                document.getElementById('rhythmScoreDisplay').textContent = rhythmScore;
+                document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+            };
+        }
+
+        // ========================================================
+        // 5. DESAFÍO DE ACORDES & TRÍADAS (Chord Wizard)
+        // ========================================================
+        const CHORDS_DB = [
+            { name: 'Mayor (Tríada)', freqs: [261.63, 329.63, 392.00], formula: '1 - 3 - 5 (Consonancia brillante)' },
+            { name: 'Menor (Tríada)', freqs: [261.63, 311.13, 392.00], formula: '1 - ♭3 - 5 (Color melancólico)' },
+            { name: 'Aumentado', freqs: [261.63, 329.63, 415.30], formula: '1 - 3 - ♯5 (Tensión abierta)' },
+            { name: 'Disminuido', freqs: [261.63, 311.13, 369.99], formula: '1 - ♭3 - ♭5 (Tensión sombría)' },
+            { name: 'Mayor 7ma (Maj7)', freqs: [261.63, 329.63, 392.00, 493.88], formula: '1 - 3 - 5 - 7 (Sonido jazz dulce)' },
+            { name: 'Dominante 7ma (7)', freqs: [261.63, 329.63, 392.00, 466.16], formula: '1 - 3 - 5 - ♭7 (Tensión resolutiva)' }
+        ];
+
+        let targetChord = null;
+
+        window.startChordWizardGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🎹 Desafío de Acordes & Tríadas</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Reconoce la estructura armónica del acorde</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="text-align:center; padding:16px 0;">
+                    <button type="button" id="playChordBtn" class="btn-play-game" style="padding:12px 30px; font-size:15px;">🎼 Escuchar Acorde</button>
+                    <div id="chordHint" style="font-size:14px; color:var(--accent-blue); margin-top:10px; min-height:20px;">Toca para reproducir</div>
+                </div>
+
+                <div class="game-option-grid" id="chordChoicesGrid"></div>
+            `;
+
+            nextChordRound();
+        };
+
+        function nextChordRound() {
+            targetChord = CHORDS_DB[Math.floor(Math.random() * CHORDS_DB.length)];
+            playChord(targetChord.freqs);
+
+            document.getElementById('playChordBtn').onclick = () => {
+                playChord(targetChord.freqs);
+            };
+
+            const choices = [targetChord];
+            while (choices.length < 4) {
+                const rand = CHORDS_DB[Math.floor(Math.random() * CHORDS_DB.length)];
+                if (!choices.some(c => c.name === rand.name)) choices.push(rand);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('chordChoicesGrid');
+            grid.innerHTML = '';
+
+            choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'game-choice-btn';
+                btn.innerHTML = `<div>${c.name}</div><div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${c.formula}</div>`;
+
+                btn.onclick = () => {
+                    if (c.name === targetChord.name) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(70);
+                        awardProcessQavs(0.01);
+                        document.getElementById('chordHint').textContent = `✨ ¡Correcto! (${targetChord.formula}) +0.01 QAV`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextChordRound, 1000);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('chordHint').textContent = `❌ Era ${targetChord.name}`;
+                        document.getElementById('arenaCombo').textContent = `COMBO x${playerStats.combo}`;
+                        setTimeout(nextChordRound, 1300);
+                    }
+                };
+
+                grid.appendChild(btn);
+            });
+        }
+
+        // ========================================================
+        // 6. LECTURA VELOZ DE PENTAGRAMA (Sight-Reading Time Attack)
+        // ========================================================
+        const STAFF_NOTES = [
+            { note: 'DO', eng: 'C4', yOffset: 120 },
+            { note: 'RE', eng: 'D4', yOffset: 110 },
+            { note: 'MI', eng: 'E4', yOffset: 100 },
+            { note: 'FA', eng: 'F4', yOffset: 90 },
+            { note: 'SOL', eng: 'G4', yOffset: 80 },
+            { note: 'LA', eng: 'A4', yOffset: 70 },
+            { note: 'SI', eng: 'B4', yOffset: 60 },
+            { note: 'DO', eng: 'C5', yOffset: 50 }
+        ];
+
+        let targetStaffNote = null;
+        let sightTimer = null;
+        let sightTimeLeft = 30;
+
+        window.startSightReadingGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+            sightTimeLeft = 30;
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🎼 Pentagrama Flash (30s)</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Lee las notas a máxima velocidad</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-weight:900; color:#fbbf24; font-size:18px;" id="sightTimerDisplay">⏱️ 30s</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="background:#0e0e16; border:1px solid var(--border-glass); border-radius:20px; padding:16px; text-align:center; margin:10px 0;">
+                    <svg width="300" height="150" id="staffSvg" viewBox="0 0 300 150">
+                        <line x1="20" y1="50" x2="280" y2="50" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                        <line x1="20" y1="65" x2="280" y2="65" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                        <line x1="20" y1="80" x2="280" y2="80" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                        <line x1="20" y1="95" x2="280" y2="95" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                        <line x1="20" y1="110" x2="280" y2="110" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                        <text x="30" y="98" font-size="46" fill="#a855f7" font-family="serif">𝄞</text>
+                        <circle id="staffNoteCircle" cx="160" cy="80" r="8" fill="#38bdf8" />
+                    </svg>
+                </div>
+
+                <div class="game-option-grid" id="staffChoicesGrid"></div>
+            `;
+
+            sightTimer = setInterval(() => {
+                sightTimeLeft--;
+                const display = document.getElementById('sightTimerDisplay');
+                if (display) display.textContent = `⏱️ ${sightTimeLeft}s`;
+
+                if (sightTimeLeft <= 0) {
+                    clearInterval(sightTimer);
+                    awardProcessQavs(0.01);
+                    alert('⏱️ ¡Tiempo cumplido! Has completado la ronda de lectura (+0.01 QAV).');
+                    closeGameModal();
+                }
+            }, 1000);
+
+            nextStaffRound();
+        };
+
+        function nextStaffRound() {
+            targetStaffNote = STAFF_NOTES[Math.floor(Math.random() * STAFF_NOTES.length)];
+            const circle = document.getElementById('staffNoteCircle');
+            if (circle) circle.setAttribute('cy', targetStaffNote.yOffset);
+
+            const choices = [targetStaffNote];
+            while (choices.length < 4) {
+                const rand = STAFF_NOTES[Math.floor(Math.random() * STAFF_NOTES.length)];
+                if (!choices.some(c => c.note === rand.note)) choices.push(rand);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('staffChoicesGrid');
+            grid.innerHTML = '';
+
+            choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'game-choice-btn';
+                btn.innerHTML = `<div>${c.note}</div><div style="font-size:12px; color:var(--text-secondary);">${c.eng}</div>`;
+
+                btn.onclick = () => {
+                    if (c.note === targetStaffNote.note) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(40);
+                        setTimeout(nextStaffRound, 300);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        setTimeout(nextStaffRound, 500);
+                    }
+                };
+
+                grid.appendChild(btn);
+            });
+        }
+
+        // ========================================================
+        // 7. SIMÓN MUSICAL & DICTADO MELÓDICO (Melody Memory)
+        // ========================================================
+        const SIMON_NOTES = [
+            { note: 'DO', freq: 261.63, color: '#ef4444' },
+            { note: 'MI', freq: 329.63, color: '#3b82f6' },
+            { note: 'SOL', freq: 392.00, color: '#10b981' },
+            { note: 'SI', freq: 493.88, color: '#f59e0b' }
+        ];
+
+        let simonSequence = [];
+        let simonPlayerIndex = 0;
+
+        window.startMelodyMemoryGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+            simonSequence = [];
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">⚡ Simón Musical & Dictado</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Memoriza y repite la melodía</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">NIVEL 1</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="text-align:center; padding:10px 0;">
+                    <div id="simonStatusText" style="font-size:15px; color:#38bdf8; font-weight:700;">Observa la secuencia...</div>
+                </div>
+
+                <div class="simon-grid" id="simonKeysGrid">
+                    <button type="button" class="simon-key-btn" data-idx="0" style="border-color:#ef4444;">DO</button>
+                    <button type="button" class="simon-key-btn" data-idx="1" style="border-color:#3b82f6;">MI</button>
+                    <button type="button" class="simon-key-btn" data-idx="2" style="border-color:#10b981;">SOL</button>
+                    <button type="button" class="simon-key-btn" data-idx="3" style="border-color:#f59e0b;">SI</button>
+                </div>
+            `;
+
+            nextSimonLevel();
+        };
+
+        async function nextSimonLevel() {
+            simonSequence.push(Math.floor(Math.random() * 4));
+            simonPlayerIndex = 0;
+            document.getElementById('arenaCombo').textContent = `NIVEL ${simonSequence.length}`;
+            document.getElementById('simonStatusText').textContent = 'Escucha la melodía...';
+
+            const keys = document.querySelectorAll('.simon-key-btn');
+            keys.forEach(k => k.style.pointerEvents = 'none');
+
+            await new Promise(r => setTimeout(r, 600));
+
+            for (let idx of simonSequence) {
+                const noteObj = SIMON_NOTES[idx];
+                const key = keys[idx];
+                key.classList.add('active-glow');
+                playTone(noteObj.freq, 'sine', 0.4);
+                await new Promise(r => setTimeout(r, 450));
+                key.classList.remove('active-glow');
+                await new Promise(r => setTimeout(r, 200));
+            }
+
+            document.getElementById('simonStatusText').textContent = '¡Tu turno! Repite la melodía';
+            keys.forEach(k => k.style.pointerEvents = 'auto');
+
+            keys.forEach((k, idx) => {
+                k.onclick = () => {
+                    const noteObj = SIMON_NOTES[idx];
+                    k.classList.add('active-glow');
+                    playTone(noteObj.freq, 'sine', 0.3);
+                    setTimeout(() => k.classList.remove('active-glow'), 200);
+
+                    if (idx === simonSequence[simonPlayerIndex]) {
+                        simonPlayerIndex++;
+                        if (simonPlayerIndex >= simonSequence.length) {
+                            playCorrectFX();
+                            addXP(60);
+                            awardProcessQavs(0.01);
+                            document.getElementById('simonStatusText').textContent = '✨ ¡Correcto! +0.01 QAV';
+                            setTimeout(nextSimonLevel, 1000);
+                        }
+                    } else {
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('simonStatusText').textContent = '❌ Fallaste. Reiniciando...';
+                        setTimeout(() => {
+                            simonSequence = [];
+                            nextSimonLevel();
+                        }, 1400);
+                    }
+                };
+            });
+        }
+
+        // ========================================================
+        // 8. TRIVIA MUSICAL & HISTORIA DEL ARTE (Mastermind)
+        // ========================================================
+        const TRIVIA_DB = [
+            {
+                q: '¿A qué período musical pertenece Ludwig van Beethoven?',
+                options: ['Barroco', 'Clasicismo / Transición al Romanticismo', 'Renacimiento', 'Impresionismo'],
+                correct: 1,
+                exp: 'Beethoven fue la figura puente cumbre entre el Clasicismo y el Romanticismo.'
+            },
+            {
+                q: '¿Cuántas notas componen una escala pentatónica por octava?',
+                options: ['5 notas', '7 notas', '8 notas', '12 notas'],
+                correct: 0,
+                exp: 'La escala pentatónica consta de 5 notas y carece de semitonos en su forma básica.'
+            },
+            {
+                q: '¿Qué frecuencia en Hertz (Hz) es el estándar internacional de afinación para la nota La4 (A4)?',
+                options: ['432 Hz', '440 Hz', '528 Hz', '256 Hz'],
+                correct: 1,
+                exp: 'El estándar universal ISO fijó el La central en 440 Hz en 1955.'
+            },
+            {
+                q: '¿Cuál es el intervalo existente entre Do y Sol?',
+                options: ['Tercera Mayor', 'Cuarta Justa', 'Quinta Justa', 'Octava'],
+                correct: 2,
+                exp: 'Do a Sol es un intervalo de 5ta Justa (3 tonos y 1 semitono diatónico).'
+            },
+            {
+                q: '¿Quién compuso "Las Cuatro Estaciones" para violín y orquesta?',
+                options: ['J.S. Bach', 'Antonio Vivaldi', 'W.A. Mozart', 'G.F. Händel'],
+                correct: 1,
+                exp: 'Antonio Vivaldi compuso estos cuatro célebres conciertos barrocos en 1723.'
+            },
+            {
+                q: '¿Cuál de estos instrumentos pertenece a la familia de viento-madera a pesar de ser de metal?',
+                options: ['Saxofón', 'Trompeta', 'Trombón', 'Tuba'],
+                correct: 0,
+                exp: 'El saxofón utiliza una caña simple de madera y su acústica clasifica en viento-madera.'
+            },
+            {
+                q: '¿Qué célebre obra impresionista para piano fue compuesta por Claude Debussy?',
+                options: ['Claro de Luna (Clair de Lune)', 'Sonata Claro de Luna', 'Gymnopédie No.1', 'Rapsodia en Blue'],
+                correct: 0,
+                exp: 'Clair de Lune es el 3er movimiento de la Suite Bergamasque de Debussy.'
+            }
+        ];
+
+        let triviaIndex = 0;
+
+        window.startTriviaGame = function() {
+            const modal = document.getElementById('gameArenaModal');
+            const arena = document.getElementById('arenaContainer');
+            modal.classList.add('open');
+            triviaIndex = 0;
+
+            arena.innerHTML = `
+                <div class="arena-topbar">
+                    <div>
+                        <h2 style="font-size:22px; font-weight:900; margin:0;">🧠 Trivia & Mastermind Musical</h2>
+                        <div style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Pon a prueba tu cultura artística</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="combo-badge" id="arenaCombo">COMBO x${playerStats.combo}</span>
+                        <button type="button" onclick="closeGameModal()" style="background:none; border:none; color:#fff; font-size:26px; cursor:pointer;">&times;</button>
+                    </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:20px; padding:20px; margin:12px 0;">
+                    <div style="font-size:12px; color:var(--accent-purple); font-weight:800; text-transform:uppercase; margin-bottom:6px;" id="triviaQNumber">Pregunta 1 de ${TRIVIA_DB.length}</div>
+                    <div style="font-size:17px; font-weight:700; color:#fff; line-height:1.4;" id="triviaQuestionText">--</div>
+                    <div id="triviaExplanation" style="font-size:13px; color:#38bdf8; margin-top:8px; min-height:20px;"></div>
+                </div>
+
+                <div class="game-option-grid" id="triviaChoicesGrid" style="grid-template-columns:1fr;"></div>
+            `;
+
+            renderTriviaQuestion();
+        };
+
+        function renderTriviaQuestion() {
+            const item = TRIVIA_DB[triviaIndex];
+            document.getElementById('triviaQNumber').textContent = `Pregunta ${triviaIndex + 1} de ${TRIVIA_DB.length}`;
+            document.getElementById('triviaQuestionText').textContent = item.q;
+            document.getElementById('triviaExplanation').textContent = '';
+
+            const grid = document.getElementById('triviaChoicesGrid');
+            grid.innerHTML = '';
+
+            item.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'game-choice-btn';
+                btn.style.textAlign = 'left';
+                btn.style.padding = '14px 20px';
+                btn.textContent = opt;
+
+                btn.onclick = () => {
+                    if (idx === item.correct) {
+                        btn.classList.add('correct');
+                        playCorrectFX();
+                        addXP(80);
+                        awardProcessQavs(0.01);
+                        document.getElementById('triviaExplanation').textContent = `💡 ${item.exp} (+0.01 QAV)`;
+                        setTimeout(() => {
+                            triviaIndex = (triviaIndex + 1) % TRIVIA_DB.length;
+                            renderTriviaQuestion();
+                        }, 1600);
+                    } else {
+                        btn.classList.add('wrong');
+                        playWrongFX();
+                        resetStreak();
+                        document.getElementById('triviaExplanation').textContent = `❌ Incorrecto. ${item.exp}`;
+                        setTimeout(() => {
+                            triviaIndex = (triviaIndex + 1) % TRIVIA_DB.length;
+                            renderTriviaQuestion();
+                        }, 2000);
+                    }
+                };
+
+                grid.appendChild(btn);
+            });
+        }
+
+        window.closeGameModal = function() {
+            const modal = document.getElementById('gameArenaModal');
+            modal.classList.remove('open');
+            if (rhythmAnimationId) cancelAnimationFrame(rhythmAnimationId);
+            if (sightTimer) clearInterval(sightTimer);
+        };
+    </script>
+</body>
+</html>

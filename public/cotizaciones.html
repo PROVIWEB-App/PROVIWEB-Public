@@ -1,0 +1,1910 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- PROVIWEB Social Area Auth Guard -->
+    <script src="js/social-auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PROVIWEB - Gestión de Cotizaciones">
+<meta name="author" content="israviolink - Israel Rodríguez">
+<title>PROVIWEB - Mis Cotizaciones</title>
+<link rel="icon" href="assets/logotransparente.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+    --bg-primary: #0f0f13;
+    --bg-card: rgba(28, 28, 36, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --accent-purple: #a855f7;
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #007BFF 100%);
+    --primary-color: #a855f7;
+    --primary-dark: #9333ea;
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+    --border-radius: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark glassmorphism background */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 10% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 40%),
+        linear-gradient(135deg, #0f0f13 0%, #1a1a24 100%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    background-attachment: fixed;
+    color: var(--text-primary); 
+    -webkit-font-smoothing: antialiased;
+    padding-top: 140px;
+    animation: fadeIn 0.5s ease-out;
+    min-height: 100vh;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* HEADER */
+.header {
+    width:100%; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:16px 24px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border-glass);
+    color: var(--text-primary); 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    z-index:1000; 
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+.header-title-container {
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
+
+.header-title-row {
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+}
+
+.header-title {
+    font-size:26px;
+    font-weight:900;
+    color:var(--accent-purple);
+    letter-spacing:0.02em;
+}
+
+.header-title-divider {
+    width:3px;
+    height:26px;
+    background:var(--accent-purple);
+    opacity:0.3;
+}
+
+.header-subtitle {
+    font-size:30px;
+    color: var(--text-primary);
+    font-weight:400;
+}
+
+.header-description {
+    font-size:11px;
+    color: var(--text-secondary);
+    opacity:0.9;
+    margin-top:4px;
+}
+
+.header-actions {
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.notification-count {
+    width:38px;
+    height:38px;
+    background:var(--accent-purple);
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:15px;
+    box-shadow:var(--shadow-md);
+    cursor:pointer;
+}
+
+.notification-bell {
+    width:44px;
+    height:44px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:var(--shadow-md);
+    font-size:20px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+.notification-bell:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.profile-image {
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--border-glass);
+    cursor:pointer;
+    box-shadow:var(--shadow-md);
+}
+
+/* ANUNCIO BANNER */
+.news-banner {
+    margin:12px 16px;
+    background: var(--bg-card);
+    border-radius:12px;
+    padding:12px;
+    display:none;
+    align-items:center;
+    gap:10px;
+    box-shadow:var(--shadow-md);
+    border: 1px solid var(--border-glass);
+}
+
+.news-banner.show {
+    display:flex;
+}
+
+.news-icon {
+    width:24px;
+    height:24px;
+    flex-shrink:0;
+}
+
+.news-text {
+    flex:1;
+    font-size:12px;
+    color: var(--text-primary);
+    cursor:pointer;
+}
+
+/* STATS CARD */
+.stats-card {
+    background: var(--bg-card);
+    border-radius:var(--border-radius);
+    padding:24px;
+    margin:16px;
+    box-shadow:var(--shadow-md);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+}
+
+.stats-header {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.stats-header-divider {
+    width:4px;
+    height:28px;
+    background:var(--accent-purple);
+}
+
+.stats-title {
+    font-size:15px;
+    font-weight:700;
+    color: var(--text-primary);
+    flex:1;
+}
+
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius:12px;
+    padding:4px;
+    border: 1px solid var(--border-glass);
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding:16px;
+    text-align:center;
+    cursor:pointer;
+    border-radius:8px;
+    transition:var(--transition);
+    border: 1px solid transparent;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-glass);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size:25px;
+    font-weight:900;
+    margin-bottom:8px;
+}
+
+.stat-value.total { color:var(--accent-purple); }
+.stat-value.pending { color:#FFA726; }
+.stat-value.accepted { color:#66BB6A; }
+.stat-value.income { color:#4CAF50; font-size:15px; }
+
+.stat-label {
+    font-size:13px;
+    color: var(--text-secondary);
+    opacity:0.9;
+}
+
+.stat-divider {
+    width:1px;
+    background: var(--border-glass);
+    margin:8px 0;
+}
+
+/* CALENDAR CARD */
+.calendar-card {
+    background: var(--bg-card);
+    border-radius:var(--border-radius);
+    padding:24px;
+    margin:0 16px 16px;
+    box-shadow:var(--shadow-md);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+}
+
+.calendar-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.calendar-header-left {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+}
+
+.calendar-header-divider {
+    width:4px;
+    height:28px;
+    background:var(--accent-purple);
+}
+
+.calendar-title {
+    font-size:15px;
+    font-weight:700;
+    color: var(--text-primary);
+}
+
+.calendar-manage-btn {
+    width:44px;
+    height:44px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    color: var(--text-secondary);
+    transition:var(--transition);
+}
+
+.calendar-manage-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-list {
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:5px;
+    -webkit-overflow-scrolling:touch;
+}
+
+.calendar-day {
+    min-width:80px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+    cursor:pointer;
+    transition:var(--transition);
+    border:1px solid var(--border-glass);
+}
+
+.calendar-day:hover {
+    border-color:var(--accent-purple);
+    transform:scale(1.05);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+}
+
+.calendar-day.available {
+    background: rgba(102, 187, 106, 0.2);
+    border-color:#66BB6A;
+}
+
+.calendar-day.has-pending {
+    border-color:#FFA726;
+    border-width:3px;
+}
+
+.calendar-day.has-accepted {
+    border-color:#66BB6A;
+    border-width:3px;
+}
+
+.calendar-day-number {
+    font-size:18px;
+    font-weight:700;
+    color: var(--text-primary);
+    margin-bottom:4px;
+}
+
+.calendar-day-name {
+    font-size:11px;
+    color: var(--text-secondary);
+    margin-bottom:6px;
+}
+
+.calendar-day-quotes {
+    font-size:10px;
+    color:var(--accent-purple);
+    font-weight:600;
+}
+
+.calendar-empty {
+    text-align:center;
+    padding:32px;
+    display:none;
+}
+
+.calendar-empty.show {
+    display:block;
+}
+
+/* COTIZACIONES CARD */
+.cotizaciones-card {
+    background: var(--bg-card);
+    border-radius:var(--border-radius);
+    padding:20px;
+    margin:0 16px 16px;
+    box-shadow:var(--shadow-md);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+}
+
+.cotizaciones-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.cotizaciones-header-left {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+}
+
+.cotizaciones-header-divider {
+    width:4px;
+    height:28px;
+    background:var(--accent-purple);
+}
+
+.cotizaciones-title {
+    font-size:15px;
+    font-weight:700;
+    color: var(--text-primary);
+}
+
+.cotizaciones-actions {
+    display:flex;
+    gap:4px;
+}
+
+.action-btn {
+    width:44px;
+    height:44px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    color: var(--text-secondary);
+    transition:var(--transition);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+/* TABS */
+.tabs-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius:12px;
+    padding:8px;
+    margin:10px;
+    display:flex;
+    gap:4px;
+    border: 1px solid var(--border-glass);
+}
+
+.tab {
+    flex:1;
+    padding:10px 16px;
+    background:transparent;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    color: var(--text-secondary);
+    transition:var(--transition);
+    text-align:center;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.tab.active {
+    background: rgba(168, 85, 247, 0.25);
+    color:var(--accent-purple);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.tab-content {
+    margin-top:12px;
+    min-height:450px;
+}
+
+.tab-panel {
+    display:none;
+}
+
+.tab-panel.active {
+    display:block;
+}
+
+/* COTIZACION ITEM */
+.cotizacion-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+    border:1px solid var(--border-glass);
+    transition:var(--transition);
+    cursor:pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.cotizacion-item:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transform:translateY(-2px);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.cotizacion-item-header {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.cotizacion-item-photo {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+}
+
+.cotizacion-item-info {
+    flex:1;
+    min-width:0;
+}
+
+.cotizacion-item-name {
+    font-size:15px;
+    font-weight:700;
+    color: var(--text-primary);
+    margin-bottom:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.cotizacion-item-client {
+    font-size:12px;
+    color: var(--text-secondary);
+}
+
+.cotizacion-item-details {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:8px;
+    font-size:13px;
+    color: var(--text-secondary);
+}
+
+.cotizacion-item-badge {
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:8px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.cotizacion-item-badge.pending {
+    background:rgba(255, 167, 38, 0.2);
+    color:#FFA726;
+}
+
+.cotizacion-item-badge.accepted {
+    background:rgba(102, 187, 106, 0.2);
+    color:#66BB6A;
+}
+
+.cotizacion-item-badge.declined {
+    background:rgba(198, 40, 40, 0.2);
+    color:#ef5350;
+}
+
+/* TOP BANDS CARD */
+.top-bands-card {
+    background: var(--bg-card);
+    border-radius:var(--border-radius);
+    padding:20px;
+    margin:16px;
+    box-shadow:var(--shadow-md);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+}
+
+.top-bands-header {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.top-bands-header-divider {
+    width:4px;
+    height:28px;
+    background:var(--accent-purple);
+}
+
+.top-bands-title {
+    font-size:15px;
+    font-weight:700;
+    color: var(--text-primary);
+    flex:1;
+}
+
+.top-bands-list {
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:5px;
+    -webkit-overflow-scrolling:touch;
+}
+
+.top-band-item {
+    min-width:80px;
+    text-align:center;
+    cursor:pointer;
+    transition:var(--transition);
+}
+
+.top-band-item:hover {
+    transform:scale(1.1);
+}
+
+.top-band-photo {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--accent-purple);
+    margin:0 auto 5px;
+}
+
+.top-band-name {
+    font-size:11px;
+    font-weight:600;
+    color: var(--text-primary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align:center;
+    padding:48px 20px;
+    display:none;
+}
+
+.empty-state.show {
+    display:block;
+}
+
+.empty-state-icon {
+    width:200px;
+    height:200px;
+    margin:0 auto;
+    opacity:0.7;
+    filter: drop-shadow(0 4px 20px rgba(168, 85, 247, 0.3));
+}
+
+.empty-state-title {
+    font-size:24px;
+    font-weight:700;
+    color: var(--text-primary);
+    margin-top:24px;
+    margin-bottom:12px;
+}
+
+.empty-state-description {
+    font-size:16px;
+    color: var(--text-secondary);
+    opacity:0.9;
+    line-height:1.6;
+    margin-bottom:32px;
+}
+
+.empty-state-btn {
+    background: var(--gradient-primary);
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:12px 32px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--transition);
+}
+
+.empty-state-btn:hover {
+    opacity: 0.9;
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-md);
+}
+
+/* LOADING */
+.loading {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding:20px 30px;
+    border-radius:var(--border-radius);
+    box-shadow:var(--shadow-lg);
+    z-index:1002;
+    display:none;
+    border: 1px solid var(--border-glass);
+}
+
+.loading.show {
+    display:block;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width:6px;
+    height:6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.4);
+    border-radius:3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.6);
+}
+
+/* Selection color */
+::selection {
+    background: rgba(168, 85, 247, 0.4);
+    color: #ffffff;
+}
+
+@media (max-width:768px) {
+    .stats-grid {
+        grid-template-columns:repeat(2, 1fr);
+    }
+    
+    .stat-divider:nth-child(2),
+    .stat-divider:nth-child(4) {
+        display:none;
+    }
+    
+    body {
+        padding-top:120px;
+    }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Saltar al contenido</a>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-title-container">
+        <div class="header-title-row">
+            <div class="header-title">Servicio</div>
+            <div class="header-title-divider"></div>
+            <div class="header-subtitle">Menu</div>
+        </div>
+        <div class="header-description">Gestiona tus cotizaciones artísticas y disponibilidad</div>
+    </div>
+    <div class="header-actions">
+        <div class="notification-count" id="countS" style="display:none;">0</div>
+        <div class="notification-bell" id="bellS">🔔</div>
+        <img src="https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media" 
+             alt="Perfil" class="profile-image" id="profileImage">
+    </div>
+</div>
+
+<main id="mainContent">
+<!-- ANUNCIO BANNER -->
+<div class="news-banner" id="newsBanner">
+    <div class="news-icon">📢</div>
+    <div class="news-text" id="newsText">Anuncio</div>
+</div>
+
+<!-- STATS CARD -->
+<div class="stats-card" id="cardEstadisticas">
+    <div class="stats-header">
+        <div class="stats-header-divider"></div>
+        <div class="stats-title">📊 Resumen de Estadísticas</div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-item" id="cardTotal">
+            <div class="stat-value total" id="tvTotalCotizaciones">0</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" id="cardPendientes">
+            <div class="stat-value pending" id="tvPendientes">0</div>
+            <div class="stat-label">Pendientes</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" id="cardAceptadas">
+            <div class="stat-value accepted" id="tvAceptadas">0</div>
+            <div class="stat-label">Aceptadas</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item" id="cardIngresos">
+            <div class="stat-value income" id="tvIngresos">$0</div>
+            <div class="stat-label">Ingresos</div>
+        </div>
+    </div>
+</div>
+
+<!-- CALENDAR CARD -->
+<div class="calendar-card" id="cardCalendario">
+    <div class="calendar-header">
+        <div class="calendar-header-left">
+            <div class="calendar-header-divider"></div>
+            <div class="calendar-title">📅 Calendario de Disponibilidad</div>
+        </div>
+        <button class="calendar-manage-btn" id="btnGestionarDisponibilidad" title="Gestionar Disponibilidad">⚙️</button>
+    </div>
+    <div class="calendar-list" id="rvCalendario"></div>
+    <div class="calendar-empty" id="layoutSinDisponibilidad">
+        <div style="font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No hay disponibilidad configurada</div>
+        <div style="font-size:13px;color:var(--text-secondary);">Toca el ícono de arriba para configurar tu disponibilidad</div>
+    </div>
+</div>
+
+<!-- COTIZACIONES CARD -->
+<div class="cotizaciones-card">
+    <div class="cotizaciones-header">
+        <div class="cotizaciones-header-left">
+            <div class="cotizaciones-header-divider"></div>
+            <div class="cotizaciones-title">📋 Mis Cotizaciones</div>
+        </div>
+        <div class="cotizaciones-actions">
+            <button class="action-btn" id="btnFiltros" title="Filtros">🔍</button>
+            <button class="action-btn" id="btnExportar" title="Exportar">📤</button>
+        </div>
+    </div>
+    <div class="tabs-container" id="tabSelectedServices">
+        <button class="tab active" data-tab="pending">Pendientes</button>
+        <button class="tab" data-tab="accepted">Aceptadas</button>
+        <button class="tab" data-tab="declined">Declinadas</button>
+        <button class="tab" data-tab="charts">Gráficos</button>
+    </div>
+    <div class="tab-content" id="view_pager_servicesC">
+        <div class="tab-panel active" id="tabPending">
+            <div id="cotizacionesPendingList"></div>
+        </div>
+        <div class="tab-panel" id="tabAccepted">
+            <div id="cotizacionesAcceptedList"></div>
+        </div>
+        <div class="tab-panel" id="tabDeclined">
+            <div id="cotizacionesDeclinedList"></div>
+        </div>
+        <div class="tab-panel" id="tabCharts">
+            <div id="cotizacionesChartsList" style="text-align:center;padding:40px;color:var(--text-secondary);">
+                <div style="font-size:18px;margin-bottom:16px;">📊 Gráficos de Estadísticas</div>
+                <div style="opacity:0.7;">Próximamente: Visualización de gráficos y análisis</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOP BANDS CARD -->
+<div class="top-bands-card" id="cardTopBands">
+    <div class="top-bands-header">
+        <div class="top-bands-header-divider"></div>
+        <div class="top-bands-title">Top Bands</div>
+    </div>
+    <div class="top-bands-list" id="rvMariachisV"></div>
+</div>
+
+<!-- EMPTY STATE -->
+<div class="empty-state" id="layoutEstadoVacio">
+    <div class="empty-state-icon">📭</div>
+    <div class="empty-state-title">¡Aún no tienes cotizaciones!</div>
+    <div class="empty-state-description">
+        Cuando recibas cotizaciones de clientes,<br>
+        aparecerán aquí para que puedas gestionarlas
+    </div>
+    <button class="empty-state-btn" id="btnIrAMapa">Ver Mapa de Servicios</button>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+    <div>Cargando...</div>
+</div>
+
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, get, set, update, remove, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAxtXQ3a4azqY5yww9TetxouSr7jUdzdNw",
+    authDomain: "proviweb-d8764.firebaseapp.com",
+    databaseURL: "https://proviweb-d8764-default-rtdb.firebaseio.com",
+    projectId: "proviweb-d8764",
+    storageBucket: "proviweb-d8764.appspot.com",
+    messagingSenderId: "475963980955",
+    appId: "1:475963980955:web:8444288d8ba13e428e1a3e",
+    measurementId: "G-TCH23FGP8D"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUID = null;
+let cotizacionesListener = null;
+let disponibilidadListener = null;
+let estadisticasMap = {
+    total: 0,
+    pendientes: 0,
+    aceptadas: 0,
+    ingresos: 0
+};
+
+// Initialize
+onAuthStateChanged(auth, user => {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+    currentUID = user.uid;
+    initializePage();
+});
+
+function initializePage() {
+    setupProfile();
+    setupNotifications();
+    setupTabs();
+    setupCalendario();
+    cargarEstadisticas();
+    cargarDisponibilidad();
+    getEntidades();
+    GetAnuncioJob();
+    setupEventListeners();
+}
+
+// Setup profile
+function setupProfile() {
+    const profileImage = document.getElementById('profileImage');
+    const userRef = ref(db, `Users/${currentUID}/photo`);
+    
+    onValue(userRef, (snap) => {
+        if (snap.exists()) {
+            const photoUrl = snap.val();
+            const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+            profileImage.src = (photoUrl && photoUrl.trim()) ? photoUrl : defaultAvatar;
+            profileImage.onerror = () => { profileImage.src = defaultAvatar; };
+        }
+    }, { onlyOnce: true });
+    
+    profileImage.onclick = () => {
+        window.location.href = 'myprofile.html';
+    };
+}
+
+// Setup notifications
+function setupNotifications() {
+    const bellS = document.getElementById('bellS');
+    const countS = document.getElementById('countS');
+    const countText = countS;
+    
+    const countRef = ref(db, `Users/${currentUID}/Count`);
+    onValue(countRef, (snap) => {
+        if (snap.exists() && snap.hasChildren()) {
+            const count = snap.numChildren();
+            bellS.style.display = 'none';
+            countS.style.display = 'flex';
+            countText.textContent = count;
+        } else {
+            bellS.style.display = 'flex';
+            countS.style.display = 'none';
+        }
+    });
+    
+    bellS.onclick = () => {
+        window.location.href = 'notifications.html';
+    };
+    
+    countS.onclick = () => {
+        window.location.href = 'notifications.html';
+    };
+}
+
+// Setup tabs
+function setupTabs() {
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.tab-panel');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            
+            // Remove active from all
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            // Add active to clicked
+            tab.classList.add('active');
+            document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).classList.add('active');
+            
+            // Load data for this tab
+            loadTabData(tabId);
+        });
+    });
+    
+    // Load initial tab
+    loadTabData('pending');
+}
+
+// Load tab data (con listener persistente)
+let tabListeners = new Map();
+
+function loadTabData(tabType) {
+    const containerId = `cotizaciones${tabType.charAt(0).toUpperCase() + tabType.slice(1)}List`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    // Limpiar listener anterior si existe
+    if (tabListeners.has(tabType)) {
+        const oldListener = tabListeners.get(tabType);
+        const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}`);
+        cotizacionRef.off('value', oldListener);
+    }
+    
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}`);
+    
+    const listener = onValue(cotizacionRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);">No hay cotizaciones</div>';
+            return;
+        }
+        
+        const cotizaciones = [];
+        snapshot.forEach((cotSnap) => {
+            const cotData = cotSnap.val();
+            const cotKey = cotSnap.key;
+            
+            // Fix idCotizante si falta
+            if (!cotData.idCotizante || cotData.idCotizante === '') {
+                const idCliente = cotData.id;
+                if (idCliente) cotData.idCotizante = idCliente;
+            }
+            
+            cotizaciones.push({ ...cotData, key: cotKey });
+        });
+        
+        // Filter by tab type
+        let filtered = [];
+        switch(tabType) {
+            case 'pending':
+                filtered = cotizaciones.filter(c => !c.aceptada || c.aceptada === '' || c.aceptada.toLowerCase() === 'cancel');
+                break;
+            case 'accepted':
+                filtered = cotizaciones.filter(c => c.aceptada === 'yes');
+                break;
+            case 'declined':
+                filtered = cotizaciones.filter(c => c.aceptada === 'no');
+                break;
+            default:
+                filtered = cotizaciones;
+        }
+        
+        renderCotizacionesList(filtered, container);
+    });
+    
+    tabListeners.set(tabType, listener);
+}
+
+// Render cotizaciones list
+async function renderCotizacionesList(cotizaciones, container) {
+    container.innerHTML = '';
+    
+    if (cotizaciones.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);">No hay cotizaciones en esta categoría</div>';
+        return;
+    }
+    
+    for (const cot of cotizaciones) {
+        const item = await createCotizacionItem(cot);
+        container.appendChild(item);
+    }
+}
+
+// Create cotizacion item
+async function createCotizacionItem(cotData) {
+    const item = document.createElement('div');
+    item.className = 'cotizacion-item';
+    
+    // Get cliente info
+    const clienteId = cotData.idCotizante || cotData.id;
+    let clientePhoto = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    let clienteName = 'Cliente';
+    
+    if (clienteId) {
+        const clienteSnap = await get(ref(db, `Users/${clienteId}`));
+        if (clienteSnap.exists()) {
+            const cliente = clienteSnap.val();
+            clientePhoto = (cliente.photo && cliente.photo.trim()) ? cliente.photo : clientePhoto;
+            clienteName = cliente.name || cliente.username || 'Cliente';
+        }
+    }
+    
+    // Determine badge
+    let badgeClass = 'pending';
+    let badgeText = 'Pendiente';
+    if (cotData.aceptada === 'yes') {
+        badgeClass = 'accepted';
+        badgeText = 'Aceptada';
+    } else if (cotData.aceptada === 'no') {
+        badgeClass = 'declined';
+        badgeText = 'Declinada';
+    }
+    
+    // Action buttons (solo para pendientes)
+    let actionButtons = '';
+    if (!cotData.aceptada || cotData.aceptada === '') {
+        actionButtons = `
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button onclick="event.stopPropagation();aceptarCotizacion('${cotData.key}')" 
+                        style="flex:1;padding:10px;background:#66BB6A;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
+                    ✓ Aceptar
+                </button>
+                <button onclick="event.stopPropagation();rechazarCotizacion('${cotData.key}')" 
+                        style="flex:1;padding:10px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;">
+                    ✗ Rechazar
+                </button>
+            </div>
+        `;
+    }
+    
+    item.innerHTML = `
+        <div class="cotizacion-item-header">
+            <img src="${clientePhoto}" alt="${clienteName}" class="cotizacion-item-photo" 
+                 onerror="this.src='https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media'">
+            <div class="cotizacion-item-info">
+                <div class="cotizacion-item-name">${cotData.nameGrupo || 'Grupo'}</div>
+                <div class="cotizacion-item-client">${clienteName}</div>
+            </div>
+        </div>
+        <div class="cotizacion-item-details">
+            <div><strong>Precio:</strong> ${getCurrencyPrefix(cotData.ubicacion)}${cotData.precio || '0'}</div>
+            <div><strong>Fecha:</strong> ${cotData.fecha || 'N/A'}</div>
+            <div><strong>Hora:</strong> ${cotData.hora || 'N/A'}</div>
+            <div><strong>Dirección:</strong> ${cotData.direccion || 'N/A'}</div>
+        </div>
+        <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+            <span class="cotizacion-item-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        ${actionButtons}
+    `;
+    
+    item.onclick = () => {
+        // Abrir detalles de cotización
+        mostrarDetallesCotizacion(cotData);
+    };
+    
+    return item;
+}
+
+// Functions are defined globally below (window.aceptarCotizacion, window.rechazarCotizacion)
+
+// Get currency prefix
+function getCurrencyPrefix(pais) {
+    if (!pais) return '$';
+    const paisLower = pais.toLowerCase();
+    const currencyMap = {
+        'colombia': 'COP $',
+        'méxico': 'MXN $',
+        'mexico': 'MXN $',
+        'estados unidos': 'USD $',
+        'usa': 'USD $',
+        'argentina': 'ARS $',
+        'chile': 'CLP $',
+        'perú': 'PEN S/.',
+        'peru': 'PEN S/.'
+    };
+    return currencyMap[paisLower] || '$';
+}
+
+// Setup calendario
+function setupCalendario() {
+    // Will be populated by cargarDisponibilidad
+}
+
+// Cargar disponibilidad
+function cargarDisponibilidad() {
+    const disponibilidadRef = ref(db, `DisponibilidadBanda/${currentUID}`);
+    const rvCalendario = document.getElementById('rvCalendario');
+    const layoutSinDisponibilidad = document.getElementById('layoutSinDisponibilidad');
+    
+    disponibilidadListener = onValue(disponibilidadRef, (snapshot) => {
+        const disponibilidadList = [];
+        const calendar = new Date();
+        const dateFormat = new Intl.DateTimeFormat('es-ES', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit' 
+        });
+        
+        for (let i = 0; i < 30; i++) {
+            const date = new Date(calendar);
+            date.setDate(calendar.getDate() + i);
+            const fechaStr = dateFormat.format(date).split('/').reverse().join('-');
+            
+            const disponibilidad = {
+                fecha: fechaStr,
+                disponible: false,
+                horarios: [],
+                cantidadCotizaciones: 0,
+                tienePendientes: false,
+                tieneAceptadas: false,
+                ingresos: 0
+            };
+            
+            if (snapshot.exists() && snapshot.hasChild(fechaStr)) {
+                const diaSnap = snapshot.child(fechaStr);
+                disponibilidad.disponible = diaSnap.child('disponible').val() === true;
+                
+                const horarios = [];
+                if (diaSnap.hasChild('horarios')) {
+                    diaSnap.child('horarios').forEach(horarioSnap => {
+                        const horario = horarioSnap.val();
+                        if (horario) horarios.push(horario);
+                    });
+                }
+                disponibilidad.horarios = horarios;
+            }
+            
+            disponibilidadList.push(disponibilidad);
+        }
+        
+        // Update with cotizaciones
+        actualizarCalendarioConCotizaciones(disponibilidadList);
+    });
+}
+
+// Actualizar calendario con cotizaciones
+function actualizarCalendarioConCotizaciones(disponibilidadList) {
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}`);
+    
+    if (cotizacionesListener) {
+        cotizacionRef.off('value', cotizacionesListener);
+    }
+    
+    cotizacionesListener = onValue(cotizacionRef, (snapshot) => {
+        const cotizacionesPorFecha = {};
+        const pendientesPorFecha = {};
+        const aceptadasPorFecha = {};
+        const ingresosPorFecha = {};
+        
+        if (snapshot.exists()) {
+            snapshot.forEach((cotSnap) => {
+                const cotData = cotSnap.val();
+                if (cotData.fecha) {
+                    // Parse fecha from dd/MM/yyyy to yyyy-MM-dd
+                    try {
+                        const fechaParts = cotData.fecha.split('/');
+                        if (fechaParts.length === 3) {
+                            const fechaStr = `${fechaParts[2]}-${fechaParts[1]}-${fechaParts[0]}`;
+                            
+                            cotizacionesPorFecha[fechaStr] = (cotizacionesPorFecha[fechaStr] || 0) + 1;
+                            
+                            if (!cotData.aceptada || cotData.aceptada === '') {
+                                pendientesPorFecha[fechaStr] = true;
+                            } else if (cotData.aceptada === 'yes') {
+                                aceptadasPorFecha[fechaStr] = true;
+                                
+                                try {
+                                    const precioStr = (cotData.precio || '0').replace(/[^\d.]/g, '');
+                                    const precio = parseFloat(precioStr) || 0;
+                                    ingresosPorFecha[fechaStr] = (ingresosPorFecha[fechaStr] || 0) + precio;
+                                } catch (e) {
+                                    console.warn('Error parsing precio:', cotData.precio);
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Error parsing fecha:', cotData.fecha);
+                    }
+                }
+            });
+        }
+        
+        // Update disponibilidad list
+        disponibilidadList.forEach(disp => {
+            disp.cantidadCotizaciones = cotizacionesPorFecha[disp.fecha] || 0;
+            disp.tienePendientes = pendientesPorFecha[disp.fecha] || false;
+            disp.tieneAceptadas = aceptadasPorFecha[disp.fecha] || false;
+            disp.ingresos = ingresosPorFecha[disp.fecha] || 0;
+        });
+        
+        renderCalendario(disponibilidadList);
+    });
+}
+
+// Render calendario
+function renderCalendario(disponibilidadList) {
+    const rvCalendario = document.getElementById('rvCalendario');
+    const layoutSinDisponibilidad = document.getElementById('layoutSinDisponibilidad');
+    
+    if (disponibilidadList.length === 0) {
+        rvCalendario.style.display = 'none';
+        layoutSinDisponibilidad.classList.add('show');
+        return;
+    }
+    
+    rvCalendario.style.display = 'flex';
+    layoutSinDisponibilidad.classList.remove('show');
+    rvCalendario.innerHTML = '';
+    
+    disponibilidadList.forEach(disp => {
+        const day = document.createElement('div');
+        day.className = 'calendar-day';
+        
+        if (disp.disponible) day.classList.add('available');
+        if (disp.tienePendientes) day.classList.add('has-pending');
+        if (disp.tieneAceptadas) day.classList.add('has-accepted');
+        
+        const date = new Date(disp.fecha);
+        const dayNumber = date.getDate();
+        const dayName = date.toLocaleDateString('es-ES', { weekday: 'short' });
+        
+        day.innerHTML = `
+            <div class="calendar-day-number">${dayNumber}</div>
+            <div class="calendar-day-name">${dayName}</div>
+            ${disp.cantidadCotizaciones > 0 ? `<div class="calendar-day-quotes">${disp.cantidadCotizaciones} cotiz.</div>` : ''}
+        `;
+        
+        day.onclick = () => {
+            mostrarDetallesDia(disp);
+        };
+        
+        rvCalendario.appendChild(day);
+    });
+}
+
+// Cargar estadísticas
+function cargarEstadisticas() {
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}`);
+    
+    onValue(cotizacionRef, (snapshot) => {
+        let total = 0;
+        let pendientes = 0;
+        let aceptadas = 0;
+        let ingresos = 0;
+        
+        if (snapshot.exists()) {
+            snapshot.forEach((cotSnap) => {
+                const cotData = cotSnap.val();
+                total++;
+                
+                if (!cotData.aceptada || cotData.aceptada === '') {
+                    pendientes++;
+                } else if (cotData.aceptada === 'yes') {
+                    aceptadas++;
+                    
+                    try {
+                        const precioStr = (cotData.precio || '0').replace(/[^\d.]/g, '');
+                        ingresos += parseFloat(precioStr) || 0;
+                    } catch (e) {
+                        console.warn('Error parsing precio:', cotData.precio);
+                    }
+                }
+            });
+        }
+        
+        estadisticasMap.total = total;
+        estadisticasMap.pendientes = pendientes;
+        estadisticasMap.aceptadas = aceptadas;
+        estadisticasMap.ingresos = ingresos;
+        
+        document.getElementById('tvTotalCotizaciones').textContent = total;
+        document.getElementById('tvPendientes').textContent = pendientes;
+        document.getElementById('tvAceptadas').textContent = aceptadas;
+        document.getElementById('tvIngresos').textContent = '$' + ingresos.toFixed(2);
+        
+        actualizarEstadoVacio(total > 0);
+    });
+}
+
+// Actualizar estado vacío
+function actualizarEstadoVacio(tieneCotizaciones) {
+    const layoutEstadoVacio = document.getElementById('layoutEstadoVacio');
+    const cardEstadisticas = document.getElementById('cardEstadisticas');
+    const cardCalendario = document.getElementById('cardCalendario');
+    const cardTopBands = document.getElementById('cardTopBands');
+    
+    if (tieneCotizaciones) {
+        layoutEstadoVacio.classList.remove('show');
+        cardEstadisticas.style.display = 'block';
+        cardCalendario.style.display = 'block';
+        cardTopBands.style.display = 'block';
+        
+        // Animar cards (como Android)
+        setTimeout(() => {
+            cardEstadisticas.style.opacity = '0';
+            cardEstadisticas.style.transform = 'translateY(20px)';
+            cardEstadisticas.style.transition = 'all 0.6s ease-out';
+            setTimeout(() => {
+                cardEstadisticas.style.opacity = '1';
+                cardEstadisticas.style.transform = 'translateY(0)';
+            }, 100);
+        }, 0);
+        
+        setTimeout(() => {
+            cardCalendario.style.opacity = '0';
+            cardCalendario.style.transform = 'translateY(20px)';
+            cardCalendario.style.transition = 'all 0.6s ease-out';
+            setTimeout(() => {
+                cardCalendario.style.opacity = '1';
+                cardCalendario.style.transform = 'translateY(0)';
+            }, 200);
+        }, 0);
+        
+        setTimeout(() => {
+            cardTopBands.style.opacity = '0';
+            cardTopBands.style.transform = 'translateY(20px)';
+            cardTopBands.style.transition = 'all 0.6s ease-out';
+            setTimeout(() => {
+                cardTopBands.style.opacity = '1';
+                cardTopBands.style.transform = 'translateY(0)';
+            }, 300);
+        }, 0);
+    } else {
+        layoutEstadoVacio.classList.add('show');
+        cardEstadisticas.style.display = 'none';
+        cardCalendario.style.display = 'none';
+        cardTopBands.style.display = 'none';
+        
+        // Animar estado vacío
+        setTimeout(() => {
+            layoutEstadoVacio.style.opacity = '0';
+            layoutEstadoVacio.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                layoutEstadoVacio.style.opacity = '1';
+            }, 200);
+        }, 0);
+    }
+}
+
+// Get entidades (top bands)
+function getEntidades() {
+    const rvMariachisV = document.getElementById('rvMariachisV');
+    const usersRef = ref(db, 'Users');
+    
+    onValue(usersRef, (snapshot) => {
+        rvMariachisV.innerHTML = '';
+        const userListS = [];
+        
+        snapshot.forEach((userSnap) => {
+            if (!userSnap.hasChild('name') || !userSnap.hasChild('verified') || 
+                !userSnap.hasChild('generoMusic') || !userSnap.hasChild('photo')) {
+                return;
+            }
+            
+            const verified = userSnap.child('verified').val();
+            const generoMusic = userSnap.child('generoMusic').val();
+            const photo = userSnap.child('photo').val();
+            
+            if (verified && generoMusic && photo && photo.trim() !== '') {
+                const generoLower = generoMusic.toLowerCase().trim();
+                if (generoLower === 'm.mariachi' || generoLower === 'mariachi') {
+                    const userId = userSnap.key;
+                    if (userId !== currentUID) {
+                        const userData = userSnap.val();
+                        userListS.push({ id: userId, ...userData });
+                    }
+                }
+            }
+        });
+        
+        userListS.forEach(user => {
+            renderEntidadItem(user, rvMariachisV);
+        });
+    }, { onlyOnce: true });
+}
+
+// Render entidad item
+function renderEntidadItem(user, container) {
+    const defaultAvatar = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    const photoUrl = (user.photo && user.photo.trim()) ? user.photo : defaultAvatar;
+    
+    const item = document.createElement('div');
+    item.className = 'top-band-item';
+    item.innerHTML = `
+        <img src="${photoUrl}" alt="${user.name || 'Usuario'}" class="top-band-photo" 
+             onerror="this.src='${defaultAvatar}'">
+        <div class="top-band-name">${user.name || 'Usuario'}</div>
+    `;
+    
+    item.onclick = () => {
+        window.location.href = `userprofile.html?uid=${user.id}`;
+    };
+    
+    container.appendChild(item);
+}
+
+// Get anuncio job
+function GetAnuncioJob() {
+    const anunciosRef = ref(db, 'AnunciosPJob');
+    
+    onValue(anunciosRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            document.getElementById('newsBanner').classList.remove('show');
+            return;
+        }
+        
+        const anuncios = [];
+        snapshot.forEach(anuncioSnap => {
+            anuncios.push(anuncioSnap.val());
+        });
+        
+        if (anuncios.length > 0) {
+            document.getElementById('newsBanner').classList.add('show');
+            let currentIndex = 0;
+            
+            function mostrarAnuncio() {
+                const anuncio = anuncios[currentIndex];
+                document.getElementById('newsText').textContent = anuncio.textoAJob || 'Anuncio';
+                
+                document.getElementById('newsText').onclick = () => {
+                    if (anuncio.textoLink) {
+                        window.open(anuncio.textoLink, '_blank');
+                    }
+                };
+                
+                currentIndex = (currentIndex + 1) % anuncios.length;
+            }
+            
+            mostrarAnuncio();
+            setInterval(mostrarAnuncio, 6000);
+        }
+    }, { onlyOnce: true });
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    document.getElementById('btnGestionarDisponibilidad').onclick = () => {
+        mostrarDialogGestionarDisponibilidad();
+    };
+    
+    document.getElementById('btnFiltros').onclick = () => {
+        mostrarFiltros();
+    };
+    
+    document.getElementById('btnExportar').onclick = () => {
+        mostrarOpcionesExportacion();
+    };
+    
+    document.getElementById('btnIrAMapa').onclick = () => {
+        window.location.href = 'servicesmap.html';
+    };
+    
+    // Click en stats cards
+    document.getElementById('cardTotal').onclick = () => {
+        document.querySelector('.tab[data-tab="pending"]').click();
+    };
+    
+    document.getElementById('cardPendientes').onclick = () => {
+        document.querySelector('.tab[data-tab="pending"]').click();
+    };
+    
+    document.getElementById('cardAceptadas').onclick = () => {
+        document.querySelector('.tab[data-tab="accepted"]').click();
+    };
+    
+    document.getElementById('cardIngresos').onclick = () => {
+        document.querySelector('.tab[data-tab="charts"]').click();
+    };
+}
+
+// Mostrar dialog gestionar disponibilidad
+function mostrarDialogGestionarDisponibilidad() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:var(--bg-card);border-radius:14px;max-width:500px;width:100%;padding:20px;max-height:90vh;overflow-y:auto;border:1px solid var(--border-glass);backdrop-filter:blur(20px);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:18px;color:var(--text-primary);">Gestionar Disponibilidad</div>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-secondary);">×</button>
+            </div>
+            <div style="font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
+                Esta funcionalidad te permitirá configurar tus días y horarios disponibles.
+                Próximamente podrás:
+                <ul style="margin-top:10px;padding-left:20px;">
+                    <li>Seleccionar días disponibles</li>
+                    <li>Configurar horarios por día</li>
+                    <li>Ver cotizaciones por fecha</li>
+                </ul>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:10px;background:var(--gradient-primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Cerrar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
+
+// Mostrar filtros
+function mostrarFiltros() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:var(--bg-card);border-radius:14px;max-width:400px;width:100%;padding:20px;border:1px solid var(--border-glass);backdrop-filter:blur(20px);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:18px;color:var(--text-primary);">Filtros</div>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-secondary);">×</button>
+            </div>
+            <div style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;margin-bottom:5px;color:var(--text-primary);">Rango de fechas</label>
+                    <input type="date" id="filtroFechaInicio" style="width:100%;padding:8px;border:1px solid var(--border-glass);border-radius:8px;margin-bottom:8px;background:rgba(0,0,0,0.2);color:var(--text-primary);">
+                    <input type="date" id="filtroFechaFin" style="width:100%;padding:8px;border:1px solid var(--border-glass);border-radius:8px;background:rgba(0,0,0,0.2);color:var(--text-primary);">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;margin-bottom:5px;color:var(--text-primary);">Estado</label>
+                    <select id="filtroEstado" style="width:100%;padding:8px;border:1px solid var(--border-glass);border-radius:8px;background:rgba(0,0,0,0.2);color:var(--text-primary);">
+                        <option value="">Todos</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="accepted">Aceptadas</option>
+                        <option value="declined">Declinadas</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button onclick="aplicarFiltros()" style="flex:1;padding:10px;background:var(--gradient-primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Aplicar</button>
+                <button onclick="limpiarFiltros()" style="flex:1;padding:10px;background:rgba(255,255,255,0.1);color:var(--text-primary);border:1px solid var(--border-glass);border-radius:8px;cursor:pointer;font-weight:600;">Limpiar</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    
+    window.aplicarFiltros = () => {
+        const fechaInicio = document.getElementById('filtroFechaInicio').value;
+        const fechaFin = document.getElementById('filtroFechaFin').value;
+        const estado = document.getElementById('filtroEstado').value;
+        
+        // Guardar filtros y recargar tab actual
+        const activeTab = document.querySelector('.tab.active');
+        if (activeTab) {
+            const tabType = activeTab.dataset.tab;
+            loadTabData(tabType);
+        }
+        
+        alert('Filtros aplicados');
+        modal.remove();
+    };
+    
+    window.limpiarFiltros = () => {
+        document.getElementById('filtroFechaInicio').value = '';
+        document.getElementById('filtroFechaFin').value = '';
+        document.getElementById('filtroEstado').value = '';
+        
+        // Recargar tab actual sin filtros
+        const activeTab = document.querySelector('.tab.active');
+        if (activeTab) {
+            const tabType = activeTab.dataset.tab;
+            loadTabData(tabType);
+        }
+        
+        alert('Filtros limpiados');
+    };
+}
+
+// Expose functions globally for onclick handlers
+window.aceptarCotizacion = async function(cotizacionKey) {
+    if (!confirm('¿Estás seguro de aceptar esta cotización?')) return;
+    
+    const updates = {};
+    updates[`CotizacionBanda/${currentUID}/${cotizacionKey}/aceptada`] = 'yes';
+    updates[`CotizacionBanda/${currentUID}/${cotizacionKey}/status`] = 'accepted';
+    
+    // También actualizar en CotizacionComprador
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}/${cotizacionKey}`);
+    const cotizacionSnap = await get(cotizacionRef);
+    if (cotizacionSnap.exists()) {
+        const cotData = cotizacionSnap.val();
+        const clienteId = cotData.idCotizante || cotData.id;
+        if (clienteId) {
+            updates[`CotizacionComprador/${clienteId}/${cotizacionKey}/aceptada`] = 'yes';
+            updates[`CotizacionComprador/${clienteId}/${cotizacionKey}/status`] = 'accepted';
+        }
+    }
+    
+    const rootRef = ref(db);
+    await update(rootRef, updates);
+    
+    alert('Cotización aceptada exitosamente');
+    // Recargar tab actual
+    const activeTab = document.querySelector('.tab.active');
+    if (activeTab) {
+        const tabType = activeTab.dataset.tab;
+        loadTabData(tabType);
+    }
+};
+
+window.rechazarCotizacion = async function(cotizacionKey) {
+    if (!confirm('¿Estás seguro de rechazar esta cotización?')) return;
+    
+    const updates = {};
+    updates[`CotizacionBanda/${currentUID}/${cotizacionKey}/aceptada`] = 'no';
+    updates[`CotizacionBanda/${currentUID}/${cotizacionKey}/status`] = 'declined';
+    
+    // También actualizar en CotizacionComprador
+    const cotizacionRef = ref(db, `CotizacionBanda/${currentUID}/${cotizacionKey}`);
+    const cotizacionSnap = await get(cotizacionRef);
+    if (cotizacionSnap.exists()) {
+        const cotData = cotizacionSnap.val();
+        const clienteId = cotData.idCotizante || cotData.id;
+        if (clienteId) {
+            updates[`CotizacionComprador/${clienteId}/${cotizacionKey}/aceptada`] = 'no';
+            updates[`CotizacionComprador/${clienteId}/${cotizacionKey}/status`] = 'declined';
+        }
+    }
+    
+    const rootRef = ref(db);
+    await update(rootRef, updates);
+    
+    alert('Cotización rechazada');
+    // Recargar tab actual
+    const activeTab = document.querySelector('.tab.active');
+    if (activeTab) {
+        const tabType = activeTab.dataset.tab;
+        loadTabData(tabType);
+    }
+};
+
+// Mostrar opciones exportación
+function mostrarOpcionesExportacion() {
+    const opciones = ['Exportar a PDF', 'Exportar a Excel'];
+    const opcion = prompt(`Selecciona formato:\n1. ${opciones[0]}\n2. ${opciones[1]}\n\nIngresa 1 o 2:`);
+    
+    if (opcion === '1') {
+        exportarPDF();
+    } else if (opcion === '2') {
+        exportarExcel();
+    }
+}
+
+// Exportar PDF
+function exportarPDF() {
+    showNotAvailable('La funcionalidad de exportar a PDF aún no está disponible. Se generará un archivo PDF con todas las estadísticas y cotizaciones próximamente.');
+}
+
+// Exportar Excel
+function exportarExcel() {
+    showNotAvailable('La funcionalidad de exportar a Excel aún no está disponible. Se generará un archivo Excel con todas las estadísticas y cotizaciones próximamente.');
+}
+
+// Mostrar detalles cotización
+async function mostrarDetallesCotizacion(cotData) {
+    // Get cliente info completo
+    const clienteId = cotData.idCotizante || cotData.id;
+    let clientePhoto = 'https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media';
+    let clienteName = 'Cliente';
+    let clientePhone = '';
+    let clienteEmail = '';
+    
+    if (clienteId) {
+        const clienteSnap = await get(ref(db, `Users/${clienteId}`));
+        if (clienteSnap.exists()) {
+            const cliente = clienteSnap.val();
+            clientePhoto = (cliente.photo && cliente.photo.trim()) ? cliente.photo : clientePhoto;
+            clienteName = cliente.name || cliente.username || 'Cliente';
+            clientePhone = cliente.phone || '';
+            clienteEmail = cliente.email || '';
+        }
+    }
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    
+    // Action buttons
+    let actionButtons = '';
+    if (!cotData.aceptada || cotData.aceptada === '') {
+        actionButtons = `
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button onclick="aceptarCotizacionDesdeModal('${cotData.key}')" 
+                        style="flex:1;padding:12px;background:#66BB6A;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                    ✓ Aceptar
+                </button>
+                <button onclick="rechazarCotizacionDesdeModal('${cotData.key}')" 
+                        style="flex:1;padding:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">
+                    ✗ Rechazar
+                </button>
+            </div>
+        `;
+    }
+    
+    modal.innerHTML = `
+        <div style="background:var(--bg-card);border-radius:14px;max-width:500px;width:100%;padding:20px;max-height:90vh;overflow-y:auto;border:1px solid var(--border-glass);backdrop-filter:blur(20px);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:18px;color:var(--text-primary);">Detalles de Cotización</div>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-secondary);">×</button>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border-glass);">
+                <img src="${clientePhoto}" alt="${clienteName}" 
+                     style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--accent-purple);"
+                     onerror="this.src='https://firebasestorage.googleapis.com/v0/b/proviweb-d8764.appspot.com/o/FIAMImages%2Fnewuser.png?alt=media'">
+                <div>
+                    <div style="font-weight:700;font-size:16px;color:var(--text-primary);">${clienteName}</div>
+                    ${clientePhone ? `<div style="font-size:13px;color:var(--text-secondary);">📞 ${clientePhone}</div>` : ''}
+                    ${clienteEmail ? `<div style="font-size:13px;color:var(--text-secondary);">✉️ ${clienteEmail}</div>` : ''}
+                </div>
+            </div>
+            <div style="font-size:14px;color:var(--text-secondary);line-height:1.8;">
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Grupo:</strong> ${cotData.nameGrupo || 'N/A'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Precio:</strong> ${getCurrencyPrefix(cotData.ubicacion)}${cotData.precio || '0'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Fecha:</strong> ${cotData.fecha || 'N/A'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Hora:</strong> ${cotData.hora || 'N/A'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Dirección:</strong> ${cotData.direccion || 'N/A'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Lista de Canciones:</strong><br>${cotData.lista || 'N/A'}</div>
+                <div style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Plan:</strong><br>${cotData.plan || 'N/A'}</div>
+                <div style="margin-bottom:12px;">
+                    <strong style="color:var(--text-primary);">Estado:</strong> 
+                    <span class="cotizacion-item-badge ${cotData.aceptada === 'yes' ? 'accepted' : cotData.aceptada === 'no' ? 'declined' : 'pending'}">
+                        ${cotData.aceptada === 'yes' ? 'Aceptada' : cotData.aceptada === 'no' ? 'Declinada' : 'Pendiente'}
+                    </span>
+                </div>
+            </div>
+            ${actionButtons}
+            <button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);color:var(--text-primary);border:1px solid var(--border-glass);border-radius:8px;cursor:pointer;font-weight:600;margin-top:10px;">Cerrar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    
+    // Expose functions globally for onclick
+    window.aceptarCotizacionDesdeModal = async (key) => {
+        await window.aceptarCotizacion(key);
+        modal.remove();
+    };
+    
+    window.rechazarCotizacionDesdeModal = async (key) => {
+        await window.rechazarCotizacion(key);
+        modal.remove();
+    };
+}
+
+// Mostrar detalles día
+function mostrarDetallesDia(disp) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:var(--bg-card);border-radius:14px;max-width:400px;width:100%;padding:20px;border:1px solid var(--border-glass);backdrop-filter:blur(20px);">
+            <div style="font-weight:700;font-size:18px;margin-bottom:15px;color:var(--text-primary);">${disp.fecha}</div>
+            <div style="font-size:14px;color:var(--text-secondary);line-height:1.8;">
+                <div><strong style="color:var(--text-primary);">Disponible:</strong> ${disp.disponible ? 'Sí' : 'No'}</div>
+                <div><strong style="color:var(--text-primary);">Cotizaciones:</strong> ${disp.cantidadCotizaciones}</div>
+                ${disp.tienePendientes ? '<div style="color:#FFA726;">⚠️ Tiene cotizaciones pendientes</div>' : ''}
+                ${disp.tieneAceptadas ? '<div style="color:#66BB6A;">✓ Tiene cotizaciones aceptadas</div>' : ''}
+                ${disp.ingresos > 0 ? `<div><strong style="color:var(--text-primary);">Ingresos del día:</strong> $${disp.ingresos.toFixed(2)}</div>` : ''}
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:10px;background:var(--gradient-primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px;">Cerrar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
+
+</script>
+<script src="not-available.js"></script>
+</body>
+</html>
