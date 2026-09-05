@@ -212,12 +212,19 @@
             font-weight: 800;
             color: var(--text-primary);
             text-decoration: none;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .logo img {
             width: 40px;
             height: 40px;
             object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo span {
+            line-height: 1;
         }
 
         .nav-links {
@@ -230,6 +237,7 @@
             white-space: nowrap;
             overflow-x: auto;
             overflow-y: hidden;
+            padding: 0 4px;
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
@@ -278,6 +286,7 @@
         .header-actions .btn {
             padding: 10px 16px;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         /* ===== HERO ===== */
@@ -2248,6 +2257,49 @@
         }
 
         /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .header-content {
+                gap: 10px;
+            }
+
+            .logo {
+                gap: 8px;
+                font-size: 1.25rem;
+            }
+
+            .logo img {
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 0.84rem;
+            }
+
+            .header-actions {
+                gap: 8px;
+            }
+
+            .header-actions .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .header-content {
+                grid-template-columns: minmax(0, 1fr) auto;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
         @media (max-width: 1024px) {
             .container {
                 padding: 0 16px;
