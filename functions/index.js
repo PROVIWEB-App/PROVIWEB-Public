@@ -692,28 +692,82 @@ function normalizeOAuthScopes(value) {
   if (!requested.length) {
     return ["profile", "email", "qav"];
   }
-  return ["profile", "email", "qav"].filter((scope) => requested.includes(scope));
+  if (requested.some((scope) => !OAUTH_ALLOWED_SCOPES.has(scope))) {
+    throw new HttpsError("invalid-argument", "La aplicacion solicito scopes no admitidos.");
+  }
+  return requested;
 }
 
-function getOAuthClient(clientId, redirectUri) {
+function normalizeOAuthUriList(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean);
+  return String(value).split(",").map((v) => v.trim()).filter(Boolean);
+}
+
+function sanitizeOAuthClientKey(clientId) {
+  return String(clientId || "").trim().replace(/[.#$\[\]]/g, "_");
+}
+
+function isOAuthRedirectAllowed(redirectUri, client) {
+  if (!redirectUri || !client) return false;
+  const allowed = new Set(normalizeOAuthUriList(client.allowedRedirectUris));
+  return allowed.has(redirectUri);
+}
+
+async function getOAuthClient(clientId) {
   if (!clientId) {
     throw new HttpsError("invalid-argument", "Falta el identificador de cliente (clientId).");
   }
-  const client = OAUTH_CLIENTS[clientId];
-  if (!client) {
-    // Dynamic or registered client in RTDB
-    return { redirectUri: redirectUri || "proviweb://oauth/callback/app", requiresAdmin: false, name: clientId };
+
+  const knownClient = OAUTH_CLIENTS[clientId];
+  if (knownClient) {
+    return {
+      name: knownClient.name,
+      requiresAdmin: !!knownClient.requiresAdmin,
+      defaultRedirectUri: knownClient.redirectUri,
+      allowedRedirectUris: [knownClient.redirectUri],
+      source: "static",
+    };
   }
-  return client;
+
+  const key = sanitizeOAuthClientKey(clientId);
+  const snap = await getDb().ref("OAuthClients").child(key).once("value");
+  if (!snap.exists()) {
+    throw new HttpsError("permission-denied", "Cliente no autorizado. Registra la app en la consola OAuth.");
+  }
+
+  const data = snap.val() || {};
+  const allowedRedirectUris = [
+    ...new Set([
+      ...normalizeOAuthUriList(data.allowedRedirectUris),
+      ...normalizeOAuthUriList(data.redirectUris),
+      ...normalizeOAuthUriList(data.redirectUri),
+      ...normalizeOAuthUriList(data.defaultRedirectUri),
+    ]),
+  ];
+
+  if (!allowedRedirectUris.length) {
+    throw new HttpsError("failed-precondition", "El cliente no tiene redirect_uri registrado.");
+  }
+
+  return {
+    name: String(data.name || clientId),
+    requiresAdmin: data.requiresAdmin === true,
+    defaultRedirectUri: allowedRedirectUris[0],
+    allowedRedirectUris,
+    source: "rtdb",
+  };
 }
 
 function validatePkce(codeChallenge, codeChallengeMethod) {
-  if (!codeChallenge) return; // Optional for backward-compatible legacy clients
-  const method = codeChallengeMethod || "S256";
-  if (method !== "S256" && method !== "plain") {
-    throw new HttpsError("invalid-argument", "code_challenge_method debe ser S256 o plain.");
+  if (!codeChallenge) {
+    throw new HttpsError("invalid-argument", "Se requiere code_challenge PKCE.");
   }
-  if (typeof codeChallenge !== "string" || codeChallenge.length < 20) {
+  const method = codeChallengeMethod || "S256";
+  if (method !== "S256") {
+    throw new HttpsError("invalid-argument", "code_challenge_method debe ser S256.");
+  }
+  if (typeof codeChallenge !== "string" || !/^[A-Za-z0-9_-]{43,128}$/.test(codeChallenge)) {
     throw new HttpsError("invalid-argument", "El code_challenge PKCE es invalido.");
   }
 }
@@ -778,10 +832,10 @@ exports.oauthAuthorize = onCall({ region: "us-central1", secrets: [oauthCodeSecr
       throw new HttpsError("unauthenticated", "Debes iniciar sesion para autorizar la aplicacion.");
     }
     const data = req.data || {};
-    const clientId = (data.clientId || "com.israviolink.app").trim();
+    const clientId = (data.clientId || "").trim();
     const redirectUri = (data.redirectUri || "").trim();
     const codeChallenge = data.codeChallenge ? String(data.codeChallenge).trim() : null;
-    const codeChallengeMethod = data.codeChallengeMethod ? String(data.codeChallengeMethod).trim() : (codeChallenge ? "S256" : null);
+    const codeChallengeMethod = data.codeChallengeMethod ? String(data.codeChallengeMethod).trim() : "S256";
 
     console.info("oauthAuthorize request", {
       clientId,
@@ -789,7 +843,15 @@ exports.oauthAuthorize = onCall({ region: "us-central1", secrets: [oauthCodeSecr
       codeChallengeMethod,
     });
 
-    const client = getOAuthClient(clientId, redirectUri);
+    if (!redirectUri) {
+      throw new HttpsError("invalid-argument", "Falta redirect_uri.");
+    }
+
+    const client = await getOAuthClient(clientId);
+    if (!isOAuthRedirectAllowed(redirectUri, client)) {
+      throw new HttpsError("permission-denied", "El redirect_uri no esta autorizado para este client_id.");
+    }
+
     const scopes = normalizeOAuthScopes(data.scope);
     validatePkce(codeChallenge, codeChallengeMethod);
 
@@ -806,10 +868,10 @@ exports.oauthAuthorize = onCall({ region: "us-central1", secrets: [oauthCodeSecr
       uid: req.auth.uid,
       email: req.auth.token.email || user.email || "",
       clientId,
-      redirectUri: redirectUri || client.redirectUri,
+      redirectUri,
       scope: scopes.join(" "),
-      codeChallenge: codeChallenge || null,
-      codeChallengeMethod: codeChallengeMethod || null,
+      codeChallenge,
+      codeChallengeMethod,
       createdAt,
       expiresAt: createdAt + OAUTH_CODE_TTL_MS,
     };
@@ -877,8 +939,23 @@ async function secureOAuthTokenExchange(payload) {
 
     const authData = snapByHash.val() || snapByCode.val();
     if (!authData) {
-      console.warn("oauthTokenExchange code not found:", { codeHash, code: code.slice(0, 8) + '...' });
       throw new HttpsError("permission-denied", "Codigo de autorizacion invalido o ya utilizado.");
+    }
+
+    if (!hasValidOAuthRecordSignature(authData)) {
+      await Promise.all([
+        getDb().ref(OAUTH_CODE_COLLECTION).child(codeHash).remove(),
+        getDb().ref("OAuthAuthCodes").child(code).remove()
+      ]);
+      throw new HttpsError("permission-denied", "Codigo de autorizacion invalido.");
+    }
+
+    if (authData.codeHash !== codeHash) {
+      await Promise.all([
+        getDb().ref(OAUTH_CODE_COLLECTION).child(codeHash).remove(),
+        getDb().ref("OAuthAuthCodes").child(code).remove()
+      ]);
+      throw new HttpsError("permission-denied", "Codigo de autorizacion no coincide.");
     }
 
     if (authData.usedAt || now >= authData.expiresAt) {
@@ -889,25 +966,24 @@ async function secureOAuthTokenExchange(payload) {
       throw new HttpsError("permission-denied", "El codigo de autorizacion ha expirado.");
     }
 
+    if (clientId && clientId !== authData.clientId) {
+      throw new HttpsError("permission-denied", "El client_id no coincide con el codigo autorizado.");
+    }
+
     // PKCE Verification
     if (authData.codeChallenge) {
       if (!codeVerifier) {
         throw new HttpsError("invalid-argument", "Se requiere code_verifier PKCE para esta aplicacion.");
       }
       const method = authData.codeChallengeMethod || "S256";
-      if (method === "plain") {
-        if (codeVerifier !== authData.codeChallenge) {
-          throw new HttpsError("permission-denied", "El code_verifier no coincide con el code_challenge registrado.");
-        }
-      } else {
-        // S256
-        const calculatedChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
-        const expected = authData.codeChallenge.replace(/=+$/, "");
-        const actual = calculatedChallenge.replace(/=+$/, "");
-        if (actual !== expected) {
-          console.warn("PKCE mismatch:", { actual, expected });
-          throw new HttpsError("permission-denied", "El code_verifier PKCE no es valido para este codigo de autorizacion.");
-        }
+      if (method !== "S256") {
+        throw new HttpsError("permission-denied", "Metodo PKCE no soportado para este codigo.");
+      }
+      const calculatedChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
+      const expected = authData.codeChallenge.replace(/=+$/, "");
+      const actual = calculatedChallenge.replace(/=+$/, "");
+      if (actual !== expected) {
+        throw new HttpsError("permission-denied", "El code_verifier PKCE no es valido para este codigo de autorizacion.");
       }
     }
 
@@ -952,6 +1028,8 @@ async function secureOAuthTokenExchange(payload) {
     console.info("oauthTokenExchange succeeded", { clientId: targetClientId, uid: authData.uid, scope: authData.scope });
     return {
       success: true,
+      client_id: targetClientId,
+      redirect_uri: authData.redirectUri || "",
       customToken,
       custom_token: customToken,
       access_token: customToken,

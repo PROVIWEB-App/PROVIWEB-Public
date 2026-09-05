@@ -322,7 +322,19 @@
 
         <!-- STATE: UNAUTHENTICATED USER (INLINE LOGIN) -->
         <div id="stateUnauthenticated" style="display: none;">
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <button type="button" class="btn-sso-action btn-sso-secondary" id="btnShowLogin" style="padding:10px 12px; font-size:12px; flex:1;">
+                    🔑 Ya tengo cuenta
+                </button>
+                <button type="button" class="btn-sso-action btn-sso-secondary" id="btnShowRegister" style="padding:10px 12px; font-size:12px; flex:1;">
+                    ✨ Crear cuenta
+                </button>
+            </div>
             <form id="ssoLoginForm">
+                <div class="form-group" id="registerNameGroup" style="display:none;">
+                    <label>Nombre artístico:</label>
+                    <input type="text" id="registerName" class="form-input" placeholder="Tu nombre de artista">
+                </div>
                 <div class="form-group">
                     <label>Correo Electrónico de PROVIWEB:</label>
                     <input type="email" id="loginEmail" class="form-input" placeholder="tu@correo.com" required>
@@ -330,6 +342,13 @@
                 <div class="form-group">
                     <label>Contraseña:</label>
                     <input type="password" id="loginPassword" class="form-input" placeholder="Tu contraseña" required>
+                </div>
+                <div class="form-group" id="registerConfirmGroup" style="display:none;">
+                    <label>Confirmar contraseña:</label>
+                    <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="Repite tu contraseña">
+                </div>
+                <div id="authModeHint" style="font-size:11px; color:#94a3b8; margin-bottom:12px;">
+                    Inicia sesión para continuar con la autorización.
                 </div>
                 <button type="submit" class="btn-sso-action btn-sso-primary" id="btnLoginAndAuthorize">
                     <span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>
@@ -349,7 +368,7 @@
     <!-- FIREBASE INITIALIZATION & SSO LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, get, ref } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
         import { firebaseConfig } from "./js/firebase-config.js";
@@ -541,7 +560,40 @@
                 permissionBox.innerHTML = '<div style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Permisos solicitados por esta aplicacion:</div>' + requestedScopes.map((requestedScope) => permissionDetails[requestedScope]).join('');
             }
             if (!requestedScopes.includes('qav')) document.getElementById('ssoUserQav').style.display = 'none';
-            document.getElementById('btnLoginAndAuthorize').textContent = 'Iniciar sesion';
+            const btnLoginAndAuthorize = document.getElementById('btnLoginAndAuthorize');
+            const btnShowLogin = document.getElementById('btnShowLogin');
+            const btnShowRegister = document.getElementById('btnShowRegister');
+            const registerNameGroup = document.getElementById('registerNameGroup');
+            const registerConfirmGroup = document.getElementById('registerConfirmGroup');
+            const registerNameInput = document.getElementById('registerName');
+            const registerPasswordConfirmInput = document.getElementById('registerPasswordConfirm');
+            const authModeHint = document.getElementById('authModeHint');
+            const loginEmailInput = document.getElementById('loginEmail');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            let authMode = 'login';
+
+            function setAuthMode(mode) {
+                authMode = mode === 'register' ? 'register' : 'login';
+                const isRegisterMode = authMode === 'register';
+                registerNameGroup.style.display = isRegisterMode ? 'block' : 'none';
+                registerConfirmGroup.style.display = isRegisterMode ? 'block' : 'none';
+                registerNameInput.required = isRegisterMode;
+                registerPasswordConfirmInput.required = isRegisterMode;
+                authModeHint.textContent = isRegisterMode
+                    ? 'Regístrate primero y luego autoriza el acceso para la aplicación.'
+                    : 'Inicia sesión para continuar con la autorización.';
+                btnLoginAndAuthorize.innerHTML = isRegisterMode
+                    ? '<span>✨</span><span>Crear cuenta y continuar ➜</span>'
+                    : '<span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>';
+                btnShowLogin.style.borderColor = isRegisterMode ? 'rgba(255,255,255,0.2)' : '#fbbf24';
+                btnShowLogin.style.color = isRegisterMode ? '#e2e8f0' : '#fbbf24';
+                btnShowRegister.style.borderColor = isRegisterMode ? '#fbbf24' : 'rgba(255,255,255,0.2)';
+                btnShowRegister.style.color = isRegisterMode ? '#fbbf24' : '#e2e8f0';
+            }
+
+            btnShowLogin.onclick = () => setAuthMode('login');
+            btnShowRegister.onclick = () => setAuthMode('register');
+            setAuthMode('login');
 
             let currentAuthUser = null;
             let currentProfileData = null;
@@ -687,21 +739,40 @@
             // 7. Inline Login Form
             document.getElementById('ssoLoginForm').onsubmit = async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('loginEmail').value.trim();
-                const password = document.getElementById('loginPassword').value;
-                const btn = document.getElementById('btnLoginAndAuthorize');
+                const email = loginEmailInput.value.trim();
+                const password = loginPasswordInput.value;
+                const passwordConfirm = registerPasswordConfirmInput.value;
+                const artistName = registerNameInput.value.trim();
+                const btn = btnLoginAndAuthorize;
 
                 btn.disabled = true;
-                btn.innerHTML = '<span>⏳</span><span>Iniciando Sesión...</span>';
+                btn.innerHTML = authMode === 'register'
+                    ? '<span>⏳</span><span>Creando cuenta...</span>'
+                    : '<span>⏳</span><span>Iniciando sesión...</span>';
 
                 try {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    if (authMode === 'register') {
+                        if (artistName.length < 2) {
+                            throw new Error('Ingresa un nombre artístico válido.');
+                        }
+                        if (password.length < 6) {
+                            throw new Error('La contraseña debe tener mínimo 6 caracteres.');
+                        }
+                        if (password !== passwordConfirm) {
+                            throw new Error('La confirmación de contraseña no coincide.');
+                        }
+                        await createUserWithEmailAndPassword(auth, email, password);
+                    } else {
+                        await signInWithEmailAndPassword(auth, email, password);
+                    }
                     // onAuthStateChanged will handle switching to stateAuthenticated
                 } catch(err) {
-                    console.error('Login error:', err);
-                    alert('Error al iniciar sesión: ' + err.message);
+                    console.error('Auth error:', err);
+                    alert((authMode === 'register' ? 'Error al crear la cuenta: ' : 'Error al iniciar sesión: ') + err.message);
                     btn.disabled = false;
-                    btn.innerHTML = '<span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>';
+                    btn.innerHTML = authMode === 'register'
+                        ? '<span>✨</span><span>Crear cuenta y continuar ➜</span>'
+                        : '<span>🔑</span><span>Iniciar Sesión y Autorizar ➜</span>';
                 }
             };
         });
