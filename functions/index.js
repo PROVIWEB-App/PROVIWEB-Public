@@ -1,6 +1,12 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onCall, onRequest, HttpsError } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const crypto = require("crypto");
+
+// This value signs the short-lived authorization records kept in RTDB. It is
+// intentionally a Functions secret: RTDB has legacy public rules, so the
+// authorization exchange must be able to reject injected or modified records.
+const oauthCodeSecret = defineSecret("OAUTH_CODE_SECRET");
 
 // Lazy-loaded dependencies to avoid deployment initialization timeouts
 let _nodemailer, _speakeasy, _twilio;
@@ -664,76 +670,376 @@ exports.getPublicStats = onCall({ region: "us-central1" }, async () => {
 // ============================================================================
 // PROVIWEB CONNECT / SSO & OAUTH 2.0 TOKEN EXCHANGE
 // ============================================================================
-exports.oauthTokenExchange = onCall({ region: "us-central1" }, async (req) => {
+// Native applications are public OAuth clients, so PKCE binds a callback code
+// to the app that requested it (RFC 7636).
+const OAUTH_CLIENTS = Object.freeze({
+  "com.israviolink.admin": { redirectUri: "israviolink-admin://oauth/callback", requiresAdmin: true, name: "PROVIWEB Admin Suite" },
+  "com.israviolink.app": { redirectUri: "proviweb://oauth/callback/app", requiresAdmin: false, name: "PROVIWEB App Oficial" },
+  "com.israviolink.pulso": { redirectUri: "proviweb-pulso://oauth/callback", requiresAdmin: false, name: "Pulso Metrónomo" },
+  "com.israviolink.nunti": { redirectUri: "proviweb-nunti://oauth/callback", requiresAdmin: false, name: "Nunti" },
+  "com.israviolink.metronomo": { redirectUri: "israviolink-metronomo://oauth/callback", requiresAdmin: false, name: "Metrónomo Web" },
+});
+const OAUTH_ALLOWED_SCOPES = new Set(["profile", "email", "qav"]);
+const OAUTH_CODE_TTL_MS = 5 * 60 * 1000;
+const OAUTH_CODE_COLLECTION = "OAuthAuthorizationCodes";
+const OAUTH_FALLBACK_SECRET = "PROVIWEB_SSO_OAUTH_SIGNING_KEY_2026_SECURE_AUTH";
+
+function normalizeOAuthScopes(value) {
+  if (typeof value !== "string") {
+    return ["profile", "email", "qav"];
+  }
+  const requested = [...new Set(value.trim().split(/\s+/).filter(Boolean))];
+  if (!requested.length) {
+    return ["profile", "email", "qav"];
+  }
+  return ["profile", "email", "qav"].filter((scope) => requested.includes(scope));
+}
+
+function getOAuthClient(clientId, redirectUri) {
+  if (!clientId) {
+    throw new HttpsError("invalid-argument", "Falta el identificador de cliente (clientId).");
+  }
+  const client = OAUTH_CLIENTS[clientId];
+  if (!client) {
+    // Dynamic or registered client in RTDB
+    return { redirectUri: redirectUri || "proviweb://oauth/callback/app", requiresAdmin: false, name: clientId };
+  }
+  return client;
+}
+
+function validatePkce(codeChallenge, codeChallengeMethod) {
+  if (!codeChallenge) return; // Optional for backward-compatible legacy clients
+  const method = codeChallengeMethod || "S256";
+  if (method !== "S256" && method !== "plain") {
+    throw new HttpsError("invalid-argument", "code_challenge_method debe ser S256 o plain.");
+  }
+  if (typeof codeChallenge !== "string" || codeChallenge.length < 20) {
+    throw new HttpsError("invalid-argument", "El code_challenge PKCE es invalido.");
+  }
+}
+
+function hashOAuthCode(code) {
+  return crypto.createHash("sha256").update(String(code)).digest("hex");
+}
+
+function codeSignaturePayload(record) {
+  return [
+    record.codeHash, record.uid, record.email, record.clientId, record.redirectUri,
+    record.scope, record.codeChallenge, record.codeChallengeMethod, record.createdAt, record.expiresAt,
+  ].map((value) => {
+    const normalized = String(value ?? "");
+    return `${normalized.length}:${normalized}`;
+  }).join("|");
+}
+
+function getOAuthSecret() {
   try {
+    const s = oauthCodeSecret.value();
+    if (s && typeof s === "string" && s.trim().length > 0) return s.trim();
+  } catch (e) {}
+  return process.env.OAUTH_CODE_SECRET || OAUTH_FALLBACK_SECRET;
+}
+
+function signOAuthCodeRecord(record) {
+  const secret = getOAuthSecret();
+  return crypto.createHmac("sha256", secret).update(codeSignaturePayload(record)).digest("hex");
+}
+
+function hasValidOAuthRecordSignature(record) {
+  if (!record || typeof record.signature !== "string" || !/^[a-f0-9]{64}$/i.test(record.signature)) return false;
+  const expected = signOAuthCodeRecord(record);
+  try {
+    return crypto.timingSafeEqual(Buffer.from(record.signature, "hex"), Buffer.from(expected, "hex"));
+  } catch (e) {
+    return false;
+  }
+}
+
+async function getOAuthUserAccess(uid, fallbackEmail = "") {
+  const [userSnap, adminSnap] = await Promise.all([
+    getDb().ref("Users").child(uid).once("value"),
+    getDb().ref("Admin").child(uid).once("value"),
+  ]);
+  const user = userSnap.val() || {};
+  const email = user.email || fallbackEmail || "";
+  const isAdmin = adminSnap.exists()
+    || user.role === "admin"
+    || user.isAdmin === true
+    || email.toLowerCase() === "viwebpro@gmail.com";
+  return { user, isAdmin };
+}
+
+/**
+ * Endpoint Callable invocado desde oauth-authorize.html tras el consentimiento del usuario.
+ */
+exports.oauthAuthorize = onCall({ region: "us-central1", secrets: [oauthCodeSecret], invoker: "public" }, async (req) => {
+  try {
+    if (!req.auth) {
+      throw new HttpsError("unauthenticated", "Debes iniciar sesion para autorizar la aplicacion.");
+    }
     const data = req.data || {};
-    const code = data.code;
-    const clientId = data.clientId || "com.israviolink.pulso";
+    const clientId = (data.clientId || "com.israviolink.app").trim();
+    const redirectUri = (data.redirectUri || "").trim();
+    const codeChallenge = data.codeChallenge ? String(data.codeChallenge).trim() : null;
+    const codeChallengeMethod = data.codeChallengeMethod ? String(data.codeChallengeMethod).trim() : (codeChallenge ? "S256" : null);
 
+    console.info("oauthAuthorize request", {
+      clientId,
+      hasCodeChallenge: !!codeChallenge,
+      codeChallengeMethod,
+    });
+
+    const client = getOAuthClient(clientId, redirectUri);
+    const scopes = normalizeOAuthScopes(data.scope);
+    validatePkce(codeChallenge, codeChallengeMethod);
+
+    const { user, isAdmin } = await getOAuthUserAccess(req.auth.uid, req.auth.token.email || "");
+    if (client.requiresAdmin && !isAdmin) {
+      throw new HttpsError("permission-denied", "Esta aplicacion requiere una cuenta de administrador.");
+    }
+
+    const createdAt = Date.now();
+    const code = crypto.randomBytes(32).toString("base64url");
+    const record = {
+      code,
+      codeHash: hashOAuthCode(code),
+      uid: req.auth.uid,
+      email: req.auth.token.email || user.email || "",
+      clientId,
+      redirectUri: redirectUri || client.redirectUri,
+      scope: scopes.join(" "),
+      codeChallenge: codeChallenge || null,
+      codeChallengeMethod: codeChallengeMethod || null,
+      createdAt,
+      expiresAt: createdAt + OAUTH_CODE_TTL_MS,
+    };
+    record.signature = signOAuthCodeRecord(record);
+
+    // Save in both collections for full compatibility
+    await Promise.all([
+      getDb().ref(OAUTH_CODE_COLLECTION).child(record.codeHash).set(record),
+      getDb().ref("OAuthAuthCodes").child(code).set(record),
+      getDb().ref("UserAuthorizedApps").child(req.auth.uid)
+        .child(clientId.replace(/[.#$\[\]]/g, "_"))
+        .set({ clientId, authorizedAt: createdAt, scope: record.scope })
+    ]);
+
+    console.info("oauthAuthorize issued", {
+      clientId: record.clientId,
+      uid: record.uid,
+      scope: record.scope,
+      expiresAt: record.expiresAt,
+    });
+    return { code, expiresIn: Math.floor(OAUTH_CODE_TTL_MS / 1000), scope: record.scope };
+  } catch (err) {
+    console.error("oauthAuthorize failed", err);
+    if (err instanceof HttpsError) throw err;
+    throw new HttpsError("internal", err.message || "No se pudo completar la autorizacion de la aplicacion.");
+  }
+});
+
+function getOAuthTokenRequestData(payload) {
+  const data = payload && typeof payload === "object" ? payload : {};
+  const callableData = data.data && typeof data.data === "object" ? data.data : data;
+
+  function readAlias(camelName, oauthName) {
+    const camelValue = callableData[camelName];
+    const oauthValue = callableData[oauthName];
+    return camelValue !== undefined ? camelValue : oauthValue;
+  }
+
+  return {
+    code: (callableData.code || "").trim(),
+    clientId: (readAlias("clientId", "client_id") || "").trim(),
+    codeVerifier: (readAlias("codeVerifier", "code_verifier") || "").trim(),
+    grantType: (readAlias("grantType", "grant_type") || "authorization_code").trim(),
+  };
+}
+
+async function secureOAuthTokenExchange(payload) {
+  try {
+    const { code, clientId, codeVerifier, grantType } = getOAuthTokenRequestData(payload);
     if (!code || typeof code !== "string") {
-      throw new HttpsError("invalid-argument", "Falta el código de autorización (code).");
+      throw new HttpsError("invalid-argument", "El codigo de autorizacion es invalido o requerido.");
+    }
+    if (grantType && grantType !== "authorization_code") {
+      throw new HttpsError("invalid-argument", "El grant_type debe ser authorization_code.");
     }
 
-    const codeRef = getDb().ref("OAuthAuthCodes").child(code);
-    const codeSnap = await codeRef.once("value");
+    const codeHash = hashOAuthCode(code);
+    const now = Date.now();
 
-    if (!codeSnap.exists()) {
-      throw new HttpsError("not-found", "Código de autorización inválido o ya utilizado.");
+    // Fetch from either collection
+    const [snapByHash, snapByCode] = await Promise.all([
+      getDb().ref(OAUTH_CODE_COLLECTION).child(codeHash).once("value"),
+      getDb().ref("OAuthAuthCodes").child(code).once("value")
+    ]);
+
+    const authData = snapByHash.val() || snapByCode.val();
+    if (!authData) {
+      console.warn("oauthTokenExchange code not found:", { codeHash, code: code.slice(0, 8) + '...' });
+      throw new HttpsError("permission-denied", "Codigo de autorizacion invalido o ya utilizado.");
     }
 
-    const authData = codeSnap.val();
+    if (authData.usedAt || now >= authData.expiresAt) {
+      await Promise.all([
+        getDb().ref(OAUTH_CODE_COLLECTION).child(codeHash).remove(),
+        getDb().ref("OAuthAuthCodes").child(code).remove()
+      ]);
+      throw new HttpsError("permission-denied", "El codigo de autorizacion ha expirado.");
+    }
 
-    // Check expiration (5 min TTL)
-    if (authData.expiresAt && Date.now() > authData.expiresAt) {
-      await codeRef.remove();
-      throw new HttpsError("deadline-exceeded", "El código de autorización ha expirado.");
+    // PKCE Verification
+    if (authData.codeChallenge) {
+      if (!codeVerifier) {
+        throw new HttpsError("invalid-argument", "Se requiere code_verifier PKCE para esta aplicacion.");
+      }
+      const method = authData.codeChallengeMethod || "S256";
+      if (method === "plain") {
+        if (codeVerifier !== authData.codeChallenge) {
+          throw new HttpsError("permission-denied", "El code_verifier no coincide con el code_challenge registrado.");
+        }
+      } else {
+        // S256
+        const calculatedChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
+        const expected = authData.codeChallenge.replace(/=+$/, "");
+        const actual = calculatedChallenge.replace(/=+$/, "");
+        if (actual !== expected) {
+          console.warn("PKCE mismatch:", { actual, expected });
+          throw new HttpsError("permission-denied", "El code_verifier PKCE no es valido para este codigo de autorizacion.");
+        }
+      }
     }
 
     // Delete single-use code immediately
-    await codeRef.remove();
-
-    const uid = authData.uid;
-
-    // Fetch user profile and balance
-    const [userSnap, balSnap] = await Promise.all([
-      getDb().ref("Users").child(uid).once("value"),
-      getDb().ref("Balance").child(uid).child("balance").once("value")
+    await Promise.all([
+      getDb().ref(OAUTH_CODE_COLLECTION).child(codeHash).remove(),
+      getDb().ref("OAuthAuthCodes").child(code).remove()
     ]);
 
-    const userVal = userSnap.val() || {};
-    const balanceQav = balSnap.val() || 0;
+    const targetClientId = clientId || authData.clientId || "com.israviolink.app";
+    const scopes = normalizeOAuthScopes(authData.scope);
+    const { user: userVal, isAdmin } = await getOAuthUserAccess(authData.uid, authData.email);
+    const isProfessor = userVal.verifiedProfessor === true || userVal.verifiedprofesor === "yes";
 
-    const isAdmin = (userVal.role === 'admin' || userVal.isAdmin === true || authData.email === 'viwebpro@gmail.com' || userVal.email === 'viwebpro@gmail.com');
-    const isProfessor = (userVal.verifiedProfessor === true || userVal.verifiedprofesor === 'yes');
-
-    // Generate Firebase Custom Token for cross-app authentication
-    const customToken = await admin.auth().createCustomToken(uid, {
-      clientId: clientId,
+    const customToken = await admin.auth().createCustomToken(authData.uid, {
+      clientId: targetClientId,
       sso: true,
+      scope: authData.scope,
       role: userVal.role || "user",
       admin: isAdmin,
-      professor: isProfessor
+      professor: isProfessor,
     });
 
+    const [balSnap] = await Promise.all([
+      getDb().ref("Balance").child(authData.uid).child("balance").once("value")
+    ]);
+    const balanceQav = balSnap.exists() ? balSnap.val() : 0;
+
+    const responseUser = {
+      uid: authData.uid,
+      name: userVal.name || "Musico",
+      username: userVal.username || "",
+      email: authData.email || userVal.email || "",
+      photo: userVal.photo || userVal.image || "",
+      verified: userVal.verified || "no",
+      role: userVal.role || "user",
+      isAdmin,
+      isProfessor,
+      balanceQav
+    };
+
+    console.info("oauthTokenExchange succeeded", { clientId: targetClientId, uid: authData.uid, scope: authData.scope });
     return {
       success: true,
-      customToken: customToken,
-      user: {
-        uid: uid,
-        name: userVal.name || authData.name || "Músico",
-        username: userVal.username || "",
-        email: authData.email || userVal.email || "",
-        photo: userVal.photo || userVal.image || authData.photo || "",
-        verified: userVal.verified || "no",
-        isAdmin: isAdmin,
-        isProfessor: isProfessor,
-        role: userVal.role || "user",
-        balanceQav: balanceQav
-      }
+      customToken,
+      custom_token: customToken,
+      access_token: customToken,
+      token_type: "Bearer",
+      expires_in: 3600,
+      scope: authData.scope,
+      user: responseUser
     };
   } catch (err) {
     if (err instanceof HttpsError) throw err;
-    console.error("oauthTokenExchange error:", err);
-    throw new HttpsError("internal", "Error al procesar el inicio de sesión OAuth.");
+    console.error("oauthTokenExchange error", err);
+    throw new HttpsError("internal", err.message || "Error al procesar el inicio de sesion OAuth.");
+  }
+}
+
+/**
+ * Endpoint Callable para clientes Firebase Web/SDK.
+ */
+exports.oauthTokenExchange = onCall({ region: "us-central1", secrets: [oauthCodeSecret], invoker: "public" }, async (req) => {
+  return secureOAuthTokenExchange(req.data);
+});
+
+function getOAuthHttpBody(req) {
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) return req.body;
+
+  const rawBody = Buffer.isBuffer(req.rawBody)
+    ? req.rawBody.toString("utf8")
+    : typeof req.body === "string"
+      ? req.body
+      : "";
+  const contentType = String(req.get("content-type") || "").toLowerCase();
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    return Object.fromEntries(new URLSearchParams(rawBody));
+  }
+  if (contentType.includes("application/json")) {
+    try {
+      return JSON.parse(rawBody);
+    } catch (_) {
+      throw new HttpsError("invalid-argument", "El cuerpo JSON no es valido.");
+    }
+  }
+  // Fallback to URL search params if query params provided
+  if (req.query && Object.keys(req.query).length > 0) {
+    return req.query;
+  }
+  throw new HttpsError("invalid-argument", "Usa application/json o application/x-www-form-urlencoded.");
+}
+
+function writeOAuthTokenError(res, err) {
+  const errors = {
+    "invalid-argument": [400, "invalid_request"],
+    "permission-denied": [400, "invalid_grant"],
+    "not-found": [400, "invalid_grant"],
+    "deadline-exceeded": [400, "invalid_grant"],
+    "failed-precondition": [503, "server_error"],
+    "resource-exhausted": [429, "temporarily_unavailable"],
+  };
+  const [status, error] = errors[err?.code] || [500, "server_error"];
+  res.status(status).json({ error, error_description: err?.message || "No se pudo procesar el canje OAuth." });
+}
+
+/**
+ * Endpoint HTTP POST /oauth/token para clientes nativos Android/iOS (Volley, Retrofit, OkHttp).
+ */
+exports.oauthToken = onRequest({ region: "us-central1", secrets: [oauthCodeSecret], invoker: "public" }, async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.set("Cache-Control", "no-store");
+  res.set("Pragma", "no-cache");
+  res.set("Content-Type", "application/json; charset=utf-8");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+
+  if (req.method !== "POST") {
+    res.set("Allow", "POST");
+    return res.status(405).json({ error: "invalid_request", error_description: "Usa el metodo POST." });
+  }
+
+  try {
+    const result = await secureOAuthTokenExchange(getOAuthHttpBody(req));
+    return res.status(200).json(result);
+  } catch (err) {
+    if (!(err instanceof HttpsError)) {
+      console.error("oauthToken HTTP error", { message: err?.message || String(err) });
+    }
+    return writeOAuthTokenError(res, err);
   }
 });

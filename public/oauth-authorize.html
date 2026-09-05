@@ -9,11 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
     <style>
         :root {
             --bg-primary: #08080d;
@@ -352,19 +347,45 @@
     </div>
 
     <!-- FIREBASE INITIALIZATION & SSO LOGIC -->
-    <script src="js/firebase-config.js"></script>
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, get, ref } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js";
+        import { firebaseConfig } from "./js/firebase-config.js";
+
+        // The SSO page owns one Modular Firebase app. Every service below,
+        // including Cloud Functions, is obtained from this same instance.
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const functions = getFunctions(app, "us-central1");
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const auth = firebase.auth();
-            const db = firebase.database();
+            if (!auth || !db || !functions) {
+                const loading = document.getElementById('stateLoading');
+                if (loading) {
+                    loading.innerHTML = `
+                        <div style="font-size:14px; font-weight:800; color:#f87171; margin-bottom:10px;">No se pudo cargar Firebase</div>
+                        <div style="font-size:12px; color:#cbd5e1; line-height:1.45;">Recarga la página o intenta de nuevo desde la app.</div>
+                    `;
+                }
+                return;
+            }
+
+            // auth and db are the Modular services initialized above.
 
             // 1. Parse OAuth 2.0 Query Parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const clientId = urlParams.get('client_id') || 'com.israviolink.app';
-            const requestedRedirectUri = urlParams.get('redirect_uri') || '';
+            const clientId = (urlParams.get('client_id') || '').trim();
+            const requestedRedirectUri = (urlParams.get('redirect_uri') || '').trim();
             const responseType = urlParams.get('response_type') || 'code';
             const scope = urlParams.get('scope') || 'profile email qav';
             const state = urlParams.get('state') || '';
+            const codeChallenge = (urlParams.get('code_challenge') || '').trim();
+            const codeChallengeMethod = (urlParams.get('code_challenge_method') || '').trim();
+            const requestedScopes = [...new Set(scope.trim().split(/\s+/).filter(Boolean))];
+            const allowedScopes = ['profile', 'email', 'qav'];
 
             // Known Client Apps Pre-Configuration
             const KNOWN_CLIENTS = {
@@ -385,8 +406,8 @@
                     logo: './assets/logotransparente-1dd37ce8.png',
                     verified: true,
                     requiresAdmin: false,
-                    defaultRedirectUri: 'israviolink://oauth/callback',
-                    allowedRedirectUris: ['israviolink://oauth/callback']
+                    defaultRedirectUri: 'proviweb://oauth/callback/app',
+                    allowedRedirectUris: ['proviweb://oauth/callback/app']
                 },
                 'com.israviolink.nunti': {
                     name: 'NUNTI · Comunidad y Gestión',
@@ -395,8 +416,8 @@
                     logo: './assets/logotransparente-1dd37ce8.png',
                     verified: true,
                     requiresAdmin: false,
-                    defaultRedirectUri: 'israviolink-nunti://oauth/callback',
-                    allowedRedirectUris: ['israviolink-nunti://oauth/callback']
+                    defaultRedirectUri: 'proviweb-nunti://oauth/callback',
+                    allowedRedirectUris: ['proviweb-nunti://oauth/callback']
                 },
                 'com.israviolink.pulso': {
                     name: 'Pulso · Metrónomo & Afinador Pro',
@@ -405,8 +426,8 @@
                     logo: './assets/logotransparente-1dd37ce8.png',
                     verified: true,
                     requiresAdmin: false,
-                    defaultRedirectUri: 'israviolink-pulso://oauth/callback',
-                    allowedRedirectUris: ['israviolink-pulso://oauth/callback']
+                    defaultRedirectUri: 'proviweb-pulso://oauth/callback',
+                    allowedRedirectUris: ['proviweb-pulso://oauth/callback']
                 },
                 'com.israviolink.metronomo': {
                     name: 'Metrónomo Web Pro',
@@ -430,9 +451,11 @@
             };
 
             // Check if client is registered in RTDB: OAuthClients/{clientId}
+            let clientRegisteredInDb = false;
             try {
-                const clientSnap = await db.ref(`OAuthClients/${clientId.replace(/[.#$\[\]]/g, '_')}`).once('value');
-                if (clientSnap.exists()) {
+                const clientSnap = await get(ref(db, `OAuthClients/${clientId.replace(/[.#$\[\]]/g, '_')}`));
+                if (clientSnap.exists() && !KNOWN_CLIENTS[clientId]) {
+                    clientRegisteredInDb = true;
                     clientData = { ...clientData, ...clientSnap.val() };
                 }
             } catch(e) { console.warn('Could not query OAuthClients from RTDB:', e); }
@@ -451,21 +474,10 @@
                 const merged = new Set([...staticAllowed, ...dbAllowed, ...singleDbRedirect]);
                 if (merged.has(uri)) return true;
 
-                try {
-                    const parsed = new URL(uri);
-                    const host = (parsed.hostname || '').toLowerCase();
-                    const protocol = (parsed.protocol || '').toLowerCase();
-                    const allowedWebHosts = ['proviweb.com', 'www.proviweb.com', 'proviweb-d8764-c592e.web.app'];
-                    if ((protocol === 'https:' || protocol === 'http:') && allowedWebHosts.includes(host)) {
-                        return true;
-                    }
-                } catch (err) {
-                    return false;
-                }
                 return false;
             }
 
-            const defaultRedirectUri = clientData.defaultRedirectUri || clientData.redirectUri || 'israviolink://oauth/callback';
+            const defaultRedirectUri = clientData.defaultRedirectUri || clientData.redirectUri || 'proviweb://oauth/callback/app';
             const redirectUri = requestedRedirectUri || defaultRedirectUri;
 
             function failAuthorization(message) {
@@ -478,8 +490,28 @@
                 }
             }
 
+            if (!clientId || !requestedRedirectUri) {
+                failAuthorization('Inicio de sesión no permitido fuera del flujo SSO. Debes abrir esta página desde una app autorizada.');
+                return;
+            }
+
+            if (!KNOWN_CLIENTS[clientId] && !clientRegisteredInDb) {
+                failAuthorization('Cliente no autorizado. Registra la app en la consola OAuth de PROVIWEB.');
+                return;
+            }
+
             if (responseType !== 'code') {
                 failAuthorization('Solo se permite response_type=code en PROVIWEB Connect.');
+                return;
+            }
+
+            if (!requestedScopes.length || requestedScopes.some((requestedScope) => !allowedScopes.includes(requestedScope))) {
+                failAuthorization('La aplicacion solicito permisos no admitidos.');
+                return;
+            }
+
+            if (codeChallengeMethod !== 'S256' || !/^[A-Za-z0-9_-]{43,128}$/.test(codeChallenge)) {
+                failAuthorization('Esta aplicacion debe usar PKCE S256 para iniciar sesion de forma segura.');
                 return;
             }
 
@@ -499,11 +531,24 @@
                 document.getElementById('clientDefaultIcon').style.display = 'none';
             }
 
+            const permissionDetails = {
+                profile: '<div class="perm-item"><span class="perm-icon">Perfil</span><div><strong>Perfil de artista:</strong> nombre, usuario y foto de avatar.</div></div>',
+                email: '<div class="perm-item"><span class="perm-icon">Email</span><div><strong>Correo electronico:</strong> para asociar la cuenta y enviar notificaciones.</div></div>',
+                qav: '<div class="perm-item"><span class="perm-icon">QAV</span><div><strong>Saldo QAV:</strong> para compras y sincronizacion musical.</div></div>'
+            };
+            const permissionBox = document.querySelector('.permissions-box');
+            if (permissionBox) {
+                permissionBox.innerHTML = '<div style="font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Permisos solicitados por esta aplicacion:</div>' + requestedScopes.map((requestedScope) => permissionDetails[requestedScope]).join('');
+            }
+            if (!requestedScopes.includes('qav')) document.getElementById('ssoUserQav').style.display = 'none';
+            document.getElementById('btnLoginAndAuthorize').textContent = 'Iniciar sesion';
+
             let currentAuthUser = null;
             let currentProfileData = null;
+            let authStateResolved = false;
 
             // 3. Handle Auth State
-            auth.onAuthStateChanged(async (user) => {
+            onAuthStateChanged(auth, async (user) => {
                 const stateLoading = document.getElementById('stateLoading');
                 const stateAuth = document.getElementById('stateAuthenticated');
                 const stateUnauth = document.getElementById('stateUnauthenticated');
@@ -514,6 +559,7 @@
                     currentAuthUser = user;
                     stateAuth.style.display = 'block';
                     stateUnauth.style.display = 'none';
+                    authStateResolved = true;
 
                     // Fetch user profile from Users/{uid} and Balance/{uid}
                     let name = user.displayName || user.email.split('@')[0];
@@ -523,8 +569,8 @@
 
                     try {
                         const [userSnap, balSnap] = await Promise.all([
-                            db.ref(`Users/${user.uid}`).once('value'),
-                            db.ref(`Balance/${user.uid}/balance`).once('value')
+                            get(ref(db, `Users/${user.uid}`)),
+                            get(ref(db, `Balance/${user.uid}/balance`))
                         ]);
                         if (userSnap.exists()) {
                             profileNode = userSnap.val();
@@ -557,66 +603,67 @@
                     document.getElementById('ssoUserEmail').textContent = user.email;
                     document.getElementById('ssoUserAvatar').src = photo;
                     document.getElementById('ssoUserQav').textContent = `Saldo: ${qavBalance.toLocaleString()} QAV`;
+
                 } else {
                     currentAuthUser = null;
                     stateAuth.style.display = 'none';
                     stateUnauth.style.display = 'block';
+                    authStateResolved = true;
                 }
             });
+
+            // Fallback para WebView/CustomTab lentos: evita spinner infinito
+            setTimeout(() => {
+                if (authStateResolved) return;
+                const stateLoading = document.getElementById('stateLoading');
+                const stateUnauth = document.getElementById('stateUnauthenticated');
+                if (stateLoading) stateLoading.style.display = 'none';
+                if (stateUnauth) stateUnauth.style.display = 'block';
+            }, 7000);
 
             // 4. Perform Authorization & Generate OAuth Code
             async function performOAuthAuthorization() {
                 if (!currentAuthUser) return;
 
+                if (false && clientData.requiresAdmin && !(currentProfileData && currentProfileData.isAdmin)) {
+                    const delimiter = redirectUri.includes('?') ? '&' : '?';
+                    const deniedUrl = `${redirectUri}${delimiter}error=access_denied&error_description=admin_required` + (state ? `&state=${encodeURIComponent(state)}` : '');
+                    window.location.href = deniedUrl;
+                    return;
+                }
+
                 const btnAuth = document.getElementById('btnAuthorizeSso');
                 btnAuth.disabled = true;
                 btnAuth.innerHTML = '<span>⏳</span><span>Generando Credencial Segura...</span>';
 
-                const authCode = 'pwa_code_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-                const expiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes TTL
-
-                const codePayload = {
-                    code: authCode,
-                    uid: currentAuthUser.uid,
-                    email: currentAuthUser.email,
-                    name: currentProfileData?.name || 'Músico',
-                    photo: currentProfileData?.photo || '',
-                    clientId: clientId,
-                    redirectUri: redirectUri,
-                    scope: scope,
-                    createdAt: Date.now(),
-                    expiresAt: expiryTime
-                };
-
                 try {
-                    // 1. Save Auth Code in RTDB: OAuthAuthCodes/{authCode}
-                    await db.ref(`OAuthAuthCodes/${authCode}`).set(codePayload);
-
-                    // 2. Register authorized app in User profile: UserAuthorizedApps/{uid}/{clientId}
-                    await db.ref(`UserAuthorizedApps/${currentAuthUser.uid}/${clientId.replace(/[.#$\[\]]/g, '_')}`).set({
-                        clientId: clientId,
-                        appName: clientData.name,
-                        logo: clientData.logo || '',
-                        authorizedAt: Date.now(),
-                        scope: scope
+                    // The backend generates and signs the code only after this
+                    // explicit consent. PKCE binds it to the requesting app.
+                    const authorize = httpsCallable(functions, 'oauthAuthorize');
+                    const result = await authorize({
+                        clientId,
+                        redirectUri,
+                        scope: requestedScopes.join(' '),
+                        codeChallenge,
+                        codeChallengeMethod
                     });
+                    const authCode = result && result.data && result.data.code;
+                    if (!authCode) throw new Error('No se recibio un codigo de autorizacion.');
 
-                    // 3. Construct Callback URL
                     const delimiter = redirectUri.includes('?') ? '&' : '?';
                     const finalCallbackUrl = `${redirectUri}${delimiter}code=${encodeURIComponent(authCode)}` + (state ? `&state=${encodeURIComponent(state)}` : '');
-
-                    btnAuth.innerHTML = '<span>✅</span><span>¡Autorizado! Redirigiendo...</span>';
-
-                    setTimeout(() => {
-                        // Redirect to Android Deep Link or Web URL
-                        window.location.href = finalCallbackUrl;
-                    }, 500);
-
-                } catch(error) {
-                    console.error('OAuth error:', error);
-                    alert('Error al autorizar la aplicación: ' + error.message);
+                    btnAuth.innerHTML = '<span>OK</span><span>Autorizado. Regresando a la aplicacion...</span>';
+                    setTimeout(() => window.location.assign(finalCallbackUrl), 350);
+                } catch (error) {
+                    console.error('OAuth authorization error:', error);
+                    if (error && error.code === 'functions/permission-denied' && clientData.requiresAdmin) {
+                        const delimiter = redirectUri.includes('?') ? '&' : '?';
+                        window.location.assign(`${redirectUri}${delimiter}error=access_denied&error_description=admin_required` + (state ? `&state=${encodeURIComponent(state)}` : ''));
+                        return;
+                    }
+                    alert('No se pudo autorizar la aplicacion. ' + (error && error.message ? error.message : 'Intenta de nuevo.'));
                     btnAuth.disabled = false;
-                    btnAuth.innerHTML = '<span>🔐</span><span>Reintentar Autorización</span>';
+                    btnAuth.innerHTML = '<span>Continuar</span><span>Reintentar autorizacion</span>';
                 }
             }
 
@@ -624,7 +671,7 @@
 
             // 5. Switch Account
             document.getElementById('btnSwitchAccount').onclick = async () => {
-                await auth.signOut();
+                await signOut(auth);
             };
 
             // 6. Cancel
@@ -648,7 +695,7 @@
                 btn.innerHTML = '<span>⏳</span><span>Iniciando Sesión...</span>';
 
                 try {
-                    await auth.signInWithEmailAndPassword(email, password);
+                    await signInWithEmailAndPassword(auth, email, password);
                     // onAuthStateChanged will handle switching to stateAuthenticated
                 } catch(err) {
                     console.error('Login error:', err);

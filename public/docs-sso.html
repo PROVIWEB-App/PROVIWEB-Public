@@ -201,12 +201,12 @@
             </p>
 
             <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
-                <a href="oauth-authorize.html?client_id=com.israviolink.pulso&redirect_uri=https://proviweb-d8764-c592e.web.app/docs-sso.html&state=demo&scope=profile+email+qav" class="proviweb-sso-btn">
+                <a href="#pkce" class="proviweb-sso-btn" onclick="alert('Prueba el flujo desde una compilacion Android: PKCE y el deep link son obligatorios.'); return false;">
                     <img src="./assets/logotransparente-1dd37ce8.png" style="width:22px; height:22px; object-fit:contain;">
                     <span>Iniciar Sesión con PROVIWEB</span>
                 </a>
 
-                <a href="oauth-authorize.html?client_id=com.israviolink.pulso&redirect_uri=https://proviweb-d8764-c592e.web.app/docs-sso.html&state=demo&scope=profile+email+qav" class="proviweb-sso-btn gold">
+                <a href="#pkce" class="proviweb-sso-btn gold" onclick="alert('Prueba el flujo desde una compilacion Android: PKCE y el deep link son obligatorios.'); return false;">
                     <img src="./assets/logotransparente-1dd37ce8.png" style="width:22px; height:22px; object-fit:contain;">
                     <span>Iniciar Sesión con PROVIWEB</span>
                 </a>
@@ -215,7 +215,8 @@
             <div style="font-size:12px; color:var(--text-muted);">
                 HTML del botón:
             </div>
-            <pre>&lt;a href="https://proviweb-d8764-c592e.web.app/oauth-authorize.html?client_id=com.israviolink.pulso&amp;redirect_uri=israviolink-pulso://oauth/callback&amp;scope=profile+email+qav" class="proviweb-sso-btn"&gt;
+            <pre>&lt;!-- code_challenge is SHA-256(code_verifier), Base64 URL-safe, no padding --&gt;
+&lt;a href="https://proviweb-d8764-c592e.web.app/oauth-authorize.html?client_id=com.israviolink.pulso&amp;redirect_uri=proviweb-pulso://oauth/callback&amp;scope=profile+email+qav&amp;response_type=code&amp;code_challenge={S256_CHALLENGE}&amp;code_challenge_method=S256&amp;state={RANDOM_STATE}" class="proviweb-sso-btn"&gt;
     &lt;img src="proviweb_logo.png" style="width:22px; height:22px;"&gt;
     &lt;span&gt;Iniciar Sesión con PROVIWEB&lt;/span&gt;
 &lt;/a&gt;</pre>
@@ -223,16 +224,46 @@
             <div style="font-size:12px; color:var(--text-muted); margin-top:10px;">
                 Configuración oficial de paquetes Android:
             </div>
-            <pre>com.israviolink.app   -> israviolink://oauth/callback
+            <pre>com.israviolink.app   -> proviweb://oauth/callback/app
 com.israviolink.admin -> israviolink-admin://oauth/callback
-com.israviolink.nunti -> israviolink-nunti://oauth/callback
-com.israviolink.pulso -> israviolink-pulso://oauth/callback</pre>
+com.israviolink.nunti -> proviweb-nunti://oauth/callback
+com.israviolink.pulso -> proviweb-pulso://oauth/callback</pre>
+        </div>
+
+        <!-- SECCIÓN 2: TERCEROS (APPS + SITIOS WEB) -->
+        <div class="card-box">
+            <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
+                🌍 2. Integración para terceros (apps y sitios web)
+            </h2>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 12px;">
+                Sí, PROVIWEB Connect puede usarse como botón de inicio de sesión para apps y plataformas externas. El cliente debe registrarse primero en la consola admin para quedar autorizado.
+            </p>
+
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Flujo recomendado para terceros:</div>
+            <pre>1) Registrar client_id y redirect_uri en la consola OAuth de PROVIWEB (admin.html).
+2) Lanzar /oauth-authorize.html con response_type=code + scope + PKCE S256.
+3) Usuario inicia sesión en PROVIWEB y aprueba permisos explícitamente.
+4) Recibir ?code=... en el callback del tercero.
+5) Canjear el code en POST /oauth/token con code_verifier.
+6) Iniciar sesión en el sistema del tercero con custom_token (Firebase Auth).</pre>
+
+            <div style="font-size:12px; color:var(--text-muted); margin-top:10px;">
+                Ejemplo para sitio web tercero (<code>redirect_uri</code> HTTPS):
+            </div>
+            <pre>https://proviweb-d8764-c592e.web.app/oauth-authorize.html
+?client_id=mi.sitio.web
+&amp;redirect_uri=https://mi-dominio.com/oauth/proviweb/callback
+&amp;response_type=code
+&amp;scope=profile+email+qav
+&amp;code_challenge={S256_CHALLENGE}
+&amp;code_challenge_method=S256
+&amp;state={RANDOM_STATE}</pre>
         </div>
 
         <!-- SECCIÓN 2: INTEGRACIÓN EN ANDROID (KOTLIN / JAVA) -->
         <div class="card-box">
             <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
-                📱 2. Integración en Android (Ej: com.israviolink.pulso)
+                📱 3. Integración en Android (Ej: com.israviolink.pulso)
             </h2>
             <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
                 En tu aplicación Android nativa, puedes abrir el portal de autorización con <strong>Chrome Custom Tabs</strong> para una experiencia fluida y recibir el código mediante un <strong>Deep Link</strong>.
@@ -246,22 +277,28 @@ com.israviolink.pulso -> israviolink-pulso://oauth/callback</pre>
         &lt;action android:name="android.intent.action.VIEW" /&gt;
         &lt;category android:name="android.intent.category.DEFAULT" /&gt;
         &lt;category android:name="android.intent.category.BROWSABLE" /&gt;
-        &lt;!-- Deep link: israviolink-pulso://oauth/callback --&gt;
-        &lt;data android:scheme="israviolink-pulso" android:host="oauth" android:path="/callback" /&gt;
+        &lt;!-- Deep link: proviweb-pulso://oauth/callback --&gt;
+        &lt;data android:scheme="proviweb-pulso" android:host="oauth" android:path="/callback" /&gt;
     &lt;/intent-filter&gt;
 &lt;/activity&gt;</pre>
 
             <h3 style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 16px;">
                 Paso B: Lanzar la pantalla de autorización (Kotlin)
             </h3>
-            <pre>val authUrl = "https://proviweb-d8764-c592e.web.app/oauth-authorize.html?" +
-    "client_id=com.israviolink.pulso&amp;" +
-    "redirect_uri=israviolink-pulso://oauth/callback&amp;" +
-    "scope=profile+email+qav&amp;" +
-    "state=" + UUID.randomUUID().toString()
+            <pre>// Generate one verifier/state pair per login and keep both in encrypted local storage.
+val codeVerifier = createRandomUrlSafeString(64) // RFC 7636: 43-128 chars
+val codeChallenge = sha256Base64Url(codeVerifier)
+val state = UUID.randomUUID().toString()
+savePendingOAuth(state, codeVerifier)
 
-val customTabsIntent = CustomTabsIntent.Builder().build()
-customTabsIntent.launchUrl(context, Uri.parse(authUrl))</pre>
+val authUrl = "https://proviweb-d8764-c592e.web.app/oauth-authorize.html?" +
+    "client_id=com.israviolink.pulso&amp;" +
+    "redirect_uri=proviweb-pulso://oauth/callback&amp;" +
+    "response_type=code&amp;scope=profile+email+qav&amp;" +
+    "code_challenge=" + Uri.encode(codeChallenge) + "&amp;" +
+    "code_challenge_method=S256&amp;state=" + Uri.encode(state)
+
+CustomTabsIntent.Builder().build().launchUrl(context, Uri.parse(authUrl))</pre>
 
             <h3 style="font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 16px;">
                 Paso C: Recibir el código e iniciar sesión
@@ -275,15 +312,28 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     if (code != null) {
         // Canjear código con la Cloud Function oauthTokenExchange
-        exchangeCodeForToken(code)
+        val pending = loadPendingOAuth() ?: return finish()
+        if (state == null || state != pending.state) return finish() // Reject CSRF/mismatched callback.
+
+        Firebase.functions("us-central1").getHttpsCallable("oauthTokenExchange")
+            .call(mapOf(
+                "code" to code,
+                "clientId" to "com.israviolink.pulso",
+                "codeVerifier" to pending.codeVerifier
+            ))
+            .addOnSuccessListener { result ->
+                val customToken = (result.data as Map&lt;*, *&gt;)["customToken"] as String
+                FirebaseAuth.getInstance().signInWithCustomToken(customToken)
+                clearPendingOAuth()
+            }
     }
 }</pre>
         </div>
 
-        <!-- SECCIÓN 3: PROBADOR / SANDBOX INTERACTIVO -->
+        <!-- SECCIÓN 4: PROBADOR / SANDBOX INTERACTIVO -->
         <div class="card-box">
             <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 6px;">
-                🧪 3. Probador & Simulador Interactivo de Autorización
+                🧪 4. Probador & Simulador Interactivo de Autorización
             </h2>
             <p style="font-size: 13px; color: var(--text-secondary);">
                 Prueba el flujo de autorización en vivo directamente desde tu navegador:
@@ -294,9 +344,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     <label style="font-size:12px; font-weight:800; color:#fff; display:block; margin-bottom:6px;">Selecciona la Aplicación a Probar:</label>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
                         <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.admin', 'israviolink-admin://oauth/callback')">🛡️ com.israviolink.admin</button>
-                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.app', 'israviolink://oauth/callback')">🎻 com.israviolink.app</button>
-                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.nunti', 'israviolink-nunti://oauth/callback')">🛰️ com.israviolink.nunti</button>
-                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.pulso', 'israviolink-pulso://oauth/callback')">🎵 com.israviolink.pulso</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.app', 'proviweb://oauth/callback/app')">🎻 com.israviolink.app</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.nunti', 'proviweb-nunti://oauth/callback')">🛰️ com.israviolink.nunti</button>
+                        <button type="button" class="admin-back-btn" onclick="selectAppTest('com.israviolink.pulso', 'proviweb-pulso://oauth/callback')">🎵 com.israviolink.pulso</button>
                     </div>
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
@@ -328,7 +378,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
         
         window.selectAppTest = function(pkg, uri) {
             document.getElementById('sbClientId').value = pkg;
-            document.getElementById('sbRedirectUri').value = 'https://proviweb-d8764-c592e.web.app/docs-sso.html';
+            document.getElementById('sbRedirectUri').value = uri;
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -346,7 +396,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
             document.getElementById('btnTestOAuthFlow').onclick = () => {
                 const cId = document.getElementById('sbClientId').value.trim();
                 const rUri = document.getElementById('sbRedirectUri').value.trim();
-                window.location.href = `oauth-authorize.html?client_id=${encodeURIComponent(cId)}&redirect_uri=${encodeURIComponent(rUri)}&scope=profile+email+qav&state=sandbox_${Date.now()}`;
+                alert('El simulador web no puede proteger un callback nativo. Prueba el flujo desde la app Android con PKCE S256.');
             };
         });
     </script>

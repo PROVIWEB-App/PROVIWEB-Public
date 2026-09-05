@@ -6,6 +6,15 @@
     "site": "proviweb-d8764-c592e",
     "public": "public",
     "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "/oauth/token",
+        "function": {
+          "functionId": "oauthToken",
+          "region": "us-central1"
+        }
+      }
+    ],
     "headers": [
       {
         "source": "**/*.html",
