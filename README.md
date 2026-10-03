@@ -5,497 +5,1068 @@
 </p>
 
 <p align="center">
-  🎵 <strong>Tecnología al servicio de la música.</strong>
+  <em>🎵 Tecnología al servicio de la música.</em>
 </p>
 
 <p align="center">
-  <a href="https://proviweb.com">🌐 Sitio Web</a> •
-  <a href="https://play.google.com/store/apps/details?id=com.israviolink.app">📱 Google Play</a> •
-  <a href="https://github.com/PROVIWEB-App/PROVIWEB-Public">💻 GitHub</a>
+  <a href="https://proviweb.com">🌐 Sitio web</a>
+  ·
+  <a href="https://play.google.com/store/apps/details?id=com.israviolink.app">▶️ Google Play</a>
+  ·
+  <a href="https://github.com/PROVIWEB-App/PROVIWEB">💻 GitHub</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Android-24%2B-brightgreen?logo=android" alt="Android">
-  <img src="https://img.shields.io/badge/Java-17-orange?logo=openjdk" alt="Java 17">
-  <img src="https://img.shields.io/badge/Kotlin-2.0.21-purple?logo=kotlin" alt="Kotlin">
-  <img src="https://img.shields.io/badge/Firebase-Integrated-yellow?logo=firebase" alt="Firebase">
-  <img src="https://img.shields.io/badge/WebRTC-Integrated-blue" alt="WebRTC">
-  <img src="https://img.shields.io/badge/Media3%2FExoPlayer-Integrated-red" alt="Media3">
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white">
+  <img src="https://img.shields.io/badge/Java%2017-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white">
+  <img src="https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black">
+  <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=webrtc&logoColor=white">
+  <img src="https://img.shields.io/badge/Media3-4285F4?style=for-the-badge">
 </p>
 
 ---
 
-# 🎵 Sobre PROVIWEB
+## 🌎 Sobre PROVIWEB
 
-**PROVIWEB** es un ecosistema digital diseñado para conectar a músicos, artistas, profesores, estudiantes, organizaciones, profesionales y mecenas dentro de una misma plataforma.
+**PROVIWEB** es una plataforma móvil integral para músicos, artistas, academias, profesionales y mecenas.
 
-La propuesta combina herramientas musicales, aprendizaje, inteligencia artificial, comunicación, comunidad, servicios profesionales, marketplace, descubrimiento y economía digital.
+El proyecto reúne en un mismo ecosistema:
 
-### 🌎 Un ecosistema conectado
+**🎵 Música · 👥 Comunidad · 🎓 Educación · 💼 Servicios · 🤖 Inteligencia Artificial · 📍 Descubrimiento · 💳 Economía Digital · 🔐 Seguridad**
 
-**Música → Comunidad → Educación → Servicios → IA → Descubrimiento → Economía Digital → Seguridad**
-
-PROVIWEB busca acompañar diferentes etapas de la experiencia musical:
+La visión de PROVIWEB es crear una infraestructura digital especializada para la industria musical y las bellas artes, donde una persona pueda:
 
 > **Practicar → Crear → Publicar → Conectar → Aprender → Trabajar → Contratar → Monetizar → Crecer**
 
----
+PROVIWEB no busca ser únicamente una aplicación musical.
 
-# 📌 Alcance de este repositorio
-
-**PROVIWEB-Public** es el espacio público de presentación y documentación del ecosistema PROVIWEB.
-
-Aquí se presentan:
-
-* 🎵 La visión del proyecto
-* 📱 La experiencia de usuario
-* 📸 Capturas de pantalla
-* 🚀 Funcionalidades
-* 🏗️ Arquitectura conceptual
-* 🧰 Tecnologías utilizadas
-* 🗺️ Evolución y roadmap
-* 🤝 Oportunidades de colaboración
-* 🔐 Información relacionada con seguridad
-
-> **El código fuente privado de producción de PROVIWEB no forma parte de este repositorio.**
-
-La publicación de este repositorio tampoco concede derechos para copiar, redistribuir, modificar, comercializar o presentar como propio el producto, la marca, los recursos o los componentes privados de PROVIWEB.
+Busca convertirse en un **ecosistema digital alrededor de la música**.
 
 ---
 
-# 👀 Una primera mirada
+# ✨ Una primera mirada
 
 <p align="center">
-  <img src="screenshots/splashactivity.jpg" width="220">
-  <img src="screenshots/dos_splashactivity.jpg" width="220">
-  <img src="screenshots/loginartistactivity.jpg" width="220">
-  <img src="screenshots/loginmesenas.jpg" width="220">
+  <img src="app/screenshots/splashactivity.jpg" alt="PROVIWEB Splash" width="170">
+  <img src="app/screenshots/dos_splashactivity.jpg" alt="PROVIWEB Splash alternativa" width="170">
+  <img src="app/screenshots/loginartistactivity.jpg" alt="Login Artista PROVIWEB" width="170">
+  <img src="app/screenshots/loginmesenas.jpg" alt="Login Mecenas PROVIWEB" width="170">
 </p>
 
-<details>
-<summary>📸 Ver pantallas iniciales</summary>
-
-* `screenshots/splashactivity.jpg`
-* `screenshots/dos_splashactivity.jpg`
-* `screenshots/loginartistactivity.jpg`
-* `screenshots/loginmesenas.jpg`
-
-</details>
+<p align="center">
+  <em>
+    Desde el primer acceso, PROVIWEB diferencia las experiencias y roles
+    dentro del ecosistema.
+  </em>
+</p>
 
 ---
 
-# 🌐 El ecosistema PROVIWEB
+# 🧩 El ecosistema PROVIWEB
 
-| Área                    | Descripción                                                       |
-| ----------------------- | ----------------------------------------------------------------- |
-| 🎵 **Música**           | Herramientas para practicar, crear, reproducir y descubrir música |
-| 👥 **Comunidad**        | Publicaciones, reels, perfiles, chat y conexiones                 |
-| 🎓 **Educación**        | Clases, profesores, estudiantes y herramientas de aprendizaje     |
-| 💼 **Servicios**        | Contratación de músicos y profesionales                           |
-| 🤖 **Inteligencia**     | Herramientas basadas en IA para apoyar al usuario                 |
-| 🔎 **Descubrimiento**   | Música, personas, servicios, publicaciones y oportunidades        |
-| 💰 **Economía Digital** | Wallet, QAV, publicidad y herramientas económicas                 |
-| 🔐 **Seguridad**        | Autenticación, protección de cuentas, verificación y moderación   |
+<table>
+<tr>
+<td align="center" width="25%">
+
+### 🎵 Música
+
+Streaming
+Podcasts
+Metrónomo
+Afinador
+Biblioteca
+Reproductor
+
+</td>
+
+<td align="center" width="25%">
+
+### 👥 Comunidad
+
+Feed
+Reels
+Chat
+Stories
+Perfiles
+Tendencias
+
+</td>
+
+<td align="center" width="25%">
+
+### 🎓 Educación
+
+Profesor IA
+Práctica
+Partituras
+Clases
+Juegos musicales
+Entrenamiento auditivo
+
+</td>
+
+<td align="center" width="25%">
+
+### 💼 Servicios
+
+Empleos
+Cotizaciones
+Contratación
+Marketplace
+Servicios musicales
+Radar
+
+</td>
+</tr>
+
+<tr>
+<td align="center">
+
+### 🤖 Inteligencia
+
+Profesor IA
+Asistencia musical
+Análisis
+Aprendizaje
+Rutinas personalizadas
+
+</td>
+
+<td align="center">
+
+### 📍 Descubrimiento
+
+Mapas
+Radar musical
+Servicios cercanos
+Instrumentos
+Salas de ensayo
+
+</td>
+
+<td align="center">
+
+### 💳 Economía
+
+P-Wallet
+QAV
+Pagos
+Propinas
+Publicidad
+Marketplace
+
+</td>
+
+<td align="center">
+
+### 🔐 Seguridad
+
+Firebase Auth
+App Check
+Play Integrity
+Biometría
+Moderación
+Control de acceso
+
+</td>
+</tr>
+</table>
 
 ---
 
 # 📱 Experiencia PROVIWEB
 
-## 🏠 Home
+## 🏠 Tu espacio musical
 
 <p align="center">
-  <img src="screenshots/uno_homeactivity.jpg" width="200">
-  <img src="screenshots/dos_homeactivity.jpg" width="200">
-  <img src="screenshots/tres_homeactivity.jpg" width="200">
-  <img src="screenshots/cuatro_homeactivity.jpg" width="200">
+  <img src="app/screenshots/uno_homeactivity.jpg" alt="Home PROVIWEB" width="190">
+  <img src="app/screenshots/dos_homeactivity.jpg" alt="Home PROVIWEB 2" width="190">
+  <img src="app/screenshots/tres_homeactivity.jpg" alt="Home PROVIWEB 3" width="190">
+  <img src="app/screenshots/cuatro_homeactivity.jpg" alt="Home PROVIWEB 4" width="190">
 </p>
+
+Un entorno diseñado para descubrir contenido, conectar con otros usuarios y acceder rápidamente a las principales funciones de la plataforma.
 
 ---
 
-## 🎵 Herramientas musicales
-
-PROVIWEB incorpora diferentes herramientas para apoyar la práctica musical.
+## 🎧 Herramientas para músicos
 
 <p align="center">
-  <img src="screenshots/metronomoactivity.jpg" width="180">
-  <img src="screenshots/afinadoractivity.jpg" width="180">
-  <img src="screenshots/practiceactivity.jpg" width="180">
-  <img src="screenshots/archiveactivity.jpg" width="180">
-  <img src="screenshots/dos_musicactivity.jpg" width="180">
+  <img src="app/screenshots/metronomoactivity.jpg" alt="Metrónomo PROVIWEB" width="190">
+  <img src="app/screenshots/afinadoractivity.jpg" alt="Afinador PROVIWEB" width="190">
+  <img src="app/screenshots/practiceactivity.jpg" alt="Práctica PROVIWEB" width="190">
+  <img src="app/screenshots/archiveactivity.jpg" alt="Biblioteca PROVIWEB" width="190">
+  <img src="app/screenshots/dos_musicactivity.jpg" alt="Música PROVIWEB" width="190">
 </p>
 
-Entre ellas:
+PROVIWEB integra herramientas esenciales para el músico dentro de una misma experiencia:
 
-* 🎼 Metrónomo
-* 🎸 Afinador
-* 🎯 Práctica musical
-* 📚 Archivo
-* 🎵 Herramientas de música
-* 📊 Seguimiento de práctica
+* 🎼 Afinador cromático.
+* 🥁 Metrónomo profesional.
+* 🎯 Herramientas de práctica.
+* 📚 Biblioteca de partituras.
+* 🎧 Reproducción musical.
+* 🎙️ Podcasts.
+* 👂 Entrenamiento auditivo.
+* 🔄 Sesiones de práctica sincronizadas.
 
 ---
 
 # 🤖 Inteligencia Artificial
 
-PROVIWEB integra herramientas de inteligencia artificial orientadas a apoyar la experiencia musical y educativa.
-
 <p align="center">
-  <img src="screenshots/aiactivity.jpg" width="250">
+  <img src="app/screenshots/aiactivity.jpg" alt="Profesor IA PROVIWEB" width="220">
 </p>
 
-La IA puede formar parte de diferentes experiencias dentro del ecosistema:
+## Profesor IA
 
-* Educación musical
-* Asistencia al usuario
-* Descubrimiento
-* Recomendaciones
-* Herramientas inteligentes
-* Apoyo al aprendizaje
+**Profesor IA** integra inteligencia artificial dentro de la experiencia musical para acompañar el aprendizaje, resolver dudas y apoyar las rutinas de práctica.
+
+Entre sus objetivos se encuentran:
+
+* 🎼 Teoría musical.
+* 🎹 Armonía.
+* 📖 Lectura musical.
+* 🎯 Interpretación.
+* 📈 Seguimiento del progreso.
+* 🧠 Recomendaciones personalizadas.
+* 💬 Asistencia musical bajo demanda.
+
+La plataforma integra tecnologías de inteligencia artificial de Google para crear una experiencia educativa más interactiva.
 
 ---
 
-# 👥 Comunidad y comunicación
-
-PROVIWEB incorpora herramientas para conectar a sus usuarios.
+# 💬 Conecta, publica y crea
 
 <p align="center">
-  <img src="screenshots/chatactivity.jpg" width="180">
-  <img src="screenshots/createpostactivity.jpg" width="180">
-  <img src="screenshots/reelactivity.jpg" width="180">
-  <img src="screenshots/notifivationactivity.jpg" width="180">
-  <img src="screenshots/trendingactivity.jpg" width="180">
+  <img src="app/screenshots/chatactivity.jpg" alt="Chat PROVIWEB" width="180">
+  <img src="app/screenshots/createpostactivity.jpg" alt="Crear publicación PROVIWEB" width="180">
+  <img src="app/screenshots/reelactivity.jpg" alt="Reels PROVIWEB" width="180">
+  <img src="app/screenshots/notifivationactivity.jpg" alt="Notificaciones PROVIWEB" width="180">
+  <img src="app/screenshots/trendingactivity.jpg" alt="Tendencias PROVIWEB" width="180">
 </p>
+
+PROVIWEB combina herramientas sociales y multimedia para que artistas y usuarios puedan:
+
+* 📝 Publicar contenido.
+* 🖼️ Compartir imágenes.
+* 🎧 Compartir audio.
+* 🎬 Compartir vídeo.
+* 📱 Crear Reels.
+* 💬 Conversar en tiempo real.
+* 🔥 Descubrir tendencias.
+* 👥 Interactuar con otros perfiles.
+* 🔔 Recibir notificaciones.
+
+---
+
+# 🎤 Convierte tu talento en oportunidades
+
+<p align="center">
+  <img src="app/screenshots/jobactivity.jpg" alt="Empleos musicales" width="190">
+  <img src="app/screenshots/mapservicesactivity.jpg" alt="Mapa de servicios musicales" width="190">
+  <img src="app/screenshots/marketplaceactivity.jpg" alt="Marketplace PROVIWEB" width="190">
+</p>
+
+PROVIWEB conecta el talento musical con oportunidades profesionales.
+
+### Flujo de contratación
+
+**Descubre → Contacta → Cotiza → Contrata → Crece**
+
+El ecosistema contempla:
+
+* 💼 Empleos musicales.
+* 🎤 Contratación de artistas.
+* 🎼 Servicios musicales.
+* 📋 Cotizaciones.
+* 🗺️ Radar de profesionales.
+* 🛒 Marketplace.
+* 📍 Descubrimiento geográfico.
+* 💰 Opciones de pago.
+
+---
+
+# 👤 Diferentes experiencias dentro del ecosistema
+
+<p align="center">
+  <img src="app/screenshots/uno_profileactivity.jpg" alt="Perfil PROVIWEB 1" width="170">
+  <img src="app/screenshots/dos_profileactivity.jpg" alt="Perfil PROVIWEB 2" width="170">
+  <img src="app/screenshots/tres_profileactivity.jpg" alt="Perfil PROVIWEB 3" width="170">
+  <img src="app/screenshots/cuatro_profileactivity.jpg" alt="Perfil PROVIWEB 4" width="170">
+  <img src="app/screenshots/cinco_profileactivity.jpg" alt="Perfil PROVIWEB 5" width="170">
+</p>
+
+<p align="center">
+  <img src="app/screenshots/seis_profileactivity.jpg" alt="Perfil PROVIWEB 6" width="170">
+  <img src="app/screenshots/siete_profileactivity.jpg" alt="Perfil PROVIWEB 7" width="170">
+  <img src="app/screenshots/ocho_profileactivity.jpg" alt="Perfil PROVIWEB 8" width="170">
+  <img src="app/screenshots/menuactivity.jpg" alt="Menú PROVIWEB" width="170">
+  <img src="app/screenshots/walletactivity.jpg" alt="Wallet PROVIWEB" width="170">
+</p>
+
+PROVIWEB contempla diferentes experiencias de usuario según el rol y las necesidades dentro del ecosistema.
+
+---
+
+# 👥 Roles de usuario
+
+| Rol                         | Descripción                                                     | Capacidades principales                                                         |
+| --------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 🎤 **Artista / Músico**     | Creador musical, solista, integrante de banda o compositor.     | Música, álbumes, Reels, publicaciones, empleos, Split-Sheets, cotizaciones.     |
+| 💎 **Mecenas**              | Aficionado, promotor cultural, inversor o patrocinador de arte. | Escuchar, interactuar, contratar artistas, enviar propinas y comprar productos. |
+| 🎓 **Profesor de Música**   | Docente o instructor verificado.                                | Clases individuales/grupales, disponibilidad y material educativo.              |
+| 📚 **Estudiante**           | Alumno de música o aprendiz.                                    | Clases, aula virtual, práctica, juegos musicales y Profesor IA.                 |
+| 🏢 **Organización / Banda** | Agrupación, orquesta, sello independiente o academia.           | Perfil institucional, catálogo, servicios y cotizaciones.                       |
+
+### 🔐 Control de acceso
+
+La plataforma utiliza componentes como:
+
+* `UserRoleGuard`
+* `UserRoleManager`
+
+para controlar las capacidades disponibles según el rol.
+
+---
+
+# ⭐ Características principales
+
+## 1. 🎵 Streaming de Música & Podcasts
+
+### Descubrimiento musical
+
+`MusicExploreActivity`
 
 Incluye:
 
-* 💬 Chat
-* 👥 Comunicación entre usuarios
-* 📝 Publicaciones
-* 🎬 Reels
-* 🔔 Notificaciones
-* 🔥 Contenido en tendencia
-* 📄 Páginas y perfiles
+* 🔥 Lo más escuchado.
+* ⭐ Artistas destacados.
+* 🆕 Novedades.
+* 🎸 Filtrado por géneros.
+* 🔎 Búsqueda instantánea.
+* 🎧 Exploración de catálogo.
+
+### Reproductor profesional
+
+`SongPlayerFullActivity`
+`MusicPlayerManager`
+
+Características:
+
+* ▶️ Reproducción continua.
+* 📱 Reproducción en segundo plano.
+* 🔒 Controles en pantalla de bloqueo.
+* 🔔 Controles desde notificaciones.
+* 📝 Letras sincronizadas.
+* 📋 Cola dinámica.
+* 🔀 Shuffle.
+* 🔁 Loop.
+* 💬 Comentarios por canción.
+* 🎧 Mini-player persistente.
+
+### Playlists
+
+Permite:
+
+* Crear playlists públicas y privadas.
+* Añadir y eliminar canciones.
+* Mantener la cola activa.
+* Administrar listas personales.
+
+### 🎙️ Podcasts
+
+Módulo dedicado para anfitriones y creadores:
+
+`CreatePodcastActivity`
 
 ---
 
-# 💼 Servicios y oportunidades
+# 2. 👥 Red Social Artística & Multimedia
 
-PROVIWEB conecta profesionales y personas que buscan servicios relacionados con la música.
+## Feed
 
-<p align="center">
-  <img src="screenshots/jobactivity.jpg" width="200">
-  <img src="screenshots/mapservicesactivity.jpg" width="200">
-  <img src="screenshots/marketplaceactivity.jpg" width="200">
-</p>
+`HomeFragment`
+`CreatePostActivity`
 
-Entre las posibilidades:
+Soporte para:
 
-* 🎤 Contratación de músicos
-* 🎓 Profesores
-* 🎹 Servicios musicales
-* 📍 Descubrimiento geográfico
-* 💼 Oportunidades profesionales
-* 🛒 Marketplace
-* 💰 Cotizaciones
-* ⚖️ Comparación de propuestas
-
----
-
-# 👤 Perfiles y roles
-
-PROVIWEB contempla diferentes perfiles dentro del ecosistema.
-
-### 🎤 Artista / Músico
-
-Perfil orientado a artistas, intérpretes y músicos.
-
-### 💎 Mecenas
-
-Usuarios interesados en apoyar, contratar o participar en oportunidades relacionadas con artistas y proyectos.
-
-### 🎓 Profesor de Música
-
-Profesionales dedicados a la enseñanza musical.
-
-### 📚 Estudiante
-
-Usuarios que buscan aprender, practicar y desarrollar sus habilidades.
-
-### 🎸 Organización / Banda
-
-Espacios destinados a grupos, organizaciones y proyectos musicales.
+* 🖼️ Carruseles de imágenes.
+* 🎬 Vídeos.
+* 🎧 Clips de audio.
+* 🌊 Formas de onda.
+* 🎼 Partituras.
+* 😊 Estados de ánimo.
+* ❤️ Reacciones.
+* 💬 Comentarios.
+* ↩️ Respuestas.
+* 📢 Publicaciones patrocinadas.
 
 ---
 
-# 👤 Experiencia de perfiles
+## 🎬 Reels
 
-<p align="center">
-  <img src="screenshots/uno_profileactivity.jpg" width="170">
-  <img src="screenshots/dos_profileactivity.jpg" width="170">
-  <img src="screenshots/tres_profileactivity.jpg" width="170">
-  <img src="screenshots/cuatro_profileactivity.jpg" width="170">
-</p>
+`ReelActivity`
+`ViewReelActivity`
 
-<p align="center">
-  <img src="screenshots/cinco_profileactivity.jpg" width="170">
-  <img src="screenshots/seis_profileactivity.jpg" width="170">
-  <img src="screenshots/siete_profileactivity.jpg" width="170">
-  <img src="screenshots/ocho_profileactivity.jpg" width="170">
-</p>
+Experiencia vertical inmersiva con:
 
-También forman parte de esta experiencia:
-
-* `screenshots/menuactivity.jpg`
-* `screenshots/walletactivity.jpg`
+* 📱 Pantalla completa.
+* 🔄 ViewPager2.
+* 🎥 Grabación mediante CameraX.
+* ✂️ Recorte.
+* 🎨 Filtros.
+* ⭐ Stickers.
+* 🎵 Música de fondo.
+* 📡 Visualización offline.
 
 ---
 
-# 🚀 Principales funcionalidades
+## 🏢 Páginas oficiales
 
-## 1. 🎵 Streaming & Podcasts
+`PagesActivity`
+`PagesProfileActivity`
+
+Permiten crear espacios oficiales para:
+
+* Bandas.
+* Agrupaciones.
+* Proyectos musicales.
+* Academias.
+* Marcas.
+* Ensambles.
+
+---
+
+# 3. 🧾 Propiedad Intelectual & Split-Sheets
+
+## 🔐 Hashing SHA-256
+
+Durante la subida de una canción, PROVIWEB puede generar una huella digital **SHA-256** del contenido binario del archivo de audio.
+
+La huella puede asociarse con:
+
+* 👤 Creador.
+* 🎵 Obra.
+* 🆔 Identificador de canción.
+* 🕒 Fecha de registro.
+
+Utilidad principal:
+
+> Crear una referencia criptográfica verificable del contenido registrado.
+
+---
+
+## ✍️ Split-Sheets
+
+`DialogSplitSheetCreator`
+
+Permite a múltiples participantes:
+
+* Definir porcentajes.
+* Establecer participación.
+* Negociar dentro del chat.
+* Generar acuerdos.
+* Consultar estados de firma.
+
+Estados:
+
+**Pendiente de Firma ✍️ → Firmado ✅**
+
+---
+
+# 4. 💬 Mensajería & Negociación
+
+## Chat privado y grupal
+
+`ChatActivity`
+`GroupChatActivity`
+
+Soporte para:
+
+* 💬 Texto.
+* 🖼️ Imágenes.
+* 🎬 Vídeos.
+* 🎧 Notas de voz.
+* 📄 Documentos PDF.
+* ⭐ Stickers.
+* 👥 Conversaciones grupales.
+* ✍️ Indicadores de escritura.
+* ✓ Confirmación de lectura.
+* 🟢 Estado de conexión.
+
+---
+
+## 💼 Propuestas profesionales
+
+El chat puede integrar propuestas de trabajo con:
+
+* 🎻 Rol requerido.
+* 🎪 Tipo de evento.
+* 💰 Presupuesto.
+* 💱 Divisa.
+* 📅 Fecha.
+* 🕒 Hora.
+* 📋 Condiciones.
+
+Esto permite convertir una conversación en un proceso profesional de contratación.
+
+---
+
+# 5. 📞 Comunicaciones en Vivo
+
+## WebRTC
+
+`VoiceChatViewActivity`
+`VideoChatViewActivity`
+`CallService`
+
+PROVIWEB integra comunicación en tiempo real mediante **WebRTC** para:
+
+* 📞 Llamadas de audio.
+* 🎥 Videollamadas.
+* ⚡ Baja latencia.
+* 🔊 Audio mediante Opus.
+* 📱 Integración con la experiencia Android.
+
+---
+
+## 📲 Llamadas entrantes
+
+`RingingActivity`
+
+Contempla experiencias para llamadas entrantes, incluyendo escenarios con el dispositivo bloqueado mediante mecanismos propios de Android.
+
+---
+
+## 🏫 Salas virtuales
+
+`RoomJoinActivity`
+`RoomOpenActivity`
+`MeetinggActivity`
+
+Pensadas para:
+
+* 🎼 Ensayos.
+* 👥 Reuniones de bandas.
+* 🎓 Clínicas musicales.
+* 🎤 Encuentros.
+* 🌎 Colaboración remota.
+
+---
+
+# 6. 🎓 Academia Musical & Herramientas de Práctica
+
+## 🤖 Profesor IA
+
+`AIProfessorActivity`
+
+Asistente pedagógico orientado a:
+
+* Armonía.
+* Teoría musical.
+* Lectura.
+* Interpretación.
+* Práctica.
+* Progreso.
+* Rutinas personalizadas.
+
+---
+
+## 🎯 Afinador cromático
+
+`TunerActivity`
+
+Incluye detección de frecuencia mediante micrófono y visualización de:
+
+* Nota.
+* Frecuencia.
+* Desviación.
+* Centésimas.
+
+---
+
+## 🥁 Metrónomo
+
+`MetronomeActivity`
+
+Características:
+
+* BPM.
+* Tap Tempo.
+* Compases.
+* Acentuación.
+* Patrones como 2/4, 3/4, 4/4, 6/8, etc.
+
+---
+
+## 📖 Biblioteca de partituras
+
+`DetailActivity`
+
+Incluye:
+
+* PDFs.
+* Organización de biblioteca.
+* Lectura táctil.
+* Cambio de páginas.
+* Experiencia tipo atril.
+
+---
+
+## 🔄 Práctica sincronizada
+
+`HostActivity`
+`ListenerActivity`
+`SessionSummaryActivity`
+
+Permite a un profesor o líder transmitir contenido de práctica de forma sincronizada a múltiples participantes.
+
+---
+
+## 🧠 Separación de stems por IA (Demucs)
+
+La sección de Archivo incluye flujo de transcripción con:
+
+* **Modo solo por instrumento** (mariachi/sinfónica/jazz/tradicional).
+* **Modo canción completa** con análisis de stems por IA.
+* **Preview reproducible de partitura** antes de guardar.
+* **Notación musical avanzada en PDF/MusicXML** (alturas, duraciones, silencios, ligaduras y compases 4/4).
+* **Asignación de partes por stems** mejorada con mapeo por tipo de instrumento + fallback heurístico.
+* **Sincronización host/oyente robusta** de partitura (incluye compatibilidad `sheetUrl/sheetContent` y compartición de PDF local por URL pública).
+* **Cuantización rítmica reforzada** para escribir figura rítmica y silencios escuchados (incluye semicorchea y fusa cuando aplica).
+
+Para separación de stems se incluye un servicio backend en:
+
+`tools/demucs-service/`
+
+Configura en Android:
+
+* `BuildConfig.DEMUCS_API_BASE_URL`
+* `BuildConfig.DEMUCS_API_KEY` (opcional, si proteges el servicio)
+
+El contrato API usa:
+
+* `POST /v1/separation/jobs`
+* `GET /v1/separation/jobs/{job_id}`
+
+---
+
+## 🎓 Clases particulares
+
+`TeacherAvailabilityActivity`
+`BookClassActivity`
+`MyBookedClassesActivity`
+
+Incluye:
+
+* Disponibilidad del profesor.
+* Solicitudes.
+* Reservas.
+* Gestión de clases.
+
+---
+
+# 7. 🎮 Gamificación & Entrenamiento Auditivo
+
+PROVIWEB integra una colección de **11 minijuegos musicales**.
+
+### 🎹 Juegos principales
+
+| Juego              | Objetivo                             |
+| ------------------ | ------------------------------------ |
+| 🎵 Pitch Perfect   | Identificación de tonos y notas      |
+| 🎼 Melody Memory   | Memoria de secuencias melódicas      |
+| 🎹 Chord Challenge | Identificación de acordes            |
+| 🎶 Scale Master    | Reconocimiento de escalas y modos    |
+| 🥁 Rhythm Master   | Precisión rítmica                    |
+| 👁️ Visual Beat    | Patrones visuales y ritmo            |
+| ⏱️ Tempo Trainer   | Estimación y mantenimiento del tempo |
+| 🏆 Multiplayer     | Competición musical en tiempo real   |
+
+### Multiplayer
+
+`MultiplayerLobbyActivity`
+`MultiplayerGameActivity`
+
+Incluye:
+
+* Lobby.
+* Partidas.
+* Competición.
+* Clasificaciones.
+* Experiencia musical social.
+
+---
+
+# 8. 🛒 Marketplace & Cotizaciones
+
+## 🎸 Marketplace
+
+`MarketPlaceActivity`
+`PostProductActivity`
+
+Pensado para compra y venta de:
+
+* Guitarras.
+* Violines.
+* Amplificadores.
+* Pedales.
+* Accesorios.
+* Instrumentos tradicionales.
+* Equipamiento musical.
+
+---
+
+## 📍 Marketplace geográfico
+
+`MapMarketActivity`
+
+Permite visualizar productos en función de su ubicación.
+
+---
+
+## 💼 Cotizador de eventos
+
+`MusicalHubActivity`
+`CotizacionActivity`
+`CompareQuotesActivity`
+
+Los clientes pueden solicitar presupuestos para:
+
+* Bodas.
+* Festivales.
+* Serenatas.
+* Eventos privados.
+* Eventos corporativos.
+* Otros servicios musicales.
+
+Los proveedores pueden responder con propuestas económicas detalladas.
+
+### Flujo
+
+**Solicitud → Propuestas → Comparación → Selección → Reserva**
+
+---
+
+# 9. 🗺️ Geolocalización & Radar Musical
+
+`LocationActivity`
+
+PROVIWEB integra funciones de descubrimiento geográfico para localizar:
+
+* 🎤 Músicos.
+* 🎸 Instrumentistas.
+* 🎙️ Cantantes.
+* 🎧 Servicios musicales.
+* 🎼 Salas de ensayo.
+* 🎚️ Estudios.
+* 🎓 Academias.
+* 🎵 Locales musicales.
+* 🛒 Instrumentos.
+
+También contempla cálculo de rutas y distancias para necesidades profesionales.
+
+---
+
+# 10. 💳 Economía Digital
+
+## 👛 P-Wallet
+
+La plataforma contempla una billetera digital orientada a operaciones dentro del ecosistema.
+
+Características:
+
+* 🔐 Gestión no custodial.
+* 🔑 Frases mnemónicas BIP39.
+* 🛡️ Protección biométrica.
+* 🔢 PIN de seguridad.
+* 💰 Gestión de activos compatibles.
+* 🔄 Transferencias.
+
+Componentes:
+
+`WalletSecurityActivity`
+`WithdrawActivity`
+`Wait24hActivity`
+
+---
+
+## 🪙 QAV
+
+PROVIWEB contempla **QAV** como activo digital utilizado dentro de determinadas experiencias económicas del ecosistema.
+
+Puede integrarse en escenarios como:
+
+* Propinas.
+* Regalos.
+* Compra de servicios.
+* Marketplace.
+* Operaciones internas compatibles.
+
+> **Nota:** QAV forma parte de la economía digital de PROVIWEB y no debe interpretarse automáticamente como equivalente a una moneda fiduciaria.
+
+---
+
+## 📢 Publicidad
+
+`AdsManagerActivity`
+`PromotionActivity`
+
+Los artistas pueden promocionar:
+
+* Canciones.
+* Perfiles.
+* Eventos.
+* Contenido.
+
+El sistema contempla:
+
+* Planes promocionales.
+* Impresiones.
+* Reproducciones.
+* Métricas de interacción.
+* Pasarelas de pago compatibles.
+
+---
+
+# 11. 🔐 Seguridad, Gobernanza & Protección
+
+PROVIWEB está diseñado con múltiples capas de seguridad.
+
+### 🔑 Autenticación
+
+* Firebase Authentication.
+* Email.
+* Teléfono.
+* OTP.
+* Gestión de sesiones.
+
+### 🛡️ Backend
+
+* Firebase Realtime Database.
+* Reglas de seguridad.
+* Firebase App Check.
+* Play Integrity.
+* Control de acceso por roles.
+
+### 🔒 Protección local
+
+* Autenticación biométrica.
+* PIN.
+* Protección de operaciones sensibles.
+* Manejo seguro de credenciales.
+* Protección de secretos de compilación.
+
+---
+
+## 👶 Protección de menores
+
+PROVIWEB contempla flujos específicos para usuarios menores mediante:
+
+`isMinor`
+
+y estados como:
+
+`minorApprovalStatus`
+
+El flujo puede requerir aprobación del padre o tutor antes de habilitar determinadas funcionalidades sociales.
+
+---
+
+## ✅ Verificación de usuarios
+
+El ecosistema contempla procesos de verificación para:
+
+* 🎤 Artistas.
+* 🎓 Profesores.
+* 🏢 Entidades.
+* 🏫 Organizaciones educativas.
 
 Componentes relacionados:
 
-* `MusicExploreActivity`
-* `SongPlayerFullActivity`
-* `MusicPlayerManager`
-* `CreatePodcastActivity`
-
-Permite trabajar con experiencias de reproducción, exploración musical y podcasts.
+`VerifiUserActivity`
+`ProfesorVerificationActivity`
+`EntidadVerifActivity`
 
 ---
 
-## 2. 👥 Social & Multimedia
+## 🚨 Moderación & denuncias
 
-Componentes principales:
+Incluye herramientas para:
 
-* `HomeFragment`
-* `CreatePostActivity`
-* `ReelActivity`
-* `ViewReelActivity`
-* `PagesActivity`
-* `PagesProfileActivity`
-
-La plataforma combina publicaciones, contenido multimedia, perfiles y descubrimiento social.
+* Reportar contenido.
+* Reportar usuarios.
+* Bloquear usuarios.
+* Gestionar contenido inapropiado.
+* Reportar posibles infracciones.
+* Eliminar cuentas mediante procesos de validación.
 
 ---
 
-## 3. ©️ Propiedad intelectual & Split-Sheets
+# 🏗️ Arquitectura del Sistema
 
-PROVIWEB contempla herramientas relacionadas con identificación y gestión de contenidos musicales.
+PROVIWEB está construido como una aplicación Android nativa modular orientada a:
 
-Componentes:
-
-* `AudioHashUtil`
-* `audio_ownership`
-* `DialogSplitSheetCreator`
-
----
-
-## 4. 💬 Chat & Negociación
-
-Componentes:
-
-* `ChatActivity`
-* `GroupChatActivity`
-
-Diseñados para facilitar comunicación y negociación entre usuarios.
-
----
-
-## 5. 📞 Comunicaciones en tiempo real
-
-PROVIWEB integra experiencias de comunicación mediante audio, vídeo y salas.
-
-Componentes:
-
-* `VoiceChatViewActivity`
-* `VideoChatViewActivity`
-* `CallService`
-* `RingingActivity`
-* `RoomJoinActivity`
-* `RoomOpenActivity`
-* `MeetinggActivity`
-
----
-
-## 6. 🎓 Academy & Practice
-
-Herramientas relacionadas con aprendizaje y práctica musical:
-
-* `AIProfessorActivity`
-* `TunerActivity`
-* `MetronomeActivity`
-* `DetailActivity`
-* `HostActivity`
-* `ListenerActivity`
-* `SessionSummaryActivity`
-* `TeacherAvailabilityActivity`
-* `BookClassActivity`
-* `MyBookedClassesActivity`
-
----
-
-## 7. 🎮 Gamificación
-
-PROVIWEB incorpora diferentes experiencias musicales gamificadas.
-
-Algunos conceptos incluyen:
-
-* 🎯 Pitch Perfect
-* 🎵 Melody Memory
-* 🎸 Chord Challenge
-* 🎼 Scale Master
-* 🥁 Rhythm Master
-* 👁️ Visual Beat
-* ⏱️ Tempo Trainer
-* 🌐 Multiplayer
-
-Componentes:
-
-* `MultiplayerLobbyActivity`
-* `MultiplayerGameActivity`
-
----
-
-## 8. 🛒 Marketplace & Cotizaciones
-
-Componentes:
-
-* `MarketPlaceActivity`
-* `PostProductActivity`
-* `MapMarketActivity`
-* `MusicalHubActivity`
-* `CotizacionActivity`
-* `CompareQuotesActivity`
-
-Permite explorar productos, servicios y oportunidades comerciales relacionadas con el ecosistema.
-
----
-
-## 9. 📍 Geolocalización
-
-Componente principal:
-
-* `LocationActivity`
-
-Permite incorporar ubicación y descubrimiento geográfico dentro de diferentes experiencias.
-
----
-
-## 10. 💰 Economía Digital
-
-PROVIWEB incorpora herramientas relacionadas con:
-
-* P-Wallet
-* QAV
-* Publicidad
-* Promociones
-* Gestión económica
-
-Componentes:
-
-* `WalletSecurityActivity`
-* `WithdrawActivity`
-* `Wait24hActivity`
-* `AdsManagerActivity`
-* `PromotionActivity`
-
-> **QAV forma parte de la economía interna de PROVIWEB y no debe confundirse con una criptomoneda.**
-
----
-
-## 11. 🔐 Seguridad, gobernanza y protección
-
-La plataforma incorpora diferentes mecanismos de seguridad y protección:
-
-* Firebase Authentication
-* Firebase App Check
-* Play Integrity
-* Autenticación biométrica
-* OTP
-* Protección de cuentas
-* Verificación
-* Protección de menores
-* Moderación
-* Controles de acceso
-
----
-
-# 🏗️ Arquitectura
+* Procesamiento multimedia.
+* Streaming.
+* Comunicación en tiempo real.
+* Servicios cloud.
+* Inteligencia artificial.
+* Geolocalización.
+* Economía digital.
+* Seguridad.
 
 ```text
-                    ┌──────────────────────┐
-                    │       PROVIWEB       │
-                    └──────────┬───────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    PROVIWEB APPLICATION                      │
+│                                                             │
+│ Activities · Fragments · ViewBinding · Material Design      │
+└──────────────────────────────┬──────────────────────────────┘
                                │
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-       🎵 Música           👥 Comunidad         🎓 Educación
-          │                    │                    │
-          └────────────────────┼────────────────────┘
-                               │
-                    ┌──────────▼───────────┐
-                    │    Servicios / IA    │
-                    └──────────┬───────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              │                │                │
-           💼 Jobs          🛒 Market         💰 Economy
-              │                │                │
-              └────────────────┼────────────────┘
-                               │
-                    ┌──────────▼───────────┐
-                    │   🔐 Seguridad       │
-                    └──────────────────────┘
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌───────────────┐      ┌────────────────┐     ┌────────────────┐
+│ AUDIO & VIDEO │      │ REAL-TIME & AI │     │ CLOUD SERVICES │
+│               │      │                │     │                │
+│ Media3        │      │ WebRTC         │     │ Firebase       │
+│ ExoPlayer     │      │ Gemini         │     │ Auth           │
+│ CameraX       │      │ Vertex AI      │     │ Database       │
+│ FFmpegKit     │      │ ML Kit         │     │ Storage        │
+└───────────────┘      └────────────────┘     │ FCM            │
+                                              └────────────────┘
+        │                      │
+        └──────────────┬───────┘
+                       ▼
+              ┌─────────────────┐
+              │ ECONOMY & WEB3  │
+              │                 │
+              │ P-Wallet        │
+              │ QAV             │
+              │ Web3j           │
+              │ BitcoinJ        │
+              └─────────────────┘
 ```
 
-Para una explicación más detallada de la arquitectura conceptual, consulta:
+---
 
-`docs/ARCHITECTURE.md`
+# 🧱 Stack Tecnológico
+
+| Área              | Tecnología                          |
+| ----------------- | ----------------------------------- |
+| 📱 Plataforma     | Android                             |
+| ☕ Lenguaje        | Java 17                             |
+| 🟣 Lenguaje       | Kotlin 2.0.21                       |
+| 🎨 UI             | AndroidX / Material Design          |
+| 🎬 Multimedia     | AndroidX Media3 / ExoPlayer         |
+| 🎥 Cámara         | CameraX                             |
+| ⚡ Comunicación    | WebRTC                              |
+| 🔥 Backend        | Firebase                            |
+| 🗄️ Base de datos | Firebase Realtime Database          |
+| ☁️ Storage        | Firebase Cloud Storage              |
+| 🔔 Notificaciones | Firebase Cloud Messaging            |
+| 🛡️ Protección    | Firebase App Check / Play Integrity |
+| 🗺️ Mapas         | Google Maps Platform                |
+| 📍 Lugares        | Google Places                       |
+| 🤖 IA             | Gemini / Vertex AI                  |
+| 🧠 ML             | ML Kit                              |
+| 🔐 Criptografía   | BouncyCastle / SHA-256              |
+| ₿ Wallet          | BitcoinJ / BIP39                    |
+| 🌐 Web3           | Web3j                               |
+| 💉 DI             | Dagger Hilt                         |
+| 🧩 Procesamiento  | KSP                                 |
+| 💾 Cache local    | Room / SQLite                       |
+| 🔒 Biometría      | AndroidX Biometric                  |
 
 ---
 
-# 🧰 Stack tecnológico
+# 🧠 Tecnologías principales
 
-| Tecnología           | Uso                         |
-| -------------------- | --------------------------- |
-| Java 17              | Desarrollo principal        |
-| Kotlin 2.0.21        | Componentes Kotlin          |
-| AndroidX             | Arquitectura Android        |
-| Material             | Interfaz                    |
-| Firebase             | Backend y servicios         |
-| Firebase Auth        | Autenticación               |
-| Realtime Database    | Datos en tiempo real        |
-| Cloud Storage        | Archivos multimedia         |
-| FCM                  | Notificaciones              |
-| App Check            | Protección de backend       |
-| Play Integrity       | Integridad de aplicación    |
-| WebRTC               | Comunicación en tiempo real |
-| Media3 / ExoPlayer   | Reproducción multimedia     |
-| CameraX              | Cámara                      |
-| Google Maps / Places | Geolocalización             |
-| Gemini / Vertex AI   | Inteligencia artificial     |
-| ML Kit               | Machine Learning            |
-| Dagger Hilt / KSP    | Inyección de dependencias   |
-| Room / SQLite        | Persistencia local          |
-| BouncyCastle         | Criptografía                |
-| bitcoinj / BIP39     | Componentes criptográficos  |
-| web3j                | Integraciones blockchain    |
+### Multimedia
 
-> Esta sección describe tecnologías y componentes utilizados dentro del ecosistema PROVIWEB. No implica que el código de producción correspondiente esté incluido en este repositorio público.
+* `androidx.media3`
+* ExoPlayer
+* Media Session
+* Background Playback
+* FFmpegKit
+* SiliCompressor
+
+### Backend
+
+* Firebase Authentication
+* Firebase Realtime Database
+* Cloud Firestore
+* Cloud Functions
+* Cloud Storage
+* Firebase Cloud Messaging
+* Firebase App Check
+* Firebase Crashlytics
+* Firebase In-App Messaging
+
+### Comunicación
+
+* Google WebRTC
+* Android Telecom Framework
+* `ConnectionService`
+* `CallService`
+
+### Inteligencia Artificial
+
+* Google Gemini
+* Vertex AI
+* ML Kit Translation
+* ML Kit Language Identification
+
+### Web3 & Criptografía
+
+* BitcoinJ
+* BIP39
+* Web3j
+* BouncyCastle
+* SHA-256
+
+### Arquitectura
+
+* Dagger Hilt
+* KSP
+* Foreground Services
+* Singleton managers
+* Modularización funcional
 
 ---
 
-# 📦 Estructura conceptual del proyecto
-
-La siguiente estructura representa la organización conceptual de diferentes módulos y áreas de PROVIWEB:
+# 📂 Estructura del Proyecto
 
 ```text
 PROVIWEB/
-├── app/
-│   └── src/
 │
+├── app/
+│   ├── src/
+│   │
+│   └── screenshots/
+│       ├── splashactivity.jpg
+│       ├── dos_splashactivity.jpg
+│       ├── loginartistactivity.jpg
+│       ├── loginmesenas.jpg
+│       ├── uno_homeactivity.jpg
+│       ├── dos_homeactivity.jpg
+│       ├── tres_homeactivity.jpg
+│       ├── cuatro_homeactivity.jpg
+│       └── ...
+│
+├── README.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+└── LICENSE
+```
+
+### 📦 Paquetes principales
+
+```text
+com.israviolink.app/
+
 ├── adapter/
 ├── ads/
 ├── advertising/
@@ -530,230 +1101,383 @@ PROVIWEB/
 └── welcome/
 ```
 
-> Esta estructura se presenta con fines documentales y no representa necesariamente todos los archivos o componentes actualmente disponibles en el repositorio público.
+### Descripción de módulos
+
+| Paquete          | Función                             |
+| ---------------- | ----------------------------------- |
+| `adapter/`       | Adaptadores RecyclerView            |
+| `ads/`           | Gestores publicitarios              |
+| `advertising/`   | Campañas y promoción                |
+| `aiprofessor/`   | Profesor IA                         |
+| `archive/`       | Biblioteca y herramientas musicales |
+| `calling/`       | Telefonía y WebRTC                  |
+| `camera/`        | Cámara y captura multimedia         |
+| `chat/`          | Mensajería y contratos              |
+| `games/`         | Juegos musicales                    |
+| `job/`           | Empleos musicales                   |
+| `marketPlace/`   | Marketplace                         |
+| `meeting/`       | Salas virtuales                     |
+| `music/`         | Streaming y reproductor             |
+| `notifications/` | Notificaciones                      |
+| `pages/`         | Páginas oficiales                   |
+| `podcast/`       | Podcasts                            |
+| `post/`          | Publicaciones                       |
+| `practice/`      | Práctica sincronizada               |
+| `profile/`       | Perfiles y clases                   |
+| `qav/`           | Economía QAV                        |
+| `reel/`          | Reels                               |
+| `search/`        | Búsqueda y descubrimiento           |
+| `security/`      | Control de acceso                   |
+| `settings/`      | Privacidad y configuración          |
+| `support/`       | Soporte                             |
+| `welcome/`       | Onboarding                          |
 
 ---
 
-# 🔥 Modelo conceptual de datos
+# 🗄️ Modelo de Datos
 
-Entre las principales áreas de información utilizadas por PROVIWEB se encuentran:
+PROVIWEB utiliza principalmente **Firebase Realtime Database** con nodos estructurados para operaciones en tiempo real.
 
-```text
-Users
-Songs
-UserSongs
-Playlists
-Posts
-Reels
-audio_ownership
-Chat
-MusicalServiceRequests
+```json
+{
+  "Users": {
+    "$uid": {
+      "name": "...",
+      "username": "...",
+      "role": "ARTIST|MECENAS",
+      "verified": "yes",
+      "photo": "..."
+    }
+  },
+
+  "Songs": {
+    "$songId": {
+      "title": "...",
+      "artist": "...",
+      "pId": "$uid",
+      "audioUrl": "...",
+      "coverUrl": "...",
+      "playCount": 0,
+      "audioHash": "..."
+    }
+  },
+
+  "UserSongs": {
+    "$uid": {
+      "$songId": true
+    }
+  },
+
+  "Playlists": {
+    "$playlistId": {
+      "title": "...",
+      "userId": "...",
+      "isPublic": true,
+      "songs": {
+        "$songId": true
+      }
+    }
+  },
+
+  "Posts": {
+    "$postId": {
+      "pId": "$uid",
+      "pDescr": "...",
+      "pImage": "...",
+      "pTime": "...",
+      "pLikes": 0
+    }
+  },
+
+  "Reels": {
+    "$reelId": {
+      "userId": "$uid",
+      "videoUrl": "...",
+      "description": "...",
+      "songId": "..."
+    }
+  },
+
+  "audio_ownership": {
+    "$audioSha256Hash": {
+      "ownerUid": "$uid",
+      "songId": "$songId",
+      "createdAt": 1725380000000
+    }
+  },
+
+  "Chat": {
+    "$chatId": {
+      "sender": "...",
+      "receiver": "...",
+      "msg": "...",
+      "type": "text|image|voice|proposal"
+    }
+  },
+
+  "MusicalServiceRequests": {
+    "$requestId": {
+      "clientUid": "...",
+      "eventType": "...",
+      "date": "...",
+      "budget": "..."
+    }
+  }
+}
 ```
 
-> Los nombres anteriores representan áreas conceptuales del ecosistema y no constituyen una publicación de datos reales de usuarios.
+---
+
+# 🧭 Explora PROVIWEB
+
+<details>
+<summary><strong>🎵 Música & práctica</strong></summary>
+
+`metronomoactivity.jpg` · `afinadoractivity.jpg` · `practiceactivity.jpg` · `archiveactivity.jpg` · `dos_musicactivity.jpg`
+
+</details>
+
+<details>
+<summary><strong>👥 Comunidad & contenido</strong></summary>
+
+`uno_homeactivity.jpg` · `dos_homeactivity.jpg` · `tres_homeactivity.jpg` · `cuatro_homeactivity.jpg` · `createpostactivity.jpg` · `reelactivity.jpg` · `trendingactivity.jpg` · `chatactivity.jpg`
+
+</details>
+
+<details>
+<summary><strong>💼 Servicios & oportunidades</strong></summary>
+
+`jobactivity.jpg` · `mapservicesactivity.jpg` · `marketplaceactivity.jpg`
+
+</details>
+
+<details>
+<summary><strong>👤 Perfiles</strong></summary>
+
+`uno_profileactivity.jpg` · `dos_profileactivity.jpg` · `tres_profileactivity.jpg` · `cuatro_profileactivity.jpg` · `cinco_profileactivity.jpg` · `seis_profileactivity.jpg` · `siete_profileactivity.jpg` · `ocho_profileactivity.jpg`
+
+</details>
 
 ---
 
-# 📸 Explora PROVIWEB
+# 🛠️ Requisitos de Instalación & Compilación
 
-Las principales capturas disponibles en este repositorio incluyen:
+## Requisitos previos
 
-### Splash / Login
+### Android Studio
 
-* `screenshots/splashactivity.jpg`
-* `screenshots/dos_splashactivity.jpg`
-* `screenshots/loginartistactivity.jpg`
-* `screenshots/loginmesenas.jpg`
+**Ladybug 2024.2.1 o superior**
 
-### Home
+### Java
 
-* `screenshots/uno_homeactivity.jpg`
-* `screenshots/dos_homeactivity.jpg`
-* `screenshots/tres_homeactivity.jpg`
-* `screenshots/cuatro_homeactivity.jpg`
+**OpenJDK 17**
 
-### Música
-
-* `screenshots/metronomoactivity.jpg`
-* `screenshots/afinadoractivity.jpg`
-* `screenshots/practiceactivity.jpg`
-* `screenshots/archiveactivity.jpg`
-* `screenshots/dos_musicactivity.jpg`
-
-### Inteligencia Artificial
-
-* `screenshots/aiactivity.jpg`
-
-### Comunidad
-
-* `screenshots/chatactivity.jpg`
-* `screenshots/createpostactivity.jpg`
-* `screenshots/reelactivity.jpg`
-* `screenshots/notifivationactivity.jpg`
-* `screenshots/trendingactivity.jpg`
-
-### Servicios
-
-* `screenshots/jobactivity.jpg`
-* `screenshots/mapservicesactivity.jpg`
-* `screenshots/marketplaceactivity.jpg`
-
-### Perfiles
-
-* `screenshots/uno_profileactivity.jpg`
-* `screenshots/dos_profileactivity.jpg`
-* `screenshots/tres_profileactivity.jpg`
-* `screenshots/cuatro_profileactivity.jpg`
-* `screenshots/cinco_profileactivity.jpg`
-* `screenshots/seis_profileactivity.jpg`
-* `screenshots/siete_profileactivity.jpg`
-* `screenshots/ocho_profileactivity.jpg`
-* `screenshots/menuactivity.jpg`
-* `screenshots/walletactivity.jpg`
-
----
-
-# 🤝 Colaboración con PROVIWEB
-
-PROVIWEB está abierto a recibir propuestas y colaboraciones de personas interesadas en contribuir al crecimiento del ecosistema.
-
-La colaboración puede provenir de:
-
-* 👨‍💻 Desarrolladores
-* 🎨 Diseñadores UI/UX
-* 🎵 Músicos y artistas
-* 🎓 Educadores
-* 🤖 Especialistas en IA
-* 🧪 Testers
-* 📚 Creadores de documentación
-* 🌎 Traductores
-* 💡 Personas con ideas y propuestas para el ecosistema
-
-Para realizar una propuesta, utiliza las plantillas disponibles en **Issues**.
-
-También puedes consultar:
-
-* `CONTRIBUTING.md`
-* `docs/COLLABORATION.md`
-* `CODE_OF_CONDUCT.md`
-* `SECURITY.md`
-
----
-
-# 📜 Reglas de colaboración
-
-Para mantener un entorno organizado, seguro y profesional, las colaboraciones deberán seguir las reglas establecidas en `CONTRIBUTING.md` y `CODE_OF_CONDUCT.md`.
-
-Las propuestas deben respetar:
-
-* Propiedad intelectual.
-* Derechos de terceros.
-* Seguridad.
-* Privacidad.
-* Buenas prácticas de desarrollo.
-* Normas de convivencia.
-* Reglas del repositorio.
-
-Una propuesta, Issue o Pull Request **no garantiza su incorporación al producto**.
-
----
-
-# 🔐 Código fuente y propiedad intelectual
-
-El código fuente privado de producción y determinados componentes internos de PROVIWEB permanecen fuera de este repositorio.
-
-La publicación de PROVIWEB-Public no concede automáticamente derechos sobre:
-
-* Nombre PROVIWEB
-* Logotipo
-* Identidad visual
-* Marca
-* Contenido propietario
-* Código fuente privado
-* Componentes internos
-* Propiedad intelectual del proyecto
-* Recursos privados
-
-La utilización de cualquier elemento protegido deberá contar con la autorización correspondiente cuando sea necesaria.
-
----
-
-# 🛡️ Buenas prácticas de seguridad
-
-Nunca publiques información sensible dentro de este repositorio.
-
-Especialmente:
+### Android SDK
 
 ```text
-google-services.json
-keystores
-passwords
-API keys privadas
-Firebase credentials
-private keys
-wallet seeds
-authentication tokens
-production secrets
+compileSdk: 34 / 35
+targetSdk: 34 / 35
+minSdk:     24
 ```
 
-Consulta `SECURITY.md` para conocer la política de seguridad del proyecto.
+### NDK
+
+```text
+28.0.12433566
+```
+
+---
+
+# 🚀 Compilar PROVIWEB
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/PROVIWEB-App/PROVIWEB.git
+cd PROVIWEB
+```
+
+## 2. Configurar Firebase
+
+Asegúrate de disponer de la configuración correspondiente para Firebase en:
+
+```text
+app/google-services.json
+```
+
+> ⚠️ Nunca publiques credenciales privadas, API keys sensibles, keystores, tokens, secretos de Firebase ni claves privadas en el repositorio.
+
+## 3. Compilar
+
+### Debug
+
+```bash
+./gradlew assembleDebug
+```
+
+### Comprobar fuentes Java/Kotlin
+
+```bash
+./gradlew compileDebugSources
+```
+
+---
+
+# 🔐 Buenas prácticas de seguridad
+
+Antes de publicar cambios:
+
+* No subir claves privadas.
+* No subir keystores.
+* No subir tokens.
+* No subir credenciales.
+* No incluir secretos en código fuente.
+* Revisar reglas de Firebase.
+* Mantener App Check habilitado.
+* Revisar permisos Android.
+* Proteger operaciones sensibles.
+* Mantener dependencias actualizadas.
 
 ---
 
 # 🗺️ Roadmap
 
-PROVIWEB continúa evolucionando como un ecosistema musical y tecnológico.
+PROVIWEB continúa evolucionando.
 
-Entre las áreas de evolución se encuentran:
+### 🎓 Educación
 
-* 🎵 Nuevas herramientas musicales
-* 🤖 Nuevas funciones de IA
-* 🎓 Evolución de la educación musical
-* 💼 Nuevas oportunidades profesionales
-* 🎬 Mejoras multimedia
-* 🌎 Expansión internacional
-* 🛒 Evolución del marketplace
-* 🎮 Nuevas experiencias gamificadas
-* 📞 Comunicación en tiempo real
-* 🔐 Mejoras continuas de seguridad
-* 🌐 Expansión del ecosistema PROVIWEB
+* Más herramientas de aprendizaje musical.
+* Evolución del Profesor IA.
+* Nuevas experiencias de práctica.
+* Nuevos juegos musicales.
+
+### 🎵 Música
+
+* Nuevas experiencias de streaming.
+* Expansión del contenido.
+* Mejoras de reproducción.
+* Nuevas herramientas para artistas.
+
+### 💼 Servicios
+
+* Expansión del marketplace.
+* Nuevas herramientas de contratación.
+* Mejoras en cotizaciones.
+* Nuevas experiencias profesionales.
+
+### 👥 Comunidad
+
+* Mejoras en colaboración.
+* Nuevas herramientas sociales.
+* Experiencias para bandas y organizaciones.
+
+### 🌎 Expansión
+
+* Expansión internacional.
+* Nuevos mercados.
+* Nuevas integraciones.
+
+### 🌐 Web3
+
+* Evolución de funcionalidades Web3.
+* Nuevas experiencias económicas.
+* Mejoras de P-Wallet y QAV.
 
 ---
 
-# 💡 ¿Quieres colaborar?
+# 🤝 Contribuir
 
-Las personas interesadas pueden comenzar explorando el proyecto, revisando su documentación y utilizando las plantillas de Issues para presentar propuestas.
+PROVIWEB busca crecer junto a:
 
-Las colaboraciones pueden estar relacionadas tanto con tecnología como con música, educación, diseño, IA, documentación, pruebas y comunidad.
+* 🎵 Músicos.
+* 💻 Desarrolladores.
+* 🎨 Diseñadores.
+* 🎓 Educadores.
+* 🧠 Investigadores.
+* 🌎 Personas interesadas en tecnología musical.
 
-> **PROVIWEB busca construir tecnología alrededor de la música, pero también construirla junto a las personas que forman parte de ella.** 🎵
+Las contribuciones pueden incluir:
+
+🐛 Reportar bugs
+💡 Proponer ideas
+🧩 Crear funcionalidades
+🎨 Mejorar UI/UX
+📚 Mejorar documentación
+🌎 Traducciones
+🔧 Pull Requests
+
+Antes de contribuir, consulta:
+
+`CONTRIBUTING.md`
+
+y
+
+`CODE_OF_CONDUCT.md`
 
 ---
 
 # 📱 PROVIWEB 9.4
 
-PROVIWEB representa una plataforma en evolución constante, con múltiples áreas integradas dentro de una misma experiencia.
+**Versión actual: 9.4**
 
-Su objetivo es conectar:
+Una evolución enfocada en:
 
-**Músicos + Artistas + Profesores + Estudiantes + Profesionales + Organizaciones + Mecenas**
-
-en un ecosistema digital orientado a la música.
+* ⚡ Estabilidad.
+* 🚀 Rendimiento.
+* 🎨 Experiencia de usuario.
+* 🔐 Seguridad.
+* 🎵 Herramientas musicales.
+* 🤖 Inteligencia artificial.
+* 👥 Comunidad.
+* 💼 Servicios.
+* 🌎 Expansión del ecosistema.
 
 ---
 
-# 🌎 Nuestra visión
+# 🌟 La visión
 
-> **Crear un ecosistema donde la música no solamente pueda escucharse, sino también aprenderse, practicarse, crearse, compartirse, enseñarse, contratarse y convertirse en nuevas oportunidades.**
+PROVIWEB nace de una idea sencilla:
 
-🎵 **PROVIWEB**
+> **Poner tecnología al servicio de la música.**
 
-**Tecnología al servicio de la música.**
+La música no es solamente reproducción.
+
+Es práctica.
+
+Es aprendizaje.
+
+Es comunidad.
+
+Es trabajo.
+
+Es creatividad.
+
+Es cultura.
+
+Es una profesión.
+
+Y PROVIWEB busca conectar todas esas dimensiones dentro de un mismo ecosistema.
+
+---
+
+# 🎵 PROVIWEB
 
 <p align="center">
-  <strong>Practicar • Crear • Conectar • Aprender • Trabajar • Crecer</strong>
+  <strong>Practica. Conecta. Trabaja. Crece.</strong>
 </p>
 
 <p align="center">
-  ⭐ Si te interesa la visión de PROVIWEB, explora el proyecto y participa en su evolución.
+  <em>🎵 Tecnología al servicio de la música. 🎵</em>
+</p>
+
+<p align="center">
+  <a href="https://proviweb.com">🌐 proviweb.com</a>
+  ·
+  <a href="https://play.google.com/store/apps/details?id=com.israviolink.app">▶️ Google Play</a>
+  ·
+  <a href="https://github.com/PROVIWEB-App/PROVIWEB">💻 GitHub</a>
+</p>
+
+<p align="center">
+  © 2026 PROVIWEB · Developed by Israviolink App Team
 </p>
