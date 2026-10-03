@@ -25,6 +25,15 @@
   <img src="https://img.shields.io/badge/Media3-4285F4?style=for-the-badge">
 </p>
 
+<p align="center">
+  <strong>🤝 ¿Quieres colaborar?</strong>
+  Súmate: <a href="#-contribuir">Contribuir</a>
+  ·
+  <a href="CONTRIBUTING.md">Guía de contribución</a>
+  ·
+  <a href="CODE_OF_CONDUCT.md">Código de conducta</a>
+</p>
+
 ---
 
 ## 🌎 Sobre PROVIWEB
@@ -1386,7 +1395,18 @@ PROVIWEB continúa evolucionando.
 
 # 🤝 Contribuir
 
-PROVIWEB busca crecer junto a:
+<p align="center">
+  <strong>PROVIWEB se construye mejor en comunidad. 🎶</strong><br>
+  Tu idea, tu código, tu diseño o tu oído musical pueden marcar la diferencia.
+</p>
+
+## 🌟 ¿Por qué colaborar?
+
+* 🎵 Es un proyecto que une música, comunidad, educación y tecnología en un mismo ecosistema.
+* 🧩 Abarca áreas muy distintas: streaming, chat, WebRTC, IA, marketplace, seguridad y más.
+* 🌱 Hay espacio para aportar sin importar tu nivel: no necesitas ser desarrollador para colaborar.
+
+## 👥 ¿Quién puede aportar?
 
 * 🎵 Músicos.
 * 💻 Desarrolladores.
@@ -1395,23 +1415,29 @@ PROVIWEB busca crecer junto a:
 * 🧠 Investigadores.
 * 🌎 Personas interesadas en tecnología musical.
 
-Las contribuciones pueden incluir:
+## 🛠️ Formas de contribuir
 
-🐛 Reportar bugs
-💡 Proponer ideas
-🧩 Crear funcionalidades
-🎨 Mejorar UI/UX
-📚 Mejorar documentación
-🌎 Traducciones
-🔧 Pull Requests
+| | Cómo aportar | Qué puedes hacer |
+|---|---|---|
+| 🐛 | **Reportar bugs** | Cuéntanos qué falló, cómo reproducirlo y en qué dispositivo. |
+| 💡 | **Proponer ideas** | Comparte mejoras o nuevas funcionalidades para el ecosistema. |
+| 🧩 | **Crear funcionalidades** | Desarrolla nuevas capacidades junto al equipo. |
+| 🎨 | **Mejorar UI/UX** | Aporta ideas de diseño y mejoras de experiencia de usuario. |
+| 📚 | **Mejorar documentación** | Clarifica, corrige y amplía las guías del proyecto. |
+| 🌎 | **Traducciones** | Ayuda a que PROVIWEB llegue a más personas. |
+| 🔧 | **Pull Requests** | Envía tus cambios para revisión. |
 
-Antes de contribuir, consulta:
+## 🚀 Primeros pasos
 
-`CONTRIBUTING.md`
+1. 📖 Lee [`CONTRIBUTING.md`](CONTRIBUTING.md) y el [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+2. 🧭 Explora el proyecto en las secciones «Arquitectura del Sistema» y [Estructura del Proyecto](#-estructura-del-proyecto).
+3. 🛠️ Prepara tu entorno siguiendo [Compilar PROVIWEB](#-compilar-proviweb).
+4. 💬 Elige un área de interés y comparte tu propuesta o reporte.
+5. 🔧 Envía tu Pull Request.
 
-y
+> 🔐 Nunca publiques credenciales, API keys, keystores, tokens ni claves privadas.
 
-`CODE_OF_CONDUCT.md`
+Antes de contribuir, consulta [`CONTRIBUTING.md`](CONTRIBUTING.md) y [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
 ---
 
